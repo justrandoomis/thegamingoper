@@ -34,6 +34,14 @@ export function usePagedList<T, D>(first: Paged<T>, pick: (data: D) => Paged<T> 
     setCursor(page.nextCursor);
   }, [fetcher.state, fetcher.data, pick]);
 
-  const more = cursor ? () => fetcher.load(`${location.pathname}?cursor=${encodeURIComponent(cursor)}`) : undefined;
+  // the page's own query (a filter such as ?show=) goes along with the cursor, so "more" continues the same list
+  const more = cursor
+    ? () => {
+        const search = new URLSearchParams(location.search);
+        search.delete("index");
+        search.set("cursor", cursor);
+        fetcher.load(`${location.pathname}?${search.toString()}`);
+      }
+    : undefined;
   return { items: [...first.items, ...extra], total: first.total, more, loading: fetcher.state !== "idle" };
 }

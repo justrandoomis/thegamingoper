@@ -1,10 +1,12 @@
 /**
- * /platform/:platform — a platform hub (Design System v2 §6.2): the band in the platform's colour (its hardware
- * bleeding off the inline end; from 1024 a switcher of its device models), the departments as chips with their counts,
- * the product list (every product RESEARCHED for the platform — multi-platform games and headsets included, see
- * listing.server.ts) with filters that say how many results each choice gives, sorts and «اعرض المزيد», "everything
- * about your device" (on phones inside the grid after its first two rows; from 768 after the list), and the
- * platform's used units. Platform hubs are siblings: moving between them pushes sideways in reading order (handle).
+ * /platform/:platform — a platform hub (Design System v2 §6.2; v2.1 client note 4): the band — glossy platform-colour
+ * glass with its hardware breaking out of the top and the platform's light on the floor around it — then "everything
+ * about your device" (the before's row of soft device tiles → /device/<model>, short names: the platform's name is in
+ * the band), the departments as chips with their kind icons and counts, the product list (every product RESEARCHED for
+ * the platform — multi-platform games and headsets included, see listing.server.ts) with filters that say how many
+ * results each choice gives, sorts and «اعرض المزيد», and the platform's used units. Products start on the first phone
+ * screen (390 × 844: the first cards' pictures under the toolbar). Platform hubs are siblings: moving between them
+ * pushes sideways in reading order (handle).
  */
 import { data, useLocation } from "react-router";
 
@@ -22,7 +24,7 @@ import { listProducts, scopePicks } from "~/server/services/catalog/listing.serv
 import { recommendationsFor } from "~/server/services/recommendations.server";
 import { ErrorState } from "~/ui/ErrorState";
 import { isPlatform, PLATFORMS } from "~/ui/PlatformLed";
-import { ChipRow, DeviceShortcuts, HubBand, TitleRow, UsedShelf, useDevicesTitle, useHubLead } from "./components/Hub";
+import { ChipRow, DeviceRow, HubBand, TitleRow, UsedShelf, useDevicesTitle, useHubLead, useKindIcon } from "./components/Hub";
 import { ListingView } from "./components/ListingView";
 import { useListingNav, useOfflineHold } from "./components/use-listing-nav";
 import { LISTING_SORTS, filtersOf, readListingQuery } from "./listing-model";
@@ -93,23 +95,25 @@ export default function PlatformPage({ loaderData }: Route.ComponentProps) {
   const location = useLocation();
   const lead = useHubLead();
   const devicesTitle = useDevicesTitle();
+  const kindIcon = useKindIcon();
   const platform = hub.platform!;
   const known = isPlatform(platform.slug) ? platform.slug : null;
   const name = known ? ui(`platform.${known}`) : platform.name;
   const count = t("hub.products", { count: list.scopeTotal, n: f.number(list.scopeTotal) });
   const crumbs = [{ label: t("hub.home"), href: "/" }, { label: name }];
-  const devices = devicesTitle(platform.slug, name);
 
   return (
     <div className="page catalog-page" onClickCapture={hold}>
       {known ? (
-        <HubBand platform={known} title={name} count={count} lead={lead} art={platform.artKey} devices={hub.devices} devicesLabel={devices} crumbs={crumbs} />
+        <HubBand platform={known} title={name} count={count} lead={lead} art={platform.artKey} crumbs={crumbs} />
       ) : (
-        <TitleRow crumbs={crumbs} title={name} count={count} lead={lead} />
+        <TitleRow crumbs={crumbs} title={name} count={count} lead={lead} icon="squares-four" />
       )}
+      {/* the before's «كل شيء عن أجهزة PlayStation» row, right under the band: the band names the platform, so short names */}
+      <DeviceRow devices={hub.devices} title={devicesTitle(platform.slug, name)} note={t("hub.devicesNote")} id="catalog-devices-title" slot="row" names="short" />
       <ChipRow
         label={t("hub.subcategories")}
-        options={list.facets.categories.map((option) => ({ value: option.value, label: option.label, count: option.count }))}
+        options={list.facets.categories.map((option) => ({ value: option.value, label: option.label, count: option.count, icon: kindIcon(option.value) }))}
         selected={nav.query.category}
         allCount={list.facets.without.category}
         hrefFor={(value) => nav.href({ category: value })}
@@ -126,10 +130,7 @@ export default function PlatformPage({ loaderData }: Route.ComponentProps) {
         elsewhere={list.facets.categories.length >= 2 || nav.query.category ? ["category"] : []}
         wished={wished}
         filterOrder={filterOrder}
-        // inside the product list (phones): a part of it in the outline (h3), so the cards after it stay under the list's h2
-        inline={<DeviceShortcuts layout="rail" devices={hub.devices} title={devices} note={t("hub.devicesNote")} id="catalog-devices-inline" slot="inline" headingLevel={3} />}
       />
-      <DeviceShortcuts layout="grid" devices={hub.devices} title={devices} note={t("hub.devicesNote")} id="catalog-devices-title" slot="grid" className="catalog-after max-md:hidden" />
       {used ? (
         used.length >= 3 ? (
           <UsedShelf units={used} title={t("hub.used")} reason={t("hub.usedReason")} href={`/used?platform=${platform.slug}`} viewAll={t("hub.usedAll")} className="catalog-after" />

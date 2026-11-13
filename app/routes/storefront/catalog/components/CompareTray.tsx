@@ -7,8 +7,9 @@
  *   the filter pill    below 1024, once the list's toolbar has scrolled away: «الفلاتر | الترتيب» (ListingView
  *                      passes it in).
  *
- * The dock is solid paper with the float shadow, not glass: the header and the tab bar are the two live panes a
- * viewport may have. While it shows, the page's bottom scroll padding grows by its measured height (`--catalog-dock`
+ * v2.1 (G3: glass on floating bars): the tray and the pill are the kit's floating glass (`.glass.glass--float`, like the
+ * tab bar under them) — with the header and the tab bar at most four live panes, and solid under an open sheet. While
+ * it shows, the page's bottom scroll padding grows by its measured height (`--catalog-dock`
  * on the root, catalog.css) — the tray takes a second line where its words do not fit one (English and Sorani on a
  * phone) — so a focused card never hides under it. Client only (the compare list lives in localStorage), fixed — its
  * arrival moves nothing.
@@ -32,7 +33,7 @@ function TrayBar() {
   const thumbs = useCompareThumbs();
   const n = compare.ids.length;
   return (
-    <div className="catalog-tray" role="region" aria-label={t("compare.title")}>
+    <div className="catalog-tray glass glass--float" role="region" aria-label={t("compare.title")}>
       <ul role="list" className="catalog-tray__thumbs" aria-hidden="true">
         {compare.ids.map((id) => {
           const thumb = thumbs[id];

@@ -12,7 +12,6 @@
  * A failed read is the shell's error panel: an outage is never shown as "no contact details".
  */
 import type { Route } from "./+types/contact";
-import { Icon } from "~/art/Icon";
 import { serverT } from "~/i18n/i18n.server";
 import { useLocale, useT } from "~/i18n/react";
 import { LOCALES } from "~/lib/locales";
@@ -22,6 +21,7 @@ import { getDb } from "~/server/db.server";
 import { contentMessages, getCmsText, getContactDetails } from "~/server/services/content.server";
 import { Blocks } from "~/ui/Blocks";
 import { ContactCard } from "~/ui/ContactCard";
+import { Note } from "~/ui/Note";
 import { ContactChannels, otherChannels } from "./components/ContactChannels";
 import { ContentHeader, Section } from "./components/ContentHeader";
 import { HandoffCard } from "./components/HandoffCard";
@@ -67,14 +67,14 @@ export default function ContactPage({ loaderData }: Route.ComponentProps) {
           ) : null}
           {/* no channel yet: the hand-off leads, as the page's one red key */}
           {reachable ? null : <HandoffCard id="contact-handoff" primary />}
-          <p className="csafety">
-            <Icon name="shield-check" size={20} />
-            <span>{t("contact.safety")}</span>
-          </p>
+          {/* the anti-fraud rule is side information: the kit's calm note (v2.1 G5), its shield on the ok tint */}
+          <Note tone="success" icon="shield-check">
+            {t("contact.safety")}
+          </Note>
         </div>
 
         <div className="csplit__aside">
-          <Section id="contact-quick" title={t("contact.quickTitle")} size="sm">
+          <Section id="contact-quick" title={t("contact.quickTitle")} size="sm" reveal>
             <LinkRows
               card
               rows={[
@@ -86,7 +86,7 @@ export default function ContactPage({ loaderData }: Route.ComponentProps) {
             />
           </Section>
           {/* with channels, the hand-off is still there — a quiet door, not the lead */}
-          {reachable ? <HandoffCard id="contact-handoff" stack headingLevel={2} /> : null}
+          {reachable ? <HandoffCard id="contact-handoff" stack headingLevel={2} reveal /> : null}
         </div>
       </div>
     </div>

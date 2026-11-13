@@ -1,15 +1,24 @@
 /**
- * /p/:slug — the product page (design v2 spec §6.7; brief §3.7–3.8).
+ * /p/:slug — the product page (design v2.1 "Clay & Glass", client note 5: the BEFORE arrangement, rebuilt with the v2.1
+ * pieces and v2's features; design v2 spec §6.7; brief §3.7–3.8).
  *
- *   phones (< 768)   the stage full bleed and square (1:1) under the header, its thumbnails below it; then the buy box:
- *                    platform and kind · h1 · one fact line · price + demo tag · stock and delivery · the payment
- *                    sentence · the versions (each with its own price) · المفضلة · قارن · مشاركة · the facts card ·
- *                    «قبل أن تطلب»; then the reading part. The BUY BAR replaces the tab bar at the bottom (the kit's
- *                    <BuyBar bare> inside the shell's <TaskBar>): price and version at the start, «أضف إلى السلة» at
- *                    the end — «✓ في السلة» + «عرض السلة (n)» after an add.
- *   768–1023         one column, the stage 4:3 with --r-xl, the buy bar.
- *   ≥ 1024           7 + 5: the gallery sticky at the inline START, the buy box at the inline end with the buy controls
- *                    (stepper + «أضف إلى السلة») after the versions; no bottom bar. The breadcrumbs above both.
+ *   phones (< 768)   the stage as a soft card edge to edge under the header (./components/StageCard: rounded lower
+ *                    corners, the platform's ambient light, the whole product with room around it, round clay keys —
+ *                    back and share — the counter and the thumbnails in a clay tray); then the breadcrumb bar; the
+ *                    brand line («جديد» + the platform's colour line and name); the name in Kufam; the fact line (16px);
+ *                    the price block (the price big at the start with the demo mark; the delivery fee note and the
+ *                    stock state at the end); the versions as cards with their own prices; المفضلة · قارن; the side
+ *                    information as calm notes (payment and the transfer rule, delivery, returns, warranty) and
+ *                    «قبل أن تطلب»; «أبرز ما فيه»; then the reading part. The BUY BAR replaces the tab bar at the bottom
+ *                    (./components/BuyStrip inside the shell's <TaskBar>, sliding in): the clay quantity tray and the
+ *                    glossy red «أضف إلى السلة» — «✓ في السلة» + «عرض السلة (n)» after an add.
+ *   768–1023         one column, the stage card inside the page column, the buy bar.
+ *   ≥ 1024           5 + 7: the information column at the inline START (breadcrumbs, brand line, name, facts, price,
+ *                    versions, the quantity tray + «أضف إلى السلة», المفضلة · قارن · مشاركة, the notes, highlights) and
+ *                    the gallery at the inline END, sticky; no bottom bar.
+ *   below            about the product and «يعمل مع», the game facts, the specifications beside the store set and the
+ *                    box, the device hub row, the reviews slot (real ones only) and the recommendation shelves — each
+ *                    section fades up as it arrives (v2.1 G6).
  *
  * Data: getProductDetail (variants with stock STATES, release dates, pictures, specs, game facts, store-set contents,
  * warranty and delivery facts) and getReviewSummary (approved verified-purchase reviews only — nothing shows until
@@ -24,7 +33,7 @@
  * key. Once the page is on screen, and only with consent, the "view" signal goes to /api/events and the view to the
  * shopper's ONE recently-viewed list (home/personal → recordProductView).
  */
-import { useEffect, useId, useRef, useState } from "react";
+import { Fragment, useEffect, useId, useRef, useState } from "react";
 import { data, redirect, useRouteLoaderData, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/product";
@@ -37,7 +46,6 @@ import { formatMoney } from "~/lib/money";
 import { getCustomer } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
-import { kindLabelOf } from "~/server/services/catalog/card-facts";
 import { getProductDetail } from "~/server/services/catalog/product.server";
 import { galleryFor, type ProductDetail } from "~/server/services/catalog/product-types";
 import { getCompatibilityForProduct } from "~/server/services/compatibility.server";
@@ -51,23 +59,25 @@ import { readConsent, recordProductView } from "~/routes/storefront/home/persona
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
 import { TaskBar } from "~/routes/storefront/shell/TabBar";
 import type { ShellData, ShellHandle } from "~/routes/storefront/shell/types";
-import { BuyBar, BuyControls } from "~/ui/AddToCartKey";
-import { BidiText } from "~/ui/BidiText";
+import { BuyControls } from "~/ui/AddToCartKey";
+import { BidiLabel, BidiText } from "~/ui/BidiText";
 import { Breadcrumbs } from "~/ui/Breadcrumbs";
 import { cx } from "~/ui/cx";
-import { Gallery } from "~/ui/Gallery";
 import { useOnline } from "~/ui/OfflineBanner";
-import { PlatformLabel } from "~/ui/PlatformLed";
+import { PlatformLabel, PlatformLed } from "~/ui/PlatformLed";
+import { Reveal } from "~/ui/reveal";
 import { Tag } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { SecondaryActions } from "./components/Actions";
+import { BuyStrip } from "./components/BuyStrip";
 import { About, BeforeYouOrder, boxPhoto, GameFacts, Highlights, InTheBox, Specs } from "./components/Details";
-import { FactsCard, PaymentLine, paymentMethods } from "./components/Facts";
+import { paymentMethods, SideNotes } from "./components/Facts";
 import { MixedText } from "./components/MixedText";
 import { PriceBlock } from "./components/PriceBlock";
 import { Reviews } from "./components/Reviews";
 import { SetContents } from "./components/SetContents";
 import { alternativesPath, CompatibilitySlot, DeviceHubSlot, RecommendationsSlot } from "./components/Slots";
+import { StageCard, stageBack, stageGel } from "./components/StageCard";
 import { VariantPicker } from "./components/VariantPicker";
 import { useProductT } from "./i18n";
 import { jsonForScript, productJsonLd } from "./jsonld";
@@ -185,7 +195,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const offlineId = useId();
 
   // The gallery stays put while the language changes (docs/MOTION.md "anchors") — below 1024 only, where it is full
-  // width: from 1024 it sits at the inline start and would have to cross the page.
+  // width: from 1024 it sits at the inline end and would have to cross the page.
   useEffect(() => {
     const element = stage.current;
     if (!element) return;
@@ -213,7 +223,6 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
     })),
     { label: product.name },
   ];
-  const platforms = (product.platform ? [product.platform] : product.forPlatforms).slice(0, 2);
   const soon = !variant.orderable && variant.releaseAt !== null;
   const soldOut = !variant.orderable && !soon;
   const digital = isDigital(product);
@@ -224,7 +233,9 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const alternatives = alternativesPath(product);
   const methods = paymentMethods(layout?.shell?.payments, signedIn);
   const share = productShareImage(product.slug);
-  // No connection: the add keys go flat and say why (spec §6.17); the server render always says online.
+  // No connection: the add keys go flat and say why (spec §6.17); the server render always says online. Phones and
+  // tablets: the sentence under the price says it (the bar's own line is short); from 1024 the kit says it under the
+  // column's key and the sentence under the price gives way (product.css) — one sentence, not two.
   const offline = !online && variant.orderable;
   const describedBy = offline ? offlineId : variant.orderable ? undefined : reasonId;
 
@@ -241,90 +252,84 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="pp" data-product={product.id} data-variant={variant.sku}>
-      {/* Phones: tight steps between the head blocks (8px under the thumbnails, 2px inside the name block, 8px to the
-          price) and a long name one size down, so the price, the demo tag and the stock-and-delivery line sit above
-          the buy bar on first load (spec §6.7 target, y ≤ 760 at 390×844). */}
-      <div className="page grid gap-x-8 gap-y-2 md:gap-y-5 lg:grid-cols-12 lg:items-start lg:gap-y-6 2xl:gap-x-12">
-        <Breadcrumbs items={crumbs} jsonLd={origin ? { origin } : undefined} className="lg:col-span-12" />
-
-        {/* The gallery: the card's well grows into this stage (shared element product-image:<id>). */}
-        <div ref={stage} className="pp-gallery min-w-0 lg:col-span-7">
-          <Gallery
+      <div className="page pp-top">
+        {/* The gallery: the card's well grows into this stage (shared element product-image:<id>). First in the reading
+            order, as before: on phones it is the top of the page; from 1024 it sits at the inline end. */}
+        <div ref={stage} className="pp-gallery">
+          <StageCard
             name={product.name}
             // each view names itself by its own description (§7.8: «Nintendo Switch 2 من الأمام…»), not by a kind word
             items={gallery.images.map((image) => ({ image, caption: image.alt || undefined }))}
             sharedName={`product-image:${product.id}`}
+            gel={stageGel(product, variant)}
+            backTo={stageBack(product)}
             index={index}
             onIndexChange={setIndex}
+            pictures={pictures}
             priority
           />
           {gallery.borrowed ? (
-            <p className="mt-2 type-xs text-ink-2" aria-live="polite">
+            <p className="pp-gallery__note type-xs text-ink-2" aria-live="polite">
               {t("picker.borrowed", { label: gallery.from?.label ?? product.name })}
             </p>
           ) : null}
         </div>
 
-        <div className="pp-buy grid min-w-0 content-start gap-3 md:gap-5 lg:col-span-5">
-          {/* the name block and the price block: 8px apart on phones (the buy box's other steps keep 12) */}
-          <div className="grid gap-2 md:gap-5">
-            <div className="grid gap-0.5 md:gap-2">
-              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 type-xs-strong text-ink-2" data-kind-line="">
-                {soon ? <Tag kind="soon" /> : product.isNew && variant.orderable ? <Tag kind="new" /> : null}
-                {platforms.map((platform) =>
-                  platform.gel ? (
-                    <PlatformLabel key={platform.slug} platform={platform.gel} />
-                  ) : (
-                    <span key={platform.slug} className="plat">
-                      <bdi>{platform.name}</bdi>
-                    </span>
-                  ),
-                )}
-                {platforms.length > 0 ? <span aria-hidden="true">·</span> : null}
-                <span>{product.kindLabel ?? kindLabelOf({ kind: product.kind, families: [] }, locale)}</span>
-              </p>
-              {/* protected tokens never break («Switch 2», «Z-A»: text.ts keepTokens, v2 §4.18); a name of three lines and
-                  more is set one step down on phones (text.ts isLongName) */}
-              <h1 className={cx("type-h1 text-ink", longName && "max-md:type-h2")} data-long-name={longName ? "" : undefined}>
-                <BidiText text={keepTokens(product.name)} />
-              </h1>
-              {/* ONE fact line (§6.7 item 5): the second fact shows only when it fits beside the first (.pp-facts); a
-                  list of contents too long for a phone line shows the parts that fit there, all of them from 768; any
-                  other first fact longer than a phone line is shown alone and wraps (text.ts factRow) */}
-              {facts.facts.length > 0 ? (
-                <p className={cx("pp-facts type-sm text-ink-2", facts.wrap && "pp-facts--wrap", facts.parts && "pp-facts--parts")} data-facts-line="">
-                  {facts.facts.map((fact, index) => (
+        <div className="pp-info">
+          {/* the breadcrumb bar above the product block, at every width (client note 5: "the bar above the name"): on
+              phones the kit's one-line trail (up to the category: product.css), from 768 the kit's trail that wraps */}
+          <Breadcrumbs items={crumbs} phone className="pp-crumbs md:hidden" />
+          <Breadcrumbs items={crumbs} jsonLd={origin ? { origin } : undefined} className="pp-crumbs" />
+
+          <div className="pp-head">
+            <BrandLine product={product} soon={soon} isNew={Boolean(product.isNew) && variant.orderable} />
+            {/* protected tokens never break («Switch 2», «Z-A»: text.ts keepTokens, v2 §4.18); a name of three lines and
+                more is set one step down on phones (text.ts isLongName) */}
+            <h1 className={cx("type-h1 text-ink", longName && "max-md:type-h2")} data-long-name={longName ? "" : undefined}>
+              <BidiText text={keepTokens(product.name)} />
+            </h1>
+            {/* the fact line in reading size (G7): at most two facts of the research's short line (text.ts factRow), as
+                running text — the « · » keeps to the fact before it, so a second line never starts with it; a list of
+                contents is drawn as its whole « + » parts, two lines of them on a phone (all from 768) */}
+            {facts.facts.length > 0 ? (
+              <p className={cx("pp-facts", facts.parts && "pp-facts--parts")} data-facts-line="">
+                {facts.facts.map((fact, index) =>
+                  facts.parts ? (
                     <span key={index}>
-                      {index > 0 ? (facts.parts ? "+ " : "· ") : null}
+                      {index > 0 ? "+ " : null}
                       <MixedText text={fact} />
                     </span>
-                  ))}
-                </p>
-              ) : null}
-            </div>
-
-            <div className="grid gap-3">
-              <PriceBlock
-                variant={variant}
-                variants={product.variants}
-                delivery={product.delivery}
-                lifecycle={product.lifecycle}
-                isDemo={product.isDemo}
-                digital={digital}
-                reasonId={reasonId}
-                offline={offline}
-                offlineId={offlineId}
-              />
-              <PaymentLine methods={methods} />
-            </div>
+                  ) : (
+                    <Fragment key={index}>
+                      {index > 0 ? " · " : null}
+                      <MixedText text={fact} />
+                    </Fragment>
+                  ),
+                )}
+              </p>
+            ) : null}
           </div>
 
-          {product.variants.length > 1 ? <VariantPicker variants={product.variants} selector={product.selector} value={variant.id} onChange={choose} /> : null}
+          <PriceBlock
+            variant={variant}
+            variants={product.variants}
+            delivery={product.delivery}
+            lifecycle={product.lifecycle}
+            isDemo={product.isDemo}
+            digital={digital}
+            reasonId={reasonId}
+            offline={offline}
+            offlineId={offlineId}
+          />
 
-          {/* ≥ 1024: the buy controls in the buy box (phones and tablets: the buy bar). Coming soon: no key at all. */}
+          {product.variants.length > 1 ? <VariantPicker variants={product.variants} selector={product.selector} value={variant.id} onChange={choose} className="pp-versions" /> : null}
+
+          {/* ≥ 1024: the quantity tray and «أضف إلى السلة» in the column (phones and tablets: the buy bar). Coming soon: no
+              key at all. */}
           {soon ? null : (
-            <div className="hidden lg:grid lg:gap-2">
-              <BuyControls {...buy} />
+            <div className="pp-buy hidden lg:grid lg:gap-2">
+              {/* offline, the kit's own line under the key describes it (the sentence under the price is hidden here) */}
+              <BuyControls {...buy} aria-describedby={variant.orderable ? undefined : reasonId} />
               {soldOut ? (
                 <TextLink as={LocaleLink} to={alternatives} className="justify-self-start">
                   {shop("add.alternatives")}
@@ -333,9 +338,9 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
             </div>
           )}
 
-          <SecondaryActions product={{ id: product.id, kind: product.kind, name: product.name, image: gallery.images[0] ?? null }} wished={wished} />
+          <SecondaryActions product={{ id: product.id, kind: product.kind, name: product.name, image: gallery.images[0] ?? null }} wished={wished} shareFrom="lg" />
 
-          <FactsCard
+          <SideNotes
             delivery={product.delivery}
             methods={methods}
             returnsWindowDays={product.returnsWindowDays}
@@ -344,37 +349,40 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
             digital={digital}
           />
           <BeforeYouOrder text={proseWithoutPreorder(product.notes)} />
+          <Highlights items={withoutPreorder(product.highlights)} className="pp-highlights" />
         </div>
       </div>
 
-      {/* Phones and tablets: the buy bar in place of the tab bar (one bar per edge) — the kit's bar, bare, inside the
-          shell's <TaskBar> (the glass, the named region, the persisted name and the measured height that becomes
-          --shell-bottom). Fixed on screen, it sits here in the reading order — right after the buy box, before the long
-          reading part. A failed add and «لا يوجد اتصال» take the bar's own info line; a new version starts afresh. */}
-      <TaskBar aria-label={t("bar.label", { name: product.name })} className="lg:hidden">
-        <BuyBar key={variant.id} {...buy} bare priceIqd={variant.priceIqd} releaseAt={soon ? variant.releaseAt : null} alternativesHref={localePath(alternatives, locale)} />
+      {/* Phones and tablets: the buy bar in place of the tab bar (one bar per edge) — inside the shell's <TaskBar> (the
+          glass, the named region, the persisted name and the measured height that becomes --shell-bottom); it slides in
+          with the page. Fixed on screen, it sits here in the reading order — right after the buy column, before the long
+          reading part. A new version starts afresh. */}
+      <TaskBar aria-label={t("bar.label", { name: product.name })} className="pp-buybar lg:hidden">
+        <BuyStrip key={variant.id} {...buy} priceIqd={variant.priceIqd} releaseAt={soon ? variant.releaseAt : null} alternativesHref={localePath(alternatives, locale)} />
       </TaskBar>
 
-      {/* The reading part: what it is, what it works with, what it is made of, what is in the box. */}
-      <div className="page mt-(--gap-section) grid gap-(--gap-section)">
-        <div className="pp-duo">
-          <div className="grid content-start gap-(--gap-row)">
-            <Highlights items={withoutPreorder(product.highlights)} />
-            <About text={proseWithoutPreorder(product.description)} />
-          </div>
+      {/* The reading part: what it is, what it works with, what it is made of, what is in the box; sections fade up as
+          they arrive (below the fold only — the engine leaves what is on screen alone). */}
+      <div className="page pp-read">
+        <Reveal className="pp-duo">
+          <About text={proseWithoutPreorder(product.description)} />
           <CompatibilitySlot rows={compatibility} />
-        </div>
-        {product.game ? <GameFacts game={product.game} ageRating={product.ageRating} className="max-w-[48rem]" /> : null}
-        <div className="pp-duo">
+        </Reveal>
+        {product.game ? (
+          <Reveal>
+            <GameFacts game={product.game} ageRating={product.ageRating} className="max-w-[48rem]" />
+          </Reveal>
+        ) : null}
+        <Reveal className="pp-duo">
           <Specs specs={product.specs} variant={variant} sources={product.sources} brand={product.brand} />
           <div className="grid content-start gap-(--gap-row)">
             {variant.bundle ? <SetContents components={variant.bundle} /> : null}
             <InTheBox items={withoutPreorder(product.inTheBox)} image={boxPhoto(product.images)} />
           </div>
-        </div>
+        </Reveal>
         <DeviceHubSlot device={device} className="max-w-[40rem]" />
-        <RecommendationsSlot key={product.id} result={recommendations} />
         <Reviews summary={reviews} />
+        <RecommendationsSlot key={product.id} result={recommendations} />
       </div>
 
       {origin ? (
@@ -396,5 +404,38 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
         />
       ) : null}
     </div>
+  );
+}
+
+/**
+ * The brand line right above the name (client note 5: "the bar above the name is much better"): «جديد» (only
+ * `product.isNew`) or «قريباً», then each platform's colour line and name — the before's LED, the kit's
+ * `<PlatformLabel bar>` — or, for a product of no platform, its brand beside a neutral line.
+ */
+function BrandLine({ product, soon, isNew }: { product: Pick<ProductDetail, "platform" | "forPlatforms" | "brand">; soon: boolean; isNew: boolean }) {
+  const platforms = (product.platform ? [product.platform] : product.forPlatforms).slice(0, 2);
+  const tag = soon ? <Tag kind="soon" /> : isNew ? <Tag kind="new" /> : null;
+  if (!tag && platforms.length === 0 && !product.brand) return null;
+  return (
+    <p className="pp-brand" data-kind-line="">
+      {tag}
+      {platforms.length > 0
+        ? platforms.map((platform) =>
+            platform.gel ? (
+              <PlatformLabel key={platform.slug} platform={platform.gel} bar />
+            ) : (
+              <span key={platform.slug} className="plat">
+                <PlatformLed bar />
+                <BidiLabel>{platform.name}</BidiLabel>
+              </span>
+            ),
+          )
+        : product.brand ? (
+            <span className="plat">
+              <PlatformLed bar />
+              <BidiLabel>{product.brand}</BidiLabel>
+            </span>
+          ) : null}
+    </p>
   );
 }

@@ -12,12 +12,12 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
 import { openPromotions } from "./promotions.server";
-import { Arrow, Boundary, DemoNote, Money, Pct, Section, ToneStatus, usePromotionsT, When } from "./ui";
+import { Arrow, DemoNote, Money, Pct, SectionState, Section, ToneStatus, usePromotionsT, When } from "./ui";
 
 /**
  * /admin/promotions/rules — 08.02: the automatic discount rules (no code needed) with their state, kind, priority and
- * window; views and search in the URL. The checkout does not apply them yet (the boundary note says which core hook
- * is missing); each rule's page shows what it would have done to the recent orders.
+ * window; views and search in the URL. The online checkout applies the rules that are on (the note says so, and that
+ * the till does not: checkout-state.ts); each rule's page shows what it would have done to the recent orders.
  */
 export async function loader({ request, context }: Route.LoaderArgs) {
   const { db, actor, now, locale } = await openPromotions(context, SECTION_READ.rules);
@@ -85,7 +85,7 @@ export default function RulesPage({ loaderData }: Route.ComponentProps) {
           </div>
         ) : null}
       </header>
-      <Boundary>{t("rules.boundary")}</Boundary>
+      <SectionState id="rules" />
       <Section id="prm-rules" title={t("rules.listTitle")}>
         <nav aria-label={t("common.views")} className="flex flex-wrap gap-2">
           {RULE_VIEWS.map((view) => {

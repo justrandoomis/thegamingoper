@@ -13,7 +13,7 @@ import { TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { promotionsMeta } from "./meta";
 import { fields, openPromotions, respond, runIntent, text } from "./promotions.server";
-import { Arrow, Boundary, Code, ConfirmAction, DemoNote, Facts, Failure, History, Money, Notice, Num, Pct, Section, Tag, ToneStatus, useArrow, useIntent, usePromotionsT, When } from "./ui";
+import { Arrow, Code, ConfirmAction, DemoNote, Facts, Failure, History, Money, Notice, Num, Pct, SectionState, Section, Tag, ToneStatus, useArrow, useIntent, usePromotionsT, When } from "./ui";
 
 /**
  * /admin/promotions/flash/:saleId — 08.03, one flash sale: its window, its SKUs (added by SKU or barcode — a scanner
@@ -84,7 +84,7 @@ export default function FlashSalePage({ loaderData }: Route.ComponentProps) {
           </span>
         </div>
       </header>
-      <Boundary>{t("flash.boundary")}</Boundary>
+      <SectionState id="flash" />
       {/* the SKUs take the full width: up to eleven columns read badly beside the side column */}
       <ItemsSection sale={sale} editable={editable} />
       <div className={editable ? "prm-layout" : "prm-layout prm-layout--wide"}>

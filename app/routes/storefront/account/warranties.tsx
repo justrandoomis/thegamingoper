@@ -47,7 +47,7 @@ export default function Warranties({ loaderData }: Route.ComponentProps) {
         }
       />
       {loaderData.warranties.length === 0 ? (
-        <EmptyState layout="stack" title={t("warranties.emptyTitle")} text={t("warranties.emptyText")} />
+        <EmptyState layout="stack" panel title={t("warranties.emptyTitle")} text={t("warranties.emptyText")} />
       ) : (
         <ul className="grid gap-card md:grid-cols-2">
           {loaderData.warranties.map((warranty) => (

@@ -9,25 +9,52 @@ import { defineMessages } from "../translate";
  * Voice (v2 §9): plain, specific, no promise the store cannot keep, no call promise. The game-turn voice survives in
  * ONE line only, the intro's `intro.line`; nowhere else on the page. Shared words come from the kit (ui-shop): the
  * trust strip's delivery fact, «الدفع عند الاستلام», «سعر تجريبي», «عرض الكل», the release band and the tile counts.
- * The hero's delivery fact is the page's own (`hero.delivery`): it must stay ONE line on a 390px phone beside «الدفع
- * عند الاستلام», which the kit's longer English and Sorani sentences do not (QA 2026-11-12).
+ * The hero no longer says the delivery fee (v2.1: the header's strip says it on every page from 1024, and the trust
+ * strip under the platform tiles on phones).
  *
  * {name} is a product name as the catalogue writes it (Latin names stay Latin). `hero.lead` / `hero.new` are split
  * around {name}: the words before it are the headline's first line, the name (with any words after it) the second.
- * {platforms} is a list of platform names joined with `listSeparator`.
+ * {platforms} is a list of platform names joined with `listSeparator`. The hero's service banners (`hero.tradeIn`,
+ * `hero.used`) keep their titles short — two words, two lines at most on a 360px phone — and the trade-in banner says
+ * what an estimate is (the final price after the inspection). The icon strip's words (`strip`) are the catalogue's
+ * own names for those departments, shortened where the catalogue's is long («بطاقات الشحن»).
  */
 export default defineMessages({
   ar: {
     listSeparator: "، ",
     title: "طمطم للألعاب: أجهزة وألعاب وإكسسوارات في العراق",
     hero: {
+      label: "أبرز ما في المتجر",
       lead: "العب على {name}",
       new: "وصل {name}",
       buy: "اشترِ {name}",
+      // the compact phone banner's key: short enough to stay beside the product
+      buyNow: "اشترِ الآن",
       details: "تفاصيل الجهاز",
       productDetails: "تفاصيل المنتج",
-      // the hero's delivery fact, before «الدفع عند الاستلام»: ONE line on a 390px phone in every language (v2 §6.1)
-      delivery: "التوصيل {price} لكل المحافظات",
+      tradeIn: {
+        pill: "الاستبدال",
+        title: "استبدل جهازك",
+        text: "سعر تقديري الآن، والسعر النهائي بعد فحصه في المتجر.",
+        cta: "قدّر سعر جهازك",
+      },
+      used: {
+        pill: "المستعمل",
+        title: "مستعمل ومفحوص",
+        text: "لكل جهاز درجة حالة وتقرير فحص.",
+        cta: "تصفّح المستعمل",
+      },
+    },
+    strip: {
+      label: "تصفّح الأقسام",
+      devices: "أجهزة الألعاب",
+      games: "الألعاب",
+      controllers: "أيدي التحكم",
+      headsets: "سماعات الرأس",
+      accessories: "الإكسسوارات",
+      topup: "بطاقات الشحن",
+      used: "المستعمل",
+      repair: "الصيانة",
     },
     platforms: {
       title: "تسوّق حسب المنصّة",
@@ -45,7 +72,6 @@ export default defineMessages({
       platformChips: "اختر المنصّة",
       used: "مستعمل ومفحوص",
       usedReason: "لكل جهاز درجة حالة وتقرير فحص",
-      usedAll: "كل المستعمل",
       recent: "شاهدتها مؤخراً",
       recentReason: "محفوظة على هذا الجهاز فقط",
       recentReasonAccount: "محفوظة في حسابك، ولا يبقى منها شيء على هذا الجهاز",
@@ -122,12 +148,36 @@ export default defineMessages({
     listSeparator: ", ",
     title: "TamTam Games: consoles, games and accessories in Iraq",
     hero: {
+      label: "Store highlights",
       lead: "Play on {name}",
       new: "Just arrived {name}",
       buy: "Buy {name}",
+      buyNow: "Buy now",
       details: "Device details",
       productDetails: "Product details",
-      delivery: "Delivery {price}",
+      tradeIn: {
+        pill: "Trade-in",
+        title: "Trade in your device",
+        text: "An estimated price now; the final price after we inspect it in the store.",
+        cta: "Estimate its price",
+      },
+      used: {
+        pill: "Used",
+        title: "Used & inspected",
+        text: "Every device has a condition grade and an inspection report.",
+        cta: "Browse used devices",
+      },
+    },
+    strip: {
+      label: "Browse departments",
+      devices: "Consoles",
+      games: "Games",
+      controllers: "Controllers",
+      headsets: "Headsets",
+      accessories: "Accessories",
+      topup: "Gift cards",
+      used: "Used",
+      repair: "Repair",
     },
     platforms: {
       title: "Shop by platform",
@@ -145,7 +195,6 @@ export default defineMessages({
       platformChips: "Choose a platform",
       used: "Used & inspected",
       usedReason: "Every device has a condition grade and an inspection report",
-      usedAll: "All used devices",
       recent: "Recently viewed",
       recentReason: "Kept on this device only",
       recentReasonAccount: "Kept in your account; nothing of it stays on this device",
@@ -218,12 +267,36 @@ export default defineMessages({
     listSeparator: "، ",
     title: "تەمتەم گەیمز: ئامێر و یاری و پاشکۆ لە عێراق",
     hero: {
+      label: "دیارترینەکانی فرۆشگا",
       lead: "یاری بکە لەسەر {name}",
       new: "{name} گەیشت",
       buy: "{name} بکڕە",
+      buyNow: "ئێستا بیکڕە",
       details: "وردەکاریی ئامێرەکە",
       productDetails: "وردەکاریی بەرهەمەکە",
-      delivery: "گەیاندن {price}",
+      tradeIn: {
+        pill: "گۆڕینەوە",
+        title: "ئامێرەکەت بگۆڕەوە",
+        text: "نرخێکی خەمڵێنراو ئێستا، و نرخی کۆتایی دوای پشکنینی لە فرۆشگاکەدا.",
+        cta: "نرخەکەی بخەمڵێنە",
+      },
+      used: {
+        pill: "بەکارهاتوو",
+        title: "بەکارهاتوو و پشکنراو",
+        text: "هەر ئامێرێک پلەی بارودۆخ و ڕاپۆرتی پشکنینی هەیە.",
+        cta: "بەکارهاتووەکان ببینە",
+      },
+    },
+    strip: {
+      label: "بەشەکان ببینە",
+      devices: "ئامێرەکانی یاری",
+      games: "یارییەکان",
+      controllers: "دەسکەکانی یاری",
+      headsets: "هێدسێتەکان",
+      accessories: "پاشکۆکان",
+      topup: "کارتی باڵانس",
+      used: "بەکارهاتوو",
+      repair: "چاککردنەوە",
     },
     platforms: {
       title: "بەپێی پلاتفۆرم بکڕە",
@@ -241,7 +314,6 @@ export default defineMessages({
       platformChips: "پلاتفۆرمێک هەڵبژێرە",
       used: "بەکارهاتوو و پشکنراو",
       usedReason: "هەر ئامێرێک پلەی بارودۆخ و ڕاپۆرتی پشکنینی هەیە",
-      usedAll: "هەموو بەکارهاتووەکان",
       recent: "تازە سەیرت کردوون",
       recentReason: "تەنها لەسەر ئەم ئامێرە هەڵگیراون",
       recentReasonAccount: "لە هەژمارەکەتدا هەڵگیراون، و هیچیان لەسەر ئەم ئامێرە نامێنێت",

@@ -1,4 +1,4 @@
-import { isRouteErrorResponse, Outlet, useRevalidator, useRouteLoaderData } from "react-router";
+import { isRouteErrorResponse, Outlet, useRevalidator, useRouteLoaderData, type ShouldRevalidateFunctionArgs } from "react-router";
 import type { ReactNode } from "react";
 
 import type { Route } from "./+types/layout";
@@ -41,6 +41,17 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     phoneCodes: codeDelivery(ctx.isDev) === "provider",
     i18n: messagesFor(ctx.locale, "account"),
   };
+}
+
+/**
+ * The frame's data (who is signed in, the counts, the balance) cannot change when only a page's query changes — a
+ * filter chip («?show=»), a step such as «?topup=1»: that navigation leaves it as it is, so the points chips change the
+ * page at once, with no request, and the orders chips read the orders only. A post, an explicit revalidation (the same
+ * address again) and every other navigation read it again; each page's own loader checks the session itself.
+ */
+export function shouldRevalidate({ currentUrl, nextUrl, formMethod, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+  if (!formMethod && currentUrl.pathname === nextUrl.pathname && currentUrl.search !== nextUrl.search) return false;
+  return defaultShouldRevalidate;
 }
 
 export type AccountLayoutData = Awaited<ReturnType<typeof loader>>;

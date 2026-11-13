@@ -311,6 +311,57 @@ export function splitLineName(name: string): { name: string; option: string | nu
 }
 
 /**
+ * The intent of the small read the cart and the checkout answer after /api/cart refused a code for its minimum — how
+ * much more the cart needs (checkout.server answerCouponMinimum; client round 1, QA). Client-safe: the routes'
+ * `shouldRevalidate` and the coupon field read it.
+ */
+export const COUPON_MINIMUM_INTENT = "coupon-minimum";
+
+// ───────────────────────────────────────────────────────────────── stock: what the checkout can still do
+
+/** Line problems that keep a line out of the money and out of an order (the cart service's blocking problems). */
+export const BLOCKING_PROBLEMS: ReadonlySet<string> = new Set(["out_of_stock", "unavailable"]);
+
+/** A cart line as the stock rules read it. */
+export type StockLine = { id: string; name: string; qty: number; problem: string | null };
+
+const blocking = (line: Pick<StockLine, "problem">) => line.problem !== null && BLOCKING_PROBLEMS.has(line.problem);
+
+/**
+ * What the checkout can do with the cart as priced now (client round 1, QA: after a lost stock race the page showed a
+ * total of 0 with «تابع إلى الدفع» still active, and the server refuses an order of nothing):
+ *   "ready"    every line can be bought — the steps go on;
+ *   "blocked"  some lines cannot be bought (sold out, off sale): they leave the cart before any step goes on;
+ *   "empty"    nothing in the cart can be bought — no step key at all, the way back to the store.
+ * Pure.
+ */
+export function cartReadiness(lines: readonly Pick<StockLine, "qty" | "problem">[]): "ready" | "blocked" | "empty" {
+  const buyable = lines.filter((line) => line.qty > 0 && !blocking(line));
+  if (buyable.length === 0) return "empty";
+  return buyable.length < lines.length ? "blocked" : "ready";
+}
+
+/** One line a stock change touched: sold out (or off sale) — it cannot be bought —, or its quantity came down. */
+export type StockChange = { id: string; name: string; change: "sold_out" | "unavailable" | "reduced"; /** The quantity the shopper saw (null: not known). */ from: number | null; to: number };
+
+/**
+ * What the stock did to a cart, line by line: the lines that can no longer be bought and those whose quantity came down
+ * to what is left (the cart service already shows the reduced quantity). `before` is the cart the shopper last saw —
+ * the quantity they chose is then said; null when it is not known. A reduced line whose quantity the shopper already
+ * saw is no news. Pure.
+ */
+export function stockChanges(before: readonly Pick<StockLine, "id" | "qty">[] | null, after: readonly StockLine[]): StockChange[] {
+  const seen = new Map((before ?? []).map((line) => [line.id, line.qty]));
+  const out: StockChange[] = [];
+  for (const line of after) {
+    const from = seen.get(line.id) ?? null;
+    if (blocking(line)) out.push({ id: line.id, name: line.name, change: line.problem === "unavailable" ? "unavailable" : "sold_out", from, to: 0 });
+    else if (line.problem === "qty_reduced" && (from === null || from > line.qty)) out.push({ id: line.id, name: line.name, change: "reduced", from, to: line.qty });
+  }
+  return out;
+}
+
+/**
  * The five real stages an order goes through (Design System v2 §6.11, "what happens next"): received · confirmed ·
  * preparing · on the way · delivered. The 0-based stage an order is at, or null when it left the path (cancelled,
  * returned). Waiting for a transfer or for its check is still "received": nothing is confirmed before a person has

@@ -90,7 +90,7 @@ export default function Notifications({ loaderData }: Route.ComponentProps) {
         }
       />
       {list.items.length === 0 ? (
-        <EmptyState layout="stack" title={t("notifications.emptyTitle")} text={t("notifications.emptyText")} />
+        <EmptyState layout="stack" panel title={t("notifications.emptyTitle")} text={t("notifications.emptyText")} />
       ) : (
         <div className="grid gap-4">
           <ol className="acct-rows">

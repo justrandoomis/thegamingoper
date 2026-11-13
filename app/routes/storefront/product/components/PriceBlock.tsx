@@ -1,17 +1,22 @@
 /**
- * The price block of the product page and the quick look — design v2 spec §6.7 items 6–7, §4.8 `PriceTag size="page"`:
+ * The price block of the product page and the quick look — design v2.1 (client note 5: the before's arrangement,
+ * "the information is easy to read"), on the v2 rules of spec §6.7 items 6–7:
  *
- *   667,750 د.ع  [سعر ومخزون تجريبيان]            price xl + the demo tag (demo data)
- *   ● متوفر · التوصيل 5,000 د.ع لكل المحافظات      stock words + the fee from settings (14/600); coming soon:
- *                                                  «● يصدر 19 تشرين الثاني 2026» alone (PriceTag `status`; the
- *                                                  sentence under it: «الطلب يفتح عند وصوله.»), one line on a phone
- *   (one sentence when the chosen version cannot be ordered, or the fee depends on the governorate)
+ *   667,750 د.ع                          التوصيل 5,000 د.ع لكل المحافظات      the price big in Kufam at the start,
+ *   [سعر ومخزون تجريبيان]                ● متوفر                              the demo mark with it (demo data); the
+ *                                                                              delivery fee note and the stock state
+ *                                                                              at the end, in reading size
+ *   (one sentence under both when the chosen version cannot be ordered, or the fee depends on the governorate)
+ *
+ * The two sides wrap under each other when the row is too narrow for both (a long price with a struck previous one in
+ * a narrow quick look). Coming soon: the end says «● يصدر 19 تشرين الثاني 2026» alone (no fee beside it) and the
+ * sentence under the block «الطلب يفتح عند وصوله.».
  *
  * Honest by construction: the previous price is struck only when it is real — or a demo value while the whole store is
  * marked demo — and a demo previous price is never worded as a saving (no «توفّر …» from demo data, §11.8); a sold-out
- * version's price is muted (§4.8), never the red sale figure, and offers no saving; stock is a
- * state, never a number (demo stock is never «الكمية محدودة»); a release date is a date («يصدر … · الطلب يفتح عند
- * وصوله»), never a pre-order; digital codes show no delivery fee until the owner decides one (§13 row 11).
+ * version's price is muted (§4.8), never the red sale figure, and offers no saving; stock is a state, never a number
+ * (demo stock is never «الكمية محدودة»); a release date is a date («يصدر … · الطلب يفتح عند وصوله»), never a pre-order;
+ * digital codes show no delivery fee until the owner decides one (§13 row 11).
  *
  * `reasonId` names the sentence that says why the chosen version cannot be added — the add keys point at it with
  * aria-describedby. `offlineId` names the offline sentence (the add keys go flat while there is no connection).
@@ -19,11 +24,18 @@
 import { useRouteLoaderData } from "react-router";
 
 import { Icon } from "~/art/Icon";
-import { useFormat } from "~/i18n/react";
+import { useFormat, useT } from "~/i18n/react";
 import type { ProductLifecycle, VariantDetail } from "~/server/services/catalog/product-types";
 import { cx } from "~/ui/cx";
-import { PriceTag } from "~/ui/PriceTag";
+import { DemoNote } from "~/ui/DemoNote";
+import { fillNodes, iqdText, SafePrice, SavingNote } from "~/ui/PriceTag";
+import { stockLook, useDemoMode, useStockWords } from "~/ui/StockNote";
+import { Status } from "~/ui/Tag";
 import { useProductT } from "../i18n";
+
+// The block's own layout travels with it: the quick look draws it over listings, the home and search, where the
+// page's product.css is not loaded (review 2026-11-13).
+import "./PriceBlock.css";
 
 export type PriceBlockProps = {
   variant: VariantDetail;
@@ -70,53 +82,75 @@ export function priceLook(variant: Pick<VariantDetail, "orderable" | "releaseAt"
   return { tone: soldOut ? "muted" : undefined, showSaving: variant.orderable && !variant.compareAtDemo };
 }
 
+/**
+ * What the end side of the block says (pure; exported for tests): the delivery fee — not for a code, not for a version
+ * that is not out yet (its line is the release day), not when the fee depends on the governorate (a sentence under
+ * the block says that) — and the stock state or the release day.
+ */
+export function priceSide(
+  variant: Pick<VariantDetail, "orderable" | "releaseAt">,
+  delivery: { overridesEnabled: boolean },
+  digital: boolean,
+): { fee: boolean; state: "stock" | "release" } {
+  const soon = !variant.orderable && variant.releaseAt !== null;
+  return { fee: !digital && !soon && !delivery.overridesEnabled, state: soon ? "release" : "stock" };
+}
+
 export function PriceBlock({ variant, variants, delivery, lifecycle, isDemo, digital = false, reasonId, offline = false, offlineId, className }: PriceBlockProps) {
   const t = useProductT();
+  const shop = useT("ui-shop");
   const f = useFormat();
   const demoStore = useDemoStore();
+  const demoMode = useDemoMode();
+  const words = useStockWords();
   const soon = !variant.orderable && variant.releaseAt !== null;
   const struck = struckPrice(variant, demoStore);
   const look = priceLook(variant);
+  const side = priceSide(variant, delivery, digital);
+  const stock = variant.orderable ? variant.stock : soon ? "preorder" : "out_of_stock";
 
-  // coming soon: the price line says when («● يصدر 19 تشرين الثاني 2026», the kit's `status` in the soon tone — the
-  // «قريباً» tag already leads the kind line), the sentence under it what that means for ordering
-  const soonStatus = soon ? t("picker.soon", { date: f.date(variant.releaseAt as number, "long") }) : undefined;
+  // why the chosen version cannot be added (coming soon: what the release day means for ordering)
   const reason = variant.orderable ? null : soon ? t("status.soonNote") : variants.some((entry) => entry.orderable) ? t("status.outVariant") : t("status.outAll");
   const life = lifecycle === "discontinued" || lifecycle === "limited" || lifecycle === "upcoming" ? t(`status.${lifecycle}`) : null;
+  const varies = !digital && delivery.overridesEnabled;
 
   return (
-    <PriceTag
-      size="page"
-      className={className}
-      priceIqd={variant.priceIqd}
-      compareAtIqd={struck}
-      tone={look.tone}
-      showSaving={look.showSaving}
-      demo={isDemo || demoStore}
-      stock={variant.orderable ? variant.stock : soon ? "preorder" : "out_of_stock"}
-      status={soonStatus}
-      // coming soon: the line is the release day, and the sentence under it says ordering opens then (spec §6.7 states)
-      // — no fee beside it, so the line stays one line on a phone; the facts card still states the delivery fee
-      deliveryIqd={digital || soon || delivery.overridesEnabled ? null : delivery.flatFeeIqd}
-      aside={
-        reason || life || offline || (!digital && delivery.overridesEnabled) ? (
-          <div className="grid gap-1">
-            {!digital && delivery.overridesEnabled ? <p className="type-sm text-ink-2">{t("facts.deliveryVaries")}</p> : null}
-            {reason ? (
-              <p id={reasonId} className={cx("type-sm", soon ? "text-ink" : "text-ink-2")}>
-                {reason}
-              </p>
-            ) : null}
-            {offline ? (
-              <p id={offlineId} className="flex items-start gap-1.5 type-sm-strong text-warn">
-                <Icon name="wifi-slash" size={16} className="mt-0.5 shrink-0" />
-                <span>{t("status.offline")}</span>
-              </p>
-            ) : null}
-            {life ? <p className="type-sm text-ink-2">{life}</p> : null}
-          </div>
-        ) : null
-      }
-    />
+    <div className={cx("pp-price", className)} data-price-block="">
+      <div className="pp-price__row">
+        {/* the start: the price big in Kufam, the demo mark with it, a real saving under it */}
+        <div className="pp-price__main">
+          <SafePrice amountIqd={variant.priceIqd} compareAtIqd={struck} size="xl" tone={look.tone} />
+          {isDemo || demoStore ? <DemoNote variant="tag" what="priceStock" /> : null}
+          {look.showSaving ? <SavingNote priceIqd={variant.priceIqd} compareAtIqd={struck} /> : null}
+        </div>
+        {/* the end: the delivery fee note and the stock state (or the release day) */}
+        <div className="pp-price__side">
+          {side.fee ? (
+            <p className="pp-price__fee">{fillNodes(shop("price.delivery"), { price: <bdi className="nums">{iqdText(f, delivery.flatFeeIqd)}</bdi> })}</p>
+          ) : null}
+          <Status tone={stockLook(stock, demoMode)} size="lg">
+            {side.state === "release" ? t("picker.soon", { date: f.date(variant.releaseAt as number, "long") }) : words(stock)}
+          </Status>
+        </div>
+      </div>
+      {varies || reason || offline || life ? (
+        <div className="pp-price__notes">
+          {varies ? <p>{t("facts.deliveryVaries")}</p> : null}
+          {reason ? (
+            <p id={reasonId} className={soon ? "text-ink" : undefined}>
+              {reason}
+            </p>
+          ) : null}
+          {offline ? (
+            // data-offline-line: the product page hides it from 1024, where the kit says the same under the add key
+            <p id={offlineId} className="flex items-start gap-1.5 font-semibold text-warn" data-offline-line="">
+              <Icon name="wifi-slash" size={18} className="mt-1 shrink-0" />
+              <span>{t("status.offline")}</span>
+            </p>
+          ) : null}
+          {life ? <p>{life}</p> : null}
+        </div>
+      ) : null}
+    </div>
   );
 }

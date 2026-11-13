@@ -38,9 +38,12 @@ import type { AssistantView } from "~/server/services/support/types";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { TaskBar } from "~/routes/storefront/shell/TabBar";
 import type { ShellHandle } from "~/routes/storefront/shell/types";
+import { Chip } from "~/ui/Chip";
 import { DemoNote } from "~/ui/DemoNote";
+import { Disclosure } from "~/ui/Disclosure";
 import { TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
+import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
 import { HrefLink } from "~/ui/Pagination";
 import { TextLink } from "~/ui/TextLink";
@@ -138,111 +141,126 @@ export default function Assistant({ loaderData, actionData }: Route.ComponentPro
   const showAside = view.device !== null;
 
   return (
-    <div className="page sup sup-assist">
-      <div className="sup-assist__main">
-        <SupportNav current="assistant" />
-        <header className="sup-assist__head">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <h1 className="type-h1 text-ink">{t("assistant.title")}</h1>
-            {view.isDemo ? <DemoNote variant="tag" /> : null}
-          </div>
-          <details className="sup-about">
-            <summary className="sup-about__chip">
-              <Icon name="info" size={16} />
-              <span>{t("assistant.notDiagnosis")}</span>
-              <Icon name="caret-down" size={16} className="sup-details__caret" />
-            </summary>
-            <div className="sup-about__panel">
-              <p className="type-sm text-ink">{t("assistant.source")}</p>
-              <ul className="grid list-disc gap-1.5 ps-5 type-sm text-ink-2">
-                <li>{t("assistant.how.keywords")}</li>
-                {!view.ai.configured ? <li>{t("assistant.how.ai")}</li> : null}
-                <li>{t("assistant.how.storage")}</li>
-                <li>{t("assistant.how.url")}</li>
-                <li>{t("assistant.how.private")}</li>
-              </ul>
-              {view.isDemo ? <DemoNote variant="line">{t("assistant.demo")}</DemoNote> : null}
+    <div className="page sup">
+      <SupportNav current="assistant" />
+      <div className="sup-assist">
+        <div className="sup-assist__main">
+          <header className="sup-assist__head">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <h1 className="type-h1 text-ink">{t("assistant.title")}</h1>
+              {view.isDemo ? <DemoNote variant="tag" /> : null}
             </div>
-          </details>
-        </header>
+            {/* «ليس تشخيصاً»: the kit's clay chip is the summary; it opens how the assistant works, on a calm note */}
+            <details className="sup-about">
+              <Chip as="summary">
+                <span className="inline-flex items-center gap-1.5">
+                  <Icon name="info" size={16} />
+                  {t("assistant.notDiagnosis")}
+                  <Icon name="caret-down" size={16} className="sup-details__caret" />
+                </span>
+              </Chip>
+              <Note icon="info" title={t("assistant.notDiagnosis")} className="sup-about__panel">
+                <p>{t("assistant.source")}</p>
+                <ul className="mt-2 grid list-disc gap-1.5 ps-5">
+                  <li>{t("assistant.how.keywords")}</li>
+                  {!view.ai.configured ? <li>{t("assistant.how.ai")}</li> : null}
+                  <li>{t("assistant.how.storage")}</li>
+                  <li>{t("assistant.how.url")}</li>
+                  <li>{t("assistant.how.private")}</li>
+                </ul>
+                {view.isDemo ? <DemoNote variant="line">{t("assistant.demo")}</DemoNote> : null}
+              </Note>
+            </details>
+          </header>
 
-        <details key={safety ? "safety-open" : "safety"} open={safety || undefined} className="sup-safety">
-          <summary className="sup-safety__summary">
-            <Icon name="warning" size={20} className="sup-safety__icon" />
-            <span className="min-w-0 flex-1">{t("assistant.safety.summary")}</span>
-            <Icon name="caret-down" size={20} className="sup-details__caret" />
-          </summary>
-          <p className="sup-safety__text">{t("assistant.safety.text")}</p>
-        </details>
+          {/* the safety note, collapsed to one line: the kit's disclosure on the soft card, the warning on its tinted
+              disc; it opens by itself (a new key) when the conversation reaches battery, power or liquid */}
+          <Disclosure
+            key={safety ? "safety-open" : "safety"}
+            defaultOpen={safety}
+            variant="panel"
+            className="sup-safety"
+            summary={
+              <span className="sup-safety__summary">
+                <span className="sup-tone-disc" aria-hidden="true">
+                  <Icon name="warning" size={20} />
+                </span>
+                <span className="min-w-0 flex-1">{t("assistant.safety.summary")}</span>
+              </span>
+            }
+          >
+            <p className="sup-safety__text">{t("assistant.safety.text")}</p>
+          </Disclosure>
 
-        <Conversation view={view} replies={talking} />
+          <Conversation view={view} replies={talking} />
 
-        {view.stage === "done" && talking ? <NextSteps view={view} staffHref={staffHref} /> : null}
+          {view.stage === "done" && talking ? <NextSteps view={view} staffHref={staffHref} /> : null}
 
-        {receipt ? (
-          <HandoffReceiptCard receipt={receipt} summary={view.summary} token={loaderData.ticketToken} />
-        ) : formOpen && loaderData.formKey ? (
-          <HandoffForm view={view} formKey={loaderData.formKey} contact={contact} failure={failure} orderRef={loaderData.orderRef} />
+          {receipt ? (
+            <HandoffReceiptCard receipt={receipt} summary={view.summary} token={loaderData.ticketToken} />
+          ) : formOpen && loaderData.formKey ? (
+            <HandoffForm view={view} formKey={loaderData.formKey} contact={contact} failure={failure} orderRef={loaderData.orderRef} />
+          ) : null}
+
+          {talking ? (
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              {view.stage !== "done" ? (
+                <Key as={HrefLink} to={staffHref} icon="chat-circle">
+                  {t("assistant.done.staff")}
+                </Key>
+              ) : null}
+              {view.turns.length > 1 ? (
+                <TextLink as={LocaleLink} to="/support/assistant" arrow={false} icon="arrow-counter-clockwise">
+                  {t("assistant.done.restart")}
+                </TextLink>
+              ) : null}
+            </div>
+          ) : receipt ? (
+            <TextLink as={LocaleLink} to="/support/assistant" arrow={false} icon="arrow-counter-clockwise" className="justify-self-start">
+              {t("assistant.done.restart")}
+            </TextLink>
+          ) : null}
+
+          {talking ? (
+            <div className="sup-assist__dock">
+              <Composer view={view} id="assistant-q" />
+            </div>
+          ) : null}
+        </div>
+
+        {showAside && view.device ? (
+          <aside aria-labelledby={asideId} className="sup-assist__aside">
+            <div className="sup-card sup-assist__device">
+              <h2 id={asideId} className="sr-only">
+                {t("assistant.device")}
+              </h2>
+              <div className="flex items-center gap-3">
+                <DeviceArt artKey={view.device.artKey} kind={view.device.kind} small sizes="72px" className="w-18 shrink-0" />
+                <div className="grid min-w-0 gap-1">
+                  <p className="type-xs text-ink-2">
+                    <PlatformName slug={view.device.platform.slug} name={view.device.platform.name} />
+                  </p>
+                  <p className="type-card text-ink">
+                    <Name>{view.device.name}</Name>
+                  </p>
+                </div>
+              </div>
+              {view.guides.length > 0 && (view.stage === "steps" || view.stage === "done") ? (
+                <div className="grid gap-1">
+                  <h3 className="type-sm-strong text-ink">{t("help.device.guides")}</h3>
+                  <GuideList articles={view.guides} showScope plain />
+                </div>
+              ) : null}
+            </div>
+          </aside>
         ) : null}
 
         {talking ? (
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            {view.stage !== "done" ? (
-              <Key as={HrefLink} to={staffHref} icon="chat-circle">
-                {t("assistant.done.staff")}
-              </Key>
-            ) : null}
-            {view.turns.length > 1 ? (
-              <TextLink as={LocaleLink} to="/support/assistant" arrow={false} icon="arrow-counter-clockwise">
-                {t("assistant.done.restart")}
-              </TextLink>
-            ) : null}
-          </div>
-        ) : receipt ? (
-          <TextLink as={LocaleLink} to="/support/assistant" arrow={false} icon="arrow-counter-clockwise" className="justify-self-start">
-            {t("assistant.done.restart")}
-          </TextLink>
-        ) : null}
-
-        {talking ? (
-          <div className="sup-assist__dock">
-            <Composer view={view} id="assistant-q" />
-          </div>
+          <TaskBar aria-label={t("assistant.bar")} className="lg:hidden">
+            <Composer view={view} id="assistant-q-bar" />
+          </TaskBar>
         ) : null}
       </div>
-
-      {showAside && view.device ? (
-        <aside aria-labelledby={asideId} className="sup-assist__aside">
-          <div className="sup-card sup-assist__device">
-            <h2 id={asideId} className="sr-only">
-              {t("assistant.device")}
-            </h2>
-            <div className="flex items-center gap-3">
-              <DeviceArt artKey={view.device.artKey} kind={view.device.kind} small sizes="72px" className="w-18 shrink-0" />
-              <div className="grid min-w-0 gap-1">
-                <p className="type-xs text-ink-2">
-                  <PlatformName slug={view.device.platform.slug} name={view.device.platform.name} />
-                </p>
-                <p className="type-card text-ink">
-                  <Name>{view.device.name}</Name>
-                </p>
-              </div>
-            </div>
-            {view.guides.length > 0 && (view.stage === "steps" || view.stage === "done") ? (
-              <div className="grid gap-1">
-                <h3 className="type-sm-strong text-ink">{t("help.device.guides")}</h3>
-                <GuideList articles={view.guides} showScope plain />
-              </div>
-            ) : null}
-          </div>
-        </aside>
-      ) : null}
-
-      {talking ? (
-        <TaskBar aria-label={t("assistant.bar")} className="lg:hidden">
-          <Composer view={view} id="assistant-q-bar" />
-        </TaskBar>
-      ) : null}
     </div>
   );
 }

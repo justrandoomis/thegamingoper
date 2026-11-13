@@ -1,27 +1,35 @@
 /**
- * The home page below the hero — Design System v2 §6.1, in its order:
+ * The home page below the hero — Design System v2 §6.1 in v2.1's look (client notes 1–4), in its order:
  *
- *   PlatformDoors      «تسوّق حسب المنصّة»: the four platform tiles (2×2 on phones, 4-up from 768) with their real counts
+ *   CategoryStrip      the icon strip right under the hero (the client's reference): glass icon tiles with the kinds'
+ *                      line icons — consoles, games, controllers, headsets, accessories, gift cards, used, repair — only
+ *                      departments that exist, each to its real listing (one scrolling row on phones, eight across
+ *                      from 768)
+ *   PlatformDoors      «تسوّق حسب المنصّة»: the four platform tiles (2×2 on phones, 4-up from 768) with their real counts,
+ *                      on the ambient light
  *   TrustFacts         the trust strip: only facts that are true in the settings (delivery fee, COD, transfers, guest)
  *   NewArrivals        «وصل حديثاً»: platform dot chips that filter the shelf in place (`?platform=`, no request) and
  *                      a rail of cards (5-up whole cards from 1280); never a «جديد» badge inside this shelf
  *   Releases           the release band «قريباً» (only with ≥ 2 dated items): no countdown, no pre-order key
  *   UsedShelf          «مستعمل ومفحوص»: used units (a rail on phones), «كل المستعمل»
  *   ServiceEntries     two entry cards: trade-in and support
- *   Departments        «تسوّق حسب القسم»: category tiles with their counts (3 → 6 columns)
+ *   Departments        «تسوّق حسب القسم»: category tiles with their photos and counts (3 → 6 columns)
  *   RecentlyViewed     the shopper's ONE list (./personal.ts), only with consent and ≥ 3 items
  *   RecommendationShelves   the devices area's personal shelf (streamed by the loader, consent only)
  *
- * Every shelf says the rule it follows, never "trending" or "customers also bought": the store has no such data.
- * An empty shelf is not drawn.
+ * A section head that leads to a listing carries a clay «عرض الكل» key (`ViewAll`). Every section below the first
+ * screen fades up as it arrives, the doors one after another (~/ui/reveal: nothing above the fold moves, nothing hides
+ * before JavaScript, none under reduced motion). Every shelf says the rule it follows, never "trending" or "customers
+ * also bought": the store has no such data. An empty shelf is not drawn.
  */
-import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
-import { Icon, type IconName } from "~/art/Icon";
-import { useLocale, useT } from "~/i18n/react";
+import type { IconName } from "~/art/Icon";
+import { LocaleLink, useLocale, useT } from "~/i18n/react";
 import type { ProductCardData, UsedUnitCardData } from "~/lib/dto";
 import { Bubble, BubbleGroup } from "~/motion";
 import { RecommendationShelves as SharedRecommendationShelves, type RecommendationResult } from "~/routes/storefront/devices/components/RecommendationShelves";
+import { IconTile } from "~/routes/storefront/shell/CategoriesSheet";
 import { sheetCategories } from "~/routes/storefront/shell/chrome";
 import { usePlatformName } from "~/routes/storefront/shell/MegaMenu";
 import type { NavCategory, NavPlatform, ShellPayments } from "~/routes/storefront/shell/types";
@@ -31,23 +39,57 @@ import { ChipGroup } from "~/ui/Chip";
 import { cx } from "~/ui/cx";
 import { EntryCard } from "~/ui/EntryCard";
 import { ErrorState } from "~/ui/ErrorState";
+import { Key } from "~/ui/Key";
 import { isPlatform, type Gel, type Platform } from "~/ui/PlatformLed";
 import { PlatformTile, PlatformTiles } from "~/ui/PlatformTile";
 import { ProductCard } from "~/ui/ProductCard";
 import { Rail } from "~/ui/Rail";
 import { ReleaseBand, type ReleaseItem } from "~/ui/ReleaseBand";
+import { revealFocusedItem, revealProps } from "~/ui/reveal";
 import { SectionHead } from "~/ui/SectionHead";
-import { ShelfRail } from "~/ui/ShelfRail";
 import { TextLink } from "~/ui/TextLink";
 import { TrustStrip } from "~/ui/TrustStrip";
 import { UsedUnitCard } from "~/ui/UsedUnitCard";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { toast } from "~/ui/toast-store";
 import { forgetRecentlyViewed, handDeviceListToAccount, readRecentlyViewed } from "./personal";
-import { MIN_SHELF, RELEASE_LIMIT, releaseItemOf, tileArt } from "./view";
+import { MIN_SHELF, RELEASE_LIMIT, releaseItemOf, tileArt, type StripItem } from "./view";
 
 /** How wide a card's picture is drawn: 2.15 cards on phones, 3.2 from 768, 4-up from 1024, 5-up (240px) from 1280. */
 const CARD_SIZES = "(min-width: 1280px) 240px, (min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw";
+
+/** «عرض الكل» (or the section's own words) as a clay key at the end of a section head — v2.1 G2, client note 1. */
+export function ViewAll({ to, children }: { to: string; children?: ReactNode }) {
+  const shop = useT("ui-shop");
+  return (
+    <Key as={LocaleLink} to={to} size="sm" iconEnd="arrow-right" className="home-viewall">
+      {children ?? shop("shelf.viewAll")}
+    </Key>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────── the icon strip
+
+/**
+ * The departments as the client's reference draws them under the hero: glass icon tiles (the shell's `IconTile`, the
+ * categories sheet's own tile — one look for the same doors) with the kinds' red line icons, no counts. One scrolling
+ * row on phones (the fifth tile peeks), eight across from 768.
+ */
+export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
+  const t = useT("home");
+  if (items.length === 0) return null;
+  return (
+    <nav aria-label={t("strip.label")} className="home-strip">
+      {/* a tile that takes the keyboard focus scrolls fully into the row (the row only, never the page): the browser's
+          own scroll left the fourth tile half out of a 390px row */}
+      <ul className="home-strip__list" style={{ "--count": items.length } as CSSProperties} onFocus={revealFocusedItem}>
+        {items.map((item, index) => (
+          <IconTile key={item.key} to={item.href} icon={item.icon} label={t(`strip.${item.key}`)} order={index} />
+        ))}
+      </ul>
+    </nav>
+  );
+}
 
 // ───────────────────────────────────────────────────────────────── platform tiles
 
@@ -58,7 +100,8 @@ export function PlatformDoors({ platforms, heroArt }: { platforms: readonly NavP
   const tiles = platforms.filter((platform): platform is NavPlatform & { accent: Platform } => isPlatform(platform.accent));
   if (tiles.length === 0) return null;
   return (
-    <section aria-labelledby={id} className="min-w-0">
+    // the tiles stand on the ambient light (v2.1 G3: glass needs something to show; dark: the floor's colour light)
+    <section aria-labelledby={id} className="home-platforms glow glow--wide min-w-0" {...revealProps()}>
       <SectionHead id={id} title={t("platforms.title")} />
       <PlatformTiles label={t("platforms.title")}>
         {tiles.map((platform) => (
@@ -82,7 +125,7 @@ export function TrustFacts({ deliveryFeeIqd, payments }: { deliveryFeeIqd: numbe
   const t = useT("home");
   const id = useId();
   return (
-    <section aria-labelledby={id} className="min-w-0">
+    <section aria-labelledby={id} className="min-w-0" {...revealProps()}>
       <VisuallyHidden as="h2" id={id}>
         {t("trust.title")}
       </VisuallyHidden>
@@ -132,8 +175,8 @@ export function NewArrivals({ shelves, focus, onFocus, inflate, wished }: NewArr
       />
     ) : undefined;
   return (
-    <section aria-labelledby={id} className="min-w-0" data-shelf="new-arrivals">
-      <SectionHead id={id} title={t("shelf.newArrivals")} reason={t("shelf.newArrivalsReason")} href={`/platform/${current.platform}?sort=newest`} chips={chips} />
+    <section aria-labelledby={id} className="min-w-0" data-shelf="new-arrivals" {...revealProps()}>
+      <SectionHead id={id} title={t("shelf.newArrivals")} reason={t("shelf.newArrivalsReason")} action={<ViewAll to={`/platform/${current.platform}?sort=newest`} />} chips={chips} />
       <BubbleGroup key={current.platform}>
         <Rail aria-labelledby={id}>
           {current.cards.map((card, index) => (
@@ -158,21 +201,32 @@ export function Releases({ items, now }: { items: readonly ComingSoonItem[]; now
   const t = useT("home");
   if (items.length < 2) return null;
   const releases: ReleaseItem[] = items.slice(0, RELEASE_LIMIT).map((item) => releaseItemOf(item, (count) => t("releases.versions", { count })));
-  return <ReleaseBand items={releases} now={now} />;
+  return (
+    <div className="min-w-0" {...revealProps()}>
+      <ReleaseBand items={releases} now={now} />
+    </div>
+  );
 }
 
 // ───────────────────────────────────────────────────────────────── used and inspected
 
+/**
+ * «مستعمل ومفحوص»: the kit's shelf (head, honest reason line, rail) with the clay «عرض الكل» → /used — the short words
+ * every head uses, so the key stays on the heading's line on a 360px phone. Hidden under 3 units.
+ */
 export function UsedShelf({ units }: { units: readonly UsedUnitCardData[] }) {
   const t = useT("home");
+  const id = useId();
+  if (units.length < MIN_SHELF) return null;
   return (
-    <ShelfRail
-      shelf={{ key: "used", title: t("shelf.used"), reason: t("shelf.usedReason"), items: [...units] }}
-      href="/used"
-      viewAllLabel={t("shelf.usedAll")}
-      minItems={MIN_SHELF}
-      renderItem={(unit) => <UsedUnitCard unit={unit} slot="used" sizes={CARD_SIZES} />}
-    />
+    <section aria-labelledby={id} className="min-w-0" data-shelf="used" {...revealProps()}>
+      <SectionHead id={id} title={t("shelf.used")} reason={t("shelf.usedReason")} action={<ViewAll to="/used" />} />
+      <Rail aria-labelledby={id}>
+        {units.map((unit) => (
+          <UsedUnitCard key={unit.id} unit={unit} slot="used" sizes={CARD_SIZES} />
+        ))}
+      </Rail>
+    </section>
   );
 }
 
@@ -181,7 +235,7 @@ export function UsedShelf({ units }: { units: readonly UsedUnitCardData[] }) {
 export function ServiceEntries({ tradeInArt }: { tradeInArt: string | null }) {
   const t = useT("home");
   return (
-    <div className="home-entries">
+    <div className="home-entries" {...revealProps({ stagger: true })}>
       <EntryCard to="/trade-in" headingLevel={2} title={t("entry.tradeIn")} text={t("entry.tradeInText")} cta={t("entry.tradeInCta")} art={tradeInArt ?? "mascot"} />
       <EntryCard to="/support" headingLevel={2} title={t("entry.support")} text={t("entry.supportText")} cta={t("entry.supportCta")} art="mascot" />
     </div>
@@ -190,14 +244,14 @@ export function ServiceEntries({ tradeInArt }: { tradeInArt: string | null }) {
 
 // ───────────────────────────────────────────────────────────────── departments
 
-/** The glyph that stands in for a department's photo until the navigation data carries one (as in the shell's sheet). */
+/** The kind icon a department shows when staff gave it no photo (the kit's icon tile, as in the shell's sheet). */
 const DEPARTMENT_GLYPH: Record<string, IconName> = {
-  controllers: "game-controller",
-  headsets: "headphones",
-  storage: "hard-drives",
+  controllers: "kind-controller",
+  headsets: "kind-headset",
+  storage: "kind-storage",
   vr: "eye",
-  digital: "gift",
-  accessories: "plug",
+  digital: "kind-topup",
+  accessories: "kind-accessory",
 };
 
 /** Games live under their platforms on this page (the tiles and the new arrivals): six departments, one row from 1024. */
@@ -211,27 +265,19 @@ export function Departments({ categories }: { categories: readonly NavCategory[]
   const list = homeDepartments(categories);
   if (list.length === 0) return null;
   return (
-    <section aria-labelledby={id} className="min-w-0">
+    <section aria-labelledby={id} className="min-w-0" {...revealProps()}>
       <SectionHead id={id} title={t("categories.title")} />
       <CategoryTiles label={t("categories.title")}>
-        {list.map((category) => {
-          const art = (category as NavCategory & { artKey?: string | null }).artKey;
-          return (
-            <CategoryTile
-              key={category.slug}
-              to={category.href}
-              label={category.label}
-              count={category.count}
-              art={
-                art ?? (
-                  <span className="absolute inset-0 grid place-items-center text-ink-2">
-                    <Icon name={DEPARTMENT_GLYPH[category.kind] ?? "squares-four"} size={32} />
-                  </span>
-                )
-              }
-            />
-          );
-        })}
+        {list.map((category) => (
+          <CategoryTile
+            key={category.slug}
+            to={category.href}
+            label={category.label}
+            count={category.count}
+            art={category.artKey ?? undefined}
+            icon={DEPARTMENT_GLYPH[category.kind] ?? "squares-four"}
+          />
+        ))}
       </CategoryTiles>
     </section>
   );
@@ -303,7 +349,7 @@ export function RecentlyViewed({ consent, signedIn }: { consent: boolean | null;
   if (consent !== true || state.status === "idle" || state.status === "loading") return null;
   if (state.status === "ready" && state.cards.length < MIN_SHELF) return null;
   return (
-    <section aria-labelledby={id} className="min-w-0" data-shelf="recently-viewed">
+    <section aria-labelledby={id} className="min-w-0" data-shelf="recently-viewed" {...revealProps()}>
       <div className="sechead">
         <div className="sechead__text">
           <h2 id={id} className="sechead__title">
@@ -343,6 +389,8 @@ export function RecentlyViewed({ consent, signedIn }: { consent: boolean | null;
  */
 export function RecommendationShelves({ result, consent }: { result: Promise<RecommendationResult> | RecommendationResult | null; consent: boolean | null }) {
   if (consent !== true) return null;
+  // no reveal wrapper: the shelf streams in (bubbling in by itself) and is often nothing — an empty grid item would
+  // add a section gap
   return <SharedRecommendationShelves result={result} source="home" sizes={CARD_SIZES} />;
 }
 

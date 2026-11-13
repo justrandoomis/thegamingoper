@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { data, useRouteLoaderData, useSearchParams, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/order";
-import { Icon } from "~/art/Icon";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
 import { localePath } from "~/lib/locales";
@@ -12,8 +11,11 @@ import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { normalizeOrderRef } from "~/server/services/orders/manage.server";
 import { DemoNote } from "~/ui/DemoNote";
+import { EntryCard } from "~/ui/EntryCard";
 import { Key } from "~/ui/Key";
+import { Note } from "~/ui/Note";
 import { fillNodes } from "~/ui/PriceTag";
+import { SuccessMark } from "~/ui/SuccessMark";
 import { TextLink } from "~/ui/TextLink";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { clearStoredCheckout, orderStage, readStoredCheckout } from "./checkout-form";
@@ -24,16 +26,20 @@ import { RecommendationsSlot } from "./components/RecommendationsSlot";
 import "./checkout.css";
 
 /**
- * /order/:ref — the order page (Design System v2 §6.11; brief §4, CONTRACTS §1): the guest's confirmation link
- * `/order/<ref>?t=<token>` (the token placeOrder returned; only its hash is stored) or the signed-in owner. Anyone else
- * — a wrong token, no token, someone else's order, an order that does not exist — gets the same "cannot open this
- * order" page with its two exits (look it up by reference and phone on /track, or sign in). Never indexed, never cached.
+ * /order/:ref — the order page (Design System v2 §6.11; brief §4, CONTRACTS §1; v2.1, client round 1: the new order
+ * screen): the guest's confirmation link `/order/<ref>?t=<token>` (the token placeOrder returned; only its hash is
+ * stored) or the signed-in owner. Anyone else — a wrong token, no token, someone else's order, an order that does not
+ * exist — gets the same "cannot open this order" page with its two exits (look it up by reference and phone on /track,
+ * or sign in). Never indexed, never cached.
  *
- * A clear thank-you first: a 72px --ok-tint disc with the check (one scale-in, none under reduced motion), h1 «شكراً،
- * استلمنا طلبك», «رقم الطلب» and the code in Plex 600 20px with its copy key and «انسخ رابط الطلب», the «طلب تجريبي»
- * tag. Then the order status template (./components/OrderDetails: the stages, the next step by payment with the proof
- * uploader, one summary card). From 1024 the quiet aside holds «سؤال عن طلبك؟», how to follow the order later and the
- * optional account; the cross-sell is at most one rail of four. A cancelled or returned order keeps a plain header.
+ * A clear thank-you first: the kit's SuccessMark (the disc inflates and the check draws itself, once; finished under
+ * reduced motion), h1 «شكراً، استلمنا طلبك», then the order number on its own soft card — «رقم الطلب», the code in
+ * Plex 600 20px with its copy key and «طلب تجريبي», the date, «انسخ رابط الطلب» — and the calm demo note. Then the order
+ * status template (./components/OrderDetails: the status rail with its icons and the line that fills, the next step as a
+ * Note with the proof uploader, one summary card with the pictures and the payment details). Help is two of the
+ * before's rows (an icon in a clay circle, the words, an arrow): «تحدّث مع موظف» and «تتبّع طلبك»; the optional account
+ * stays quiet; «تابع التسوّق» is the page's primary unless a proof is due; the cross-sell is at most one rail of four. A
+ * cancelled or returned order keeps a plain header.
  */
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
@@ -112,22 +118,23 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
     return (
       <div className="page co-page co-narrow">
         <h1 className="type-h1 text-ink">{t("order.missing.title")}</h1>
-        <div className="co-card grid gap-4">
-          <p className="flex items-start gap-2 type-body text-ink">
-            <Icon name="lock" size={20} className="mt-0.5 shrink-0 text-ink-2" />
-            {t("order.missing.text")}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Key as={LocaleLink} to={trackTo} variant="primary" icon="magnifying-glass">
-              {t("order.missing.track")}
-            </Key>
-            {!loaderData.signedIn ? (
-              <Key as={LocaleLink} to={`/account/login?next=${encodeURIComponent(loaderData.ref ? `/order/${loaderData.ref}` : "/account")}`} icon="sign-in">
-                {t("order.missing.signIn")}
+        <Note
+          icon="lock"
+          action={
+            <span className="co-actions">
+              <Key as={LocaleLink} to={trackTo} variant="primary" icon="magnifying-glass">
+                {t("order.missing.track")}
               </Key>
-            ) : null}
-          </div>
-        </div>
+              {!loaderData.signedIn ? (
+                <Key as={LocaleLink} to={`/account/login?next=${encodeURIComponent(loaderData.ref ? `/order/${loaderData.ref}` : "/account")}`} icon="sign-in">
+                  {t("order.missing.signIn")}
+                </Key>
+              ) : null}
+            </span>
+          }
+        >
+          {t("order.missing.text")}
+        </Note>
       </div>
     );
   }
@@ -144,32 +151,39 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
     <div className="page co-page co-split">
       <div className="co-main co-order">
         <header className="co-thanks">
-          {received ? (
-            <span className="co-thanks__disc" aria-hidden="true">
-              <Icon name="check" size={32} />
-            </span>
-          ) : null}
+          {/* the success draws itself once (the kit: an inflating disc, a stroked check; finished under reduced motion) */}
+          {received ? <SuccessMark size={72} className="co-thanks__mark" /> : null}
           <h1 className="type-h1 text-ink">{received ? t("order.thanks") : t("order.closedTitle", { ref })}</h1>
-          <div className="grid gap-1">
-            <p className="type-xs text-ink-2">{t("order.number")}</p>
-            <div className="co-thanks__code">
+          <div className="co-ref">
+            <div className="co-ref__top">
+              <p className="type-sm text-ink-2">{t("order.number")}</p>
+              {order.isDemo ? <DemoNote variant="tag" what="order" /> : null}
+            </div>
+            <div className="co-ref__row">
               <bdi dir="ltr" className="type-code nums text-ink">
                 {order.ref}
               </bdi>
               <CopyKey value={order.ref} label={t("order.number")} />
-              {link ? <CopyKey value={link} label={t("copy.link")} text={t("copy.link")} /> : null}
-              {order.isDemo ? <DemoNote variant="tag" what="order" /> : null}
             </div>
+            <p className="type-sm text-ink-2">{fillNodes(t("order.placedAt"), { date: <When at={order.placedAt} f={f} /> })}</p>
+            {link ? (
+              <div className="co-ref__link">
+                <CopyKey value={link} label={t("copy.link")} text={t("copy.link")} />
+                {/* the link's proof upload is said only where a proof is due (a cash order has none to send) */}
+                <p className="type-sm text-ink-2">{t(proofDue ? "order.linkHintProof" : "order.linkHint")}</p>
+              </div>
+            ) : null}
           </div>
-          <p className="type-xs text-ink-2">{fillNodes(t("order.placedAt"), { date: <When at={order.placedAt} f={f} /> })}</p>
-          {/* the link's proof upload is said only where a proof is due (a cash order has none to send) */}
-          {link ? <p className="type-xs text-ink-2">{t(proofDue ? "order.linkHintProof" : "order.linkHint")}</p> : null}
-          {order.isDemo ? <DemoNote variant="line">{t("order.demo")}</DemoNote> : null}
+          {order.isDemo ? (
+            // calm: the kit's note in its demo tone (only the circle is tinted)
+            <Note tone="demo" variant="line">
+              {t("order.demo")}
+            </Note>
+          ) : null}
           {params.get("address") === "0" ? (
-            <p className="co-note">
-              <Icon name="map-pin" size={16} className="shrink-0 text-ink-2" />
-              <span className="min-w-0 flex-1">{t("order.addressNotSaved")}</span>
-            </p>
+            <Note variant="line" icon="map-pin">
+              {t("order.addressNotSaved")}
+            </Note>
           ) : null}
         </header>
 
@@ -177,33 +191,21 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
       </div>
 
       <aside className="co-aside" aria-label={t("order.help.heading")}>
-        <section aria-labelledby="order-help" className="co-card grid gap-2">
+        <section aria-labelledby="order-help" className="co-help">
           <h2 id="order-help" className="type-h3 text-ink">
             {t("order.help.heading")}
           </h2>
-          <p className="type-sm text-ink-2">{t("order.help.text")}</p>
-          <TextLink as={LocaleLink} to={HANDOFF} icon="chat-circle" arrow={false} className="justify-self-start">
-            {t("order.help.contact")}
-          </TextLink>
+          {/* the before's rows (client note 9): the icon in a clay circle, the words, an arrow — help, and following the order later */}
+          <EntryCard to={HANDOFF} icon="chat-circle" title={t("order.help.contact")} text={t("order.help.text")} />
+          <EntryCard to={`/track?ref=${encodeURIComponent(order.ref)}`} icon="package" title={t("order.later.track")} text={t("order.later.text")} />
         </section>
-        {token ? (
-          <section aria-labelledby="order-later" className="co-card grid gap-2">
-            <h2 id="order-later" className="type-h3 text-ink">
-              {t("order.later.heading")}
-            </h2>
-            <p className="type-sm text-ink-2">{t("order.later.text")}</p>
-            <TextLink as={LocaleLink} to={`/track?ref=${encodeURIComponent(order.ref)}`} className="justify-self-start">
-              {t("order.later.track")}
-            </TextLink>
-          </section>
-        ) : null}
         {!loaderData.signedIn ? (
           <section aria-labelledby="order-account" className="co-card grid gap-2">
             <h2 id="order-account" className="type-h3 text-ink">
               {t("order.account.heading")}
             </h2>
             {/* quiet and optional (§6.11): what an account keeps, and that this order needs none */}
-            <p className="type-sm text-ink-2">
+            <p className="type-read text-ink-2">
               {t("order.account.benefits")} {t("order.account.stays")}
             </p>
             <TextLink as={LocaleLink} to="/account/signup" className="justify-self-start">

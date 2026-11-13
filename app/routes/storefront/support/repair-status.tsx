@@ -29,6 +29,7 @@ import { DemoNote } from "~/ui/DemoNote";
 import { TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Price } from "~/ui/Price";
+import { SuccessMark } from "~/ui/SuccessMark";
 import { Status, type StatusTone } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { fieldMessage, formMessage, isFailure, keepFormOnFailure, phoneProblem, revalidateAfter } from "./client";
@@ -114,84 +115,89 @@ export default function RepairStatusPage({ loaderData, actionData }: Route.Compo
     : undefined;
 
   return (
-    <div className="page sup sup-flow">
-      <div className="sup-flow__main">
-        <SupportNav current="status" />
-        <h1 className="type-h1 text-ink">{t("status.title")}</h1>
+    <div className="page sup">
+      <SupportNav current="status" />
+      <div className="sup-flow">
+        <div className="sup-flow__main">
+          <h1 className="type-h1 text-ink">{t("status.title")}</h1>
 
-        {loaderData.created && view ? (
-          <div className="sup-callout sup-callout--ok">
-            <Icon name="check-circle" size={20} className="sup-callout__icon" />
-            <div className="grid min-w-0 gap-1">
-              <CreatedTitle>{t("status.created.title")}</CreatedTitle>
-              <p className="type-sm text-ink">{loaderData.replayed ? t("status.replayed") : t("status.created.text")}</p>
-              <p className="type-xs text-ink-2">{t("status.created.save")}</p>
-              <div className="mt-1">
-                <CopyLinkKey drop={["new", "replayed"]} />
+          {loaderData.created && view ? (
+            <div className="sup-card">
+              <div className="sup-done">
+                {/* the check that draws itself, once (v2.1 G6); finished at once under reduced motion */}
+                <SuccessMark size={56} />
+                <div className="grid min-w-0 gap-1">
+                  <CreatedTitle>{t("status.created.title")}</CreatedTitle>
+                  <p className="type-read text-ink">{loaderData.replayed ? t("status.replayed") : t("status.created.text")}</p>
+                  <p className="type-sm text-ink-2">{t("status.created.save")}</p>
+                  <div className="mt-2">
+                    <CopyLinkKey drop={["new", "replayed"]} />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        ) : null}
-
-        {view ? (
-          <RepairCard view={view} focusOnShow={looked !== null} />
-        ) : (
-          <section aria-labelledby={ids.lede} className="sup-card sup-lookup">
-            <p id={ids.lede} className="type-body text-ink">
-              {t("status.lede")}
-            </p>
-            {failure && !failure.fields ? (
-              <p role="alert" className="sup-alert">
-                <Icon name="warning-circle" size={20} />
-                <span>{failure.code === "not_found" ? t("status.notFound") : formMessage(failure, t, errorsT)}</span>
-              </p>
-            ) : null}
-            <Form method="post" action="." noValidate className="grid gap-5">
-              <TextField
-                label={t("status.ref")}
-                name="ref"
-                required
-                ltr
-                autoCapitalize="characters"
-                autoComplete="off"
-                spellCheck={false}
-                maxLength={24}
-                hint={t("status.refHint")}
-                defaultValue={failure?.values?.ref ?? loaderData.askedRef}
-                error={fieldMessage("ref", failure?.fields?.ref, t, errorsT)}
-              />
-              <TextField label={t("status.phone")} name="phone" type="tel" inputMode="tel" autoComplete="tel-national" required defaultValue={failure?.values?.phone ?? ""} error={phoneError} />
-              <div>
-                <Key type="submit" variant="primary" icon="magnifying-glass" loading={busy}>
-                  {t("status.submit")}
-                </Key>
-              </div>
-            </Form>
-          </section>
-        )}
-      </div>
-
-      <aside aria-labelledby={ids.help} className="sup-flow__aside sup-flow__aside--all">
-        <div className="sup-card">
-          <h2 id={ids.help} className="type-h3 text-ink">
-            {t("status.help")}
-          </h2>
-          <TextLink as={LocaleLink} to="/support/assistant?handoff=1#handoff">
-            {t("assistant.done.staff")}
-          </TextLink>
-          <TextLink as={LocaleLink} to="/support/repair">
-            {t("status.book")}
-          </TextLink>
-          <TextLink as={LocaleLink} to="/support/ticket">
-            {t("ticket.title")}
-          </TextLink>
-          {view ? (
-            <TextLink as={LocaleLink} to="/support/repair/status">
-              {t("status.another")}
-            </TextLink>
           ) : null}
+
+          {view ? (
+            <RepairCard view={view} focusOnShow={looked !== null} />
+          ) : (
+            <section aria-labelledby={ids.lede} className="sup-card sup-lookup">
+              <p id={ids.lede} className="type-body text-ink">
+                {t("status.lede")}
+              </p>
+              {failure && !failure.fields ? (
+                <p role="alert" className="sup-alert">
+                  <Icon name="warning-circle" size={20} />
+                  <span>{failure.code === "not_found" ? t("status.notFound") : formMessage(failure, t, errorsT)}</span>
+                </p>
+              ) : null}
+              <Form method="post" action="." noValidate className="grid gap-5">
+                <TextField
+                  label={t("status.ref")}
+                  name="ref"
+                  required
+                  ltr
+                  autoCapitalize="characters"
+                  autoComplete="off"
+                  spellCheck={false}
+                  maxLength={24}
+                  hint={t("status.refHint")}
+                  defaultValue={failure?.values?.ref ?? loaderData.askedRef}
+                  error={fieldMessage("ref", failure?.fields?.ref, t, errorsT)}
+                />
+                <TextField label={t("status.phone")} name="phone" type="tel" inputMode="tel" autoComplete="tel-national" required defaultValue={failure?.values?.phone ?? ""} error={phoneError} />
+                <div>
+                  <Key type="submit" variant="primary" icon="magnifying-glass" loading={busy}>
+                    {t("status.submit")}
+                  </Key>
+                </div>
+              </Form>
+            </section>
+          )}
         </div>
-      </aside>
+
+        <aside aria-labelledby={ids.help} className="sup-flow__aside sup-flow__aside--all">
+          <div className="sup-card">
+            <h2 id={ids.help} className="type-h3 text-ink">
+              {t("status.help")}
+            </h2>
+            <TextLink as={LocaleLink} to="/support/assistant?handoff=1#handoff">
+              {t("assistant.done.staff")}
+            </TextLink>
+            <TextLink as={LocaleLink} to="/support/repair">
+              {t("status.book")}
+            </TextLink>
+            <TextLink as={LocaleLink} to="/support/ticket">
+              {t("ticket.title")}
+            </TextLink>
+            {view ? (
+              <TextLink as={LocaleLink} to="/support/repair/status">
+                {t("status.another")}
+              </TextLink>
+            ) : null}
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }
@@ -206,7 +212,7 @@ function CreatedTitle({ children }: { children: string }) {
     ref.current?.focus({ preventScroll: true });
   }, []);
   return (
-    <h2 ref={ref} tabIndex={-1} className="sup-callout__title">
+    <h2 ref={ref} tabIndex={-1} className="sup-done__title">
       {children}
     </h2>
   );
@@ -254,7 +260,8 @@ function RepairCard({ view, focusOnShow }: { view: RepairStatusView; focusOnShow
           <div className="sup-request__quote">
             <p className="type-sm-strong text-ink-2">{t("status.labels.quote")}</p>
             <Price amountIqd={view.quoteIqd} size="md" approx="off" />
-            <p className="type-sm text-ink-2">{view.quoteApproved ? t("status.quoteApproved") : t("status.quotePending")}</p>
+            {/* a fact about the shopper's money (G7: facts are 16px reading text) */}
+            <p className="type-read text-ink">{view.quoteApproved ? t("status.quoteApproved") : t("status.quotePending")}</p>
             {!view.quoteApproved ? (
               <p className="flex flex-wrap items-center gap-x-2 type-sm text-ink-2">
                 <span>{t("status.quoteHow")}</span>
@@ -296,7 +303,7 @@ function RepairCard({ view, focusOnShow }: { view: RepairStatusView; focusOnShow
         <ol className="sup-timeline">
           {view.timeline.map((entry, index) => (
             <li key={`${entry.status}:${entry.at}`} className="sup-timeline__item" data-current={index === view.timeline.length - 1 ? "" : undefined}>
-              <span className="sup-timeline__dot" aria-hidden="true">
+              <span className="clay-disc sup-timeline__dot" aria-hidden="true">
                 {index === view.timeline.length - 1 ? null : <Icon name="check" size={16} />}
               </span>
               <span className="type-card text-ink">{t(`status.states.${entry.status}.label`)}</span>

@@ -12,7 +12,6 @@
 import { data } from "react-router";
 
 import type { Route } from "./+types/landing";
-import { Icon } from "~/art/Icon";
 import { useLocale, useT } from "~/i18n/react";
 import { LOCALES } from "~/lib/locales";
 import { shellMeta } from "~/routes/storefront/shell/meta";
@@ -21,6 +20,7 @@ import { getDb } from "~/server/db.server";
 import { getLandingPage } from "~/server/services/admin/cms/pages.server";
 import { contentMessages, isLandingSlug } from "~/server/services/content.server";
 import { Blocks } from "~/ui/Blocks";
+import { Note } from "~/ui/Note";
 import { ContentHeader } from "./components/ContentHeader";
 import { textLangOf } from "./content-model";
 import { PolicyStatus } from "./components/PolicyStatus";
@@ -69,10 +69,9 @@ export default function LandingPage({ loaderData }: Route.ComponentProps) {
           <PolicyStatus approved updatedAt={page.updatedAt} />
         </ContentHeader>
         {fallback ? (
-          <p className="cnote">
-            <Icon name="translate" size={20} />
-            <span>{t("common.textFallback")}</span>
-          </p>
+          <Note variant="line" icon="translate">
+            {t("common.textFallback")}
+          </Note>
         ) : null}
         <div {...textLang}>
           <Blocks blocks={page.blocks} />

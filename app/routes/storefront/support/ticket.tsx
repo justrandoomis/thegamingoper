@@ -148,68 +148,70 @@ export default function TicketPage({ loaderData, actionData }: Route.ComponentPr
     : undefined;
 
   return (
-    <div className="page sup sup-flow">
-      <div className="sup-flow__main">
-        <SupportNav current="status" section />
-        <h1 className="type-h1 text-ink">{t("ticket.title")}</h1>
+    <div className="page sup">
+      <SupportNav current="status" section />
+      <div className="sup-flow">
+        <div className="sup-flow__main">
+          <h1 className="type-h1 text-ink">{t("ticket.title")}</h1>
 
-        {card ? (
-          <TicketCard shown={card} focusOnShow={posted !== null && posted.rated === null} ratingFailure={ratingFailure} />
-        ) : (
-          <section aria-labelledby={ids.lede} className="sup-card sup-lookup">
-            <p id={ids.lede} className="type-body text-ink">
-              {t("ticket.lede")}
-            </p>
-            {lookupFailure && !lookupFailure.fields ? (
-              <p role="alert" className="sup-alert">
-                <Icon name="warning-circle" size={20} />
-                <span>{lookupFailure.code === "not_found" ? t("ticket.notFound") : formMessage(lookupFailure, t, errorsT)}</span>
-              </p>
-            ) : null}
-            <Form method="post" action="." noValidate className="grid gap-5">
-              <input type="hidden" name="intent" value="lookup" />
-              <TextField
-                label={t("ticket.ref")}
-                name="ref"
-                required
-                ltr
-                autoCapitalize="characters"
-                autoComplete="off"
-                spellCheck={false}
-                maxLength={24}
-                hint={t("ticket.refHint")}
-                defaultValue={lookupFailure?.values?.ref ?? loaderData.askedRef}
-                error={fieldMessage("ticketRef", lookupFailure?.fields?.ref, t, errorsT)}
-              />
-              <TextField label={t("ticket.phone")} name="phone" type="tel" inputMode="tel" autoComplete="tel-national" required defaultValue={lookupFailure?.values?.phone ?? ""} error={phoneError} />
-              <div>
-                <Key type="submit" variant="primary" icon="magnifying-glass" loading={busy}>
-                  {t("ticket.submit")}
-                </Key>
-              </div>
-            </Form>
-          </section>
-        )}
-      </div>
-
-      <aside aria-labelledby={ids.help} className="sup-flow__aside sup-flow__aside--all">
-        <div className="sup-card">
-          <h2 id={ids.help} className="type-h3 text-ink">
-            {t("ticket.help")}
-          </h2>
-          <TextLink as={LocaleLink} to="/support/assistant?handoff=1#handoff">
-            {t("ticket.staff")}
-          </TextLink>
-          <TextLink as={LocaleLink} to="/support/repair/status">
-            {t("ticket.repairStatus")}
-          </TextLink>
           {card ? (
-            <TextLink as={LocaleLink} to="/support/ticket">
-              {t("ticket.another")}
-            </TextLink>
-          ) : null}
+            <TicketCard shown={card} focusOnShow={posted !== null && posted.rated === null} ratingFailure={ratingFailure} />
+          ) : (
+            <section aria-labelledby={ids.lede} className="sup-card sup-lookup">
+              <p id={ids.lede} className="type-body text-ink">
+                {t("ticket.lede")}
+              </p>
+              {lookupFailure && !lookupFailure.fields ? (
+                <p role="alert" className="sup-alert">
+                  <Icon name="warning-circle" size={20} />
+                  <span>{lookupFailure.code === "not_found" ? t("ticket.notFound") : formMessage(lookupFailure, t, errorsT)}</span>
+                </p>
+              ) : null}
+              <Form method="post" action="." noValidate className="grid gap-5">
+                <input type="hidden" name="intent" value="lookup" />
+                <TextField
+                  label={t("ticket.ref")}
+                  name="ref"
+                  required
+                  ltr
+                  autoCapitalize="characters"
+                  autoComplete="off"
+                  spellCheck={false}
+                  maxLength={24}
+                  hint={t("ticket.refHint")}
+                  defaultValue={lookupFailure?.values?.ref ?? loaderData.askedRef}
+                  error={fieldMessage("ticketRef", lookupFailure?.fields?.ref, t, errorsT)}
+                />
+                <TextField label={t("ticket.phone")} name="phone" type="tel" inputMode="tel" autoComplete="tel-national" required defaultValue={lookupFailure?.values?.phone ?? ""} error={phoneError} />
+                <div>
+                  <Key type="submit" variant="primary" icon="magnifying-glass" loading={busy}>
+                    {t("ticket.submit")}
+                  </Key>
+                </div>
+              </Form>
+            </section>
+          )}
         </div>
-      </aside>
+
+        <aside aria-labelledby={ids.help} className="sup-flow__aside sup-flow__aside--all">
+          <div className="sup-card">
+            <h2 id={ids.help} className="type-h3 text-ink">
+              {t("ticket.help")}
+            </h2>
+            <TextLink as={LocaleLink} to="/support/assistant?handoff=1#handoff">
+              {t("ticket.staff")}
+            </TextLink>
+            <TextLink as={LocaleLink} to="/support/repair/status">
+              {t("ticket.repairStatus")}
+            </TextLink>
+            {card ? (
+              <TextLink as={LocaleLink} to="/support/ticket">
+                {t("ticket.another")}
+              </TextLink>
+            ) : null}
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }

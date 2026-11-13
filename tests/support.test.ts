@@ -36,8 +36,11 @@ import { AppError, isAppError } from "~/server/errors";
 import { kvBlobStore } from "~/server/storage.server";
 import { baghdadDay, nextDays, normalizeSupportRef, validPreferredDay, type SupportWho } from "~/server/services/support/common.server";
 import { checkTree, handOffToStaff, runAssistant, type AssistantModel } from "~/server/services/support/assistant.server";
-import { findArticlesMentioning, getArticle, getSupportDirectory, listArticlesForDevice, listHelpArticles, listRelatedArticles, searchHelp } from "~/server/services/support/kb.server";
-import { describesProblem, findErrorCode, hasDangerSign, interpretText, matchDevice, normalizeForMatch } from "~/server/services/support/matcher";
+import { findArticlesMentioning, getArticle, getHelpIndex, getSupportDirectory, listArticlesForDevice, listHelpArticles, listRelatedArticles, searchHelp } from "~/server/services/support/kb.server";
+import { aliasWords, describesProblem, findErrorCode, findErrorCodes, hasDangerSign, interpretText, matchDevice, normalizeForMatch } from "~/server/services/support/matcher";
+import { COMMON_PROBLEMS, commonProblemsFor, highlightParts, matchPolicies, suggestHelp } from "~/server/services/support/helpsearch";
+import HelpCenter from "~/routes/storefront/support/help-center";
+import { KEEP_FOCUS, keepsFocus } from "~/routes/storefront/support/components/HelpSearch";
 import { createRepairTicket, getRepairByAccessToken, lookupRepair, normalizeSerial } from "~/server/services/support/repairs.server";
 import { EMPTY_ASSISTANT_STATE, assistantSearch, cleanQuestion, parseAssistantState, type AssistantState } from "~/server/services/support/state";
 import { summarizeConversation } from "~/server/services/support/summary";
@@ -275,6 +278,262 @@ describe("knowledge base", () => {
     // only approved public guides: the draft, internal and in-review rows inserted above never show
     const drafts = await searchHelp(t.db, "en", "Draft");
     expect(drafts!.articles.some((article) => article.slug.startsWith("test-") && article.slug !== "test-arabic-only")).toBe(false);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── the help centre's search box (round 1, note 9)
+
+/** The store's policies as the content area lists them (title + one line), for the policy rows. */
+const POLICIES = [
+  { slug: "shipping", title: "سياسة التوصيل", summary: "رسم التوصيل، وأين نوصّل، وكيف يصلك طلبك." },
+  { slug: "returns", title: "سياسة الإرجاع والاستبدال", summary: "مدة الإرجاع، وكيف تطلبه، وكيف نعيد إليك المبلغ." },
+  { slug: "warranty", title: "سياسة الضمان", summary: "الفرق بين ضمان الشركة المصنّعة وضمان المتجر، وأين تجد ضمان كل منتج." },
+  { slug: "terms", title: "شروط الاستخدام", summary: "كيف تعمل الأسعار والطلبات والحسابات والمقايضة في طمطم." },
+];
+
+describe("help-centre search: suggestions, codes, filters, chips and marks", () => {
+  test("error codes and device names the shopper's way (pure)", () => {
+    expect(findErrorCodes("CE-108255-1, then 0X80070005 and again ce-108255-1")).toEqual(["CE-108255-1", "0x80070005"]);
+    expect(findErrorCodes("لا رمز هنا")).toEqual([]);
+    expect(aliasWords("تجهيز البلايستيشن")).toContain("playstation");
+    expect(aliasWords("سويتش لايت")).toEqual(expect.arrayContaining(["switch", "lite"]));
+    expect(aliasWords("ps5 is hot")).toEqual(expect.arrayContaining(["playstation", "5"]));
+    expect(aliasWords("الجهاز لا يشتغل")).toEqual([]);
+  });
+
+  test("the searched words are marked whole, and the text stays as it was", () => {
+    const title = "Nintendo Switch 2: حلول آمنة للمشكلات الشائعة";
+    const parts = highlightParts(title, "حلول switch");
+    expect(parts.map((part) => part.text).join("")).toBe(title);
+    expect(parts.filter((part) => part.hit).map((part) => part.text)).toEqual(["Switch", "حلول"]);
+    // an article or a preposition in front of the word: «بالشاشة» for «شاشة»
+    expect(highlightParts("مشكلة بالشاشة", "شاشة").filter((part) => part.hit).map((part) => part.text)).toEqual(["بالشاشة"]);
+    // an Arabic spelling marks the Latin name
+    expect(highlightParts("تجهيز PlayStation 5 لأول مرة", "تجهيز البلايستيشن").filter((part) => part.hit).map((part) => part.text)).toEqual(["تجهيز", "PlayStation"]);
+    expect(highlightParts("نص", "")).toEqual([{ text: "نص", hit: false }]);
+  });
+
+  test("policies are found by their titles and the words people use for them, never by a word every policy has", () => {
+    expect(matchPolicies(POLICIES, "استرجاع").map((policy) => policy.slug)).toEqual(["returns"]);
+    expect(matchPolicies(POLICIES, "refund").map((policy) => policy.slug)).toEqual(["returns"]);
+    expect(matchPolicies(POLICIES, "كم مدة الضمان").map((policy) => policy.slug)[0]).toBe("warranty");
+    expect(matchPolicies(POLICIES, "سياسة")).toEqual([]);
+    expect(matchPolicies(POLICIES, "الجهاز لا يشتغل")).toEqual([]);
+  });
+
+  test("the suggestions answer as the results page does: danger alone, a code honestly, else guides and policies", async () => {
+    const index = await getHelpIndex(t.db);
+    // what the page receives: titles, summaries, names, tags and codes — never a guide's body
+    expect(index.length).toBeGreaterThan(0);
+    for (const entry of index) expect(Object.keys(entry).sort()).toEqual(["codes", "names", "platform", "slug", "summary", "tags", "title"]);
+    expect(suggestHelp(index, POLICIES, "د")).toBeNull();
+    expect(suggestHelp(index, POLICIES, "يطلع دخان من الجهاز")).toEqual({ danger: true, code: null, codeGuides: [], guides: [], policies: [] });
+    expect(suggestHelp(index, POLICIES, "error CE-108255-1")).toMatchObject({ danger: false, code: "CE-108255-1", codeGuides: [], guides: [] });
+    const words = "الجهاز لا يشتغل";
+    const server = await searchHelp(t.db, "ar", words);
+    expect(suggestHelp(index, POLICIES, words)!.guides).toEqual(server!.articles.slice(0, 5).map((article) => article.slug));
+    // an Arabic spelling of a device's name finds its Latin title
+    expect(suggestHelp(index, POLICIES, "تجهيز البلايستيشن")!.guides[0]).toBe("ps5-first-setup");
+    expect(suggestHelp(index, POLICIES, "استرجاع")!.policies).toEqual(["returns"]);
+  });
+
+  test("an error code a guide names: indexed, suggested as that guide, searched — and kept to its platform", async () => {
+    const ps = await t.db.select({ id: platforms.id }).from(platforms).where(eq(platforms.slug, "playstation")).get();
+    await t.db.insert(knowledgeArticles).values({
+      id: "kba_code_test",
+      slug: "test-code-guide",
+      kind: "troubleshooting",
+      platformId: ps!.id,
+      title: { ar: "رمز خطأ للاختبار", en: "A test error code" },
+      body: { ar: [{ type: "p", text: "إذا ظهر الرمز CE-108255-1 فأعد تشغيل الجهاز." }] },
+      status: "approved",
+      audience: "public",
+      updatedAt: t.now,
+      createdAt: t.now,
+    });
+    try {
+      const index = await getHelpIndex(t.db);
+      expect(index.find((entry) => entry.slug === "test-code-guide")).toMatchObject({ platform: "playstation", codes: ["CE-108255-1"] });
+      expect(suggestHelp(index, [], "ce-108255-1")).toMatchObject({ code: "CE-108255-1", codeGuides: ["test-code-guide"] });
+      expect(suggestHelp(index, [], "CE-108255-1", { platform: "xbox" })).toMatchObject({ code: "CE-108255-1", codeGuides: [] });
+      expect((await searchHelp(t.db, "en", "CE-108255-1"))!.articles.map((article) => article.slug)).toEqual(["test-code-guide"]);
+      expect(await searchHelp(t.db, "en", "CE-108255-1", { platform: "xbox" })).toMatchObject({ kind: "code", articles: [], platform: "xbox" });
+    } finally {
+      await t.db.delete(knowledgeArticles).where(eq(knowledgeArticles.id, "kba_code_test"));
+    }
+  });
+
+  test("the device chips keep the search to one platform's guides and the guides about every device", async () => {
+    const all = await searchHelp(t.db, "en", "setup");
+    const ps = await searchHelp(t.db, "en", "setup", { platform: "playstation" });
+    expect(ps!.platform).toBe("playstation");
+    expect(ps!.articles.length).toBeGreaterThan(0);
+    expect(ps!.articles.every((article) => article.platform === null || article.platform.slug === "playstation")).toBe(true);
+    expect(all!.articles.length).toBeGreaterThan(ps!.articles.length);
+  });
+
+  test("every common-problem chip's words lead to the guides of its tag, in all three languages; a chip without a guide is not offered", async () => {
+    const index = await getHelpIndex(t.db);
+    const tagsOf = (slug: string) => index.find((entry) => entry.slug === slug)?.tags ?? [];
+    const offered = commonProblemsFor(index);
+    expect(offered.length).toBeGreaterThan(0);
+    expect(commonProblemsFor(index.map((entry) => ({ ...entry, tags: entry.tags.filter((tag) => tag !== "battery") })))).not.toContain("battery");
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const tl = makeT(supportMessages[locale], locale, "support");
+      for (const problem of COMMON_PROBLEMS.filter((entry) => offered.includes(entry.key))) {
+        const words = tl(`help.common.items.${problem.key}`);
+        const found = await searchHelp(t.db, locale, words);
+        expect(found?.kind, `${locale} ${problem.key}: ${words}`).toBe("guides");
+        expect(found!.articles.length, `${locale} ${problem.key}: ${words}`).toBeGreaterThan(0);
+        expect(tagsOf(found!.articles[0].slug), `${locale} ${problem.key}: ${words}`).toContain(problem.tag);
+        // the box (no bodies: a body word may only reorder guides of the same tag) leads with a guide of that tag too,
+        // and suggests the guide the results lead with
+        const suggested = suggestHelp(index, [], words)!.guides;
+        expect(tagsOf(suggested[0]), `${locale} ${problem.key}: ${words}`).toContain(problem.tag);
+        expect(suggested, `${locale} ${problem.key}: ${words}`).toContain(found!.articles[0].slug);
+      }
+    }
+  });
+
+  // review of round 1 (support): with a device chip chosen, the common-problem chips carry `platform` into their links —
+  // «الجهاز يسخن» under Xbox led to «لم نجد دليلاً» (no Xbox or every-device guide about heat). Offered per platform now.
+  test("under a device chip, every common-problem chip offered still leads to a guide of its tag on that platform", async () => {
+    const index = await getHelpIndex(t.db);
+    const tagsOf = (slug: string) => index.find((entry) => entry.slug === slug)?.tags ?? [];
+    const directory = await getSupportDirectory(t.db, "ar");
+    expect(directory.length).toBeGreaterThan(1);
+    let narrowed = false;
+    for (const { slug: platform } of directory) {
+      const offered = commonProblemsFor(index, platform);
+      // a chip is never offered on a platform where no guide answers it, and never one the whole store does not offer
+      for (const key of offered) expect(commonProblemsFor(index)).toContain(key);
+      if (offered.length < commonProblemsFor(index).length) narrowed = true;
+      for (const locale of ["ar", "en", "ckb"] as const) {
+        const tl = makeT(supportMessages[locale], locale, "support");
+        for (const problem of COMMON_PROBLEMS.filter((entry) => offered.includes(entry.key))) {
+          const words = tl(`help.common.items.${problem.key}`);
+          const found = await searchHelp(t.db, locale, words, { platform });
+          const where = `${platform} ${locale} ${problem.key}: ${words}`;
+          expect(found?.kind, where).toBe("guides");
+          expect(found!.articles.length, where).toBeGreaterThan(0);
+          expect(tagsOf(found!.articles[0].slug), where).toContain(problem.tag);
+        }
+      }
+    }
+    // the seed has platforms without a guide for some problems: the narrowing is real, not vacuous
+    expect(narrowed).toBe(true);
+  });
+
+  test("the support centre: the before's tabs and title, the search as a GET form with its chips, the list cards, the devices by platform", async () => {
+    const index = await getHelpIndex(t.db);
+    const search = await searchHelp(t.db, "ar", "الجهاز لا يشتغل");
+    const page = {
+      directory: await getSupportDirectory(t.db, "ar"),
+      guides: await listHelpArticles(t.db, "ar"),
+      allGuides: false,
+      search,
+      platform: null,
+      index,
+      policies: POLICIES,
+      policyHits: [],
+      common: commonProblemsFor(index),
+      device: null,
+      deviceGuides: [],
+      i18n: messagesFor("ar", "support"),
+    };
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: ":locale?/support", Component: HelpCenter as never }] }]);
+    const html = renderToStaticMarkup(
+      createElement(Stub, {
+        initialEntries: ["/support?q=%D8%A7%D9%84%D8%AC%D9%87%D8%A7%D8%B2"],
+        hydrationData: { loaderData: { root: { locale: "ar", dir: "rtl", fx: null, storeMode: "demo", i18n: messagesFor("ar", "common", "ui", "ui-card", "ui-shop", "ui-overlays") }, page: page as never } },
+      }),
+    );
+    // the before's underline tabs, the help centre current; the before's title
+    expect(html).toMatch(/aria-current="page"[^>]*>(?:(?!<\/a>).)*مركز المساعدة/);
+    for (const label of ["مساعد الصيانة", "احجز صيانة", "تابع طلب"]) expect(html).toContain(label);
+    expect(html).toMatch(/<h1[^>]*>الدعم والمساعدة<\/h1>/);
+    // a search that works without script: a GET form, the words as q, the device chips as native radios, the common
+    // problems as links
+    expect(html).toMatch(/<form[^>]*method="get"[^>]*role="search"|<form[^>]*role="search"[^>]*method="get"/);
+    expect(html).toContain('name="q"');
+    expect(html).toMatch(/type="radio"[^>]*name="platform"[^>]*value="playstation"|name="platform"[^>]*type="radio"/);
+    expect(html).toMatch(/href="\/support\?q=[^"]+"/);
+    expect(html).toContain('role="combobox"');
+    // the grouped results, the words marked; the before's list cards in two groups; the devices under their platform
+    expect(html).toContain('id="search-results"');
+    expect(html).toContain('class="sup-hit"');
+    for (const path of ["/support/assistant", "/support/repair", "/support/repair/status", "/track", "/policies/returns", "/support/assistant?handoff=1#handoff"]) expect(html).toContain(`href="${path}"`);
+    expect(html).toContain("led--bar");
+    // one red primary: the search key
+    expect(html.match(/key--primary/g)?.length).toBe(1);
+  });
+
+  // review of round 1 (support): a device chip that hides every answer said only «لم نجد دليلاً» — nothing told the
+  // shopper the chip was the reason. When the same words find guides on other devices, the empty state offers them.
+  test("kept to one platform with nothing there: the outcome is said, and «ابحث في كل الأجهزة» appears only when other devices answer", async () => {
+    const index = await getHelpIndex(t.db);
+    const directory = await getSupportDirectory(t.db, "ar");
+    // a platform and a common problem that the store answers, but not on that platform
+    const pair = directory
+      .map((group) => ({ platform: group.slug, missing: commonProblemsFor(index).filter((key) => !commonProblemsFor(index, group.slug).includes(key)) }))
+      .find((entry) => entry.missing.length > 0);
+    expect(pair, "the seed has a platform without a guide for some problem").toBeDefined();
+    const words = tAr(`help.common.items.${pair!.missing[0]}`);
+    const kept = await searchHelp(t.db, "ar", words, { platform: pair!.platform });
+    const everywhere = await searchHelp(t.db, "ar", words);
+    expect(kept).toMatchObject({ kind: "guides", articles: [], platform: pair!.platform });
+    expect(everywhere!.articles.length).toBeGreaterThan(0);
+    const render = (elsewhere: number) => {
+      const page = {
+        directory,
+        guides: [],
+        allGuides: false,
+        search: kept,
+        platform: pair!.platform,
+        elsewhere,
+        index,
+        policies: POLICIES,
+        policyHits: [],
+        common: commonProblemsFor(index),
+        device: null,
+        deviceGuides: [],
+        i18n: messagesFor("ar", "support"),
+      };
+      const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: ":locale?/support", Component: HelpCenter as never }] }]);
+      return renderToStaticMarkup(
+        createElement(Stub, {
+          initialEntries: [`/support?${new URLSearchParams({ q: words, platform: pair!.platform }).toString()}`],
+          hydrationData: { loaderData: { root: { locale: "ar", dir: "rtl", fx: null, storeMode: "demo", i18n: messagesFor("ar", "common", "ui", "ui-card", "ui-shop", "ui-overlays") }, page: page as never } },
+        }),
+      );
+    };
+    const html = render(everywhere!.articles.length);
+    // the empty state, the way out of the filter (the same words, no platform), and a person
+    expect(html).toContain("empty--panel");
+    expect(html).toContain(`href="/support?${new URLSearchParams({ q: words }).toString()}"`);
+    expect(html).toContain(tAr("help.search.allDevices"));
+    // the outcome in a status line that stays from search to search (read out here: the empty state shows it)
+    expect(html).toMatch(new RegExp(`role="status" class="sr-only">${tAr("help.search.count", { count: 0 })}`));
+    // the chips the page offers under that platform never include the problem it cannot answer
+    expect(html).not.toContain(`>${words}<`);
+    // nothing on other devices either: no such link (never a way to nothing)
+    expect(render(0)).not.toContain(tAr("help.search.allDevices"));
+  });
+
+  // review of round 1 (support): "joycon" found the drift guides, «جويكون» (how it is written in Arabic) found nothing
+  test("an accessory named the Arabic way finds what its Latin spelling finds", async () => {
+    const index = await getHelpIndex(t.db);
+    const latin = suggestHelp(index, [], "joycon")!.guides;
+    expect(latin.length).toBeGreaterThan(0);
+    for (const words of ["جويكون", "الجويكون", "جوي كون"]) {
+      expect(suggestHelp(index, [], words)!.guides, words).toEqual(latin);
+      expect((await searchHelp(t.db, "ar", words))!.articles.length, words).toBeGreaterThan(0);
+    }
+  });
+
+  test("a device chip re-runs a search and leaves the focus on the chips; any other search moves it to the results", () => {
+    expect(keepsFocus(KEEP_FOCUS)).toBe(true);
+    for (const state of [null, undefined, {}, { keepFocus: "yes" }, "keepFocus"]) expect(keepsFocus(state)).toBe(false);
   });
 });
 
@@ -639,9 +898,11 @@ describe("support copy", () => {
     expect(all).not.toMatch(/نتصل|يتصل|سنتصل|نتّصل|دورك\./);
     expect(JSON.stringify(supportMessages.en)).not.toMatch(/\bcall(s)? you\b|\bwe call\b|\bphone you\b|\btalk to staff\b/i);
     expect(JSON.stringify(supportMessages.ckb)).not.toMatch(/پەیوەندیت پێوە دەکەین|پەیوەندی پێوە دەکەین/);
-    expect(all).not.toMatch(/تحدّث مع شخص|مركز المساعدة|الدعم والمساعدة|رقم الهاتف/);
+    expect(all).not.toMatch(/تحدّث مع شخص|رقم الهاتف/);
     expect(tAr("meta.help.title")).toBe("مركز الدعم");
-    expect(tAr("help.title")).toBe("كيف نساعدك؟");
+    // client feedback round 1, note 9 (the before's support page wins): the before's tabs and title are back
+    expect(tAr("help.title")).toBe("الدعم والمساعدة");
+    expect(["help", "assistant", "repair", "status"].map((key) => tAr(`nav.${key}`))).toEqual(["مركز المساعدة", "مساعد الصيانة", "احجز صيانة", "تابع طلب"]);
     expect(tAr("handoff.title")).toBe("تحدّث مع موظف");
     expect(tEn("handoff.title")).toBe("Talk to a person");
     expect(tAr("handoff.text")).toBe("نرسل محادثتك إلى موظف مع رقم طلب تتابع به ردّه.");

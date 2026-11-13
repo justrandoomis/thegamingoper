@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react";
 
-import { Icon } from "~/art/Icon";
+import { Icon, type IconName } from "~/art/Icon";
 import { useT } from "~/i18n/react";
 import { cx } from "~/ui/cx";
 import { FormErrorSummary, TextField, type FormError } from "~/ui/Field";
 import { IconKey } from "~/ui/IconKey";
 import { Key, type KeyProps } from "~/ui/Key";
+import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
 
 /** What an account action answers: a failure with sentences, or a success with an optional message. */
@@ -45,18 +46,33 @@ export function rescueFocus(id: string, frames = 45): void {
 }
 
 /**
- * A sentence about a whole page or form, as the kit's callout (a paper panel with a 3px bar in the tone colour, an icon
- * AND words — never a colour alone): what happened (ok), what to know (info), what to watch (warn).
+ * A sentence about a whole page or form, as the kit's note (v2.1 G5: a neutral soft card, the icon in a circle — tinted
+ * only where the tone matters — a short bold title, muted text; an icon AND words, never a colour alone): what happened
+ * (ok), what to know (info), what to watch (warn). `flat` inside another card. A status region: it is read out when it
+ * appears after an action.
  */
-export function Notice({ tone = "info", title, children, className }: { tone?: "ok" | "info" | "warn"; title?: ReactNode; children?: ReactNode; className?: string }) {
-  const icon = tone === "ok" ? "check-circle" : tone === "warn" ? "warning" : "info";
+export function Notice({
+  tone = "info",
+  title,
+  icon,
+  action,
+  flat = false,
+  children,
+  className,
+}: {
+  tone?: "ok" | "info" | "warn";
+  title?: ReactNode;
+  icon?: IconName;
+  action?: ReactNode;
+  flat?: boolean;
+  children?: ReactNode;
+  className?: string;
+}) {
   return (
-    <div role="status" className={cx("callout", tone === "ok" && "callout--ok", tone === "warn" && "callout--warn", className)}>
-      <Icon name={icon} size={20} />
-      <div className="grid min-w-0 gap-1">
-        {title ? <p className="callout__title">{title}</p> : null}
-        {children ? <div className={title ? "callout__text" : "type-sm text-ink"}>{children}</div> : null}
-      </div>
+    <div role="status" className={cx("grid min-w-0", className)}>
+      <Note tone={tone === "ok" ? "success" : tone === "warn" ? "warning" : "neutral"} title={title} icon={icon} action={action} variant={flat ? "flat" : "card"}>
+        {children}
+      </Note>
     </div>
   );
 }

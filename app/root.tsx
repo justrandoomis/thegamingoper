@@ -1,3 +1,6 @@
+// First on purpose: app.css states the store's CSS layer order, and the first sheet a browser meets fixes that order.
+// Any module below that brings its own sheet (the 404 view's not-found.css, through RootNotFound) comes after it.
+import "./app.css";
 import { useEffect } from "react";
 import {
   isRouteErrorResponse,
@@ -17,11 +20,11 @@ import { DEFAULT_LOCALE, LOCALES, localePath, splitLocale, type Locale } from "~
 import { useNonce } from "~/lib/nonce";
 import { DEFAULT_PREFS, PrefsProvider, usePrefs } from "~/lib/prefs";
 import { MOTION_TIER_SCRIPT } from "~/motion/tier-script";
+import { RootNotFound } from "~/routes/storefront/content/components/RootNotFound";
 import { getCtx, requestContextMiddleware } from "~/server/context.server";
 import { loadShell } from "~/server/shell.server";
 import { preloadFonts } from "~/styles/fonts";
 import { showToast } from "~/ui/toast-store";
-import "./app.css";
 
 export const middleware: Route.MiddlewareFunction[] = [requestContextMiddleware];
 
@@ -164,7 +167,10 @@ function OfflineNavigationGuard({ locale }: { locale: Locale }) {
       if (anchor.target && anchor.target !== "_self") return;
       const url = new URL(anchor.href, location.href);
       if (url.origin !== location.origin) return;
-      if (url.pathname === location.pathname && url.search === location.search) return; // a link within this page
+      // The same page with another query (a filter, a page of results, a tab of the rewards history): its route
+      // module is already loaded, so no full reload can happen — the page answers offline itself (the listings hold
+      // the tap until the connection is back; pages that read nothing new just switch).
+      if (url.pathname === location.pathname) return;
       event.preventDefault();
       refuse();
     };
@@ -172,6 +178,9 @@ function OfflineNavigationGuard({ locale }: { locale: Locale }) {
       if (navigator.onLine || event.defaultPrevented || !inStore() || !(event.target instanceof HTMLFormElement)) return;
       const method = (event.submitter?.getAttribute("formmethod") || event.target.getAttribute("method") || "get").toLowerCase();
       if (method !== "get") return;
+      // A GET form that stays on this page (filters, the help-centre search): the page answers offline itself.
+      const action = new URL(event.submitter?.getAttribute("formaction") || event.target.getAttribute("action") || location.href, location.href);
+      if (action.origin === location.origin && action.pathname === location.pathname) return;
       event.preventDefault();
       refuse();
     };
@@ -254,6 +263,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   if (!inAdmin) {
     // The storefront shell's own wording (shell.ts) in the page's language (Design System v2 §6.16).
     const locale = splitLocale(pathname).locale;
+    // A page that is not there: the store's own 404 view, the same as inside the shell (v2.1, client note 11).
+    if (kind === "notFound") return <RootNotFound locale={locale} />;
     const words = STORE_ERROR_TEXT[locale];
     return (
       <main className="root-error" lang={LOCALES[locale].bcp47} dir={LOCALES[locale].dir}>

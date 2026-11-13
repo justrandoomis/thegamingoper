@@ -3,6 +3,7 @@
  * their owner only — what the account shows, never what decides anything: the commerce core prices, module 08 posts).
  *
  *   const rewards = await getRewards(db, customerId, locale, now);
+ *   const glance = await getRewardsGlance(db, customerId, locale, now); // the overview: balance + membership name
  *   const { code } = await issueOwnReferralCode(db, actor, now);      // module 08's issueReferralCode, for the customer
  *
  * Points: the balance (the ledger's sum), what they are worth at checkout (the programme's point value in force), what
@@ -56,6 +57,37 @@ export type RewardsView = {
 
 const num = (value: unknown) => (typeof value === "number" ? value : Number(value ?? 0));
 
+/** The customer's active membership in force at `now` (its tier's name and benefits), or undefined. */
+function activeMembership(db: Db, customerId: string, now: number) {
+  return db
+    .select({ endsAt: memberships.endsAt, name: membershipTiers.name, benefits: membershipTiers.benefits })
+    .from(memberships)
+    .innerJoin(membershipTiers, eq(membershipTiers.id, memberships.tierId))
+    .where(and(eq(memberships.customerId, customerId), eq(memberships.status, "active"), sql`${memberships.startsAt} <= ${now}`, sql`(${memberships.endsAt} IS NULL OR ${memberships.endsAt} > ${now})`, eq(membershipTiers.isActive, true)))
+    .orderBy(desc(memberships.startsAt))
+    .get();
+}
+
+export type RewardsGlance = {
+  /** The points balance (the ledger's sum, never below zero). */
+  points: number;
+  /** The active membership's tier name, in the visitor's language, and its end. */
+  membership: { tier: string; endsAt: number | null } | null;
+};
+
+/** The account overview's glance (Design v2.1, the profile head and its tiles): the balance and the membership's name. Reads only. */
+export async function getRewardsGlance(db: Db, customerId: string, locale: Locale, now: number): Promise<RewardsGlance> {
+  const [sums, membership] = await Promise.all([
+    db
+      .select({ balance: sql<number>`coalesce(sum(${loyaltyLedger.points}), 0)` })
+      .from(loyaltyLedger)
+      .where(eq(loyaltyLedger.customerId, customerId))
+      .get(),
+    activeMembership(db, customerId, now),
+  ]);
+  return { points: Math.max(0, num(sums?.balance)), membership: membership ? { tier: pick(membership.name, locale), endsAt: membership.endsAt } : null };
+}
+
 /** The account's rewards page (file header). Reads only; the customer's own rows only. */
 export async function getRewards(db: Db, customerId: string, locale: Locale, now: number): Promise<RewardsView> {
   const soon = now + 30 * DAY_MS;
@@ -83,13 +115,7 @@ export async function getRewards(db: Db, customerId: string, locale: Locale, now
       .where(and(eq(loyaltyLedger.customerId, customerId), sql`${loyaltyLedger.points} > 0`, sql`${loyaltyLedger.expiresAt} IS NOT NULL`))
       .orderBy(loyaltyLedger.expiresAt)
       .limit(2000),
-    db
-      .select({ endsAt: memberships.endsAt, name: membershipTiers.name, benefits: membershipTiers.benefits })
-      .from(memberships)
-      .innerJoin(membershipTiers, eq(membershipTiers.id, memberships.tierId))
-      .where(and(eq(memberships.customerId, customerId), eq(memberships.status, "active"), sql`${memberships.startsAt} <= ${now}`, sql`(${memberships.endsAt} IS NULL OR ${memberships.endsAt} > ${now})`, eq(membershipTiers.isActive, true)))
-      .orderBy(desc(memberships.startsAt))
-      .get(),
+    activeMembership(db, customerId, now),
     db.select().from(referralCodes).where(eq(referralCodes.customerId, customerId)).get(),
   ]);
 

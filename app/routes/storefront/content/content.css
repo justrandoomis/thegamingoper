@@ -1,8 +1,10 @@
 /*
  * Content pages (app/routes/storefront/content: /about, /contact, /accessibility, /policies, /policies/:slug) —
- * Design System v2 §6.15. Page layout only: the pieces are the kit's (FactList, EntryCard, ContactCard, Segmented,
- * Key, TextLink, Blocks, Breadcrumbs). Components layer (utilities still win), tokens only, logical properties only,
- * nothing moves but the kit's own hover and press.
+ * Design System v2 §6.15, with the v2.1 «Clay & Glass» look (DESIGN.md §15): the pieces are the kit's (FactList,
+ * EntryCard, ContactCard, Note, Segmented, Key, TextLink, Blocks, Breadcrumbs); the page's own cards are the soft
+ * raised card (dark: faux glass over the floor's light — no section paints a background), its row icons sit on raised
+ * clay discs, row titles are Kufam and reading text is 16px. Components layer (utilities still win), tokens only,
+ * logical properties only; nothing moves but the kit's hover and press, a row's caret nudge and the section reveal.
  *
  *   .cpage        the page stack under the shell header (one <h1> in .chead)
  *   .ccol         the 720px reading column, on the start line of the wrap
@@ -74,19 +76,6 @@
       display: none;
     }
   }
-  /* a one-line fact under the lead (the WCAG aim on /accessibility) */
-  .cnote {
-    display: flex;
-    align-items: start;
-    gap: var(--s-2);
-    font: var(--type-sm);
-    color: var(--ink);
-  }
-  .cnote > svg {
-    margin-block-start: 1px;
-    color: var(--ink-2);
-  }
-
   /* ── sections ── */
   .csec {
     display: grid;
@@ -106,7 +95,7 @@
     font: var(--type-h3);
   }
   .csec__text {
-    font: var(--type-sm);
+    font: var(--type-read);
     color: var(--ink-2);
   }
   .csec__body {
@@ -143,13 +132,17 @@
     align-content: start;
     gap: var(--s-10);
   }
-  /* the aside keeps at least 288px (at 1024 the reading column gives way: 624 + 288 — room for the longest hand-off
-     key, Sorani, on one line in its card), the reading column 720 at most */
+  /* the aside keeps at least 336px, the reading column 720 at most (at 1024 the reading column gives way: 576 + 336).
+     v2.1's rows (a 40px disc, an 18px Kufam title, a 16px hint) broke into 2–3 lines in v2's 288px aside, and Sorani's
+     hand-off key («قسە لەگەڵ کارمەندێک بکە», 320px in Kufam) needs 368 to stay on one line in its card (reading 544) */
   @media (min-width: 64rem) {
     .csplit {
-      grid-template-columns: minmax(0, 720px) minmax(288px, 1fr);
+      grid-template-columns: minmax(0, 720px) minmax(336px, 1fr);
       column-gap: var(--s-12);
       align-items: start;
+    }
+    .csplit:lang(ckb) {
+      grid-template-columns: minmax(0, 720px) minmax(368px, 1fr);
     }
   }
   @media (min-width: 80rem) {
@@ -158,16 +151,18 @@
     }
   }
 
-  /* ── «اكتب لموظف»: the hand-off card (contact without channels, about, policies, accessibility) ── */
+  /* ── «اكتب لموظف»: the hand-off card (contact without channels, about, policies, accessibility) — the soft raised
+     card (v2.1 G3), the mascot on its red-tint disc ── */
+  /* phones: 16px inside, so the longest key (Sorani, 320px in Kufam) keeps one line from a 383px screen (390 included) */
   .chandoff {
     display: grid;
     grid-template-columns: 56px minmax(0, 1fr);
     align-items: start;
     gap: var(--s-3) var(--s-4);
-    padding: var(--s-5);
-    border: 1px solid var(--line);
+    padding: var(--s-4);
     border-radius: var(--r-lg);
-    background: var(--paper);
+    background: var(--card-face);
+    box-shadow: var(--e-surface);
   }
   .chandoff__art {
     display: grid;
@@ -187,7 +182,7 @@
     color: var(--ink);
   }
   .chandoff__text {
-    font: var(--type-sm);
+    font: var(--type-read);
     color: var(--ink-2);
   }
   /* stacked (phones, a narrow aside): the key on its own row under the art and the words, from the start edge — a key
@@ -198,6 +193,15 @@
     justify-self: start;
     max-inline-size: 100%;
     white-space: normal;
+  }
+  /* …and where it must still wrap (Sorani at 360), its two lines get the key's breathing room instead of being pressed
+     into the 48px cap (one line: unchanged — the cap's 48px minimum is taller than the line and this padding) */
+  .chandoff .chandoff__action > .key__cap {
+    padding-block: var(--s-2);
+  }
+  .chandoff .chandoff__action .key__label {
+    line-height: 1.4;
+    text-wrap: balance;
   }
   @media (min-width: 48rem) {
     .chandoff {
@@ -213,11 +217,15 @@
       grid-column: 3;
     }
   }
-  /* in a narrow aside the action goes under the words at every width (the phone padding: 20) */
+  /* in a narrow aside the action goes under the words at every width (16px inside on phones, 20 from 768) */
   .chandoff--stack {
     grid-template-columns: 56px minmax(0, 1fr);
     align-items: start;
-    padding: var(--s-5);
+  }
+  @media (min-width: 48rem) {
+    .chandoff--stack {
+      padding: var(--s-5);
+    }
   }
   .chandoff--stack .chandoff__art {
     inline-size: 56px;
@@ -226,8 +234,25 @@
   .chandoff.chandoff--stack .chandoff__action {
     grid-column: 1 / -1;
   }
+  /* the reading column beside an aside is 544–576px at 1024–1279: a hand-off card there (/contact without channels)
+     stacks too — beside the words, Sorani's key left them a column of 80–160px */
+  @media (min-width: 64rem) and (max-width: 79.99rem) {
+    .csplit .chandoff {
+      grid-template-columns: 56px minmax(0, 1fr);
+      align-items: start;
+      padding: var(--s-5);
+    }
+    .csplit .chandoff .chandoff__art {
+      inline-size: 56px;
+      block-size: 56px;
+    }
+    .csplit .chandoff .chandoff__action {
+      grid-column: 1 / -1;
+    }
+  }
 
-  /* ── link rows: a 20px icon, a 14/600 title over a 13px hint, an optional word, a caret; 56px, between hairlines ── */
+  /* ── link rows (v2.1: the before's rows): a 40px clay disc with the icon, a Kufam title over a 16px hint, an optional
+     word, a caret that nudges toward the reading end; 64px at least, between hairlines or in one soft card ── */
   .crows {
     display: grid;
   }
@@ -235,16 +260,16 @@
     border-block-start: 1px solid var(--line);
   }
   .crows--card {
-    border: 1px solid var(--line);
     border-radius: var(--r-lg);
-    background: var(--paper);
+    background: var(--card-face);
+    box-shadow: var(--e-surface);
   }
   .crow {
     display: grid;
-    grid-template-columns: 20px minmax(0, 1fr) auto;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
     align-items: center;
-    gap: var(--s-3);
-    min-block-size: var(--h-row);
+    gap: var(--s-3) var(--s-4);
+    min-block-size: 64px;
     padding-block: var(--s-3);
     color: inherit;
     text-decoration: none;
@@ -252,8 +277,13 @@
   .crows--card .crow {
     padding-inline: var(--s-4);
   }
-  .crow__icon {
-    color: var(--ink-2);
+  @media (min-width: 64rem) {
+    .crows--card .crow {
+      padding-inline: var(--s-5);
+    }
+  }
+  .crow__disc {
+    --disc: 40px;
   }
   .crow__copy {
     display: grid;
@@ -261,54 +291,56 @@
     min-inline-size: 0;
   }
   .crow__title {
-    font: var(--type-sm-strong);
+    font: var(--type-h3);
     color: var(--ink);
     text-decoration: underline;
     text-decoration-color: transparent;
     text-decoration-thickness: 1px;
-    text-underline-offset: 5px;
+    text-underline-offset: 6px;
   }
   .crow__hint {
-    font: var(--type-xs);
+    font: var(--type-body);
     color: var(--ink-2);
   }
   .crow__end {
     display: inline-flex;
     align-items: center;
     gap: var(--s-2);
-    font: var(--type-xs);
+    font: var(--type-sm);
     color: var(--ink-2);
+  }
+  .crow__go {
+    transition: translate var(--t-micro) var(--ease-settle);
   }
   @media (hover: hover) {
     .crow:hover .crow__title {
       text-decoration-color: currentColor;
     }
+    .crow:hover .crow__go {
+      translate: calc(3px * var(--dir)) 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .crow__go {
+      transition: none;
+    }
+  }
+  [data-motion="reduced"] .crow__go {
+    transition: none;
   }
 
   /* ── /contact: e-mail and social pages (the kit's ContactCard holds WhatsApp, phone, address and hours) ── */
   .cchannel__value {
-    font: var(--type-xs);
+    font: var(--type-sm);
     color: var(--ink-2);
   }
-  /* «لا نطلب منك أبداً رمز تحقق…» */
-  .csafety {
-    display: flex;
-    align-items: start;
-    gap: var(--s-3);
-    font: var(--type-sm);
-    color: var(--ink);
-  }
-  .csafety > svg {
-    margin-block-start: 1px;
-    color: var(--ok);
-  }
 
-  /* ── /accessibility: the settings card (label + segmented control per row) ── */
+  /* ── /accessibility: the settings card (label + segmented control per row), the soft raised card ── */
   .csettings {
     display: grid;
-    border: 1px solid var(--line);
     border-radius: var(--r-lg);
-    background: var(--paper);
+    background: var(--card-face);
+    box-shadow: var(--e-surface);
   }
   .csettings__row {
     display: grid;
@@ -319,7 +351,7 @@
     border-block-start: 1px solid var(--line);
   }
   .csettings__label {
-    font: var(--type-sm-strong);
+    font: 600 var(--fs-read) / 1.5 var(--font-text);
     color: var(--ink);
   }
   @media (min-width: 48rem) {
@@ -337,7 +369,7 @@
     min-inline-size: 0;
   }
   .csettings__hint {
-    font: var(--type-xs);
+    font: var(--type-sm);
     color: var(--ink-2);
   }
   @media (min-width: 48rem) {

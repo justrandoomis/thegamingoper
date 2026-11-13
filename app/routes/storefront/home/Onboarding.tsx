@@ -19,6 +19,7 @@ import { Bubble } from "~/motion";
 import { Chip } from "~/ui/Chip";
 import { Key } from "~/ui/Key";
 import { PLATFORMS, type Platform } from "~/ui/PlatformLed";
+import { revealProps } from "~/ui/reveal";
 import { Sheet } from "~/ui/Sheet";
 import { TextLink } from "~/ui/TextLink";
 import { isolate } from "./view";
@@ -36,7 +37,7 @@ export function ConsentRow({ platforms, onAnswer }: { platforms: readonly Platfo
   }, []);
   return (
     <Bubble always className="min-w-0">
-      <div ref={row} role="region" aria-labelledby={id} tabIndex={-1} className="home-consent">
+      <div ref={row} role="region" aria-labelledby={id} tabIndex={-1} className="panel home-consent">
         <div className="home-consent__text">
           <h2 id={id} className="home-consent__question">
             {t("consent.question")}
@@ -113,7 +114,8 @@ export function PlatformsSheet({ open, initial, onSave, onClose }: { open: boole
             {t("personal.noneChosen")}
           </p>
         ) : null}
-        <p className="type-sm text-ink-2">{t("personal.sheetText")}</p>
+        {/* what saving keeps is reading text (v2.1 G7: 16px, line height 1.7 — it was 14 / 1.5) */}
+        <p className="type-body text-ink-2">{t("personal.sheetText")}</p>
       </div>
     </Sheet>
   );
@@ -141,7 +143,7 @@ export function PersonalPanel({
   const on = signedIn ? { list: "personal.onAccount", none: "personal.onNoPlatformsAccount" } : { list: "personal.on", none: "personal.onNoPlatforms" };
   const status = consent === true ? (platforms.length > 0 ? t(on.list, { platforms: names(platforms) }) : t(on.none)) : consent === false ? t("personal.off") : t("personal.unset");
   return (
-    <section id="personal" aria-labelledby={id} className="panel home-personal">
+    <section id="personal" aria-labelledby={id} className="panel home-personal" {...revealProps()}>
       <h2 id={id} className="type-h3 text-ink">
         {t("personal.title")}
       </h2>

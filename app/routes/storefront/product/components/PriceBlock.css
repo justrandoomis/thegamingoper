@@ -1,0 +1,52 @@
+/*
+ * The price block (./PriceBlock.tsx) — design v2.1 "Clay & Glass", client note 5: the before's arrangement. Imported by
+ * the component itself, so the block is laid out wherever it is drawn: the product page AND the quick look, which
+ * opens over listings, the home and search, where the page's own product.css is not loaded. Tokens and logical
+ * properties only; the components layer, so utilities still win.
+ *
+ *   .pp-price         the block: the row, then the sentences under it
+ *   .pp-price__row    the price and the demo mark at the start, the fee note and the stock state at the end
+ */
+@layer components {
+  .pp-price {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .pp-price__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-4);
+  }
+  /* the start: the price, the demo mark under it (the before had the price alone on its side) */
+  .pp-price__main {
+    display: grid;
+    justify-items: start;
+    gap: var(--s-1);
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+  /* the end side takes what is left beside the price (its words wrap) before the row would put it under the price */
+  .pp-price__side {
+    flex: 1 1 8rem;
+    min-inline-size: 8rem;
+    max-inline-size: 18rem;
+    display: grid;
+    justify-items: end;
+    gap: var(--s-1);
+    padding-block-start: var(--s-1);
+    text-align: end;
+  }
+  .pp-price__fee {
+    font: var(--type-read);
+    color: var(--ink-2);
+    text-wrap: balance;
+  }
+  .pp-price__notes {
+    display: grid;
+    gap: var(--s-1);
+    font: var(--type-read);
+    color: var(--ink-2);
+  }
+}

@@ -75,7 +75,9 @@ export default function Forgot({ loaderData, actionData }: Route.ComponentProps)
   if (loaderData.delivery !== "provider") {
     return (
       <AuthCard title={t("forgot.title")} footer={back}>
-        <Notice title={t("forgot.unavailableTitle")}>{t("forgot.unavailableText")}</Notice>
+        <Notice title={t("forgot.unavailableTitle")} flat>
+          {t("forgot.unavailableText")}
+        </Notice>
         <Key as={LocaleLink} to={HANDOFF} variant="primary" icon="chat-circle" className="justify-self-start">
           {t("common.talk")}
         </Key>
@@ -117,7 +119,11 @@ export default function Forgot({ loaderData, actionData }: Route.ComponentProps)
           <input type="hidden" name="intent" value="reset" />
           <input type="hidden" name="phone" value={answer?.phone ?? ""} />
           <input type="hidden" name="id" value={answer?.id ?? ""} />
-          {answer?.ok && answer.phoneMasked ? <Notice tone="ok">{t("forgot.codeSent", { phone: ltr(answer.phoneMasked) })}</Notice> : null}
+          {answer?.ok && answer.phoneMasked ? (
+            <Notice tone="ok" flat>
+              {t("forgot.codeSent", { phone: ltr(answer.phoneMasked) })}
+            </Notice>
+          ) : null}
           <TextField id="forgot-code" name="code" inputMode="numeric" autoComplete="one-time-code" label={t("forgot.code")} required ltr error={fieldError(failed, "code")} />
           <PasswordField id="forgot-password" name="password" autoComplete="new-password" label={t("forgot.newPassword")} hint={t("signup.passwordHint")} required error={fieldError(failed, "password")} />
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">

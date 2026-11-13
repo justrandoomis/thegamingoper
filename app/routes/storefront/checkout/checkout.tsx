@@ -2,7 +2,6 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, typ
 import { data, Form, redirect, useNavigate, useNavigation, useSearchParams, useSubmit, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/checkout";
-import { Icon } from "~/art/Icon";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
 import type { CartView } from "~/lib/dto";
@@ -15,10 +14,10 @@ import { getDb } from "~/server/db.server";
 import { getDefaultAddress } from "~/server/services/account/addresses.server";
 import { getCartView } from "~/server/services/cart.server";
 import { useCartEditor } from "~/ui/cart-client";
-import { DemoNote } from "~/ui/DemoNote";
 import { EmptyState } from "~/ui/EmptyState";
 import { FormErrorSummary } from "~/ui/Field";
 import { Key } from "~/ui/Key";
+import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
 import { OrderSummary } from "~/ui/OrderSummary";
 import { Price } from "~/ui/Price";
@@ -30,6 +29,9 @@ import { TaskBar } from "~/routes/storefront/shell/TabBar";
 import type { ShellHandle } from "~/routes/storefront/shell/types";
 import {
   attemptFor,
+  BLOCKING_PROBLEMS,
+  cartReadiness,
+  COUPON_MINIMUM_INTENT,
   draftFromPosted,
   draftToForm,
   EMPTY_DRAFT,
@@ -43,6 +45,7 @@ import {
   stepOf,
   stepOfField,
   STEPS,
+  stockChanges,
   validateField,
   validateStep,
   withOfferedDay,
@@ -51,12 +54,15 @@ import {
   type FieldIssues,
   type FieldName,
   type Step,
+  type StockChange,
   type ValidationContext,
 } from "./checkout-form";
 import {
   addressPrefill,
+  answerCouponMinimum,
   cartTokenOf,
   confirmationPath,
+  couponShortfall,
   loadCheckoutData,
   nationalPhone,
   NO_STORE,
@@ -72,41 +78,58 @@ import { Adjustments, summaryCoupon, withFlash } from "./components/Adjustments"
 import { AddressStep, fieldId, NOJS_GOVERNORATE_ID, PaymentStep, ReviewStep, withOptionValue } from "./components/CheckoutSteps";
 import { CommitKey } from "./components/CommitKey";
 import { CouponForm, couponIssueText, type CartWithIssue } from "./components/CouponForm";
+import { StockNotice } from "./components/StockNotice";
 import { SummaryBar } from "./components/SummaryBar";
+import { useRemoveUnbuyable } from "./components/useRemoveUnbuyable";
 import "./checkout.css";
 
 /**
- * /checkout — guest checkout by default (Design System v2 §6.10; brief §4, §14). The checkout shell (§5.8): ONE bar —
- * back to the cart · the mascot · the step rail «1 التوصيل · 2 الدفع · 3 المراجعة» · «طلب تجريبي» · help — drawn by the
- * shell from this route's handle (`chrome: "checkout"`) and `?step=`; the page draws no rail of its own. Below 1024 a
- * 48px summary bar (the total, the items on demand) sits under it and the glass task bar holds «الإجمالي» and the
- * step's one primary; from 1024 the form takes 7 columns and the sticky summary 5, with the primary inside the card.
+ * /checkout — guest checkout by default (Design System v2 §6.10; brief §4, §14; v2.1 «Clay & Glass», client note 8).
+ * The checkout shell (§5.8): ONE bar — back to the cart · the mascot · the step rail «1 التوصيل · 2 الدفع · 3 المراجعة» ·
+ * «طلب تجريبي» · help — drawn by the shell from this route's handle (`chrome: "checkout"`) and `?step=`; the page draws no
+ * rail of its own. Below 1024 a 48px summary bar (the total, the items on demand) sits under it and the glass task bar
+ * holds «الإجمالي» and the step's one glossy primary; from 1024 the form takes 7 columns and the sticky summary 5, with
+ * the primary inside the card.
+ *
+ * The page (client note 8 — "more arrangement", the before's notes): the step's question is the h1; side information is
+ * the kit's Note (the guest note «أكمل الطلب بدون حساب.» with «سجّل الدخول ←» on its own line, the delivery fee under
+ * the governorate, the transfer rule, the demo-order line); each step's fields sit in soft section cards with an icon
+ * head (CheckoutSteps); one spacing scale (checkout.css).
  *
  * Three steps on one route, the step in the URL (`?step=address|payment|review`) so Back walks the steps and a step can
- * be linked; moving between them is the sideways push of the motion grammar and needs no request. One heading per step
- * (the step's question is the page's h1). The form's state lives in the page (it survives a language switch) and in
- * this tab's sessionStorage (a reload, the cart and back); it is cleared once the order exists.
+ * be linked; moving between them is the sideways push of the motion grammar and needs no request. The form's state lives
+ * in the page (it survives a language switch) and in this tab's sessionStorage (a reload, the cart and back); it is
+ * cleared once the order exists.
  *
  * Checks are instant and specific (on blur, again on every keystroke once a problem shows); «تابع» checks the step,
  * lists what to fix in one alert above the form and moves focus to the first field. The server checks everything
  * again — placeOrder prices the cart itself and refuses a total the shopper did not see (totals_changed, with the
  * fresh cart). The attempt key is made once per checkout and resent on a retry, so a double press, a reload or a lost
  * answer can never place two orders. The review edits the cart in place (quantities, removal with undo — the kit's cart
- * editor, priced for the chosen governorate); a line that sold out while confirming is taken out of the cart, said in
- * words, with its undo. Signing in is offered, never required; the wallet appears only for signed-in customers.
- * Without script all three steps show and one plain post places the order through the same action.
+ * editor, priced for the chosen governorate).
+ *
+ * Stock (client round 1, QA: after a lost race the page showed a total of 0 with «تابع إلى الدفع» still active): every
+ * step's key works only while every line can be bought (`cartReadiness`). Lines that cannot are named in one warning
+ * note with «أزل غير المتوفر»; a refusal at «أكّد الطلب» takes the sold-out lines out (no undo row: there is nothing to
+ * put back) and says by name what sold out or came down, and the total now; nothing left to buy is the empty state with
+ * the way back to the store — never a key that leads nowhere. Signing in is offered, never required; the wallet appears
+ * only for signed-in customers. Without script all three steps show and one plain post places the order through the
+ * same action.
  */
 export async function loader({ context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
   const db = getDb();
   const session = await getCustomer(ctx, db);
   const customerId = session?.customer.id ?? null;
+  const request = { cartToken: cartTokenOf(ctx), customerId, locale: ctx.locale };
   const [cart, page, address] = await Promise.all([
-    getCartView(db, { cartToken: cartTokenOf(ctx), customerId, locale: ctx.locale }, ctx.now),
+    getCartView(db, request, ctx.now),
     loadCheckoutData(db, { locale: ctx.locale, now: ctx.now, customerId }),
     // the account area's address book: a signed-in customer starts from their default address (never forced)
     customerId ? getDefaultAddress(db, customerId, ctx.locale) : Promise.resolve(null),
   ]);
+  // a stored code under its minimum says how much more is needed (client round 1, QA)
+  const shortfall = cart.couponIssue?.reason === "min_subtotal" ? await couponShortfall(db, request, cart.couponIssue.code, ctx.now, cart) : null;
   return data(
     {
       cart,
@@ -116,6 +139,7 @@ export async function loader({ context }: Route.LoaderArgs) {
       /** For a form posted without script; the page itself keeps one key per checkout in sessionStorage. */
       attemptKey: randomToken(),
       demo: ctx.storeMode === "demo",
+      couponShortfall: shortfall,
       i18n: messagesFor(ctx.locale, "checkout", "errors"),
     },
     { headers: NO_STORE },
@@ -127,6 +151,11 @@ export async function action({ request, context }: Route.ActionArgs) {
   const db = getDb();
   const session = await getCustomer(ctx, db);
   const form = await request.formData();
+  // how much more a coupon's minimum needs (a read the coupon field asks after /api/cart refused a code for it)
+  if (form.get("intent") === COUPON_MINIMUM_INTENT) {
+    const answer = await answerCouponMinimum(db, ctx, session?.customer.id ?? null, form);
+    return data(answer, { status: answer.ok ? 200 : answer.status, headers: NO_STORE });
+  }
   const result = await placeCheckout(db, { cartToken: cartTokenOf(ctx), customer: session ? { id: session.customer.id } : null, locale: ctx.locale, ip: ctx.ip, storeMode: ctx.storeMode, requestId: ctx.requestId }, form, ctx.now);
   if (result.ok) {
     // the purchase signal (devices area) — consent only, a new order only; a failure is logged and never touches the order
@@ -148,9 +177,10 @@ export function headers() {
   return NO_STORE;
 }
 
-/** Moving between steps changes only `?step=`: nothing to load. Other navigations and form posts: the default. */
-export function shouldRevalidate({ currentUrl, nextUrl, formMethod, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+/** Moving between steps changes only `?step=`: nothing to load. The coupon-minimum read changes nothing either. */
+export function shouldRevalidate({ currentUrl, nextUrl, formMethod, formData, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
   if (!formMethod && currentUrl.pathname === nextUrl.pathname) return false;
+  if (formData?.get("intent") === COUPON_MINIMUM_INTENT) return false;
   return defaultShouldRevalidate;
 }
 
@@ -172,9 +202,14 @@ const COMMIT_LABEL: Record<Step, string> = { address: "keys.toPayment", payment:
 
 const DELIVERY_FIELDS = ["governorateId", "districtId", "areaText", "addressText", "notes"] as const satisfies readonly FieldName[];
 
-/** Refusals about stock: the review shows the cart as it is now (sold-out lines are taken out, with their undo). */
+/** Refusals about stock: the review shows the cart as it is now (sold-out lines are taken out, by name). */
 const STOCK_CODES = new Set(["insufficient_stock", "used_unit_not_available", "cart_blocked", "cart_empty"]);
-const BLOCKING = new Set(["out_of_stock", "unavailable"]);
+
+/** A line that can no longer be bought (sold out, off sale). */
+const isBlocking = (line: { problem: string | null }) => line.problem !== null && BLOCKING_PROBLEMS.has(line.problem);
+
+/** The refusal on screen: its code, when it came, and — for a stock refusal — what changed, by name. */
+type Notice = { code: string; at: number; changes?: StockChange[]; removed?: boolean };
 
 /** The delivery part of the saved default address, as draft fields. */
 function savedDelivery(saved: SavedAddressPrefill): Pick<CheckoutDraft, (typeof DELIVERY_FIELDS)[number]> {
@@ -304,6 +339,8 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
     void priceFor(draft.governorateId || null, askedPoints, referral);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only when an edit answered
   }, [editor.view, editor.pending]);
+  /** Lines that can no longer be bought leave the cart without an undo row (a lost race, «أزل غير المتوفر»). */
+  const unbuyable = useRemoveUnbuyable(editor);
 
   // ── checks ───────────────────────────────────────────────────────────────────
   const context: ValidationContext = useMemo(
@@ -418,12 +455,14 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
   };
 
   // ── the server's answer to "confirm" ────────────────────────────────────────────────
-  const [notice, setNotice] = useState<{ code: string; at: number } | null>(null);
-  // Lines that sold out while confirming: taken out of the cart through the editor (each keeps its undo row).
+  const [notice, setNotice] = useState<Notice | null>(null);
+  /** The cart the shopper saw when they pressed «أكّد الطلب»: a stock refusal says what changed since. */
+  const submittedCart = useRef<CartView | null>(null);
+  // Lines that sold out while confirming: taken out of the cart through the editor once it shows the fresh cart.
   const [soldOut, setSoldOut] = useState<string[]>([]);
   useEffect(() => {
     if (soldOut.length === 0) return;
-    for (const lineId of soldOut) editor.remove(lineId);
+    unbuyable.remove(soldOut);
     setSoldOut([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once per refusal
   }, [soldOut]);
@@ -442,15 +481,17 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
     if (!result || result.ok !== false || lastAction.current === result) return;
     lastAction.current = result;
     let code = result.code;
+    let changes: StockChange[] | undefined;
     if (result.cart) {
       const fresh = result.cart;
       setPriced((current) => ({ ...current, cart: fresh as CartView, governorateId: draft.governorateId || null }));
-      if (STOCK_CODES.has(code)) {
-        const gone = fresh.lines.filter((line) => line.problem !== null && BLOCKING.has(line.problem)).map((line) => line.id);
-        if (gone.length > 0) {
-          setSoldOut(gone);
-          code = "soldOut";
-        } else if (fresh.lines.some((line) => line.problem === "qty_reduced")) code = "qtyReduced";
+      // a stock refusal — or a total that moved because a quantity came down to what is left (the core answers that
+      // with totals_changed) — says by name what sold out (taken out of the cart below) and what came down, against what
+      // the shopper confirmed
+      if (STOCK_CODES.has(code) || code === "totals_changed") {
+        changes = stockChanges(submittedCart.current?.lines ?? null, fresh.lines);
+        const gone = fresh.lines.filter(isBlocking).map((line) => line.id);
+        if (gone.length > 0) setSoldOut(gone);
       }
     }
     if (result.code === "idempotency_conflict") setAttemptKey(newAttemptKey());
@@ -465,32 +506,32 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
       goToProblem(field);
       return;
     }
-    setNotice({ code, at: Date.now() });
+    if (changes && changes.length > 0) code = "stock";
+    setNotice({ code, at: Date.now(), changes, removed: true });
     if (step !== "review") void navigate("?step=review");
     // eslint-disable-next-line react-hooks/exhaustive-deps -- reacts to a new answer only
   }, [actionData]);
 
+  // ── what the cart allows (client round 1, QA) ─────────────────────────────────────────
+  // "ready": every line can be bought · "blocked": some cannot (the steps wait until they are out) · "empty": nothing
+  // left that can be bought (no step key at all)
+  const readiness = cartReadiness(cart.lines);
+  const blockedIds = cart.lines.filter(isBlocking).map((line) => line.id);
+  const stockReason = cart.lines.length === 0 || readiness === "empty" ? t("reasons.empty") : readiness === "blocked" ? t("reasons.blocked") : null;
+
   // ── submitting ───────────────────────────────────────────────────────────────────
   const busy = navigation.state !== "idle" && navigation.formMethod?.toUpperCase() === "POST";
-  const blocked = cart.blocked;
   const reviewReason = !online
     ? t("reasons.offline")
-    : cart.lines.length === 0
-      ? t("reasons.empty")
-      : blocked
-        ? t("reasons.blocked")
-        : context.methods.length === 0
-          ? t("reasons.noMethod")
-          : editor.pending
-            ? t("reasons.editing")
-            : pricing === "pending"
-              ? t("reasons.pricing")
-              : null;
+    : (stockReason ??
+      (context.methods.length === 0 ? t("reasons.noMethod") : editor.pending ? t("reasons.editing") : pricing === "pending" ? t("reasons.pricing") : null));
   const formId = "checkout-form";
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (busy) return;
+    // a step key never leads to a dead end: nothing moves while the cart cannot be ordered (the key is flat and says why)
+    if (stockReason) return;
     const found = validateStep(step, draft, context);
     const field = firstIssue(found);
     if (field) {
@@ -505,6 +546,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
     if (reviewReason) return;
     setNotice(null);
     setSubmittedKey(attemptKey);
+    submittedCart.current = cart;
     writeStoredCheckout({ draft, key: attemptKey, submittedKey: attemptKey, cartId: cartIdRef.current });
     void submit(draftToForm({ ...draft, saveAddress: draft.saveAddress && offerSave, useWallet: splitting }, { idempotencyKey: attemptKey, expectedTotalIqd: cart.totalIqd, walletIqd: split?.walletIqd ?? 0 }), { method: "post" });
   };
@@ -530,42 +572,74 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
   }
   for (const name of Object.keys(issues) as FieldName[]) if (touched.has(name)) shown[name] = issues[name];
 
-  // ── an empty cart (nothing left to order, not even an undo row) ──────────────────────────────
-  if (editor.rows.length === 0) {
+  // The refusal to show: this visit's, or — on a page rendered after a plain form post — the server's (its sold-out
+  // lines are still in the cart then: without script nothing is taken out).
+  const shownNotice: Notice | null =
+    notice ??
+    (prehydration && !prehydration.fields
+      ? (() => {
+          const changes = prehydration.cart && (STOCK_CODES.has(prehydration.code) || prehydration.code === "totals_changed") ? stockChanges(null, prehydration.cart.lines) : [];
+          return changes.length > 0 ? { code: "stock", at: 0, changes, removed: false } : { code: prehydration.code, at: 0 };
+        })()
+      : null);
+
+  // ── nothing left that can be ordered: the empty state, with what changed and the way back to the store ─────────
+  // (an undo row the shopper left by hand keeps the review on screen, so a line removed by mistake can come back)
+  const showEmpty = editor.rows.length === 0 || (readiness === "empty" && editor.rows.every((row) => !row.removed || unbuyable.isRemoving(row.line.id)));
+  if (showEmpty) {
     const lost = restored && submittedKey !== null && recovery !== "none";
     const failedRecovery = recovery === "none";
+    // what made it empty: this visit's refusal, or lines in the cart that cannot be bought
+    const raceChanges = shownNotice?.code === "stock" ? (shownNotice.changes ?? []) : [];
+    const leftChanges = raceChanges.length > 0 ? raceChanges : stockChanges(null, cart.lines);
+    const browse = (
+      <Key as={LocaleLink} to="/c/consoles" variant={lost ? "secondary" : "primary"} iconEnd="arrow-right">
+        {t("empty.browse")}
+      </Key>
+    );
     return (
-      <div className="page co-page co-narrow">
-        <h1 className="sr-only">{t("checkout.title")}</h1>
+      <div className="page co-page co-narrow co-empty">
+        <h1 className="type-h1 text-ink">{t("checkout.title")}</h1>
         {lost ? (
           <div className="co-card grid gap-3" role="status">
             <h2 className="type-h3 text-ink">{t("recover.title")}</h2>
-            <p className="type-body text-ink-2">{t("recover.text")}</p>
+            <p className="type-read text-ink-2">{t("recover.text")}</p>
             <Key variant="primary" icon="receipt" loading={busy} onClick={recover} className="justify-self-start">
               {t("recover.action")}
             </Key>
           </div>
         ) : null}
-        {failedRecovery ? <p className="co-card type-body text-ink">{t("recover.none")}</p> : null}
-        <EmptyState
-          layout="stack"
-          headingLevel={2}
-          title={t("empty.title")}
-          text={t("empty.text")}
-          action={
-            <Key as={LocaleLink} to="/c/consoles" variant={lost ? "secondary" : "primary"} iconEnd="arrow-right">
-              {t("empty.browse")}
-            </Key>
-          }
-        />
+        {failedRecovery ? <Note icon="info">{t("recover.none")}</Note> : null}
+        {leftChanges.length > 0 ? (
+          <StockNotice
+            title={raceChanges.length > 0 ? t("stock.titleRace") : t("stock.titleEmpty")}
+            changes={leftChanges}
+            removed={raceChanges.length > 0 && shownNotice?.removed === true}
+            alert={raceChanges.length > 0}
+            noticeRef={noticeRef}
+            action={
+              <span className="co-actions">
+                {browse}
+                {cart.lines.length > 0 ? (
+                  <TextLink as={LocaleLink} to="/cart">
+                    {t("review.editCart")}
+                  </TextLink>
+                ) : null}
+              </span>
+            }
+          />
+        ) : (
+          <EmptyState layout="stack" panel headingLevel={2} title={t("empty.title")} text={t("empty.text")} action={browse} />
+        )}
       </div>
     );
   }
 
   // ── the page ─────────────────────────────────────────────────────────────────────
   const governorateChosen = Boolean(draft.governorateId) && priced.governorateId === draft.governorateId;
-  const commitDisabled = step === "review" && reviewReason !== null;
-  const reasonText = step === "review" ? reviewReason : null;
+  /** The step key's reason when it cannot work: the review's full list; on the first two steps, the cart's state. */
+  const reasonText = step === "review" ? reviewReason : stockReason;
+  const commitDisabled = reasonText !== null;
   const totalText = isIqd(cart.totalIqd) ? "⁨" + iqdText(f, cart.totalIqd) + "⁩" : "";
   /**
    * «أكّد الطلب · 1,594,000 د.ع» in the summary card: the action and the total each stay whole, so where the two do not
@@ -583,8 +657,18 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
       </>
     );
   };
-  const commit = (id: string, label: ReactNode = t(COMMIT_LABEL[step])) => (
-    <CommitKey type="submit" form={formId} loading={busy} disabled={commitDisabled && !busy} aria-describedby={reasonText ? id : undefined}>
+  /** The step's glossy primary: forward with an arrow; «أكّد الطلب» with a check that turns into the spinner while busy. */
+  const commit = (id: string, label: ReactNode = t(COMMIT_LABEL[step]), place = step === "review") => (
+    <CommitKey
+      type="submit"
+      form={formId}
+      loading={busy}
+      busyLabel={t("keys.placing")}
+      icon={place ? "check" : undefined}
+      iconEnd={place ? undefined : "arrow-right"}
+      disabled={commitDisabled && !busy}
+      aria-describedby={reasonText ? id : undefined}
+    >
       {label}
     </CommitKey>
   );
@@ -595,27 +679,60 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
       </p>
     ) : null;
 
-  // The refusal to show: this visit's, or — on a page rendered after a plain form post — the server's.
-  const shownNotice = notice ?? (prehydration && !prehydration.fields ? { code: prehydration.code, at: 0 } : null);
   const couponIssue = cart.couponIssue ?? null;
-  const noticeNode: ReactNode = shownNotice ? (
-    <div role="alert" ref={noticeRef} tabIndex={-1} className="callout callout--warn outline-none" key={shownNotice.at}>
-      <Icon name="warning" size={20} />
-      <div className="grid gap-2">
+  const editCartLink = (
+    <TextLink as={LocaleLink} to="/cart">
+      {t("review.editCart")}
+    </TextLink>
+  );
+  // a stock refusal: by name, what sold out (taken out of the cart) or came down, the total now — then confirm again
+  const noticeNode: ReactNode = !shownNotice ? null : shownNotice.code === "stock" ? (
+    <StockNotice
+      key={shownNotice.at}
+      alert
+      noticeRef={noticeRef}
+      title={t("stock.titleRace")}
+      changes={shownNotice.changes ?? []}
+      removed={shownNotice.removed === true}
+      totalIqd={readiness === "empty" ? null : cart.totalIqd}
+      after={readiness === "ready" ? t("stock.confirmAgain") : null}
+      // without script the sold-out lines are still in the cart: the cart page takes them out
+      action={shownNotice.removed ? undefined : editCartLink}
+    />
+  ) : (
+    <div role="alert" ref={noticeRef} tabIndex={-1} className="co-alert" key={shownNotice.at}>
+      <Note
+        tone="warning"
+        icon="warning"
+        action={["insufficient_stock", "used_unit_not_available", "cart_blocked", "cart_changed", "cart_empty"].includes(shownNotice.code) ? editCartLink : undefined}
+      >
         {/* one block: the sentence may be several nodes (an amount inside it) */}
-        <p className="type-sm-strong text-ink">{noticeText(shownNotice.code, cart, t, errorsT, f)}</p>
+        <p>{noticeText(shownNotice.code, cart, t, errorsT, f)}</p>
         {couponIssue ? (
           // Why the discount went: e.g. the code was already used with this phone number (checked at checkout).
-          <p className="type-xs text-ink-2">{couponIssueText(couponIssue, t, errorsT)}</p>
+          <p>{couponIssueText(couponIssue, t, errorsT)}</p>
         ) : null}
-        {["insufficient_stock", "used_unit_not_available", "cart_blocked", "cart_changed", "cart_empty"].includes(shownNotice.code) ? (
-          <TextLink as={LocaleLink} to="/cart" className="justify-self-start">
-            {t("review.editCart")}
-          </TextLink>
-        ) : null}
-      </div>
+      </Note>
     </div>
-  ) : null;
+  );
+  // lines in the cart that cannot be bought (on load, or after an edit): named, with the one thing to do — every step
+  // waits for it (a refusal's own notice says it instead, on the review)
+  const blockedNotice =
+    blockedIds.length > 0 && shownNotice?.code !== "stock" ? (
+      <StockNotice
+        title={t("stock.titleBlocked")}
+        changes={stockChanges(null, cart.lines)}
+        totalIqd={cart.totalIqd}
+        action={
+          <>
+            <Key size="sm" icon="trash" className="co-js" loading={unbuyable.removing} disabled={!online} onClick={() => unbuyable.remove(blockedIds)}>
+              {t("stock.remove")}
+            </Key>
+            <span className="co-nojs">{editCartLink}</span>
+          </>
+        }
+      />
+    ) : null;
 
   // The error summary of the step on screen («تحقّق من حقلين: …»), linked to the fields; only after «تابع» — or, on a page
   // rendered after a plain form post (no script: every step is on screen), every problem the server named.
@@ -641,53 +758,59 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
       })}
     </p>
   );
+  const demoNote = demo ? (
+    <Note variant="line" tone="demo">
+      {shopT("demo.orderLine")}
+    </Note>
+  ) : null;
   const summaryLines = cart.lines.map((line) => withFlash(withOptionValue({ id: line.id, name: line.name, optionsLabel: line.optionsLabel, lineTotalIqd: line.lineTotalIqd, image: line.image }), (line as { flash?: FlashPriceView | null }).flash, t, f));
   const shipping = governorateChosen ? (cart.shippingIqd === null ? "unserved" : "governorate") : page.shipping.overridesEnabled ? "pending" : undefined;
+  const count = cart.payableCount ?? cart.count;
   // every discount as charged, the waived delivery, a split payment's parts — under each summary's rows
   const adjustments = <Adjustments discounts={cart.discounts ?? []} waiver={cart.shippingWaiver ?? null} split={split} />;
   const coupon = (
-    <CouponForm cart={cart} locale={locale} governorateId={priced.governorateId} pricing={{ points: askedPoints, referral }} onCart={(fresh) => setPriced((current) => ({ ...current, cart: fresh }))} />
+    <CouponForm
+      cart={cart}
+      locale={locale}
+      governorateId={priced.governorateId}
+      pricing={{ points: askedPoints, referral }}
+      shortfall={loaderData.couponShortfall}
+      onCart={(fresh) => setPriced((current) => ({ ...current, cart: fresh }))}
+    />
   );
 
   return (
     <>
-      <SummaryBar cart={cart} className="lg:hidden">
-        <OrderSummary {...cart} coupon={summaryCoupon(cart.discounts, cart.coupon)} count={cart.count} title={null} lines={summaryLines} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} couponField={coupon} approx="off">
+      <SummaryBar cart={{ count, totalIqd: cart.totalIqd }} className="lg:hidden">
+        <OrderSummary {...cart} coupon={summaryCoupon(cart.discounts, cart.coupon)} count={count} title={null} lines={summaryLines} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} couponField={coupon} approx="off">
           {adjustments}
         </OrderSummary>
       </SummaryBar>
 
       <div className="page co-page co-split">
         <div className="co-form">
-          {blocked && step !== "review" ? (
-            <div role="alert" className="callout callout--danger">
-              <Icon name="warning-circle" size={20} />
-              <p className="callout__text text-ink">
-                {t("reasons.blocked")}{" "}
-                <TextLink as={LocaleLink} to="/cart" inline>
-                  {t("review.editCart")}
-                </TextLink>
-              </p>
+          {blockedNotice}
+          {pricing === "failed" ? (
+            <div role="status">
+              <Note variant="line" icon="wifi-slash">
+                {t("reasons.pricingFailed")}
+              </Note>
             </div>
           ) : null}
-          {pricing === "failed" ? (
-            <p className="flex items-start gap-2 type-xs text-ink-2" role="status">
-              <Icon name="wifi-slash" size={16} className="mt-0.5 shrink-0" />
-              {t("reasons.pricingFailed")}
-            </p>
-          ) : null}
 
-          <Form id={formId} method="post" noValidate onSubmit={onSubmit} className="grid gap-10">
+          <Form id={formId} method="post" noValidate onSubmit={onSubmit} className="co-steps">
             {STEPS.map((s) => {
               const current = s === step;
               // One heading per step: the step on screen is the page's h1 (without script all three show, the others are h2).
               const Title = current ? "h1" : "h2";
+              // its section cards' heads one level under it
+              const level = current ? 2 : 3;
               return (
                 <section key={s} aria-labelledby={`co-step-${s}`} className="co-step" data-current={current ? "" : undefined}>
                   <Title id={`co-step-${s}`} ref={current ? headingRef : undefined} tabIndex={-1} className="type-h1 text-ink outline-none">
                     {t(`steps.title.${s}`)}
                   </Title>
-                  {s === "address" ? <GuestStrip signedIn={signedIn} phoneMasked={loaderData.customer?.phoneMasked ?? ""} /> : null}
+                  {s === "address" ? <GuestNote signedIn={signedIn} phoneMasked={loaderData.customer?.phoneMasked ?? ""} /> : null}
                   {current ? errorSummary : null}
                   {s === "address" ? (
                     <AddressStep
@@ -701,9 +824,10 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
                       saved={fromSaved && saved ? { label: saved.label } : null}
                       onClearSaved={clearSaved}
                       offerSave={offerSave}
+                      headingLevel={level}
                     />
                   ) : s === "payment" ? (
-                    <PaymentStep draft={draft} issues={shown} onChange={update} onBlur={blur} data={page} cart={cart} signedIn={signedIn} />
+                    <PaymentStep draft={draft} issues={shown} onChange={update} onBlur={blur} data={page} cart={cart} signedIn={signedIn} headingLevel={level} />
                   ) : (
                     <ReviewStep
                       draft={draft}
@@ -713,6 +837,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
                       data={page}
                       cart={cart}
                       signedIn={signedIn}
+                      headingLevel={level}
                       notice={noticeNode}
                       editor={editor}
                       onReferralCheck={() => setReferralAsked(draft.referralCode.trim())}
@@ -721,11 +846,11 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
                         // below 1024 the totals sit here too (the summary bar is folded away), then the terms (without
                         // script the terms are said once, by the plain-post key at the end of the form)
                         <div className="grid gap-3 lg:hidden">
-                          <OrderSummary {...cart} coupon={summaryCoupon(cart.discounts, cart.coupon)} lines={null} count={cart.count} title={null} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} approx="off">
+                          <OrderSummary {...cart} coupon={summaryCoupon(cart.discounts, cart.coupon)} lines={null} count={count} title={null} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} approx="off">
                             {adjustments}
                           </OrderSummary>
                           <div className="co-js">{terms}</div>
-                          {demo ? <DemoNote variant="line">{shopT("demo.orderLine")}</DemoNote> : null}
+                          {demoNote}
                         </div>
                       }
                     />
@@ -738,7 +863,14 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
             {/* Only without script: the one key that posts the whole form (the step keys need the page running). */}
             <div className="co-nojs grid gap-2">
               {terms}
-              {commit("co-reason-plain", t("keys.place"))}
+              <CommitKey type="submit" form={formId} icon="check" disabled={stockReason !== null} aria-describedby={stockReason ? "co-reason-plain" : undefined}>
+                {t("keys.place")}
+              </CommitKey>
+              {stockReason ? (
+                <p id="co-reason-plain" className="type-xs-strong text-ink-2">
+                  {stockReason}
+                </p>
+              ) : null}
             </div>
           </Form>
         </div>
@@ -747,7 +879,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
           <OrderSummary
             {...cart}
             coupon={summaryCoupon(cart.discounts, cart.coupon)}
-            count={cart.count}
+            count={count}
             lines={summaryLines}
             shipping={shipping}
             pending={pricing === "pending" || editor.pending || busy}
@@ -761,10 +893,10 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
               </div>
             }
             trust={<TrustStrip variant="line" cod={page.methods.cod} returnsTo="/policies/returns" />}
-            demo={demo}
           >
             {adjustments}
           </OrderSummary>
+          {demoNote}
         </aside>
       </div>
 
@@ -782,27 +914,27 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
   );
 }
 
-/** «أكمل الطلب بدون حساب.» — the guest strip of the delivery step (§6.10), or who is signed in. */
-function GuestStrip({ signedIn, phoneMasked }: { signedIn: boolean; phoneMasked: string }) {
+/**
+ * «أكمل الطلب بدون حساب.» — the guest note of the delivery step (client note 8: the before's note — the kit's Note, a
+ * neutral soft card, the bag in its circle, the muted line and «سجّل الدخول ←» on its own line), or who is signed in.
+ */
+function GuestNote({ signedIn, phoneMasked }: { signedIn: boolean; phoneMasked: string }) {
   const t = useT("checkout");
   if (signedIn) {
-    return (
-      <p className="co-guest">
-        <Icon name="user" size={20} className="shrink-0" />
-        <span>{fillNodes(t("guest.signedIn"), { phone: <bdi dir="ltr" className="nums">{phoneMasked}</bdi> })}</span>
-      </p>
-    );
+    return <Note icon="user">{fillNodes(t("guest.signedIn"), { phone: <bdi dir="ltr" className="nums">{phoneMasked}</bdi> })}</Note>;
   }
   return (
-    <p className="co-guest">
-      <Icon name="check-circle" size={20} className="shrink-0" />
-      <span>
-        <b className="font-semibold">{t("guest.title")}</b> {t("guest.text")}{" "}
-        <TextLink as={LocaleLink} to="/account/login?next=%2Fcheckout" inline>
+    <Note
+      icon="shopping-bag"
+      title={t("guest.title")}
+      action={
+        <TextLink as={LocaleLink} to="/account/login?next=%2Fcheckout">
           {t("guest.signIn")}
         </TextLink>
-      </span>
-    </p>
+      }
+    >
+      {t("guest.text")}
+    </Note>
   );
 }
 

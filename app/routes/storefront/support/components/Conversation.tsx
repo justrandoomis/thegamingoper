@@ -1,9 +1,10 @@
 /**
- * The maintenance assistant's conversation (Design System v2 §6.13): the shopper's messages are --niche bubbles at the
- * inline end, the assistant's are --paper bubbles with a hairline at the inline start; --r-lg corners with an 8px
+ * The maintenance assistant's conversation (Design System v2 §6.13; v2.1): the shopper's messages are --niche bubbles
+ * at the inline end, the assistant's sit on the soft raised card at the inline start; --r-lg corners with an 8px
  * corner on the speaker's side. No glass, no clay on bubbles. Uncertainty is stated in words at the top of an answer;
- * safety warnings come first, as a callout that cannot be dismissed. Replies are chips (links: the conversation is the
- * URL); a device is chosen from 88×88 image chips. New turns inflate in (Bubble), never under reduced motion.
+ * safety warnings come first, as the kit's calm note (never dismissible). Replies are the kit's clay chips (links: the
+ * conversation is the URL); a device is chosen from 88×88 image chips. New turns inflate in (Bubble), never under
+ * reduced motion.
  */
 import { useLayoutEffect, useRef, type RefObject } from "react";
 import { useLocation, useNavigation } from "react-router";
@@ -95,11 +96,13 @@ function BotBubble({ turn, focusRef }: { turn: AssistantBotTurn; focusRef?: RefO
         </p>
       ) : null}
       {warning ? (
-        <SafetyNote title={t("assistant.safety.title")} tone={turn.kind === "danger" ? "danger" : "warn"}>
+        <SafetyNote title={t("assistant.safety.title")} tone={turn.kind === "danger" ? "danger" : "warn"} flat>
           {warning}
         </SafetyNote>
       ) : null}
-      <p className={cx("type-body text-ink", turn.kind === "danger" && "font-semibold")}>
+      {/* v2.1 G7: short bold titles, never a bold paragraph — a danger stop is marked by the safety note above it (the
+          danger tone: its disc and title in --danger), the words stay easy to read */}
+      <p className="type-body text-ink">
         <BidiParagraph text={text} />
       </p>
       {turn.articles.length > 0 ? <GuideList articles={turn.articles} showScope plain /> : null}

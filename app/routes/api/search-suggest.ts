@@ -2,13 +2,15 @@
  * GET /api/search/suggest?q=<text>&locale=<ar|en|ckb> — the header search field's suggestions (catalog area;
  * contract in app/routes/storefront/shell/SearchForm.tsx and docs/CONTRACTS.md §2).
  *
- *   200 { suggestions: { label: string; href: string; hint?: string; image?: string; priceIqd?: number; kindLabel?: string }[],
- *         total?: number }
+ *   200 { suggestions: { label: string; href: string; hint?: string; image?: string; priceIqd?: number; kindLabel?: string;
+ *         qualifier?: string }[], total?: number }
  *        at most 8 rows; href is locale-less: a corrected spelling first ("هل تقصد"), then the platform / department /
  *        device hub the words name (hint: what it is), then products (hint: their department; image: the art key of
- *        their picture; priceIqd: integer IQD, left out while sold out; kindLabel: «جهاز PS5»). `total` is how many
- *        products /search?q= lists for the same words — the count of «اعرض كل النتائج (42)» — present whenever the
- *        query was long enough to search. Fewer than two characters → an empty list and no total.
+ *        their picture; priceIqd: integer IQD, left out while sold out; kindLabel: «جهاز PS5»; qualifier: the words
+ *        the Latin title leaves out, «نسخة الأقراص» — the service's own, printed by the shell on the row's meta line,
+ *        never glued into the label). `total` is how many products /search?q= lists for the same words — the count
+ *        of «اعرض كل النتائج (42)» — present whenever the query was long enough to search. Fewer than two characters
+ *        → an empty list and no total.
  *   429 { suggestions: [], error: "rate_limited" } with Retry-After   (per IP)
  *   405 for anything but GET / HEAD (no action is exported)
  *
@@ -30,7 +32,7 @@ import { isPlatform } from "~/ui/PlatformLed";
 /** Keystrokes are debounced (160 ms) by the field; a person typing fast stays far below this. */
 const SUGGEST_LIMIT: RateLimitRule = { limit: 120, windowSec: 60 };
 
-export type SuggestionRow = { label: string; href: string; hint?: string; image?: string; priceIqd?: number; kindLabel?: string };
+export type SuggestionRow = { label: string; href: string; hint?: string; image?: string; priceIqd?: number; kindLabel?: string; qualifier?: string };
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
@@ -68,6 +70,8 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     const label = isPlatform(slug) ? ui(`platform.${slug}`) : item.label;
     const hint = item.hint ?? (item.kind === "product" ? undefined : t(`suggest.${item.kind}`));
     const row: SuggestionRow = hint ? { label, href: item.href, hint } : { label, href: item.href };
+    // the words the product's Latin title leaves out («نسخة الأقراص»): the service's own, products only
+    if (item.kind === "product" && item.qualifier) row.qualifier = item.qualifier;
     const card = item.kind === "product" ? cards.get(item.href) : undefined;
     if (card) {
       if (card.image.artKey) row.image = card.image.artKey;

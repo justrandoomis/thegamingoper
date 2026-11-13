@@ -1,33 +1,75 @@
 # Product area
 
 Owner: product. The product page `/p/:slug` and the quick look (brief §3.7–3.8; Design System v2 spec §6.7, §6.9,
-§6.17, §7, §9). Contract row: CONTRACTS.md §3 "product". Rebuilt for Design System v2 on 2026-11-12 (stage 3, P3).
+§6.17, §7, §9). Contract row: CONTRACTS.md §3 "product". Rebuilt for Design System v2 on 2026-11-12 (stage 3, P3);
+**rebuilt on the before's arrangement for v2.1 "Clay & Glass" on 2026-11-13** (client note 5 — section "v2.1" below;
+where it and the v2 text further down disagree, v2.1 wins).
 
 ## Files
 
 | File | What |
 |---|---|
-| `app/routes/storefront/product/product.tsx` | the page: loader, meta (`shellMeta`, `og:image` = `productShareImage`), `handle.shell.tabBar = false`, `shouldRevalidate` (a change of `?v=` only skips the loader), layout, the buy bar (a named region whose measured height it publishes as `--shell-taskbar-h`), JSON-LD |
+| `app/routes/storefront/product/product.tsx` | the page: loader, meta (`shellMeta`, `og:image` = `productShareImage`), `handle.shell.tabBar = false`, `shouldRevalidate` (a change of `?v=` only skips the loader), the v2.1 layout (stage card, information column at the inline start from 1024, the brand line `BrandLine`, the fact line), the phone buy bar inside the shell's `<TaskBar>`, JSON-LD |
+| `…/components/StageCard.tsx` | v2.1: the kit's `Gallery` as a soft stage card — the round clay keys over it (back: real history Back, else the category; share), the sliding ring of the chosen thumbnail (kit `useSlidingIndicator` on the tray), the step direction of a picture change; pure `stageStep`, `stageGel` (the light's colour), `stageBack` |
+| `…/components/BuyStrip.tsx` | v2.1: the phone / tablet bar — the kit's `BuyControls` (clay tray + glossy red «أضف إلى السلة»), «✓ في السلة» + «عرض السلة (n)» after an add, the kit's `BuyBar bare` words for sold out / coming soon, a failure or offline line above; pure `stripState` |
 | `…/product/QuickPreview.tsx` | `<QuickPreview slug name card? image? open onClose />` and `fetchPreview(slug, locale, signal?)` — the quick look (export signature unchanged) |
 | `…/product/preview.ts` | `GET /api/product-preview/:slug?locale=` → `{ ok, product: ProductPreview, i18n }` (404 `{ ok:false, code:"not_found", i18n }`) |
 | `…/product/useVariant.ts` | `?v=` handling: `shownDefault`, `variantFor`, `searchFor`, `onlyVariantChanged`, `useVariantInUrl` |
-| `…/product/text.ts` | the researched text as the page shows it: `factParts` / `factLine` / `factRow` (+ `FactRow`), `claimsPreorder`, `withoutPreorder`, `proseWithoutPreorder`, `keepTokens` (protected tokens never break), `isLongName` / `LONG_NAME_CHARS` (the h1 one step down on phones) |
-| `…/product/jsonld.ts`, `i18n.tsx`, `product.css` | schema.org data; the strings hook (`useProductT`, `<ProductMessages>`); full-bleed stage, the one-line fact row (`.pp-facts`), sticky gallery, the reading pairs |
-| `…/components/PriceBlock.tsx` | price xl + demo tag + «● متوفر · التوصيل …» (kit `PriceTag size="page"`), the reason sentences; `struckPrice`, `priceLook` (sold out = muted, no saving), `useDemoStore` |
-| `…/components/Facts.tsx` | `PaymentLine` (the one payment sentence + transfer rule), `FactsCard` (kit `FactList` on paper); `paymentMethods`, `offersTransfer`, `ASK_HREF` |
+| `…/product/text.ts` | the researched text as the page shows it: `factParts` / `factLine` / `factRow` (+ `FactRow`), `claimsPreorder`, `withoutPreorder`, `proseWithoutPreorder`, `keepTokens` (a name's protected tokens never break — a short token with a digit, a capital or «+», or a unit after a number; the small words of a sentence stay breakable), `isLongName` / `LONG_NAME_CHARS` (the h1 one step down on phones) |
+| `…/product/jsonld.ts`, `i18n.tsx`, `product.css` | schema.org data; the strings hook (`useProductT`, `<ProductMessages>`); the stage card (light, tray, ring, keys, picture slide), the 5 + 7 grid with the sticky gallery, the price block's two sides, the fact line, the notes, the bar's slide-in, the reading pairs, the reduced-motion and more-contrast rules |
+| `…/components/PriceBlock.tsx` | v2.1: the before's arrangement — price xl (Kufam) with the demo tag and a real saving at the start, the delivery fee note and the stock state (or the release day) at the end, the reason / offline / lifecycle sentences under both; `struckPrice`, `priceLook` (sold out = muted, no saving), `priceSide`, `useDemoStore` |
+| `…/components/PriceBlock.css` | the price block's own layout, imported by the component — the quick look draws the block over listings, the home and search, where `product.css` is not loaded (v2.1 review) |
+| `…/components/Facts.tsx` | v2.1: `SideNotes` — the side information as the kit's `<Note>`s under «التوصيل والدفع والإرجاع» (payment + transfer rule, delivery + guest checkout or the code fact, returns, warranty); `paymentMethods`, `offersTransfer`, `methodsList`, `sentenceStart`, `ASK_HREF` |
 | `…/components/VariantPicker.tsx` | option cards with prices (figure and «د.ع» never split) · swatches · chips (`pickerLook`); no-script GET form — for swatches a `<noscript>` group of native radio chips (the swatches hide under `noscript:`) |
-| `…/components/Actions.tsx` | `SecondaryActions` (WishlistKey · CompareToggle · `ShareKey`) |
-| `…/components/Details.tsx` | `Section`, `BeforeYouOrder`, `Highlights`, `About`, `GameFacts`, `Rows`, `Specs` (+ `sourceLine`), `InTheBox` (+ `boxPhoto`) |
+| `…/components/Actions.tsx` | `SecondaryActions` (WishlistKey · CompareToggle · `ShareKey`, a ghost key; `shareFrom="lg"`: the stage carries share below 1024), `useShare` |
+| `…/components/Details.tsx` | `Section`, `BeforeYouOrder` (v2.1: the kit's warning `Note`), `Highlights` (v2.1: a checked list, `type-read`), `About` (65ch, `type-read`), `GameFacts` (the key-card / code sentence as an info `Note`), `Rows`, `Specs` (+ `sourceLine`), `InTheBox` (+ `boxPhoto`) |
 | `…/components/Slots.tsx` | cross-area pieces: `CompatibilitySlot` (+ `compatRows`), `DeviceHubSlot`, `RecommendationsSlot`; `alternativesPath` (where «شاهد بدائل» leads) |
 | `…/components/SetContents.tsx`, `MixedText.tsx`, `Reviews.tsx` | store-set rows (each opens the quick look); bracket-safe Latin isolation (comma thousands are one run; a name goes on across a spaced joiner, «32GB / 1TB»; protected tokens kept together); reviews only when real |
 | `app/server/services/catalog/product.server.ts`, `product-types.ts` | read layer (owner: data, D) — `getProductDetail`, `ProductDetail`, `VariantDetail`, `ProductPreview`, `galleryFor`, `selectVariant` |
 | `app/i18n/messages/product.ts` | the "product" namespace (ar source, en, ckb) |
-| `tests/product.test.ts` | 55 tests on the demo catalogue + a test world (server renders of the version picker, the box list, the hub row and the price block inside a `createRoutesStub` router; `keepTokens` over every catalogue text) |
+| `tests/product.test.ts` | 65 tests on the demo catalogue + a test world (server renders of the version picker, the box list, the hub row, the price block, the notes, «قبل أن تطلب», highlights and the phone bar inside a `createRoutesStub` router; `keepTokens` over every catalogue text — and the longest run it makes; the price block's own stylesheet; the tray's geometry at 360; the offline sentence said once) |
 
-`StageOrbs.tsx` is gone (spec §11.5): below 1024 the shell's task header (back · title · cart) appears after 24px of
-scroll, and the header's cart is the fly-to-cart target at every width.
+v2's removal of the before's `StageOrbs.tsx` stands; v2.1 puts round clay keys back on the stage below 1024 (back and
+share, `StageCard`), while the header's cart stays the fly-to-cart target at every width and the shell's task header
+(back · title · cart) still appears after 24px of scroll.
 
-## The page (spec §6.7)
+## v2.1 "Clay & Glass" (2026-11-13, client note 5: "the before look better")
+
+The client preferred the BEFORE page ("the information is easy to read, button better, image and font like, and also
+the note look better, also the bar above the name is much better"). The page is the before's arrangement rebuilt with
+the v2.1 kit, keeping v2's features (zoom / full-screen gallery, the version in the URL, the actions row, «عرض السلة»
+after an add, quick look, JSON-LD, every state, the used-unit link through the shelves).
+
+- **Phones.** The stage is a soft card edge to edge under the header (lower corners rounded, 39:35 at 390; 4:3 on a phone under 760px tall, so the price stays above the bar): the kit's
+  ground with the ambient light of the version's platform painted into it (a low pool on the floor line and a wide
+  glow; brand red without a platform), the whole product floating in the middle of its zone with room around it
+  (≈48% of the width for Switch 2 instead of v2's 77%), round clay keys over it — back at the start (real history
+  Back, else the category) and share at the end beside the kit's full-screen key — the counter «1 من 6» above the
+  thumbnails, which sit as raised tiles in a clay tray in the card's foot (its corners concentric with the tiles', so
+  the chosen ring is whole at either end; six tiles fit from 320: 48px 6px apart at 360–367, 44px 4px apart under
+  360). Then the breadcrumb bar (one line, up to
+  the category: the current page is the name right under it), the brand line («جديد» when `isNew`, or «قريباً», + the
+  platform's colour line and name; a product of no platform: its brand beside a neutral line), the name in Kufam, the
+  fact line at 16px / 1.75 (running text, the « · » glued to the first fact), the price block (price big in Kufam with
+  the demo tag at the start; «التوصيل 5,000 د.ع لكل المحافظات» and «● متوفر» at the end), the versions as cards with
+  their own prices, المفضلة · قارن, the side information as calm notes (`SideNotes`: «طرق الدفع» with the transfer
+  rule, delivery + «اطلب بدون حساب», returns, warranty) and «قبل أن تطلب» (warning note), «أبرز ما فيه» (checked
+  list). The bar: the clay quantity tray and the glossy red «أضف إلى السلة» (the before's), «✓ في السلة» + «عرض
+  السلة (n)» after an add; it slides in with the page.
+- **768–1023.** The same, the stage card inside the page column with every corner round (16:11), 16px under the header.
+- **From 1024.** The before's 5 + 7: the information column at the inline START (breadcrumbs — up to the category at
+  1024–1279, where the 375–450px column cannot hold the current page on the same line; the whole trail from 1280 —, brand line, name, facts,
+  price block, versions, the tray + «أضف إلى السلة», المفضلة · قارن · مشاركة, the notes, highlights) and the gallery
+  at the inline END, sticky; below: about + «يعمل مع», game facts, specs | set + box, the hub row, reviews (real only)
+  and the shelves, each fading up as it arrives (`Reveal`).
+- **Motion.** A new picture slides in from the side it comes from (`data-step` next / previous, `pp-slide-*`; a new
+  colour's set inflates in place — the kit's entrance); the chosen thumbnail's ring slides along the tray; the bar
+  slides up with the page; the add key presses and the bead flies (kit). All instant under reduced motion (OS or the
+  store's switch) and the lite tier.
+- **Readable.** Facts, notes, the fee note and highlights ≥ 16px with line height ≥ 1.7 on phones (measured); name >
+  price > versions > notes.
+
+## The page in v2 (spec §6.7) — kept for the rules; the arrangement is now v2.1's (above)
 
 Phones, top to bottom: header (demo strip at load) · the stage full bleed and square (kit `Gallery`: neutral ground,
 counter «1 من 6», full-screen key) · 56px thumbnails below it · platform dot + name + kind («● Nintendo · جهاز»; «قريباً»
@@ -62,15 +104,16 @@ buyer-relevant line per version arrives only from the owner. Without script ever
 form: option cards and chips are native radios, and swatch products render the same colours as native radio chips in a
 `<noscript>` group (the swatches hide under Tailwind's `noscript:` = `@media (scripting: none)`).
 
-Buy bar (phones and tablets): the kit's `BuyBar`, placed as the shell's task bar (`.shell-taskbar`, so the tab bar
-gives way), wrapped in a `role="region"` named «شراء {name}» that sits right after the buy box in the reading and Tab
-order (it is fixed on screen; from 1024 the wrapper is hidden, so no empty landmark). The page measures the bar and
-publishes its height as `--shell-taskbar-h` (the shell's task-bar contract → `--shell-bottom`): the bar grows from 72px
-to 93px after an add, and the page's bottom padding, the toasts and the global scroll padding follow. Price and version
-at the start, «أضف إلى السلة» at the end; after an add of this version «✓ في السلة» + «عرض السلة (n)» (another version
-restores the key); sold out «نفد حالياً» + «شاهد بدائل»; coming soon «يصدر … · الطلب يفتح عند وصوله», no key. A failed
-add keeps the bar on one line: its sentence takes the bar's info line, the kit's error toast carries «أعد المحاولة»;
-offline the info line says «لا يوجد اتصال» (the full sentence is under the price, named by the key's aria-describedby).
+Buy bar (phones and tablets; v2.1): `BuyStrip` inside the shell's `<TaskBar>` (the glass, the `role="region"` named
+«شراء {name}» right after the buy column in the reading and Tab order, the persisted name, and the measured height it
+publishes as `--shell-taskbar-h` → `--shell-bottom`, so the page padding, toasts and scroll padding follow when the bar
+grows). Ready: the clay quantity tray at the start and the glossy red «أضف إلى السلة» at the end (the kit's
+`BuyControls`, as the before had it; on a 360 phone the key's side padding tightens through the kit's `--px` so its
+words are never cut). After an add of this version: «✓ في السلة» over the price and «عرض السلة (n)» (another version
+restores the tray and the key). Sold out «نفد حالياً» + «شاهد بدائل»; coming soon «يصدر … · الطلب يفتح عند وصوله», no
+key (the kit's `BuyBar bare`). A failed add puts its sentence on a line above the controls and the kit's error toast
+carries «أعد المحاولة»; offline that line says «لا يوجد اتصال» and the key goes flat (the full sentence is under the
+price, named by the key's aria-describedby).
 
 «شاهد بدائل» (bar and desktop) opens the product's own category (`alternativesPath`: its most specific category, whose
 listing puts what is in stock first; else its platform hub). Not the page's shelves: on a sold-out page they are
@@ -92,12 +135,13 @@ cards of products with options (kit `ProductCard` → lazy import), from store-s
 | sold out | a sold-out default opens on an orderable version; otherwise the price muted (never the red sale figure, no saving words) + «● نفد حالياً» + one sentence (this version / the whole product), the bar «نفد حالياً» + «شاهد بدائل», the desktop key flat «نفد حالياً» + «شاهد بدائل» (→ the category) |
 | coming soon | «قريباً» tag, the line «● يصدر 20 أيار 2027» alone (no delivery fee beside it: one line on a phone; the facts card states the fee) + the sentence «الطلب يفتح عند وصوله.»; no key anywhere; research sentences that speak of pre-orders are left out (fact line, highlights, about, in the box, notes) |
 | digital code | «● نفد حالياً» or «● متوفر» with no delivery fee; facts: «يصلك الرمز بعد تأكيد الدفع.», payment; no returns or warranty rows |
-| API failure | add: the count rolls back, the sentence (bar info line on phones, under the key from 1024) + the error toast with «أعد المحاولة». Quick look: ErrorState + retry |
-| offline | the shell's banner; the add keys go flat with «لا يوجد اتصال. تعود الإضافة إلى السلة مع عودة الاتصال.» (aria-describedby; the bar's one line says «لا يوجد اتصال»); quick look: the offline ErrorState, retried when the connection returns |
+| API failure | add: the count rolls back, the sentence (v2.1: the bar's line above the tray on phones, under the key from 1024) + the error toast with «أعد المحاولة». Quick look: ErrorState + retry |
+| offline | the shell's banner; the add keys go flat and say why ONCE: on phones and tablets «لا يوجد اتصال. تعود الإضافة إلى السلة مع عودة الاتصال.» under the price (aria-describedby; the bar's line says «لا يوجد اتصال»), from 1024 the kit's line under the column's key (the sentence under the price gives way: `[data-offline-line]`, v2.1 review); quick look: the kit's line after the foot's flat key (once), and while loading the offline ErrorState, retried when the connection returns |
 | no script | versions (cards, chips and — through the `<noscript>` chips — colours) choose through the GET form and `?v=`; the add key needs script (kit) |
-| success | the bead counts at once, the bead flies from the stage photo to the header cart, the toast after landing, the bar «عرض السلة (n)» |
-| demo | «سعر ومخزون تجريبيان» beside the price; a demo previous price is struck only while the store is in demo mode and never worded as a saving; demo stock never «الكمية محدودة» |
-| reduced motion | the engine's rules (no flight, count + announcement; no zoom) |
+| success | the bead counts at once, the bead flies from the stage photo to the header cart, the toast after landing, the bar «✓ في السلة» + «عرض السلة (n)» |
+| demo | «سعر ومخزون تجريبيان» under the price (v2.1: the price's side of the block); a demo previous price is struck only while the store is in demo mode and never worded as a saving; demo stock never «الكمية محدودة» |
+| reduced motion | the engine's rules (no flight, count + announcement; no zoom); v2.1: no picture slide, no ring travel, no bar slide-in (the OS setting, the store's switch and the lite tier) |
+| opaque photos | light: the plate multiplies into the stage's ground (kit); dark: the kit's white plate stays (never a filter) — on 6 products the stage's first photo is plated (PlayStation 5 (2020), Switch Lite, PULSE 3D, PlayStation Plus, PlayStation Store card, Xbox Game Pass); 26 more have plated photos further in the gallery (list in the v2.1 report) |
 | 404 / letter case | unknown, draft, review, archived, future-scheduled or variant-less slugs → the shell's 404 panel; other letter case → 301 to the canonical slug (`?v=` kept) |
 
 ## Real, demo, boundary
@@ -144,15 +188,66 @@ contrast · focus walk 0 stops under a bar and a ring on every stop (390 after a
 (1)», failed add rolled back, offline flat key, no-script colour choice → `?v=`, quick look add + Escape (focus back to
 the card), quick look loading / failed / gone / offline. Chromium (Edge) only.
 
+## Verified (v2.1, 2026-11-13)
+
+`npm run typecheck` (no error in this area) · `npx vitest run tests/product.test.ts` (61 pass: 6 new for v2.1, no
+assertion of v2 changed) · `node scripts/lint-design.mjs --strict` on the area and its strings (0) · sweep of
+`/p/nintendo-switch-2` at 360 / 390 / 768 / 1024 / 1440 light and dark (ar) and 390 / 1440 (en, ckb): no overflow,
+one h1, one visible red primary, reading text ≥ 16px everywhere, Kufam ≥ 15px, no console error or hydration warning ·
+first phone screen at 390×844: the price and the stock line above the bar and the add key on screen on 106 of 106
+products (ar) · flows (Chromium): the bar slides in, thumbnail → slide next / previous and the ring travels, swipe
+(RTL), full-screen viewer + Escape (focus back), `?v=` + reload, add → bead + «عرض السلة (1)», card → product → Back
+keeps the scroll (stage key at 390, browser Back at 1440), quick look from a card (390 sheet, 1440 side), offline, a
+failed add (cart 500), reduced motion (OS and the store's switch) · focus walk 390 / 1440 light and dark: every stop of
+the area ringed, none under the header or the bar · states shot: sold out, coming soon, digital, colours, store set,
+game, struck price, no platform, long name, «جديد», plated photos. Screenshots and scripts:
+`…/scratchpad/fb1/shots/product/`, `…/scratchpad/fb1/work/product/`.
+
+## Review (v2.1, 2026-11-13)
+
+Found with my own probes and screenshots, all fixed in the area (tests first where it is behaviour):
+
+- **The quick look's price block was unstyled** everywhere but the product page: its rules lived in `product.css`,
+  which only `/p/` loads — opened from a listing, the home or search, the price, the demo tag, the fee and the stock
+  were plain stacked lines. → `components/PriceBlock.css`, imported by `PriceBlock.tsx` (SSR critical CSS and the
+  lazy quick-look chunk both carry it).
+- **English pages wider than the phone**: `keepTokens` glued every word of up to three letters to the one before, so
+  English prose became unbreakable runs of up to 47 characters («GPU: 4K at up to 120 FPS and 8K HDR»);
+  `/en/p/xbox-series-x` was 407px wide at 390 (the layout viewport grows in mobile Chrome, so `scrollWidth >
+  innerWidth` never saw it). → only a name's short tokens are kept (a digit, a capital or «+»; a unit after a number);
+  the longest run the catalogue can make is now 25 characters (test over every text in ar/en/ckb).
+- **The thumbnail tray cut its ends**: its 28px pill corners clipped the chosen ring at either end on every page, and
+  at 360 six tiles needed 340px of 336 (it scrolled, the last tile cut). → corners concentric with the tiles'
+  (`calc(var(--r-sm) + var(--pp-tray-pad))`), 6px gaps at 360–367, 44px tiles 4px apart under 360.
+- **768–1023**: the stage card was glued to the header (no space above a card with four round corners) → 16px.
+- **1024–1279**: the breadcrumb bar broke onto a second line holding only «‹ Nintendo Switch 2» in the 375–450px
+  column → up to the category there, as on phones (the whole trail at 768–1023 and from 1280; JSON-LD unchanged).
+- **320–359**: «أضف إلى السلة» was cut to «أضف إلى …» in the bar → the decorative bag gives way, `--px` 12.
+- **Offline from 1024**: the shell's banner, the sentence under the price and the kit's line under the key said the
+  same thing three times, and the key was described by both sentences → the sentence under the price gives way from
+  1024 (`[data-offline-line]`, utilities layer), the column's key is described by the kit's line only. The quick look
+  said it twice as well (under the price and in the foot): now only the kit's line after the foot's key.
+- **Short phones** (360×740, 375×667): the 39:35 card put the price under the buy bar on 54 of 106 products at
+  360×740 → below 760px of height the card is 4:3 (the whole product, a little smaller): 104 of 106 now.
+
+Verified: `npx vitest run tests/product.test.ts` 65 pass (4 new; no earlier assertion changed) · full suite 139 files /
+4217 tests pass · `npm run typecheck` green · `lint-design --strict` 0 · every product at 390×844: price and stock line
+above the bar 106/106 in ar and en, 106/105 in ckb (the Charging Station's three-line Sorani name; the bar says sold
+out); at 360×740: price 104/104/103 of 106 (ar/en/ckb); horizontal overflow 0 everywhere, measured against
+`documentElement.clientWidth` · flows, focus walks (390, 1024, 1440), motion tiers, no-script colours, quick look
+states. Shots and scripts: `…/scratchpad/fb1/shots/product-review/`, `…/scratchpad/fb1/work/product-review/`.
+
+Outside the area (reported): a card → product zoom on a phone aborts its view transition with an uncaught
+`InvalidStateError: … Viewport size changed` (Chromium mobile emulation, from listings and the home; not from the
+product page — it stays with the page hidden; a plain router navigation is clean).
+
 ## Not done / limits
 
-- The §6.7 first-screen target (price, demo tag and stock-and-delivery line above the buy bar, y ≤ 760 at 390×844)
-  holds for 104 of 106 products in Arabic, 105 in Sorani, 104 in English (was 91, then 60). The 2 left are names of
-  three lines even one step down, with one more line of the kit's above them: SanDisk Optimus GX C50 (a struck demo
-  previous price, 16px — 777) and the Switch 2 Zelda 40th Anniversary Edition (the 24px «جديد» tag in the kind line —
-  764 in Arabic, 761 in English). Room for them is the kit's (the previous price inline on the price row; asked).
-- Stage fill: the hardware covers ~52% of the stage at 390 (Switch 2; target 60%): the kit's stage insets (8/6/9%) and
-  the photos' own transparent margins — asked of the kit owner.
+- v2's first-screen notes below are superseded: with v2.1 the price and stock line sit above the bar on every product
+  at 390×844 (Arabic measured; English and Sorani in the report).
+- v2's "stage fill 60%" target is withdrawn by client note 5 (the whole product with room around it).
+- The stage card, its tray and the sliding ring restyle the kit's gallery from product.css (scoped to `.pp-stage`); the
+  quick look and the used unit page keep the kit's plain stage — asked of the kit owner to fold it in (report).
 - From a card, the quick look's code is fetched on first use: offline before that, the card's button does nothing
   (kit `ProductCard`) — asked of the kit owner.
 - A variant's own photos replace the product gallery (the database cannot tell "the whole gallery" from "none").

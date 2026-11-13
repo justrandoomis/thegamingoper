@@ -3,13 +3,27 @@
 Owner: content. Brief §3.13. Routes in `app/routes/storefront/content/` (registered in its `routes.ts`, before the
 `*` 404), service `app/server/services/content.server.ts`, strings `app/i18n/messages/content.ts` (and the brand strings
 in `common.ts`), page CSS `content.css`, tests `tests/content.test.ts`. The design-system and motion-lab files in the
-same folder belong to other owners.
+same folder belong to other owners. Since Design v2.1 (2026-11-13) also the 404: the view
+`components/NotFoundView.tsx` (+ `not-found.css`), the shell's error panels `shell/ShellError.tsx` (the only shell file
+this area owns) and the root boundary's storefront 404 (`components/RootNotFound.tsx`, one branch in `app/root.tsx`).
 
 **Design System v2 (2026-11-11, spec §6.15–§6.16):** the pages are built from the kit only — `FactList`, `EntryCard`,
 `ContactCard`, `Segmented` (via the shell's `ThemeBank` / `LanguageBank` and `MotionChoice`), `Key`, `Blocks`,
 `Breadcrumbs`, `Status` — on a 720px reading column at the start line of the wrap (`.ccol`), with an aside from 1024
 on /about and /contact (`.csplit`) and the 240px list of policies beside the text (`.cpolicy`). No retired kit names
-(the 1.0 `KeyBank` segment became `Segmented`; no clay keys, no tonal panels).
+(the 1.0 `KeyBank` segment became `Segmented`).
+
+**Design v2.1 «Clay & Glass» (2026-11-13, client feedback round 1, wave B):** the pages keep their structure and take
+the new look (DESIGN.md §15): the breadcrumbs on phones too (the before's bar, `<Breadcrumbs phone>`); the page's own
+cards — the hand-off card, the link rows' card, the settings card — are the soft raised card (`--card-face` +
+`--e-surface`; dark: faux glass over the floor's light, no section paints a background); link rows (`LinkRows`,
+`ContactChannels`) are the before's rows: the icon on a 40px raised clay disc, the title in Kufam (`type-h3`), a 16px
+hint, 64px tall, a caret that nudges toward the reading end; side lines are the kit's `<Note>` (the anti-fraud rule on
+/contact a success-tone card; the WCAG aim and the "this text is in Arabic" line a quiet `variant="line"`); reading
+text is 16px (section lines, the hand-off sentence); sections below the fold fade up once (`Section reveal`,
+`HandoffCard reveal`, the doors on /about staggered, the list of policies below the article) — never a form, never the
+text being read. **The 404 (client note 11):** the before's page with v2's mascot and four platform tiles — see the
+`*` row and "The 404" below.
 
 ## Routes
 
@@ -20,7 +34,7 @@ on /about and /contact (`.csplit`) and the 240px list of policies beside the tex
 | `/accessibility` | `accessibility.tsx` | the aim (WCAG 2.2 AA) · settings on this device (theme, language, the motion engine's reduce-motion override) · six fact rows of what the site supports · ONE short «ما لم نختبره بعد» · «أبلغنا عن مشكلة» → the hand-off form (the red key), plus the ContactCard when there is one |
 | `/policies` | `policies.tsx` | the head with ONE status line while any policy is a first version · every policy (icon, title, one line) in a paper card · «لم تجد جوابك؟» → «اكتب لموظف». A row says «نسخة أولى» only when some policies are approved and some not |
 | `/policies/:slug` | `policy.tsx` | breadcrumbs, h1, summary, the status line («● نسخة أولى — قد تتغيّر قبل الإطلاق.» · «آخر تحديث 11 تشرين الثاني 2026»), «باختصار» (live facts as kit fact rows), the text (`<Blocks>`), «قد تحتاج أيضاً» rows, all policies (a 240px sticky list at the start from 1024, after the text below it) |
-| `*` (`/nope`, an unknown policy) | `not-found.tsx` → the layout's ErrorBoundary | the shell's 404 panel (`shell/ShellError.tsx`, owner shell, v2 §6.16): the mascot, «لم نجد هذه الصفحة», the header's search field (focused from 1024), home + «مركز الدعم», the four compact platform tiles; status 404 |
+| `*` (`/nope`, an unknown policy, a missing product `/p/<slug>`) | `not-found.tsx` → the layout's ErrorBoundary → `shell/ShellError.tsx` → `components/NotFoundView.tsx` | the store's 404 (v2.1, client note 11): the mascot in a frosted circle over a soft brand light · a big «404» in Kufam · «لم نجد هذه الصفحة» · one line · the search field (the shell's own form with suggestions; focused from 1024) · the clay «العودة إلى الرئيسية» with «مركز الدعم» beside it · «أو ابدأ من منصّتك» · the four compact platform tiles (counts and photos from the navigation). A missing product: the same view with its own title and line, the field starting with the address's words, the used devices under the tiles. No red key. Status 404 |
 | `/sitemap.xml` | `app/routes/api/sitemap.ts` | every public page × ar/en/ckb with hreflang alternates + x-default on PUBLIC_ORIGIN |
 | `/robots.txt` | `app/routes/api/robots.ts` | closed unless the store is live on its canonical host |
 
@@ -130,6 +144,49 @@ that fails offline → the offline panel, never "500" — owner shell / root) ·
 open with «متجر تجريبي») · reduced motion (push → cross-fade; the motion choice applies at once and persists in this
 browser). No forms here, so no validation states; nothing needs sign-in; no products, so no sold-out or coming-soon.
 
+## The 404 (Design v2.1, client note 11 — 2026-11-13)
+
+The client compared the 404 before the redesign (a big «404», the title, a line, the search field, the clay key home,
+the platforms as coloured text links) with v2's (the mascot, home + support, four vivid platform tiles) and chose the
+before, "but add the logo and the four stations". One view, `components/NotFoundView.tsx` (+ `not-found.css`, `.cnf`):
+
+1. the mascot in a frosted circle (`.surface--glass`, 104px, 120 from 768) over a soft brand light (`.glow-layer`, low
+   at the inline end, so the frost shows it; dark: a deep red glass) — it inflates once on arrival;
+2. «404» in Kufam 700 (72px, 96 from 768), ink fading to the decorative grey, `aria-hidden` (the h1 says it), left to
+   right; it rises once (60ms after the circle);
+3. the h1 (`type-h1`) and one line (16px, balanced over two lines on phones);
+4. the search field: inside the shell the shell's own form (`SearchForm variant="panel"`: suggestions and recent
+   searches), focused from 1024 — only where nothing then opens over the page (`focusesNotFoundField` in
+   `ShellError.tsx`): not on a phone (the keyboard), not for a missing product (its words' suggestions), not while the
+   device keeps recent searches (that list would cover the home key and «مركز الدعم»); a missing product's words start
+   it. Every address is a new view (keyed by the path), so a client navigation from one 404 to another starts the
+   field over with the new words;
+5. the clay «العودة إلى الرئيسية» with «مركز الدعم» beside it (under it when the row is too narrow: English, Sorani);
+6. «أو ابدأ من منصّتك» (an h2) and the four compact platform tiles — 2 × 2 on phones, four in a row from 768, with the
+   navigation's product counts and hardware photos; they fade up as they come into view when they start below the fold.
+
+No red key (nothing here moves an order forward — the field is the way on); one h1; the motion is transform and
+opacity on the motion tokens, once, and nothing under reduced motion, the store's switch or the lite tier.
+
+- **Where it renders:** the storefront layout's boundary (`shell/ShellError.tsx` → `NotFound`) for every 404 — an
+  unknown path (`not-found.tsx`), an unknown language prefix, an unknown policy, landing page, category or product; and
+  the ROOT boundary (`app/root.tsx`, its storefront not-found branch → `components/RootNotFound.tsx`) when something above
+  the shell failed: no shell there, so the same view from what that boundary can rely on — the words copied in
+  `ROOT_NOT_FOUND_WORDS` (test-checked word for word against `shell.ts` `error.*` / `search.*` and `ui.ts`
+  `platform.*`), a plain GET search (the kit's `TextField`; suggestions need the shell), the four platforms with their
+  device glyphs and no counts (nothing invented without the catalogue), plain document links in the page's language, in
+  its own `<main class="cnf-root">`. No URL reaches that branch today (every storefront 404 is caught by the layout);
+  it is checked by rendering the boundary (`tests/content.test.ts`) and by a scripted look with the store's styles.
+- **A missing product** (the product page's 404 carries `what: "product"` and the slug's words): the same view with
+  «هذا المنتج لم يعد متوفراً أو تغيّر رابطه» and «ابحث عنه بالاسم، أو تصفّح الأجهزة الجديدة والمستعملة.», the words in the
+  field, «المستعمل والمفحوص» under the tiles. v2's red «ابحث عن …» key and its list of the named platform's newest
+  consoles are gone: the field already searches those words, and the view is the same everywhere.
+- **The other failures** (403, 503, offline, 500) keep their v2 panel in `ShellError.tsx` (the kit's empty-state
+  anatomy, one red retry), the root keeps its plain panel for them.
+- `not-found.css` is reached from the root (through `RootNotFound`), so the browser may meet it before `app.css`: it
+  states the store's layer order first (`@layer theme, base, components, utilities;`), as app.css and motion.css do —
+  without it the components layer would rank under Tailwind's preflight on every page.
+
 ## Exports other areas use (keep their signatures)
 
 - `content-model.ts`: `POLICY_SLUGS`, `PolicySlug` (shell `chrome.ts`, admin `settings/policies.server.ts`),
@@ -138,6 +195,9 @@ browser). No forms here, so no validation states; nothing needs sign-in; no prod
   `contactView`, `getStoreFacts`, `getCmsText`, `getSitemapEntries`, `buildSitemapXml`, `buildRobotsTxt`,
   `robotsIndexable`, `resolvePublicOrigin`, `PRIVACY_COOKIES`, `PRIVACY_STORAGE_DAYS`, `contentMessages`,
   `POLICY_DRAFTS_REVISED_AT`. Additions in v2 are new fields only (`ContactView.card`, a draft's `updatedAt`).
+- v2.1: `components/NotFoundView.tsx` (`NotFoundView`, `NotFoundWords`, `NotFoundPlatform`) — used by
+  `shell/ShellError.tsx`; `components/RootNotFound.tsx` (`RootNotFound`, `ROOT_NOT_FOUND_WORDS`) — used by `app/root.tsx`.
+  `ShellError({ error, platforms })` keeps its signature (the layout's boundary calls it).
 
 ## Integration slots (for the integration pass)
 
@@ -153,7 +213,25 @@ browser). No forms here, so no validation states; nothing needs sign-in; no prod
 
 `npx vitest run tests/content.test.ts` · `node scripts/lint-design.mjs app/routes/storefront/content --strict` ·
 `curl localhost:5173/robots.txt` · `curl localhost:5173/sitemap.xml` · the v2 matrix (5 widths × 2 themes in Arabic,
-390 / 1440 in English and Sorani) and state shots: the redesign scratchpad `ux/after/P9-content/`.
+390 / 1440 in English and Sorani) and state shots: the redesign scratchpad `ux/after/P9-content/`; v2.1 (2026-11-13):
+`…/scratchpad/fb1/shots/content/final/` (the 404 and the missing product at 360–1440 × light/dark in Arabic, 360/390/1440
+in English and Sorani; the five content pages' matrix; `compare-*`: before · v2 · v2.1) and `…/fb1/shots/content/root/`
+(the root boundary's 404 drawn with the store's styles); scripts in `…/fb1/work/content/`.
+
+**Review (2026-11-13, v2.1, shots `…/fb1/shots/content-review/`, probes in `…/fb1/work/content-review/`):** fixed —
+(1) the 404 went sideways at 320 (scrollWidth 357) and at 360 its field and line sat in the start gutter, 3px from the
+screen edge: a grid item's automatic minimum is its min-content, and the search form's is ≈341px — `.cnf__head > *`
+may shrink now; (2) a client navigation from a 404 to a missing product kept the last view's field (empty and focused
+instead of the product's words; Back the same): the view is keyed by the address; (3) on desktop, a shopper who keeps
+recent searches arrived with that list open over the home key and «مركز الدعم»: the field is focused only where nothing
+opens (`focusesNotFoundField`, decided a frame after hydration, when the device's list has been read); (4) the
+hand-off key («قسە لەگەڵ کارمەندێک بکە», Kufam since v2.1: 320px) wrapped into two lines pressed into 48px in Sorani at
+390 (/contact's red key, /policies, /about) and in the /about aside at 1024: hand-off cards have 16px inside on phones
+(one line from 383px); from 1024 the aside keeps 336px (v2.1's rows broke into 2–3 lines in 288) and 368 in Sorani
+(`.csplit:lang(ckb)`); at 1024–1279 a hand-off card in the reading column stacks (beside the words, the Sorani key left
+them 80–160px); where a wrap is unavoidable (Sorani at 360) the two balanced lines get 8px above and below. Checks: `probe-404.mjs` (15/15, failing before),
+`probe-handoff.mjs` (60 page × width × language loads, 8 failures before, 0 after), 320px sweep of every page and both
+404s × ar/en/ckb, focus walks, reveal end-state and CLS, motion switch, offline, typing in the 404 field.
 
 **Review (2026-11-12, `ux/after/P9-content-review/`, scripts in `work/pages-P9-content-review/`):** fixed — the
 hand-off key overflowed its card in the 280px aside at 1024 (and would at 360 in Sorani): stacked cards put the key on

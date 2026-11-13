@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
-import { Icon } from "~/art/Icon";
 import { useT } from "~/i18n/react";
 import { cx } from "~/ui/cx";
+import { Note } from "~/ui/Note";
 import { Price } from "~/ui/Price";
 import { groupDigits } from "../checkout-form";
 import { CopyKey } from "./CopyKey";
@@ -71,16 +71,15 @@ function Row({ label, hint, copy, children }: { label: string; hint?: string; co
   );
 }
 
-/** The fraud warning (brief §4: "fraud warning"; §4.24: an info panel). */
+/**
+ * The fraud warning (brief §4: "fraud warning"): the kit's Note in its warning tone (v2.1 G5, client note 8 — the
+ * before's calm notes: a neutral card, the shield in a tinted circle, a short bold title, the muted sentence).
+ */
 export function FraudWarning({ className }: { className?: string }) {
   const t = useT("checkout");
   return (
-    <div className={cx("callout", className)}>
-      <Icon name="shield-check" size={20} />
-      <div className="grid gap-0.5">
-        <p className="callout__title">{t("transfer.fraudTitle")}</p>
-        <p className="callout__text">{t("transfer.fraud")}</p>
-      </div>
-    </div>
+    <Note variant="flat" tone="warning" icon="shield-check" title={t("transfer.fraudTitle")} className={className}>
+      {t("transfer.fraud")}
+    </Note>
   );
 }

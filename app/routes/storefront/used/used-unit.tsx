@@ -44,6 +44,7 @@ import { Key } from "~/ui/Key";
 import { isPlatform, PlatformLabel } from "~/ui/PlatformLed";
 import { fillNodes, iqdText, PriceTag, SafePrice } from "~/ui/PriceTag";
 import { BidiText } from "~/ui/ProductCard";
+import { revealProps } from "~/ui/reveal";
 import { ShelfRail } from "~/ui/ShelfRail";
 import { TextLink } from "~/ui/TextLink";
 import { UsedUnitCard } from "~/ui/UsedUnitCard";
@@ -134,11 +135,18 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className="page grid grid-cols-[minmax(0,1fr)] gap-section pt-0 pb-6 md:pt-4 lg:pt-6">
       <div className="grid grid-cols-[minmax(0,1fr)] gap-6">
-        <Breadcrumbs items={[{ label: t("unit.crumbs.home"), href: "/" }, { label: t("unit.crumbs.used"), href: USED_PATH }, { label: unit.name }]} />
+        {/* v2.1: the before's bar above the product block, on phones too (client note 5, as the product page) */}
+        <Breadcrumbs phone items={[{ label: t("unit.crumbs.home"), href: "/" }, { label: t("unit.crumbs.used"), href: USED_PATH }, { label: unit.name }]} />
 
         <div className="grid grid-cols-[minmax(0,1fr)] gap-4 md:gap-6 lg:grid-cols-12 lg:gap-10">
-          {/* Phones: the stage runs edge to edge (v2 §4.14); the line under it and the thumbnails keep the gutter. */}
-          <div ref={stage} className="min-w-0 max-md:-mx-(--gutter) lg:sticky lg:top-[calc(var(--shell-header-h)+var(--safe-top)+var(--s-4))] lg:col-span-7 lg:self-start">
+          {/* Phones: the stage runs edge to edge (v2 §4.14); the line under it and the thumbnails keep the gutter. From
+              1024 the platform's ambient light sits behind the stage (v2.1 G3; kept inside the page's gutter). */}
+          <div
+            ref={stage}
+            data-gel={unit.platform && isPlatform(unit.platform.slug) ? unit.platform.slug : undefined}
+            className="min-w-0 max-md:-mx-(--gutter) lg:sticky lg:top-[calc(var(--shell-header-h)+var(--safe-top)+var(--s-4))] lg:col-span-7 lg:self-start"
+          >
+            <span className="glow-layer used-stage-light max-lg:hidden" aria-hidden="true" />
             <Gallery
               name={unit.name}
               items={unit.photos.map((image) => ({ image }))}
@@ -151,7 +159,8 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
 
           <div className="grid min-w-0 content-start gap-4 lg:col-span-5">
             <div className="grid gap-2">
-              {unit.platform ? isPlatform(unit.platform.slug) ? <PlatformLabel platform={unit.platform.slug} /> : <span className="type-sm-strong text-ink-2">{unit.platform.name}</span> : null}
+              {/* the before's brand line: the platform's colour line and its name, right above the name */}
+              {unit.platform ? isPlatform(unit.platform.slug) ? <PlatformLabel platform={unit.platform.slug} bar /> : <span className="type-sm-strong text-ink-2">{unit.platform.name}</span> : null}
               {/* a spaced dash stays with the word before it: the balanced h1 never starts a line with «– OLED Model» */}
               <h1 className="type-h1 text-ink [text-wrap:balance]">
                 <BidiText text={bindDashes(unit.name)} />
@@ -264,10 +273,14 @@ export default function UsedUnitPage({ loaderData }: Route.ComponentProps) {
       {listed ? <UnitFacts payments={payments} returnDays={unit.returnDays} className="lg:max-w-[52rem]" /> : null}
 
       {/* Devices area: the model's hub (its picture grows into the hub's stage) and the accessories verified on the model. */}
-      {device ? <DeviceHubLink device={device} title={t("unit.hubTitle", { device: device.name })} text={t("unit.hubText")} className="lg:max-w-[52rem]" /> : null}
+      {device ? (
+        <div {...revealProps()}>
+          <DeviceHubLink device={device} title={t("unit.hubTitle", { device: device.name })} text={t("unit.hubText")} className="lg:max-w-[52rem]" />
+        </div>
+      ) : null}
       <RecommendationShelves key={unit.id} result={accessories} source="used" />
 
-      <div id={OTHERS_ID}>
+      <div id={OTHERS_ID} {...revealProps()}>
         {others === null ? (
           // A locale-less path: the retry link adds the language prefix itself (location.pathname already has it, so
           // /en/used/… became /en/en/used/…, a 404).

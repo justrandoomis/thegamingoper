@@ -14,7 +14,7 @@ import { Checkbox, Select, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { promotionsMeta } from "./meta";
 import { fields, openPromotions, respond, runIntent, text } from "./promotions.server";
-import { Boundary, Code, ConfirmAction, Facts, Failure, History, Money, Notice, Num, Pct, Section, Tag, ToneStatus, useIntent, usePromotionsT, When } from "./ui";
+import { Code, ConfirmAction, Facts, Failure, History, Money, Notice, Num, Pct, SectionState, Section, Tag, ToneStatus, useIntent, usePromotionsT, When } from "./ui";
 
 /**
  * /admin/promotions/experiments/:experimentId — 08.08, one A/B test: the measurement rule (metric, minimum orders per
@@ -80,7 +80,7 @@ export default function ExperimentPage({ loaderData }: Route.ComponentProps) {
         </div>
         {experiment.description ? <p className="max-w-[75ch] type-body text-ink-2">{experiment.description}</p> : null}
       </header>
-      <Boundary>{t("ab.boundary")}</Boundary>
+      <SectionState id="experiments" />
       <div className="prm-layout">
         <div className="prm-main">
           <Results experiment={experiment} />

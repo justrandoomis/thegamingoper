@@ -1,11 +1,16 @@
 /*
- * Support pages (app/routes/storefront/support) — Design System v2 §6.13. Components layer (utilities still win),
- * tokens only, logical properties only, motion only on transform and opacity, radii from the --r-* scale.
+ * Support pages (app/routes/storefront/support) — Design v2.1 «Clay & Glass» (client feedback round 1, note 9: the
+ * before's support page, with v2's problem search improved). Components layer (utilities still win), tokens only,
+ * logical properties only, motion only on transform and opacity, radii from the --r-* scale. The kit draws the keys,
+ * chips, tabs, notes, entry rows and the soft cards; this file arranges them.
  *
- *   .sup-help     the support centre: head + search, results, task tiles, device picker, guides, contact
+ *   .sup-help     the support centre: tabs, the head and the problem search on a soft ambient light, results, the
+ *                 before's list cards in two groups, the devices by platform, guides, the store's channels
  *   .sup-assist   the assistant: chat column (≤720) + sticky aside from 1024; the composer in the task bar below 1024
- *   .sup-flow     the repair request and its status: a form column (≤720) + a sticky aside (340) from 1024
+ *   .sup-flow     the repair request, its status and a message's status: a form column (≤720) + a sticky aside (340)
  *   .sup-article  one guide: a reading column + aside from 1024
+ *
+ * Dark: no section paints a background — the floor's ambient light shows through the see-through cards.
  */
 @layer components {
   /* ───────────────────────────── script on / off (the Motion Engine's head script sets <html data-motion>) */
@@ -22,19 +27,20 @@
     outline: none;
   }
 
-  /* ───────────────────────────── page frames */
+  /* ───────────────────────────── page frames: the tabs across the page on every support page (they never move
+     between pages), then the page */
   .sup {
     display: grid;
     align-content: start;
-    padding-block: var(--s-4) var(--s-10);
+    gap: var(--s-5);
+    padding-block: var(--s-3) var(--s-10);
   }
   .sup-help {
     gap: var(--gap-section);
   }
-  .sup-help__head {
-    display: grid;
-    gap: var(--s-3);
-    max-inline-size: 720px;
+  /* the tabs sit close over what they name */
+  .sup-help > .sup-nav {
+    margin-block-end: calc(var(--s-5) - var(--gap-section));
   }
   .sup-section {
     display: grid;
@@ -42,26 +48,20 @@
     gap: var(--s-4);
     min-inline-size: 0;
   }
-  .sup-help__foot {
-    display: grid;
-    gap: var(--gap-section);
-  }
   @media (min-width: 64rem) {
     .sup {
-      padding-block-start: var(--s-6);
-    }
-    .sup-help__foot {
-      grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
-      column-gap: var(--s-12);
-      align-items: start;
+      padding-block-start: var(--s-5);
     }
   }
 
-  /* two columns from 1024: a centred main column (≤720) and a sticky aside */
+  /* two columns from 1024, as the before: the main column from the page's start edge, a sticky aside (380) at the end */
   .sup-assist,
   .sup-flow,
   .sup-article {
+    display: grid;
+    align-content: start;
     gap: var(--s-6);
+    min-inline-size: 0;
   }
   .sup-assist__main,
   .sup-flow__main,
@@ -86,9 +86,8 @@
     .sup-assist,
     .sup-flow,
     .sup-article {
-      grid-template-columns: minmax(0, 720px) minmax(0, 340px);
-      justify-content: center;
-      column-gap: var(--s-12);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
+      column-gap: var(--s-10);
       align-items: start;
     }
     .sup-flow__aside:not(.sup-flow__aside--all) {
@@ -101,16 +100,15 @@
       inset-block-start: calc(var(--shell-top) + var(--s-4));
     }
   }
-
-  /* ───────────────────────────── surfaces */
+  /* ───────────────────────────── surfaces: the soft raised card (dark: see-through faux glass) */
   .sup-card {
     display: grid;
     align-content: start;
     gap: var(--s-4);
     padding: var(--s-5);
-    border: 1px solid var(--line);
     border-radius: var(--r-lg);
-    background: var(--paper);
+    background: var(--card-face);
+    box-shadow: var(--e-surface);
     min-inline-size: 0;
   }
   @media (min-width: 64rem) {
@@ -118,46 +116,25 @@
       padding: var(--s-6);
     }
   }
-
-  /* a callout: a paper panel with a 3px inline-start bar in the tone colour (safety, info, success) */
-  .sup-callout,
-  .sup-note {
-    --tone: var(--info);
-    display: flex;
-    align-items: flex-start;
-    gap: var(--s-3);
-    padding: var(--s-3) var(--s-4);
-    border: 1px solid var(--line);
-    border-inline-start: 3px solid var(--tone);
-    border-radius: var(--r-lg);
-    background: var(--paper);
-    color: var(--ink);
-    font: var(--type-sm);
-  }
-  .sup-note > svg,
-  .sup-callout__icon {
-    flex: none;
-    margin-block-start: 1px;
-    color: var(--tone);
-  }
-  .sup-callout--warn {
-    --tone: var(--warn);
-  }
-  .sup-callout--danger {
-    --tone: var(--danger);
-  }
-  .sup-callout--ok {
-    --tone: var(--ok);
-  }
-  .sup-callout__title {
-    font: var(--type-sm-strong);
-    color: var(--tone);
-  }
-  .sup-callout--ok .sup-callout__title {
-    color: var(--ink);
+  /* an inset well inside a card (what staff will receive, a status box) */
+  .sup-well {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--niche);
   }
 
-  /* a whole-form failure (network, rate limit): words and an icon, never colour alone, never brand red */
+  /* a danger stop (smoke, swelling, liquid): the kit's note with its disc and title in --danger (never brand red) */
+  .sup-safety-note--danger {
+    --note-tint: var(--danger-tint);
+    --note-ink: var(--danger);
+  }
+  .sup-safety-note--danger .note__title {
+    color: var(--danger);
+  }
+
+  /* a whole-form failure (network, rate limit, nothing found): words and an icon, never colour alone, never brand red */
   .sup-alert {
     display: flex;
     align-items: flex-start;
@@ -171,6 +148,15 @@
   }
   .sup-alert > svg {
     flex: none;
+    margin-block-start: 1px;
+  }
+
+  /* a row of a note's actions: links and small keys, wrapping */
+  .sup-actions-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3) var(--s-6);
   }
 
   /* a native disclosure row (the hand-off's summary preview) */
@@ -198,103 +184,352 @@
   .sup-summary {
     margin: 0;
     white-space: pre-wrap;
-    font: var(--type-xs);
+    font: var(--type-sm);
     color: var(--ink-2);
   }
 
-  /* ───────────────────────────── the sub-navigation (the kit's segmented control of links: it scrolls by itself when
-     its words do not fit, the current one kept in view) */
-  .sup-nav > .seg__opt {
-    padding-inline: var(--s-3);
+  /* ───────────────────────────── support centre: the head and the problem search
+     a soft ambient light (the kit's .glow) behind the head and the search card — the glass of the suggestions has
+     something to show; the block sits one layer up so the suggestions float over the cards that follow */
+  .sup-help__top {
+    position: relative;
+    z-index: var(--z-raised);
+    display: grid;
+    gap: var(--s-6);
+    /* the light stays inside the page's width (no sideways scroll on a phone) and fades out before the layer's edges */
+    --glow-inset: -8% 0;
+    --glow-x: 50%;
+    --glow-y: 70%;
+    --glow-size: 46% 46%;
   }
-  @media (min-width: 48rem) {
-    .sup-nav {
-      display: inline-grid;
-      justify-self: start;
+  .sup-help__intro {
+    display: grid;
+    gap: var(--s-5);
+    min-inline-size: 0;
+  }
+  /* from 1024: the mascot on a disc of real glass at the end side, the light behind it */
+  .sup-help__mascot {
+    display: none;
+  }
+  .sup-help__disc {
+    display: grid;
+    place-items: center;
+    inline-size: 248px;
+    aspect-ratio: 1;
+    border-radius: var(--r-full);
+  }
+  .sup-help__mark {
+    block-size: 56%;
+    inline-size: auto;
+  }
+  @media (min-width: 64rem) {
+    .sup-help__top {
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+      align-items: center;
+      column-gap: var(--s-12);
+      /* centred on the mascot's disc, fading out before the block's edges (no hard edge where the layer ends) */
+      --glow-x: calc(50% + 36% * var(--dir));
+      --glow-y: 50%;
+      --glow-size: 14% 56%;
+    }
+    .sup-help__mascot {
+      display: grid;
+      place-items: center;
     }
   }
-
-  /* ───────────────────────────── support centre: search */
+  .sup-help__head {
+    display: grid;
+    gap: var(--s-2);
+    max-inline-size: 760px;
+  }
+  .sup-help__lede {
+    max-inline-size: 65ch;
+    font: var(--type-lead);
+    color: var(--ink-2);
+  }
   .sup-search {
-    max-inline-size: 640px;
+    /* the chip rails bleed to the card's edges, not the page's */
+    --gutter: var(--s-5);
+    display: grid;
+    gap: var(--s-4);
+    max-inline-size: 760px;
+    padding: var(--s-5);
+    border-radius: var(--r-xl);
+    background: var(--card-face);
+    box-shadow: var(--e-surface);
+  }
+  @media (min-width: 64rem) {
+    .sup-search {
+      --gutter: var(--s-6);
+      padding: var(--s-6);
+    }
+  }
+  .sup-search__box {
+    position: relative;
+    scroll-margin-block-start: var(--s-3);
   }
   .sup-search__input {
     padding-inline-end: 112px;
   }
-  .sup-results {
+  /* offline: why the key is flat (the composer's way); the words typed and the suggestions stay */
+  .sup-search__offline {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+    margin-block-start: var(--s-2);
+    font: var(--type-sm-strong);
+    color: var(--warn);
+  }
+  .sup-search__offline > svg {
+    flex: none;
+    margin-block-start: 2px;
+  }
+  .sup-search__filter {
     display: grid;
-    gap: var(--s-4);
-    padding-block: var(--s-5);
-    border-block: 1px solid var(--line);
+    gap: var(--s-2);
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .sup-search__legend {
+    padding: 0;
+    font: var(--type-sm-strong);
+    color: var(--ink-2);
+  }
+  .sup-search__common {
+    display: grid;
+    gap: var(--s-2);
+    min-inline-size: 0;
   }
 
-  /* task tiles: 2 × 2 on phones, four from 768 */
-  .sup-tasks {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--gap-card);
+  /* the suggestions: a frosted panel under the field (the kit's glass panel), rows in groups */
+  .sup-suggest {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: calc(100% + var(--s-2));
+    z-index: var(--z-raised);
+    /* the room between the field and the tab bar (the field is brought to the top on phones) */
+    max-block-size: min(560px, calc(100dvh - var(--shell-top, 0px) - var(--shell-bottom, 0px) - 120px));
+    padding-block: var(--s-2);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: var(--r-lg);
+    animation: sup-drop var(--t-reveal) var(--ease-settle);
   }
-  @media (min-width: 48rem) {
-    .sup-tasks {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+  @keyframes sup-drop {
+    from {
+      opacity: 0;
+      translate: 0 -8px;
     }
   }
-  .sup-task {
+  .sup-suggest__list {
+    display: grid;
+  }
+  .sup-suggest__group + .sup-suggest__group,
+  .sup-suggest__group + .sup-suggest__row,
+  .sup-suggest__group + .sup-suggest__all {
+    border-block-start: 1px solid var(--line);
+  }
+  .sup-suggest__head {
+    padding: var(--s-2) var(--s-4) var(--s-1);
+    font: var(--type-xs-strong);
+    color: var(--ink-2);
+  }
+  .sup-suggest__row,
+  .sup-suggest__all {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-block-size: var(--h-row);
+    padding: var(--s-2) var(--s-4);
+    cursor: pointer;
+    color: var(--ink);
+  }
+  /* the active row: a soft fill and an ink bar at the start (never colour alone: the bar marks it too) */
+  .sup-suggest__row::before,
+  .sup-suggest__all::before {
+    content: "";
+    position: absolute;
+    inset-block: var(--s-2);
+    inset-inline-start: 0;
+    inline-size: 3px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+    opacity: 0;
+  }
+  .sup-suggest__row.is-active,
+  .sup-suggest__all.is-active {
+    background: var(--niche);
+  }
+  .sup-suggest__row.is-active::before,
+  .sup-suggest__all.is-active::before {
+    opacity: 1;
+  }
+  .sup-suggest__icon {
+    --disc: 36px;
+  }
+  /* a tinted disc where the tone matters (a danger stop, an error code, the safety line) — flat, like a note's tone */
+  .sup-tone-disc {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    inline-size: var(--disc, 36px);
+    block-size: var(--disc, 36px);
+    border-radius: var(--r-full);
+    background: var(--tone-tint, var(--warn-tint));
+    color: var(--tone-ink, var(--warn));
+  }
+  .sup-tone-disc[data-tone="danger"] {
+    --tone-tint: var(--danger-tint);
+    --tone-ink: var(--danger);
+  }
+  .sup-tone-disc[data-tone="code"] {
+    --tone-tint: var(--info-tint);
+    --tone-ink: var(--info);
+  }
+  .sup-suggest__text {
+    display: grid;
+    flex: 1;
+    gap: 2px;
+    min-inline-size: 0;
+  }
+  .sup-suggest__title {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .sup-suggest__row[data-tone="danger"] .sup-suggest__title {
+    color: var(--danger);
+  }
+  .sup-suggest__meta {
+    overflow: hidden;
+    font: var(--type-xs);
+    color: var(--ink-2);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sup-suggest__go {
+    flex: none;
+    color: var(--ink-2);
+  }
+  .sup-suggest__all {
+    font: var(--type-sm-strong);
+  }
+  @media (min-width: 64rem) {
+    .sup-suggest__title {
+      font: var(--type-card);
+    }
+  }
+
+  /* the searched words, marked where they were found */
+  .sup-hit {
+    border-radius: var(--r-xs);
+    background: var(--warn-tint);
+    color: var(--ink);
+  }
+
+  /* ───────────────────────────── search results: grouped (danger · error code · guides · policies) */
+  .sup-results {
+    display: grid;
+    gap: var(--s-5);
+    animation: sup-rise var(--t-reveal) var(--ease-settle);
+  }
+  @keyframes sup-rise {
+    from {
+      opacity: 0;
+      translate: 0 8px;
+    }
+  }
+  .sup-results__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-4);
+  }
+  .sup-results__group {
+    display: grid;
+    gap: var(--s-3);
+    min-inline-size: 0;
+  }
+  .sup-results__title {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    font: var(--type-h3);
+    color: var(--ink);
+  }
+  .sup-results__count {
+    display: inline-grid;
+    place-items: center;
+    min-inline-size: 28px;
+    block-size: 24px;
+    padding-inline: var(--s-2);
+    border-radius: var(--r-full);
+    background: var(--niche);
+    font: var(--type-xs-strong);
+    color: var(--ink-2);
+  }
+  /* an error code inside a sentence or a title: left to right, never broken */
+  .sup-code {
+    font: inherit;
+    white-space: nowrap;
+  }
+  .sup-empty {
+    margin-block: 0;
+  }
+
+  /* ───────────────────────────── the before's list cards: two short groups (one column on phones, two from 768) */
+  .sup-paths {
+    display: grid;
+    gap: var(--gap-row) var(--gap-card);
+  }
+  @media (min-width: 48rem) {
+    .sup-paths {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .sup-paths__group {
     display: grid;
     align-content: start;
     gap: var(--s-3);
-    padding: var(--s-4);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
-    background: var(--paper);
-    color: inherit;
-    text-decoration: none;
+    min-inline-size: 0;
   }
-  .sup-task__icon {
-    display: grid;
-    place-items: center;
-    inline-size: 40px;
-    block-size: 40px;
-    border-radius: var(--r-sm);
-    background: var(--red-tint);
-    color: var(--red-ink);
-  }
-  .sup-task__title {
-    font: var(--type-card);
+  .sup-paths__title {
+    font: var(--type-h3);
     color: var(--ink);
   }
-  .sup-task__text {
-    font: var(--type-xs);
-    color: var(--ink-2);
-  }
-  @media (hover: hover) {
-    .sup-task:hover .sup-task__title {
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
+  .sup-paths__list {
+    display: grid;
+    gap: var(--gap-card);
   }
 
-  /* the device picker: the platforms as a segmented control (2 × 2 below 600), then that platform's devices — a rail
-     with 2.5 tiles visible below 768, one wrapping grid from 768 (never arrows) */
-  .sup-platforms {
-    max-inline-size: 640px;
+  /* ───────────────────────────── devices, grouped by platform under its colour line (the before's arrangement) */
+  .sup-directory {
+    display: grid;
+    gap: var(--gap-row);
   }
-  /* one platform's devices; with script only the chosen platform's list shows, without it every list (under its name) */
   .sup-platform {
     display: grid;
     gap: var(--s-3);
     min-inline-size: 0;
   }
-  :root[data-motion] .sup-platform:not([data-current]) {
-    display: none;
+  .sup-platform__head {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    font: var(--type-h3);
+    color: var(--ink);
   }
-  @media (max-width: 37.4375rem) {
-    .sup-platforms {
-      grid-auto-flow: row;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      border-radius: var(--r-lg);
-    }
+  .sup-platform__count {
+    font: var(--type-xs);
+    color: var(--ink-2);
   }
+  .sup-platform__count::before {
+    content: "· ";
+  }
+  /* a rail with 2.5 tiles visible below 768, one wrapping grid from 768 (never arrows) */
   .sup-devices {
     display: grid;
     grid-auto-flow: column;
@@ -302,7 +537,7 @@
     gap: var(--gap-card);
     margin-inline: calc(-1 * var(--gutter));
     padding-inline: var(--gutter);
-    padding-block-end: var(--s-1);
+    padding-block: var(--s-1);
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
@@ -350,6 +585,9 @@
     outline: 2px solid var(--ink);
     outline-offset: 2px;
   }
+  .sup-dtile__art img {
+    transition: scale var(--t-reveal) var(--ease-settle);
+  }
   @media (hover: hover) {
     .sup-dtile:hover .niche::after,
     .sup-devchip:hover .niche::after {
@@ -371,18 +609,31 @@
     }
   }
 
-  /* guide rows between hairlines in a paper card; two columns of rows from 1024 where asked */
+  /* guides and the store's channels: one column; the channels beside the guides from 1024 when the owner set some */
+  .sup-help__foot {
+    display: grid;
+    gap: var(--gap-section);
+  }
+  @media (min-width: 64rem) {
+    .sup-help__foot:has(> .sup-contact) {
+      grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+      column-gap: var(--s-12);
+      align-items: start;
+    }
+  }
+
+  /* guide rows in the soft raised card; two columns of rows from 1024 where asked */
   .sup-guides {
     display: grid;
-    border: 1px solid var(--line);
     border-radius: var(--r-lg);
-    background: var(--paper);
+    background: var(--card-face);
+    box-shadow: var(--e-surface);
     overflow: hidden;
   }
   .sup-guides--plain {
-    border: 0;
     border-radius: 0;
     background: none;
+    box-shadow: none;
   }
   .sup-guide + .sup-guide {
     border-block-start: 1px solid var(--line);
@@ -397,8 +648,16 @@
     .sup-guides--cols > .sup-guide:nth-child(odd) {
       border-inline-end: 1px solid var(--line);
     }
+    /* one guide alone: no empty column beside it */
+    .sup-guides--cols:has(> .sup-guide:only-child) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .sup-guides--cols > .sup-guide:only-child {
+      border-inline-end: 0;
+    }
   }
   .sup-guide__link {
+    position: relative;
     display: flex;
     align-items: flex-start;
     gap: var(--s-3);
@@ -407,18 +666,16 @@
     color: inherit;
     text-decoration: none;
   }
+  @media (min-width: 64rem) {
+    .sup-guide__link {
+      padding: var(--s-5);
+    }
+  }
   .sup-guides--plain .sup-guide__link {
     padding-inline: 0;
   }
   .sup-guide__icon {
-    display: grid;
-    flex: none;
-    place-items: center;
-    inline-size: 40px;
-    block-size: 40px;
-    border: 1px solid var(--line-2);
-    border-radius: var(--r-full);
-    color: var(--ink);
+    --disc: 40px;
   }
   .sup-guide__body {
     display: grid;
@@ -430,8 +687,9 @@
     font: var(--type-xs);
     color: var(--ink-2);
   }
+  /* the title as a note's title (16/600) and the summary as reading text (16 / 1.75, G7), two lines at most */
   .sup-guide__title {
-    font: var(--type-card);
+    font: 600 var(--fs-read) / 1.5 var(--font-text);
     color: var(--ink);
   }
   .sup-guide__summary {
@@ -439,7 +697,7 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
-    font: var(--type-xs);
+    font: var(--type-read);
     color: var(--ink-2);
   }
   .sup-guide__go {
@@ -458,83 +716,36 @@
     }
   }
 
-  /* how to reach a person without configured channels */
-  .sup-write {
-    justify-items: start;
-  }
-
   /* ───────────────────────────── assistant */
   .sup-assist__head {
     display: grid;
     gap: var(--s-3);
   }
-  /* «ليس تشخيصاً»: a chip that opens how the assistant works */
-  .sup-about__chip {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--s-2);
-    min-block-size: var(--h-chip);
-    padding-inline: var(--s-4);
-    border: 1px solid var(--line-2);
-    border-radius: var(--r-full);
-    background: var(--paper);
-    color: var(--ink);
-    font: var(--type-sm-strong);
-    cursor: pointer;
+  /* «ليس تشخيصاً»: the kit's clay chip as the summary of a disclosure */
+  .sup-about > summary {
     list-style: none;
   }
-  .sup-about__chip::-webkit-details-marker {
+  .sup-about > summary::-webkit-details-marker {
     display: none;
   }
-  .sup-about__chip::after {
-    content: "";
-    position: absolute;
-    inset: -2px 0;
-  }
   .sup-about__panel {
-    display: grid;
-    gap: var(--s-2);
-    margin-block-start: var(--s-2);
-    padding: var(--s-4);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
-    background: var(--paper);
+    margin-block-start: var(--s-3);
   }
 
   /* the safety note, collapsed to one line; it opens by itself on battery, power or liquid */
-  .sup-safety {
-    border: 1px solid var(--line);
-    border-inline-start: 3px solid var(--warn);
-    border-radius: var(--r-lg);
-    background: var(--paper);
-  }
   .sup-safety__summary {
     display: flex;
     align-items: center;
     gap: var(--s-3);
     min-block-size: var(--h-row);
-    padding-inline: var(--s-4);
-    cursor: pointer;
-    list-style: none;
-    font: var(--type-sm-strong);
-    color: var(--ink);
-  }
-  .sup-safety__summary::-webkit-details-marker {
-    display: none;
-  }
-  .sup-safety__icon {
-    flex: none;
-    color: var(--warn);
   }
   .sup-safety__text {
-    padding: 0 var(--s-4) var(--s-4);
-    font: var(--type-sm);
-    color: var(--ink);
+    font: var(--type-read);
+    color: var(--ink-2);
   }
 
-  /* the conversation: the shopper's bubbles on --niche at the inline end, the assistant's on paper at the start;
-     --r-lg corners with an 8px corner on the speaker's side */
+  /* the conversation: the shopper's bubbles on --niche at the inline end, the assistant's on the soft raised card at the
+     start; --r-lg corners with an 8px corner on the speaker's side */
   .sup-chat {
     display: grid;
     gap: var(--s-3);
@@ -564,9 +775,9 @@
     display: grid;
     gap: var(--s-3);
     max-inline-size: 92%;
-    border: 1px solid var(--line);
     border-end-start-radius: var(--r-xs);
-    background: var(--paper);
+    background: var(--card-face);
+    box-shadow: var(--e-surface);
     outline-offset: 4px;
   }
   @media (min-width: 48rem) {
@@ -605,7 +816,7 @@
     color: var(--ink);
   }
 
-  /* the composer: in the glass task bar below 1024; at the end of the chat column from 1024 */
+  /* the composer: in the glass task bar below 1024; at the end of the chat column from 1024, on the soft card */
   .sup-assist__dock {
     display: none;
   }
@@ -613,9 +824,9 @@
     .sup-assist__dock {
       display: block;
       padding: var(--s-3);
-      border: 1px solid var(--line);
       border-radius: var(--r-lg);
-      background: var(--paper);
+      background: var(--card-face);
+      box-shadow: var(--e-surface);
     }
   }
   .sup-composer {
@@ -642,16 +853,16 @@
     color: var(--warn);
   }
 
-  /* the hand-off receipt */
-  .sup-done-disc {
+  /* the hand-off receipt and a sent repair: the check that draws itself beside the words */
+  .sup-done {
     display: grid;
-    flex: none;
-    place-items: center;
-    inline-size: 48px;
-    block-size: 48px;
-    border-radius: var(--r-full);
-    background: var(--ok-tint);
-    color: var(--ok);
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: var(--s-4);
+  }
+  .sup-done__title {
+    font: var(--type-h3);
+    color: var(--ink);
   }
   .sup-receipt__facts {
     display: grid;
@@ -709,51 +920,37 @@
     flex: 1 1 auto;
   }
 
-  /* what happens after sending: four numbered steps (a strip that scrolls below 768, a list in the aside) */
+  /* what happens after sending: four numbered steps on clay discs */
   .sup-how {
-    gap: var(--s-3);
+    gap: var(--s-4);
   }
   .sup-how__list {
     display: grid;
-    gap: var(--s-2);
+    gap: var(--s-3);
   }
   .sup-how__item {
     display: flex;
     align-items: flex-start;
     gap: var(--s-3);
-    font: var(--type-sm);
+    font: var(--type-read);
     color: var(--ink);
   }
   .sup-how__n {
-    display: grid;
-    flex: none;
-    place-items: center;
-    inline-size: 24px;
-    block-size: 24px;
-    border: 1.5px solid var(--ink);
-    border-radius: var(--r-full);
-    font: var(--type-xs-strong);
+    --disc: 32px;
+    font: var(--type-sm-strong);
   }
-  /* the fact strip: one line per owner-confirmed fact («الدفع: بعد موافقتك على عرض السعر») */
+  .sup-how__item > span:last-child {
+    padding-block-start: 2px;
+  }
+  /* the facts that are true today («الدفع: بعد موافقتك على عرض السعر»): quiet note lines */
   .sup-facts {
     display: grid;
-    gap: var(--s-2);
+    gap: var(--s-3);
     padding-block-start: var(--s-4);
     border-block-start: 1px solid var(--line);
   }
-  .sup-facts__item {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--s-3);
-    font: var(--type-sm);
-    color: var(--ink-2);
-  }
-  .sup-facts__item > svg {
-    flex: none;
-    color: var(--ink);
-  }
 
-  /* ───────────────────────────── repair status */
+  /* ───────────────────────────── repair and message status */
   .sup-lookup {
     max-inline-size: 560px;
   }
@@ -761,8 +958,8 @@
     display: grid;
     gap: var(--s-2);
     padding: var(--s-4);
-    border: 1px solid var(--line);
     border-radius: var(--r-sm);
+    background: var(--niche);
   }
   .sup-request__quote {
     display: grid;
@@ -788,7 +985,7 @@
   .sup-timeline__item {
     position: relative;
     display: grid;
-    grid-template-columns: 24px minmax(0, 1fr);
+    grid-template-columns: 28px minmax(0, 1fr);
     column-gap: var(--s-3);
     row-gap: 2px;
   }
@@ -798,25 +995,16 @@
   .sup-timeline__item:not(:last-child)::after {
     content: "";
     position: absolute;
-    inset-inline-start: 11px;
-    inset-block: 28px calc(-1 * var(--s-4) + 4px);
+    inset-inline-start: 13px;
+    inset-block: 32px calc(-1 * var(--s-4) + 4px);
     inline-size: 2px;
     border-radius: var(--r-full);
     background: var(--line-2);
   }
+  /* each stage on a clay disc: a check for a stage passed, an ink dot for the stage the request is in */
   .sup-timeline__dot {
-    display: grid;
+    --disc: 28px;
     grid-row: 1 / span 2;
-    place-items: center;
-    inline-size: 24px;
-    block-size: 24px;
-    border-radius: var(--r-full);
-    background: var(--ink);
-    color: var(--paper);
-  }
-  .sup-timeline__item[data-current] .sup-timeline__dot {
-    border: 2px solid var(--ink);
-    background: var(--paper);
   }
   .sup-timeline__item[data-current] .sup-timeline__dot::after {
     content: "";
@@ -825,7 +1013,6 @@
     border-radius: var(--r-full);
     background: var(--ink);
   }
-
   /* ───────────────────────────── photos (the proof-uploader look) */
   .sup-drop {
     display: grid;
@@ -834,7 +1021,7 @@
     padding: var(--s-5);
     border: 1.5px dashed var(--line-strong);
     border-radius: var(--r-lg);
-    background: var(--paper);
+    background: var(--card-face);
   }
   .sup-drop--invalid {
     border-color: var(--danger);
@@ -865,5 +1052,24 @@
   }
   .sup-article__body {
     max-inline-size: 70ch;
+  }
+
+  /* ───────────────────────────── motion: everything instant under reduced motion (the OS's and the store's switch) */
+  @media (prefers-reduced-motion: reduce) {
+    .sup-suggest,
+    .sup-results {
+      animation: none;
+    }
+    .sup-guide__go,
+    .sup-dtile__art img,
+    .sup-details__caret {
+      transition: none;
+    }
+  }
+  [data-motion="reduced"] :is(.sup-suggest, .sup-results) {
+    animation: none;
+  }
+  [data-motion="reduced"] :is(.sup-guide__go, .sup-dtile__art img, .sup-details__caret) {
+    transition: none;
   }
 }

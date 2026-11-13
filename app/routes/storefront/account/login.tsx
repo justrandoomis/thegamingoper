@@ -68,7 +68,11 @@ export default function Login({ loaderData, actionData }: Route.ComponentProps) 
         </>
       }
     >
-      {loaderData.notice && !failed ? <Notice tone="ok">{t(`login.${loaderData.notice}`)}</Notice> : null}
+      {loaderData.notice && !failed ? (
+        <Notice tone="ok" flat>
+          {t(`login.${loaderData.notice}`)}
+        </Notice>
+      ) : null}
       <FormFailure
         answer={failed}
         fields={[

@@ -1,8 +1,10 @@
 /**
- * /c/:category — a category hub (Design System v2 §6.3): no colour band — a title row (h1, the count, the delivery
- * line), then one chip row (the platforms with their dots; for a department of one platform its sub-departments, else
- * the devices its products fit), the product list with filters, sorts and «اعرض المزيد», then the hubs of the devices
- * its products fit. An empty department says so and shows what arrived lately.
+ * /c/:category — a category hub (Design System v2 §6.3; v2.1 «Clay & Glass»): no colour band — the glass head (the
+ * department's kind icon on its clay tile, the h1, the count and the delivery line, the department's photo from 768,
+ * a one-platform department in its platform's light), then one chip row with icons (the platforms with their device
+ * glyphs in their colours; for a department of one platform its sub-departments with their kind icons, else the
+ * devices its products fit), the product list with filters, sorts and «اعرض المزيد», then the row of soft device tiles
+ * its products fit. An empty department says so on the soft card and shows what arrived lately.
  * The used-devices category belongs to the used marketplace: /c/<used> redirects to /used.
  *
  * The content module (admin 17) reaches the page: the category's banners at the top (`category_top`, getStoreBanners),
@@ -13,6 +15,7 @@
 import { data, redirect } from "react-router";
 
 import type { Route } from "./+types/category";
+import { Icon } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import { localePath } from "~/lib/locales";
@@ -31,7 +34,7 @@ import { EmptyState } from "~/ui/EmptyState";
 import { Key } from "~/ui/Key";
 import { isPlatform } from "~/ui/PlatformLed";
 import { ShelfRail } from "~/ui/ShelfRail";
-import { ChipRow, DeviceShortcuts, KeepInView, TitleRow, useHubLead, type RailOption } from "./components/Hub";
+import { ChipRow, DeviceRow, KeepInView, TitleRow, kindIconOf, useHubLead, useKindIcon, type RailOption } from "./components/Hub";
 import { ListingView } from "./components/ListingView";
 import { useListingNav, useOfflineHold } from "./components/use-listing-nav";
 import { LISTING_SORTS, filtersOf, readListingQuery, type FilterGroup } from "./listing-model";
@@ -115,9 +118,11 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
   const nav = useListingNav({ sorts: LISTING_SORTS });
   const hold = useOfflineHold();
   const lead = useHubLead();
+  const kindIcon = useKindIcon();
   const category = hub.category!;
 
-  // the chip row: the platforms (dots) first; for a department of one platform its sub-departments, else its devices
+  // the chip row: the platforms (their device glyphs in their colours) first; for a department of one platform its
+  // sub-departments (kind icons), else its devices
   let rail: { label: string; group: FilterGroup; options: RailOption[]; selected: string | null; allCount: number; hrefFor: (value: string | null) => string } | null = null;
   if (list.facets.platforms.length >= 2 || nav.query.platforms.length > 0) {
     rail = {
@@ -132,7 +137,7 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
     rail = {
       label: t("hub.subcategories"),
       group: "category",
-      options: list.facets.categories.map((option) => ({ value: option.value, label: option.label, count: option.count })),
+      options: list.facets.categories.map((option) => ({ value: option.value, label: option.label, count: option.count, icon: kindIcon(option.value) })),
       selected: nav.query.category,
       allCount: list.facets.without.category,
       hrefFor: (value) => nav.href({ category: value }),
@@ -141,7 +146,7 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
     rail = {
       label: t("hub.devicesRail"),
       group: "device",
-      options: list.facets.devices.map((option) => ({ value: option.value, label: option.label, count: option.count })),
+      options: list.facets.devices.map((option) => ({ value: option.value, label: option.label, count: option.count, platform: isPlatform(option.platform) ? option.platform : undefined })),
       selected: nav.query.device,
       allCount: list.facets.without.device,
       hrefFor: (value) => nav.href({ device: value }),
@@ -153,12 +158,23 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="page catalog-page" onClickCapture={hold}>
-      <TitleRow crumbs={crumbs} title={category.name} count={list.scopeTotal > 0 ? count : null} lead={lead} />
+      <TitleRow
+        crumbs={crumbs}
+        title={category.name}
+        count={list.scopeTotal > 0 ? count : null}
+        lead={lead}
+        icon={kindIconOf(category.slug, category.kind)}
+        art={category.artKey}
+        gel={isPlatform(category.platform) ? category.platform : null}
+      />
       <StoreBanners banners={banners} label={t("banners.label")} ctaFallback={t("banners.open")} className="mb-6" />
       {list.scopeTotal === 0 ? (
         <>
+          {/* v2.1: on the kit's soft card, the department's kind icon large on its disc */}
           <EmptyState
             layout="stack"
+            panel
+            art={<Icon name={kindIconOf(category.slug, category.kind)} size={48} className="text-red-ink" />}
             title={t("hub.emptyTitle")}
             text={t("hub.emptyText")}
             action={
@@ -169,7 +185,7 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
           />
           {/* the page's width, not the empty state's reading column: whole cards from 1024 */}
           {arrivals.length >= 3 ? (
-            <KeepInView className="catalog-after">
+            <KeepInView className="catalog-after" reveal>
               <ShelfRail shelf={{ key: "arrivals", title: t("search.newTitle"), reason: t("search.newReason"), items: arrivals }} />
             </KeepInView>
           ) : null}
@@ -190,7 +206,8 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
             wished={wished}
             filterOrder={filterOrder}
           />
-          <DeviceShortcuts layout="grid" devices={hub.devices} title={t("hub.devicesByCategory")} note={t("hub.devicesByCategoryNote")} id="catalog-devices-title" slot="grid" className="catalog-after" />
+          {/* the device hubs its products fit: the same soft tiles as a platform hub's row, full names (no platform beside them) */}
+          <DeviceRow devices={hub.devices} title={t("hub.devicesByCategory")} note={t("hub.devicesByCategoryNote")} id="catalog-devices-title" slot="row" reveal className="catalog-after" />
         </>
       )}
       <RecommendationShelves result={loaderData.recommendations} source="search" className="catalog-after" />

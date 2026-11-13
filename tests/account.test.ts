@@ -16,7 +16,7 @@ import { newId, randomToken, sha256Hex } from "~/lib/ids";
 import { systemActor, type CustomerActor } from "~/server/actor";
 import { getCustomer, signInCustomer, signUpCustomer } from "~/server/auth/customer.server";
 import { requestContextMiddleware, type RequestCtx } from "~/server/context.server";
-import { auditEvents, consents, customers, customerSessions, deviceModels, notifications, platforms, recentlyViewed, returns, usedUnits, walletLedger, walletTopups, wishlistItems } from "~/server/db/schema";
+import { auditEvents, consents, customers, customerSessions, deviceModels, loyaltyLedger, membershipTiers, memberships, notifications, platforms, recentlyViewed, returns, usedUnits, walletLedger, walletTopups, wishlistItems } from "~/server/db/schema";
 import { seedDemo } from "~/server/db/seed/demo";
 import { districtId, governorateId } from "~/server/db/seed/reference";
 import { AppError, toAppError } from "~/server/errors";
@@ -32,7 +32,9 @@ import { clearRecentlyViewed, listRecentlyViewed, listRecentlyViewedIds, MAX_REC
 import { listDeviceOptions, listSavedDeviceIds, listSavedDevices, MAX_SAVED_DEVICES, setSavedDevice } from "~/server/services/account/saved-devices.server";
 import { afterSignIn, getAccountCounts } from "~/server/services/account/session.server";
 import { cancelWalletTopup, getPendingTopupTotal, getTopupProofForCustomer, listWalletTopups, MAX_PENDING_TOPUPS, requestWalletTopup, saveTopupProof } from "~/server/services/account/topups.server";
-import { ACCOUNT_ERROR_KEYS } from "~/server/services/account/types";
+import { listOwnOrders } from "~/server/services/account/orders.server";
+import { getRewards, getRewardsGlance, type RewardsView } from "~/server/services/account/rewards.server";
+import { ACCOUNT_ERROR_KEYS, GROUP_OF, ORDER_GROUPS, orderShow, statusesOf } from "~/server/services/account/types";
 import { addToCart, getCartView } from "~/server/services/cart.server";
 import { transitionOrder } from "~/server/services/orders/manage.server";
 import { placeOrder } from "~/server/services/orders/place.server";
@@ -41,12 +43,21 @@ import { getWishlistIds, setWished } from "~/server/services/wishlist.server";
 import accountMessages from "~/i18n/messages/account";
 import { action as loginAction, loader as loginLoader } from "~/routes/storefront/account/login";
 import { action as logoutAction } from "~/routes/storefront/account/logout";
-import { loader as ordersLoader } from "~/routes/storefront/account/orders";
+import OrdersPage, { loader as ordersLoader } from "~/routes/storefront/account/orders";
+import RewardsPage, { shouldRevalidate as rewardsShouldRevalidate } from "~/routes/storefront/account/rewards";
+import WalletPage from "~/routes/storefront/account/wallet";
+import OrderPage from "~/routes/storefront/account/order";
+import LoginPage from "~/routes/storefront/account/login";
+import ForgotPage from "~/routes/storefront/account/forgot";
+import * as accountLayout from "~/routes/storefront/account/layout";
+import { getOrderForCustomer } from "~/server/services/orders/manage.server";
+import type { OrderView } from "~/server/services/orders/types";
 import AddressesPage from "~/routes/storefront/account/addresses";
 import DevicesPage from "~/routes/storefront/account/devices";
 import ProfilePage from "~/routes/storefront/account/profile";
 import { action as signupAction } from "~/routes/storefront/account/signup";
 import { railIndex, splitOption } from "~/routes/storefront/account/components/OrderBits";
+import { inPointsFilter, POINTS_FILTERS, pointsFilter, pointsFilterCounts, pointsLook, signedText, walletLook } from "~/routes/storefront/account/components/rewards-view";
 import { addressFieldIssue, addressIssues } from "~/routes/storefront/account/components/address-checks";
 import { accountFailure } from "~/routes/storefront/account/account.server";
 import { AddressInput } from "~/server/services/account/addresses.server";
@@ -915,5 +926,305 @@ describe("a privacy request's confirmation (QA 2026-11-12)", () => {
       expect(sent, locale).not.toMatch(/يتواصل|نتواصل|نتصل|سنتصل|contact|call you|پەیوەندی/);
     }
     expect(accountMessages.ar.privacy.sent).toBe("استلمنا طلبك {ref}. يتحقق موظف من هويتك قبل أي إجراء، وتجد حالة الطلب هنا.");
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── Design v2.1 (client round 1, 2026-11-12)
+
+/** A rewards view as the points page receives it — the programme's numbers passed in, so the page assumes none. */
+function rewardsView(overrides: { points?: Partial<RewardsView["points"]>; membership?: RewardsView["membership"]; referral?: RewardsView["referral"]; referralRewardPoints?: number } = {}): RewardsView {
+  return {
+    points: {
+      balance: 2_000,
+      pointValueIqd: 10,
+      valueIqd: 20_000,
+      expiringSoon: 0,
+      nextExpiryAt: NOW + 365 * DAY,
+      pointsPerThousandIqd: 1,
+      expiryDays: 365,
+      entries: [
+        { id: "lyl_1", kind: "reversal", points: 500, at: NOW - DAY, orderRef: "TT-AAAA1111", refType: "redeem", expiresAt: NOW + 360 * DAY },
+        { id: "lyl_2", kind: "redeem", points: -500, at: NOW - 2 * DAY, orderRef: "TT-AAAA1111", refType: "order", expiresAt: null },
+        { id: "lyl_3", kind: "adjust", points: 3_000, at: NOW - 3 * DAY, orderRef: null, refType: "admin", expiresAt: NOW + 362 * DAY },
+        { id: "lyl_4", kind: "expire", points: -1_000, at: NOW - 4 * DAY, orderRef: null, refType: null, expiresAt: null },
+      ],
+      ...overrides.points,
+    },
+    membership: overrides.membership ?? null,
+    referral: overrides.referral ?? null,
+    referralRewardPoints: overrides.referralRewardPoints ?? 500,
+  };
+}
+
+/** Server HTML without the bidi isolates and with plain spaces (an amount keeps its unit with a no-break space), for reading sentences. */
+const plain = (html: string) => html.replace(/[⁦-⁩]/g, "").replace(/[  ]/g, " ");
+/** The opening tag of the link to `href`. */
+const linkTo = (html: string, href: string) => new RegExp(`<a[^>]*href="${href.replace(/[?]/g, "\\?")}"[^>]*>`).exec(html)?.[0] ?? "";
+
+describe("Design v2.1: the points page, «طلباتي» by state, the overview's glance (client round 1)", () => {
+  test("each history filter shows exactly what its name says; an entry's disc is tinted by what it did; the sign is a character", () => {
+    const entries = rewardsView().points.entries;
+    expect(POINTS_FILTERS).toEqual(["all", "earned", "used", "expired"]);
+    expect(pointsFilterCounts(entries)).toEqual({ all: 4, earned: 2, used: 1, expired: 1 });
+    expect(entries.filter((entry) => inPointsFilter(entry, "earned")).every((entry) => entry.points > 0)).toBe(true);
+    expect(entries.filter((entry) => inPointsFilter(entry, "used")).map((entry) => entry.kind)).toEqual(["redeem"]);
+    expect(pointsFilter("used")).toBe("used");
+    for (const bad of ["", "USED", "other", null, 3]) expect(pointsFilter(bad)).toBe("all");
+    expect(pointsLook({ kind: "earn", points: 500, refType: "referral" })).toMatchObject({ key: "earnReferral", tone: "ok" });
+    expect(pointsLook({ kind: "earn", points: 120, refType: "order" })).toMatchObject({ key: "earn", tone: "ok" });
+    expect(pointsLook({ kind: "reversal", points: 500, refType: "redeem" })).toMatchObject({ key: "returned", tone: "info" });
+    expect(pointsLook({ kind: "reversal", points: -300, refType: "refund" })).toMatchObject({ key: "reversal", tone: "red" });
+    expect(pointsLook({ kind: "redeem", points: -100, refType: "order" })).toMatchObject({ key: "redeem", tone: "red" });
+    expect(pointsLook({ kind: "adjust", points: -50, refType: "admin" }).tone).toBe("red");
+    expect(walletLook({ kind: "purchase", amountIqd: -54_500 })).toEqual({ icon: "shopping-cart-simple", tone: "red" });
+    expect(walletLook({ kind: "topup", amountIqd: 300_000 }).tone).toBe("ok");
+    expect(walletLook({ kind: "refund", amountIqd: 20_000 }).tone).toBe("info");
+    const n = (value: number) => value.toLocaleString("en-US");
+    expect(signedText(1_500, n)).toEqual({ text: "+1,500", sign: "credit" });
+    expect(signedText(-1_000, n)).toEqual({ text: "−1,000", sign: "debit" });
+    expect(signedText(0, n)).toEqual({ text: "0", sign: "zero" });
+  });
+
+  test("the points page: the card, the programme's own numbers as rules, filter chips that are links, no red key", () => {
+    const html = plain(renderAccountPage(RewardsPage, "/account/rewards", { rewards: rewardsView() }));
+    // the card: its heading, the figure, its worth and the next expiry
+    expect(html).toMatch(/<h2[^>]*class="acct-money__label"[^>]*>رصيد نقاطك<\/h2>/);
+    expect(html).toContain("2,000");
+    expect(html).toContain("تساوي 20,000 د.ع عند الشراء.");
+    expect(html).toContain("أقرب انتهاء:");
+    // the rules are the programme's (1 point per 1,000 IQD, 10 IQD a point, 365 days, 500 a referral)…
+    for (const rule of ["نقطة واحدة لكل 1,000 د.ع", "النقطة تساوي 10 د.ع", "صالحة 365 يوماً", "500 نقطة لكل إحالة"]) expect(html).toContain(rule);
+    // …and follow it when the store changes it
+    const changed = plain(renderAccountPage(RewardsPage, "/account/rewards", { rewards: rewardsView({ points: { pointValueIqd: 25, pointsPerThousandIqd: 2, expiryDays: 180 }, referralRewardPoints: 750 }) }));
+    for (const rule of ["نقطتان لكل 1,000 د.ع", "النقطة تساوي 25 د.ع", "صالحة 180 يوماً", "750 نقطة لكل إحالة"]) expect(changed).toContain(rule);
+    // quick tiles: use them (the cart) only with a balance; the referral and membership anchors
+    expect(linkTo(html, "/cart")).not.toBe("");
+    expect(html).toContain('href="#referral"');
+    expect(html).toContain('href="#membership"');
+    expect(plain(renderAccountPage(RewardsPage, "/account/rewards", { rewards: rewardsView({ points: { balance: 0, valueIqd: 0, entries: [] } }) }))).not.toContain('href="/cart"');
+    // the chips are links (they work without script); «الكل» is the current one
+    expect(linkTo(html, "/account/rewards")).toContain('aria-current="true"');
+    for (const show of ["earned", "used", "expired"]) expect(linkTo(html, `/account/rewards?show=${show}`)).not.toContain("aria-current");
+    // every entry is listed under «الكل»; an order's entry is one link into the order
+    expect(html.match(/class="acct-act__amount"/g)).toHaveLength(4);
+    expect(html).toContain('href="/account/orders/TT-AAAA1111"');
+    // no red primary on this page: its keys are secondary
+    expect(html).not.toContain("key--primary");
+    // the membership note when there is none
+    expect(html).toContain("لا عضوية لديك الآن");
+  });
+
+  test("a chip shows its entries only, and changing it reads nothing again (anything else still does)", () => {
+    const earned = plain(renderAccountPage(RewardsPage, "/account/rewards?show=earned", { rewards: rewardsView() }));
+    expect(linkTo(earned, "/account/rewards?show=earned")).toContain('aria-current="true"');
+    expect(earned.match(/data-sign="credit"/g)).toHaveLength(2);
+    expect(earned).not.toContain('data-sign="debit"');
+    const expired = plain(renderAccountPage(RewardsPage, "/account/rewards?show=expired", { rewards: rewardsView({ points: { entries: rewardsView().points.entries.slice(0, 3) } }) }));
+    expect(expired).toContain("لم تنتهِ صلاحية أي نقاط.");
+    const url = (path: string) => new URL(`http://localhost${path}`);
+    const revalidates = (current: string, next: string, formMethod?: string) => rewardsShouldRevalidate({ currentUrl: url(current), nextUrl: url(next), formMethod, defaultShouldRevalidate: true } as never);
+    expect(revalidates("/account/rewards", "/account/rewards?show=used")).toBe(false);
+    expect(revalidates("/account/rewards?show=used", "/account/rewards")).toBe(false);
+    expect(revalidates("/account/rewards", "/account/rewards", "POST")).toBe(true);
+    expect(revalidates("/account/rewards", "/account/wallet")).toBe(true);
+  });
+
+  test("the referral card: copy and share for an active code, no share for a switched-off one, «احصل على رمز إحالة» without one", () => {
+    const active = plain(renderAccountPage(RewardsPage, "/account/rewards", { rewards: rewardsView({ referral: { code: "TTW7QSN6", uses: 1, maxUses: 10, active: true, rewardPoints: 500 } }) }));
+    expect(active).toContain("TTW7QSN6");
+    expect(active).toContain("انسخ");
+    expect(active).toContain("شارك الرمز");
+    expect(active).toContain("استُخدم 1 من 10");
+    const off = plain(renderAccountPage(RewardsPage, "/account/rewards", { rewards: rewardsView({ referral: { code: "TTW7QSN6", uses: 0, maxUses: null, active: false, rewardPoints: 500 } }) }));
+    expect(off).not.toContain("شارك الرمز");
+    expect(off).toContain("رمزك موقوف الآن.");
+    const none = plain(renderAccountPage(RewardsPage, "/account/rewards", { rewards: rewardsView() }));
+    expect(none).toContain("احصل على رمز إحالة");
+    expect(none).toContain('name="intent" value="referral"');
+    // a membership: the tier as the checkout applies it
+    const member = plain(renderAccountPage(RewardsPage, "/account/rewards", { rewards: rewardsView({ membership: { tier: "ذهبية", endsAt: NOW + 30 * DAY, discountBps: 3_000, appliedBps: 2_000, perOrderIqd: 50_000, freeShipping: true, multiplierBps: 15_000 } }) }));
+    for (const fact of ["عضوية ذهبية", "خصم 20% على مشترياتك", "حتى 50,000 د.ع في الطلب الواحد، ضمن حدود المتجر.", "توصيل مجاني", "نقاط أكثر: ×1.5"]) expect(member).toContain(fact);
+  });
+
+  test("«طلباتي» by state: the groups and their counts, paging inside a group, the customer's own orders only", async () => {
+    const { id } = await customer();
+    const other = await customer();
+    const item = await make.product({ stock: 20 });
+    const made: { ref: string }[] = [];
+    for (const [i, status] of (["new", "confirmed", "delivered", "cancelled", "returned", "shipped"] as const).entries()) {
+      made.push(await make.order([{ ...item, qty: 1 }], { customerId: id, status, placedAt: NOW + i * MINUTE }));
+    }
+    await make.order([{ ...item, qty: 1 }], { customerId: other.id, status: "delivered", placedAt: NOW + 9 * MINUTE });
+    // every state belongs to exactly one group
+    expect(ORDER_GROUPS.flatMap((group) => statusesOf(group)).sort()).toEqual(Object.keys(GROUP_OF).sort());
+    expect(orderShow("open")).toBe("open");
+    expect(orderShow("anything")).toBe("all");
+
+    const all = await listOwnOrders(t.db, id, "ar", {});
+    expect(all.counts).toEqual({ all: 6, open: 3, done: 1, closed: 2 });
+    expect(all.items.map((order) => order.ref)).toEqual(made.map((order) => order.ref).reverse());
+    const open = await listOwnOrders(t.db, id, "ar", { show: "open", limit: 2 });
+    expect(open.items.map((order) => order.status)).toEqual(["shipped", "confirmed"]);
+    expect(open).toMatchObject({ show: "open", total: 3 });
+    const rest = await listOwnOrders(t.db, id, "ar", { show: "open", limit: 2, cursor: open.nextCursor });
+    expect(rest.items.map((order) => order.status)).toEqual(["new"]);
+    expect(rest.nextCursor).toBeNull();
+    expect((await listOwnOrders(t.db, id, "ar", { show: "closed" })).items.map((order) => order.status)).toEqual(["returned", "cancelled"]);
+    // a malformed cursor is the first page
+    expect((await listOwnOrders(t.db, id, "ar", { show: "done", cursor: "nope" })).items).toHaveLength(1);
+    expect((await listOwnOrders(t.db, other.id, "ar", {})).counts).toEqual({ all: 1, open: 0, done: 1, closed: 0 });
+
+    // the page: chips with their counts (links), the group's orders, and a group without any says so
+    const done = plain(renderAccountPage(OrdersPage, "/account/orders?show=done", { orders: await listOwnOrders(t.db, id, "ar", { show: "done" }) }));
+    expect(linkTo(done, "/account/orders?show=done")).toContain('aria-current="true"');
+    expect(done.match(/class="surface lift acct-order"/g)).toHaveLength(1);
+    const lonely = await customer();
+    await make.order([{ ...item, qty: 1 }], { customerId: lonely.id, status: "new", placedAt: NOW });
+    const empty = plain(renderAccountPage(OrdersPage, "/account/orders?show=closed", { orders: await listOwnOrders(t.db, lonely.id, "ar", { show: "closed" }) }));
+    expect(empty).toContain("لا طلبات ملغاة أو مُرجعة.");
+    expect(empty).toContain("اعرض كل الطلبات");
+  });
+
+  test("the overview's glance: the points balance and the membership's name; nothing for a customer without", async () => {
+    const { id } = await customer();
+    expect(await getRewardsGlance(t.db, id, "ar", NOW)).toEqual({ points: 0, membership: null });
+    await t.db.insert(loyaltyLedger).values({ id: newId("lyl"), customerId: id, points: 1_200, kind: "adjust", refType: "admin", refId: null, reason: "test", expiresAt: NOW + 300 * DAY, actorKind: "system", actorId: "test", idempotencyKey: `test:${randomToken()}`, at: NOW - DAY });
+    const tierId = newId("mtr");
+    await t.db.insert(membershipTiers).values({ id: tierId, key: `gold-${tierId}`, name: { ar: "ذهبية", en: "Gold" }, benefits: { freeShipping: true }, isActive: true });
+    await t.db.insert(memberships).values({ id: newId("mbr"), customerId: id, tierId, status: "active", startsAt: NOW - DAY, endsAt: NOW + 30 * DAY, source: "grant", createdAt: NOW - DAY });
+    const glance = await getRewardsGlance(t.db, id, "en", NOW);
+    expect(glance).toEqual({ points: 1_200, membership: { tier: "Gold", endsAt: NOW + 30 * DAY } });
+    expect((await getRewardsGlance(t.db, id, "ar", NOW)).membership?.tier).toBe("ذهبية");
+    // the same balance and membership as the points page
+    const page = await getRewards(t.db, id, "en", NOW);
+    expect(page.points.balance).toBe(glance.points);
+    expect(page.membership?.tier).toBe("Gold");
+    expect((await getRewardsGlance(t.db, id, "en", NOW + 31 * DAY)).membership).toBeNull();
+  });
+
+  test("the new sentences: the invitation carries the code, the rules carry the programme's numbers, in ar, en and ckb", () => {
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const rewards = accountMessages[locale].rewards;
+      expect(rewards.shareText, locale).toContain("{code}");
+      expect(rewards.rules.earnTitle, locale).toMatch(/\{points\}[\s\S]*\{amount\}/);
+      expect(rewards.rules.valueTitle, locale).toContain("{amount}");
+      expect(rewards.rules.referralTitle, locale).toContain("{points}");
+      // nothing promised that the programme does not say: no instant points, no guaranteed reward
+      expect(JSON.stringify(rewards), locale).not.toMatch(/فوري|مضمون|instant|guaranteed|دەستبەجێ|مسۆگەر/i);
+    }
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── Design v2.1 review (account-review, 2026-11-13)
+
+/** The order page as its loader answers it (the account's words plus the checkout's and the errors'). */
+function renderOrderPage(order: OrderView, locale: Locale = "ar"): string {
+  const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "account/orders/:ref", Component: OrderPage as never }] }]);
+  return renderToStaticMarkup(
+    createElement(Stub, {
+      initialEntries: [`/account/orders/${order.ref}`],
+      hydrationData: {
+        loaderData: {
+          root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, storeMode: "demo", i18n: messagesFor(locale, "common", "ui", "ui-card", "ui-shop", "ui-overlays") },
+          page: { order, now: NOW, i18n: messagesFor(locale, "account", "checkout", "errors") },
+        },
+      },
+    }),
+  );
+}
+
+/** The account layout's revalidation rule (undefined before the review added it: the frame then always read again). */
+const layoutShouldRevalidate = (args: never): boolean => {
+  const rule = (accountLayout as { shouldRevalidate?: (args: never) => boolean }).shouldRevalidate;
+  return rule ? rule(args) : true;
+};
+
+const DESTINATIONS = { bankTransfer: { enabled: true, accountNumber: "9269317427", recipientName: "علي خليفة" }, zaincash: { enabled: false, number: "" } };
+const walletData = (items: { id: string; kind: "purchase" | "topup"; amountIqd: number; at: number; orderRef: string | null }[]) => ({
+  entries: { items, total: items.length, nextCursor: null },
+  topups: [],
+  destinations: DESTINATIONS,
+  limits: { min: 1_000, max: 10_000_000 },
+  attempt: "tku_review",
+});
+
+describe("Design v2.1 review: what the reviewer found (client round 1)", () => {
+  test("a history row's date and order are whole parts of one line: no dot is left at a line's end when they wrap", () => {
+    // Before: «12/11/2026 ·» on one line and «الطلب TT-…» under it on phones (the dot was text after the date).
+    const points = plain(renderAccountPage(RewardsPage, "/account/rewards", { rewards: rewardsView() }));
+    expect(points).not.toMatch(/<\/time>\s*·/);
+    expect(points).toMatch(/<span class="acct-meta"><span><time[^>]*>[^<]+<\/time><\/span><span><span class="whitespace-nowrap">الطلب <bdi dir="ltr" class="nums">TT-AAAA1111<\/bdi><\/span><\/span><\/span>/);
+    const wallet = plain(renderAccountPage(WalletPage, "/account/wallet", walletData([{ id: "wle_1", kind: "purchase", amountIqd: -54_500, at: NOW, orderRef: "TT-AAAA1111" }])));
+    expect(wallet).not.toMatch(/<\/time>\s*·/);
+    expect(wallet).toMatch(/<span class="acct-meta"><span><time[^>]*>[^<]+<\/time><\/span><span><span class="whitespace-nowrap">الطلب/);
+    // the two histories write a date the same way (the account's list format, as on the order cards)
+    const date = (html: string) => /<span class="acct-meta"><span><time[^>]*>([^<]+)<\/time>/.exec(html)?.[1];
+    const sameDay = plain(renderAccountPage(RewardsPage, "/account/rewards", { rewards: rewardsView({ points: { entries: [{ id: "lyl_9", kind: "redeem", points: -500, at: NOW, orderRef: "TT-AAAA1111", refType: "order", expiresAt: null }] } }) }));
+    expect(date(wallet)).toBe(date(sameDay));
+  });
+
+  test("a note inside a card is flat, never a raised card in a card (sign-in, reset, the top-up step)", () => {
+    const signIn = renderAccountPage(LoginPage, "/account/login", { next: "/account", asked: false, notice: "signedOut" });
+    expect(signIn).toContain("سجّلت الخروج");
+    expect(signIn).toMatch(/class="note note--success note--flat"/);
+    const reset = renderAccountPage(ForgotPage, "/account/forgot", { delivery: "unavailable" });
+    expect(reset).toMatch(/class="note note--flat"/);
+    const topup = renderAccountPage(WalletPage, "/account/wallet?topup=1", walletData([]));
+    expect(topup).toMatch(/<form[^>]*class="acct-card acct-narrow"[\s\S]*class="note note--flat"[\s\S]*<\/form>/);
+    // a note on the page itself stays a card
+    const wallet = renderAccountPage(WalletPage, "/account/wallet", { ...walletData([]), destinations: { bankTransfer: { ...DESTINATIONS.bankTransfer, enabled: false }, zaincash: DESTINATIONS.zaincash } });
+    expect(wallet).toMatch(/class="note"/);
+  });
+
+  test("the order page keeps the order number whole in its help sentence, and names the recipient by number when there is no name", async () => {
+    const { id } = await customer();
+    const item = await make.product({ stock: 20 });
+    const placed = await make.order([{ ...item, qty: 1 }], { customerId: id, status: "confirmed", contactName: null, placedAt: NOW });
+    await make.payment(placed.orderId, placed.totalIqd);
+    const order = await getOrderForCustomer(t.db, id, placed.ref, "ar", NOW);
+    expect(order).not.toBeNull();
+    const html = plain(renderOrderPage(order as OrderView));
+    // «اكتب لموظف واذكر رقم الطلب TT-…» — the number never breaks at its hyphen
+    expect(html).toContain(`اكتب لموظف واذكر رقم الطلب <bdi dir="ltr" class="nums whitespace-nowrap">${placed.ref}</bdi>.`);
+    // without a name the recipient's line is the number, not the card's heading «التوصيل» again
+    expect(html).not.toContain('class="acct-fact__title">التوصيل<');
+    expect(html).toMatch(/class="acct-fact__title"><bdi dir="ltr" class="nums">0\d{3} /);
+  });
+
+  test("the rules strip says only what the programme gives: a rule whose number the store set to 0 is left out", () => {
+    const paused = plain(renderAccountPage(RewardsPage, "/account/rewards", { rewards: rewardsView({ points: { pointsPerThousandIqd: 0 }, referralRewardPoints: 0 }) }));
+    expect(paused).not.toContain("لكل إحالة");
+    expect(paused).not.toContain("لكل 1,000 د.ع");
+    expect(paused).toContain("النقطة تساوي 10 د.ع");
+    expect(paused).toContain("صالحة 365 يوماً");
+  });
+
+  test("a chip rail brings the chip that takes the keyboard's focus into view (Chromium leaves a right-to-left rail's last chip cut off)", () => {
+    for (const page of ["rewards", "orders"]) {
+      const source = readFileSync(new URL(`../app/routes/storefront/account/${page}.tsx`, import.meta.url), "utf8");
+      expect(source, page).toMatch(/className="chips chips--rail chips--bleed"[^>]*onFocus=\{revealFocusedItem\}/);
+    }
+  });
+
+  test("the points page reads again when asked to (an explicit revalidation, the same address again), not when only the chip changes", () => {
+    const url = (path: string) => new URL(`http://localhost${path}`);
+    const revalidates = (current: string, next: string) => rewardsShouldRevalidate({ currentUrl: url(current), nextUrl: url(next), defaultShouldRevalidate: true } as never);
+    expect(revalidates("/account/rewards?show=used", "/account/rewards?show=used")).toBe(true);
+    expect(revalidates("/account/rewards", "/account/rewards")).toBe(true);
+    expect(revalidates("/account/rewards", "/account/rewards?show=earned")).toBe(false);
+    expect(revalidates("/account/rewards?show=earned", "/account/rewards?show=used&x=1")).toBe(true);
+  });
+
+  test("the account frame is not read again when only a page's query changes (a chip): the points chips change the page with no request", () => {
+    const url = (path: string) => new URL(`http://localhost${path}`);
+    const frame = (current: string, next: string, formMethod?: string) => layoutShouldRevalidate({ currentUrl: url(current), nextUrl: url(next), formMethod, defaultShouldRevalidate: true } as never);
+    expect(frame("/account/rewards", "/account/rewards?show=used")).toBe(false);
+    expect(frame("/account/orders?show=open", "/account/orders")).toBe(false);
+    // a post, an explicit revalidation (the same address), another page: read again
+    expect(frame("/account/wallet", "/account/wallet", "POST")).toBe(true);
+    expect(frame("/account/wallet?topup=1", "/account/wallet", "POST")).toBe(true);
+    expect(frame("/account/rewards?show=used", "/account/rewards?show=used")).toBe(true);
+    expect(frame("/account/rewards", "/account/wallet")).toBe(true);
+    expect(frame("/account/orders", "/account/orders/TT-AAAA1111")).toBe(true);
   });
 });

@@ -1,8 +1,9 @@
 /**
- * The reading part of the product page — design v2 spec §6.7 items 12–13: «قبل أن تطلب» (a warn callout), highlights,
- * about the product, game facts, the specification rows (label 14/600 ink-2 + value 14 between hairlines; the store's
- * product code last, in caption; one line on where the facts come from, the sources behind a disclosure) and what is in
- * the box (the retail-box photo beside a checked list). Flat on the floor: no panels around reading text.
+ * The reading part of the product page — design v2 spec §6.7 items 12–13, v2.1 (client note 5, G5, G7): «قبل أن تطلب»
+ * (the kit's calm Note in the warning tone), highlights (the before's checked list, reading size), about the product,
+ * game facts, the specification rows (label 14/600 ink-2 + value 14 between hairlines; the store's product code last,
+ * in caption; one line on where the facts come from, the sources behind a disclosure) and what is in the box (the
+ * retail-box photo beside a checked list). Flat on the floor: no panels around reading text.
  *
  * Every section renders nothing when its data is missing, so a product with partial data reads as a shorter page,
  * never as empty boxes. No image-credit section (credits live in the footer line and the sources disclosure).
@@ -17,10 +18,10 @@ import { Icon } from "~/art/Icon";
 import { useFormat } from "~/i18n/react";
 import type { ImageRef } from "~/lib/dto";
 import type { GameFacts as GameFactsData, SourceLink, SpecRow, VariantDetail } from "~/server/services/catalog/product-types";
-import { Blocks } from "~/ui/Blocks";
 import { cx } from "~/ui/cx";
 import { Disclosure } from "~/ui/Disclosure";
 import { Niche } from "~/ui/Niche";
+import { Note } from "~/ui/Note";
 import { ProductImage } from "~/ui/ProductCard";
 import { TextLink } from "~/ui/TextLink";
 import { useProductT } from "../i18n";
@@ -44,22 +45,30 @@ export function Section({ title, children, className, level = 2, id }: { title: 
   );
 }
 
-/** «قبل أن تطلب»: the product's buyer note as a warn callout (a 3px --warn bar), when it has one. */
+/** «قبل أن تطلب»: the product's buyer note as the kit's calm Note in the warning tone (G5), when it has one. */
 export function BeforeYouOrder({ text, className }: { text: string | null; className?: string }) {
   const t = useProductT();
   if (!text) return null;
-  return <Blocks blocks={[{ type: "callout", tone: "warning", title: t("notes"), text }]} className={className} />;
+  return (
+    <Note tone="warning" title={t("notes")} className={className}>
+      <MixedText text={text} />
+    </Note>
+  );
 }
 
+/** «أبرز ما فيه»: the before's checked list, in reading size (16px / 1.75). */
 export function Highlights({ items, level = 2, className }: { items: readonly string[]; level?: 2 | 3; className?: string }) {
   const t = useProductT();
   if (items.length === 0) return null;
   return (
     <Section title={t("highlights")} level={level} className={className}>
-      <ul className="grid list-disc gap-2 ps-5 type-body text-ink marker:text-ink-2">
+      <ul className="grid gap-2.5">
         {items.map((item, index) => (
-          <li key={index} className="ps-1">
-            <MixedText text={item} />
+          <li key={index} className="flex items-start gap-3 type-read text-ink">
+            <Icon name="check" size={20} className="mt-1 shrink-0 text-ok" />
+            <span className="min-w-0">
+              <MixedText text={item} />
+            </span>
           </li>
         ))}
       </ul>
@@ -72,7 +81,7 @@ export function About({ text, level = 2, className }: { text: string | null; lev
   if (!text) return null;
   return (
     <Section title={t("about")} level={level} className={className}>
-      <p className="max-w-[70ch] type-body text-ink">
+      <p className="max-w-[65ch] type-read text-ink">
         <MixedText text={text} />
       </p>
     </Section>
@@ -96,10 +105,10 @@ export function InTheBox({ items, image, level = 2, className }: { items: readon
   return (
     <Section title={t("inBox")} level={level} className={className}>
       <div className={cx("grid items-start gap-4", image && "grid-cols-[minmax(0,1fr)_7rem] md:grid-cols-[minmax(0,1fr)_10rem]")}>
-        <ul className="grid gap-2">
+        <ul className="grid gap-2.5">
           {items.map((item, index) => (
-            <li key={index} className="flex items-start gap-2.5 type-body text-ink">
-              <Icon name="check" size={20} className="mt-0.5 shrink-0 text-ok" />
+            <li key={index} className="flex items-start gap-3 type-read text-ink">
+              <Icon name="check" size={20} className="mt-1 shrink-0 text-ok" />
               <span className="min-w-0">
                 <MixedText text={item} />
               </span>
@@ -145,7 +154,9 @@ export function GameFacts({ game, ageRating, level = 2, className }: { game: Gam
   return (
     <Section title={t("game.title")} level={level} className={className}>
       {game.format === "game-key-card" || game.format === "code-in-box" ? (
-        <Blocks blocks={[{ type: "callout", tone: "info", text: t(game.format === "game-key-card" ? "game.keyCard" : "game.codeInBox") }]} />
+        <Note tone="info" icon={game.format === "game-key-card" ? "key" : "download-simple"}>
+          {t(game.format === "game-key-card" ? "game.keyCard" : "game.codeInBox")}
+        </Note>
       ) : null}
       <Rows rows={rows} />
     </Section>

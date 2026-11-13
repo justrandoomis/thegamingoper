@@ -48,7 +48,7 @@ export default function PoliciesPage({ loaderData }: Route.ComponentProps) {
             aside: mixed && !policy.approved ? t("common.statusDraftShort") : undefined,
           }))}
         />
-        <HandoffCard id="policies-ask" title={t("index.askTitle")} />
+        <HandoffCard id="policies-ask" title={t("index.askTitle")} reveal />
       </div>
     </div>
   );

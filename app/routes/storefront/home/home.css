@@ -1,126 +1,417 @@
 /*
- * Home page (app/routes/storefront/home) — Design System v2 §6.1 (home, intro, onboarding), §4.18 (the band), §4.19
- * (tiles). Page layout only: every surface, colour, radius and shadow comes from the kit's classes and the tokens
- * (docs/UI.md §2–§3); logical properties only; motion is transform and opacity only (the individual `translate` /
- * `scale` properties), never longer than the intro's 1.4 s, and off under reduced motion and at the lite tier where
- * DESIGN.md says so. Components layer, so utilities still win.
+ * Home page (app/routes/storefront/home) — Design System v2 §6.1 (home, intro, onboarding) in v2.1's look (client notes
+ * 1–3: the hero carousel, the compact phone banner, glass in dark; DESIGN.md §15). Page layout only: every surface,
+ * colour, radius and shadow comes from the kit's classes and the tokens (docs/UI.md §0, §2–§3); logical properties
+ * only; motion is transform and opacity only (the individual `translate` / `scale` properties), never longer than the
+ * intro's 1.4 s (the dot's fill runs with autoplay's 6.5 s), and off under reduced motion where DESIGN.md says so.
+ * Components layer, so utilities still win.
  */
 @layer components {
   /* ───────────────────────────── page ───────────────────────────── */
   .home {
-    /* the band starts 16px under the header; the shell's footer keeps its own section gap above it */
+    /* the banners start 16px under the header; the shell's footer keeps its own section gap above it. The ambient
+       light behind the hero and the tiles may reach into the gutters, never past the screen's edge */
     padding-block-start: var(--s-4);
+    overflow-x: clip;
+  }
+  /* the first screen: the banners and the icon strip under them, closer together than two sections */
+  .home-top {
+    display: grid;
+    /* one column of the page's width: the strip's row of fixed tiles scrolls inside it, never widens it */
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-3);
+    min-inline-size: 0;
+  }
+  .home-strip {
+    min-inline-size: 0;
+  }
+  @media (min-width: 48rem) {
+    .home-top {
+      gap: var(--s-5);
+    }
   }
 
-  /* ───────────────────────────── hero: the crimson band ─────────────────────────────
-   * Phones (one column, 428px tall at 390 — the cap is 440): pill · headline · the product (168px, right under the
-   * headline) · price · key · the ONE-line delivery fact. From 768: the copy at the inline start (3/5 to 1023 — wide
-   * enough for «Nintendo Switch 2» at the 40px display size; 7/12 from 1024; 6/12 from 1280) and the product at the
-   * inline end across the band's height, the copy centred by the two flexible rows around it. Grid columns follow the
-   * reading direction, so English mirrors by itself. The headline's size per range comes from the page (./view
-   * heroTitleSizes → --hero-fs-*), and the copy-column widths below are its inputs (HERO_COPY_MIN): change both
-   * together. The band's one light sits behind the product (--light-x / --light-y are the band's own knobs).
-   * Red share (v2 §6.1, judge-brand fullshare): the band is most of the first screen's red — 404px from 1280, with the
-   * product reaching 8px further into its padding, keeps the 1440 first screen at ≤ 35% (QA 2026-11-12: 36.7% at 420). */
-  .home-hero.band--hero {
-    --light-y: 48%;
+  /* ───────────────────────────── the hero carousel ─────────────────────────────
+   * A region of banners on the kit's scroll-snap track (~/ui/Carousel): the banner in view, the next one peeking on
+   * phones, the bar under it (the dots centred, the pause key and the arrows at the end). THE PHONE BANNER'S SHAPE IS
+   * ONE CUSTOM PROPERTY — --hero-phone-ratio (width / height of the banner, 88% of the column wide): 315 / 220 is about
+   * 220px tall at 390 and 202px at 360, so the platform tiles show on the first phone screen. Flip it here (e.g.
+   * 315 / 300 for a taller banner); the copy column's width (./view HERO_COPY_MIN.sm) does not depend on it.
+   * From 768 the banner's height is the stylesheet's (340 → 380 → 400) and the slides share it. */
+  .home-hero {
+    --hero-phone-ratio: 315 / 220;
+    isolation: isolate;
   }
-  .home-hero__body {
+  /* the ambient light on the floor behind the banner (v2.1 G3: glass needs something to show), in the colour of the
+     banner in view: one layer per banner, crossfading as the banners change (opacity only) */
+  .home-hero__ambient {
+    position: absolute;
+    inset: 0 0 var(--target);
+    z-index: -1;
+    pointer-events: none;
+  }
+  /* the light fades out inside its own box: its box reaches a third of the banner's height below the banner and the
+     radial ends just under the bar (62% × 58% at 48%, transparent at 72% of that: 12% → 92% of the box). A radial that
+     still had colour at the box's edge drew a hard line under the dots in the dark theme (review 2026-11-13) */
+  .home-hero__light {
+    --glow-size: 62% 58%;
+    --glow-y: 48%;
+    --glow-inset: -16% -5% -34%;
+    opacity: 0;
+    transition: opacity 640ms var(--ease-settle);
+  }
+  .home-hero__light[data-on] {
+    opacity: 1;
+  }
+  .home-hero__track {
+    --carousel-radius: var(--r-xl);
+  }
+  .home-hero__slide {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    /* "facts" is empty on phones (no fact line there) but for a pinned hero's product name */
-    grid-template-areas: "pill" "title" "facts" "media" "price" "buy" "line";
-    justify-items: start;
-    padding: 20px;
+    /* the kit's `always` stops every smooth programmatic move at the NEXT snap point in Chromium: a dot two banners
+       away, Home / End and autoplay's wrap from the last banner to the first moved one banner only (measured
+       2026-11-12, also on /design-system). Asked of the kit; until then the hero's banners snap normally. */
+    scroll-snap-stop: normal;
   }
-  .home-hero__pill {
-    grid-area: pill;
+  @media (max-width: 47.99rem) {
+    .home-hero {
+      --carousel-aspect: var(--hero-phone-ratio);
+    }
+    /* the ratio sets the height from the width, so a wide phone turned on its side (740 × 360) or a desktop window at
+       200% zoom (720 wide) drew a 420px "compact" banner with its key under the tab bar (review 2026-11-13): capped at
+       60% of the screen's height (the cap is never under 240px), the banner keeping its full width (stretch: a grid
+       item with a ratio would narrow itself to keep the ratio). Portrait phones keep the ratio (220px at 390) */
+    .home-hero__slide {
+      justify-self: stretch;
+      max-block-size: max(240px, 60vh);
+      max-block-size: max(240px, 60svh);
+    }
+    /* the next banner peeks at the end; the track runs edge to edge and keeps the gutter as its snap padding */
+    .home-hero__track {
+      --carousel-gap: var(--s-3);
+      --carousel-radius: 0px;
+      grid-auto-columns: 88%;
+      margin-inline: calc(-1 * var(--gutter));
+      padding-inline: var(--gutter);
+      scroll-padding-inline: var(--gutter);
+    }
   }
-  .home-hero__title {
-    grid-area: title;
-    margin-block-start: 6px;
-    font: var(--type-display);
-    font-size: var(--hero-fs-sm, var(--fs-display));
-    text-wrap: balance;
+  /* the bar under the banner: the dots in the middle, the pause key and the round clay arrows at the end */
+  .home-hero__bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    min-block-size: var(--target);
+    margin-block-start: var(--s-2);
   }
-  .home-hero__facts {
-    grid-area: facts;
+  .home-hero__dots {
+    grid-column: 2;
+  }
+  .home-hero__tools {
+    grid-column: 3;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  /* while the banners move on by themselves, the current dot fills with the time left: its pill becomes the track
+     (the dot's grey) and the red fill grows from the start edge over the autoplay interval. Held (pointer, focus, a
+     finger, a hidden tab), paused or stopped: the kit's full pill. Asked of the kit: a progress look of its own. */
+  .home-hero[data-run] .carousel__dot[aria-current="true"]::before {
+    inline-size: 22px;
+    opacity: 1;
+  }
+  .home-hero[data-run] .carousel__dot[aria-current="true"]::after {
+    transform-origin: calc(50% - 50% * var(--dir)) 50%;
+    animation: home-dot-fill var(--home-autoplay, 6500ms) linear both;
+  }
+  @keyframes home-dot-fill {
+    from {
+      scale: 0 1;
+    }
+    to {
+      scale: 1 1;
+    }
+  }
+
+  /* ───────────────────────────── a banner ─────────────────────────────
+   * The kit's showcase band in the platform's colour (`band--platform` + data-gel; the trade-in banner the brand's
+   * crimson, `data-gel="brand"`; the used banner graphite, `data-tone="graphite"`), made richer for the hero (client
+   * note 1, the reference's banner): a lighter tint of the colour behind the product, a soft diagonal ribbon of light
+   * across the product's side, a deeper corner under the words (white text stays on the flat colour or deeper: ≥ 4.8:1),
+   * the kit's specular top band and rim, and a glossy floor under the product. Dark theme (client note 3): the kit's
+   * deep platform-colour glass (58% of the colour on the cabinet, a rim light brighter on top) over the ambient light.
+   *
+   * Phones: the compact banner — the name (two lines at most) and the price at the start, the product at the end across
+   * the banner's height, the key along the bottom (it may overlap the product's floor, as in the reference); no pill, no
+   * facts line, no second link (they come back from 768). From 768: pill · headline · facts · price · keys at the
+   * start (3/5 → 7/12 → 1/2), the product at the end, the copy centred by the flexible rows around it. Grid columns
+   * follow the reading direction, so English mirrors by itself. The copy columns' widths are ./view HERO_COPY_MIN:
+   * change both together. */
+  .home-slide.band {
+    --light-x: calc(50% + 28% * var(--dir));
+    --light-y: 44%;
+    block-size: 100%;
+    border-radius: var(--r-lg);
+    overflow: clip;
+  }
+  /* the white key on a platform's colour says its words in that colour's deep shade (≥ 7.6:1 on the key's face) */
+  .home-slide[data-gel] {
+    --on-band-label: var(--plat-deep);
+  }
+  /* graphite (the used banner): the colour band's materials on the page's dark band colour */
+  .home-slide.band[data-tone="graphite"] {
+    --plat: var(--band);
+    --plat-deep: var(--band);
+    --plat-hi: color-mix(in oklab, var(--band) 78%, var(--on-color));
+    --gel: var(--gel-brand);
+  }
+  .home-slide__gloss {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    /* the ribbons' white: 18% on a colour face, 10% on dark glass (--lit is 1 in the dark theme) */
+    --ribbon: color-mix(in oklab, var(--on-color) calc(18% - 8% * var(--lit)), transparent);
+    /* how far toward the product the ribbons sit, and how far the words' deeper side reaches (768–1279 below) */
+    --ribbon-at: 0%;
+    --deep-reach: 58%;
+    background:
+      /* two soft ribbons of light across the product's side */
+      linear-gradient(calc(180deg - 62deg * var(--dir)), transparent calc(50% + var(--ribbon-at)), var(--ribbon) calc(57% + var(--ribbon-at)), transparent calc(64% + var(--ribbon-at))),
+      linear-gradient(calc(180deg - 62deg * var(--dir)), transparent calc(66% + var(--ribbon-at)), var(--ribbon) calc(70% + var(--ribbon-at)), transparent calc(74% + var(--ribbon-at))),
+      /* the lighter tint of the colour behind the product (it stays on the product's side) */
+      radial-gradient(54% 80% at calc(50% + 34% * var(--dir)) 36%, color-mix(in oklab, var(--plat-hi, var(--red-gloss-top)) 72%, transparent), transparent 66%),
+      /* the deeper corner under the words, and the words' side a shade deeper (white text ≥ 4.5:1 on every face) */
+      radial-gradient(80% 110% at calc(50% - 46% * var(--dir)) 108%, color-mix(in oklab, var(--plat-deep, var(--red-deep)) 62%, transparent), transparent 72%),
+      linear-gradient(calc(180deg - 90deg * var(--dir)), color-mix(in oklab, var(--plat-deep, var(--red-deep)) 34%, transparent) 0%, transparent var(--deep-reach));
+  }
+  /* 768–1279: the copy column is 3/5 → 7/12 of the banner, so the ribbons crossed the end of the facts line and the
+     «تفاصيل الجهاز» link (3.7:1 measured on the PlayStation and Xbox blues, review 2026-11-13): the ribbons move toward
+     the product and the deeper side reaches past the words (≥ 4.6:1 on the lightest 2% of the pixels behind them, in
+     light and dark). From 1280 the copy is half the banner and keeps the ribbons where they were */
+  @media (min-width: 48rem) and (max-width: 79.99rem) {
+    .home-slide__gloss {
+      --ribbon-at: 10%;
+      --deep-reach: 76%;
+    }
+  }
+  .home-slide__body {
+    display: grid;
+    grid-template-columns: minmax(0, 11fr) minmax(0, 9fr);
+    grid-template-rows: minmax(0, 1fr) auto auto auto minmax(0, 1fr);
+    column-gap: var(--s-2);
+    block-size: 100%;
+    padding: 14px var(--s-4);
+  }
+  .home-slide__pill {
+    grid-area: 1 / 1;
     display: none;
   }
-  /* a pinned hero (content module): the staff's headline no longer names the product, so its name shows under it on
-   * every width (card type, the band's ink); the staff's deck follows it from 768 */
-  .home-hero__facts--pinned {
-    display: grid;
-    gap: var(--s-1);
-    margin-block-start: var(--s-1);
+  .home-slide__title {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: end;
+    font: var(--type-display);
+    font-size: var(--hero-fs-sm, 22px);
+    line-height: 1.2;
+    text-wrap: balance;
+    /* two lines at most (./view sizes it to fit them); the clamp's box keeps room for a descender on the last line */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    padding-block-end: 0.14em;
+    margin-block-end: -0.14em;
   }
-  .home-hero__name {
+  /* phones show the name alone: the words before it («العب على») are read, not shown */
+  .home-slide__lead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .home-slide__break {
+    display: none;
+  }
+  .home-slide__facts {
+    grid-area: 1 / 1;
+    display: none;
+  }
+  .home-slide__name {
     font: var(--type-card);
     color: var(--on-showcase);
   }
-  .home-hero__deck {
+  .home-slide__deck {
     display: none;
   }
-  .home-hero__media {
-    grid-area: media;
-    position: relative;
-    isolation: isolate;
-    justify-self: stretch;
-    block-size: 168px;
-  }
-  .home-hero__link {
-    display: block;
-    inline-size: 100%;
-    block-size: 100%;
-    margin-inline: auto;
-    border-radius: var(--r-lg);
-  }
-  .home-hero__shared {
-    inline-size: 100%;
-    block-size: 100%;
-  }
-  /* an opaque photo keeps its own plate on the band: multiplied into crimson it would turn red */
-  .home-hero__media {
-    --opaque-blend: normal;
-  }
-  /* phones: the price right under the product's box (the cut-out keeps its own air inside it) */
-  .home-hero__price {
-    grid-area: price;
+  .home-slide__price {
+    grid-column: 1;
+    grid-row: 3;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--s-2) var(--s-3);
+    gap: var(--s-1) var(--s-2);
+    margin-block-start: 6px;
   }
-  .home-hero__buy {
-    grid-area: buy;
-    justify-self: stretch;
+  @media (max-width: 47.99rem) {
+    /* the compact banner's price is the large size (22px), not the hero's 30 */
+    .home-slide__price {
+      --price-xl: var(--price-lg);
+      --cur-xl: var(--cur-lg);
+    }
+  }
+  .home-slide__buy {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s-2) var(--s-5);
-    margin-block-start: var(--s-2);
+    margin-block-start: 10px;
   }
-  .home-hero__line {
-    grid-area: line;
-    display: flex;
+  .home-slide__more {
+    display: none;
+  }
+  .home-slide__notice {
+    display: none;
+    flex-basis: 100%;
     align-items: center;
     gap: 6px;
-    margin-block-start: var(--s-2);
     font: var(--type-xs-strong);
+    color: var(--on-showcase); /* dark: --on-showcase-2 (ink-2) measured 3.5:1 on the deep platform glass */
   }
-  .home-hero__line > svg {
+  .home-slide__notice > svg {
     flex: none;
   }
+  .home-slide__media {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    min-block-size: 0;
+    /* the product stands on the banner's floor and may reach into the end padding */
+    margin-block: -2px -6px;
+    margin-inline-end: calc(-1 * var(--s-2));
+    /* an opaque photo keeps its own plate on a colour band: multiplied into it, it would take the colour */
+    --opaque-blend: normal;
+  }
+  .home-slide__link {
+    display: block;
+    min-block-size: 0;
+    border-radius: var(--r-lg);
+  }
+  .home-slide__shared {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+  @media (max-width: 47.99rem) {
+    /* a service banner has no price: its picture stays above the key's row (the white key never covers a white console) */
+    .home-slide:is([data-kind="tradeIn"], [data-kind="used"]) .home-slide__media {
+      grid-row: 1 / 4;
+    }
+  }
+  /* the glossy floor under the product: a pale ellipse of the colour's light (the plinth's lit top) with the contact
+     shadow, in the colour's deep shade, at its core */
+  .home-slide__floor {
+    position: absolute;
+    z-index: -1;
+    inset-inline: 2%;
+    inset-block-end: -3%;
+    block-size: 22%;
+    border-radius: var(--r-full);
+    background:
+      radial-gradient(closest-side, color-mix(in oklab, var(--plat-deep, var(--red-deep)) 94%, transparent), transparent) center 56% / 70% 46% no-repeat,
+      radial-gradient(closest-side, color-mix(in oklab, var(--on-color) 30%, transparent), transparent) center / 100% 100% no-repeat;
+    pointer-events: none;
+  }
+  /* a service banner without a picture: its icon in a large clay disc */
+  .home-slide__glyph {
+    align-self: center;
+    justify-self: center;
+    display: grid;
+    place-items: center;
+    inline-size: 96px;
+    block-size: 96px;
+    border-radius: var(--r-full);
+    background: var(--key-face);
+    box-shadow: var(--e-disc);
+    color: var(--red-ink);
+  }
+  /* once the page is live, a banner that is not the one in view shows its colour and its product, not its words — the
+     next banner peeks on phones without a cut line of text — and its words fade in as it becomes the one in view (before
+     JavaScript every banner keeps its words: swiping works without it) */
+  .home-slide :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy) {
+    transition: opacity var(--t-reveal) var(--ease-settle);
+  }
+  .home-hero[data-live] .home-hero__slide:not([data-current]) :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy) {
+    opacity: 0;
+  }
+  /* a banner that arrives (a move, not the first paint): its words rise in one after another, the product settles */
+  .home-hero__slide[data-arrived] :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy) {
+    animation: home-rise var(--t-page) var(--ease-settle) backwards;
+  }
+  .home-hero__slide[data-arrived] .home-slide__title {
+    animation-delay: 40ms;
+  }
+  .home-hero__slide[data-arrived] .home-slide__facts {
+    animation-delay: 80ms;
+  }
+  .home-hero__slide[data-arrived] .home-slide__price {
+    animation-delay: 120ms;
+  }
+  .home-hero__slide[data-arrived] .home-slide__buy {
+    animation-delay: 160ms;
+  }
+  .home-hero__slide[data-arrived] .home-slide__shared {
+    animation: home-settle 520ms var(--ease-settle) backwards;
+  }
+  @keyframes home-rise {
+    from {
+      opacity: 0;
+      translate: 0 10px;
+    }
+  }
+  @keyframes home-settle {
+    from {
+      opacity: 0.4;
+      scale: 0.95;
+    }
+  }
+  /* reduced motion (the OS or the store's switch): the light changes at once, nothing rises or settles (and the hook
+     never plays, so no dot fills) */
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero__light,
+    .home-slide :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy) {
+      transition: none;
+    }
+    .home-hero__slide[data-arrived] :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy, .home-slide__shared) {
+      animation: none;
+    }
+  }
+  [data-motion="reduced"] .home-hero__light,
+  [data-motion="reduced"] .home-slide :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy) {
+    transition: none;
+  }
+  [data-motion="reduced"] .home-hero__slide[data-arrived] :is(.home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy, .home-slide__shared) {
+    animation: none;
+  }
+
   @media (min-width: 48rem) {
-    .home-hero.band--hero {
+    .home-slide.band {
       --light-x: calc(50% + 29% * var(--dir));
       --light-y: 50%;
+      border-radius: var(--r-xl);
     }
-    /* 768–1023: copy 3/5 and a 16px gap — at 768 the column is 388px, so «Nintendo Switch 2» stays at the range's
-       40px display size (7/12 with a 24px gap was 373px and stepped it down to a size off the scale) */
-    .home-hero__body {
+    /* 768–1023: copy 3/5 and a 16px gap — at 768 the column is 388px, so «Nintendo Switch 2» keeps the range's 40px */
+    .home-slide__body {
       grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-      grid-template-rows: 1fr repeat(6, auto) 1fr;
+      grid-template-rows: minmax(0, 1fr) repeat(5, auto) minmax(0, 1fr);
       grid-template-areas:
         ". media"
         "pill media"
@@ -128,88 +419,179 @@
         "facts media"
         "price media"
         "buy media"
-        "line media"
         ". media";
       column-gap: 16px;
-      min-block-size: 360px;
+      min-block-size: 340px;
       padding: 28px;
     }
-    .home-hero__title {
+    .home-slide__pill {
+      grid-area: pill;
+      display: inline-flex;
+      justify-self: start;
+    }
+    .home-slide__title {
+      grid-area: title;
       margin-block-start: var(--s-2);
       font-size: var(--hero-fs-md, var(--fs-display));
+      line-height: var(--lh-display);
     }
-    .home-hero__facts {
-      display: block;
+    .home-slide__lead {
+      position: static;
+      inline-size: auto;
+      block-size: auto;
+      overflow: visible;
+      clip-path: none;
+      white-space: normal;
+    }
+    .home-slide__break {
+      display: inline;
+    }
+    .home-slide__facts {
+      grid-area: facts;
       margin-block-start: var(--s-2);
       font: var(--type-lead);
-      color: var(--on-showcase-2);
+      color: var(--on-showcase); /* dark: --on-showcase-2 (ink-2) measured 3.5:1 on the deep platform glass */
+      /* one idea per line: two lines at most */
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
     }
-    .home-hero__facts--pinned {
+    .home-slide__facts--pinned {
       display: grid;
+      gap: var(--s-1);
     }
-    .home-hero__deck {
+    .home-slide__deck {
       display: block;
     }
-    /* the product takes the band's full height but for a little air (it reaches into the band's padding) */
-    .home-hero__media {
-      block-size: auto;
-      min-block-size: 280px;
-      margin-block: -16px -8px;
-    }
-    .home-hero__link {
-      max-inline-size: 410px;
-    }
-    .home-hero__price {
+    .home-slide__price {
+      grid-area: price;
       margin-block-start: var(--s-3);
     }
-    .home-hero__buy {
+    .home-slide__buy {
+      grid-area: buy;
       justify-self: start;
       margin-block-start: 14px;
     }
-    .home-hero__line {
-      margin-block-start: var(--s-3);
+    .home-slide__more {
+      display: inline-flex;
+    }
+    .home-slide__notice {
+      display: flex;
+    }
+    /* the product takes the banner's full height but for a little air (it reaches into the banner's padding) */
+    .home-slide__media {
+      grid-area: media;
+      min-block-size: 260px;
+      margin-block: -14px -10px;
+      margin-inline-end: 0;
+    }
+    .home-slide__link {
+      inline-size: 100%;
+      max-inline-size: 440px;
+      justify-self: center;
+    }
+    .home-slide__floor {
+      inset-inline: 14%;
+      inset-block-end: -2%;
+      block-size: 14%;
     }
   }
   @media (min-width: 64rem) {
-    .home-hero__body {
+    .home-slide__body {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
       column-gap: 32px;
-      min-block-size: 400px;
+      min-block-size: 380px;
       padding: 32px 40px;
     }
-    .home-hero__title {
+    .home-slide__title {
       font-size: var(--hero-fs-lg, var(--fs-display));
     }
-    .home-hero__media {
-      min-block-size: 336px;
+    .home-slide__media {
+      min-block-size: 316px;
     }
   }
   @media (min-width: 80rem) {
-    .home-hero.band--hero {
+    .home-slide.band {
       --light-x: calc(50% + 25% * var(--dir));
     }
-    /* 404px: the copy (≈ 356px) in 24px of padding; the product reaches 8px further into it, so it draws larger */
-    .home-hero__body {
+    .home-slide__body {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      min-block-size: 404px;
-      padding: 24px 48px;
+      min-block-size: 400px;
+      padding: 28px 48px;
     }
-    .home-hero__title {
+    .home-slide__title {
       font-size: var(--hero-fs-xl, var(--fs-display));
     }
-    .home-hero__media {
-      margin-block: -24px -16px;
+    .home-slide__media {
+      margin-block: -20px -14px;
     }
+    .home-slide__link {
+      max-inline-size: 520px;
+    }
+  }
+
+  /* ───────────────────────────── the icon strip under the hero ─────────────────────────────
+   * The shell's glass icon tiles (the categories sheet's own: .shell-itile) in one row: scrolling below 1024 (96px
+   * tiles — the longest one-word names, "Controllers", «هێدسێتەکان», «الإكسسوارات», fit on a line of their own; the
+   * next tile peeks at the end), as many columns as there are doors from 1024 (110px and wider). */
+  .home-strip__list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 96px;
+    gap: 10px;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 4px var(--gutter) 10px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline proximity;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  .home-strip__list::-webkit-scrollbar {
+    display: none;
+  }
+  .home-strip__list > li {
+    scroll-snap-align: start;
+  }
+  @media (min-width: 48rem) {
+    .home-strip__list {
+      grid-auto-columns: 104px;
+      gap: var(--s-3);
+    }
+  }
+  @media (min-width: 64rem) {
+    .home-strip__list {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(var(--count, 8), minmax(0, 1fr));
+      margin-inline: 0;
+      padding: 4px 0 8px;
+      overflow: visible;
+    }
+  }
+
+  /* ───────────────────────────── sections ───────────────────────────── */
+  /* the platform tiles stand on the brand's ambient light, lower and wider than the tiles. It fades out inside its own
+     box (68% × 62% at 54%, transparent at 72% of that; the box reaches a quarter of the section below it): the kit's
+     wide light at 64% still had a third of its colour at the box's bottom edge, a hard line under the tiles in the dark
+     theme (review 2026-11-13). `.glow` doubles the class: this overrides the kit's .glow--wide size */
+  .home-platforms.glow {
+    --glow-size: 68% 62%;
+    --glow-y: 54%;
+    --glow-inset: -10% -4% -24%;
+  }
+  /* the clay «عرض الكل» keeps its height on the heading's line */
+  .home-viewall {
+    flex: none;
   }
 
   /* ───────────────────────────── the consent row (after the intro; non-blocking) ───────────────────────────── */
   .home-consent {
+    /* the kit's raised card (`panel` in Onboarding.tsx: faux glass in dark — it was flat paper with a hairline, the grey
+       card note 3 asked to retire) */
     display: grid;
     gap: var(--s-3);
     padding: var(--s-4) var(--s-5);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
-    background: var(--paper);
   }
   .home-consent__text {
     display: grid;
@@ -219,8 +601,9 @@
   .home-consent__question {
     font: var(--type-h3);
   }
+  /* what saying yes keeps is reading text (v2.1 G7: 16px / 1.75 on every width; it was 14 / 1.5) */
   .home-consent__detail {
-    font: var(--type-sm);
+    font: var(--type-read);
     color: var(--ink-2);
   }
   .home-consent__keys {
@@ -420,7 +803,7 @@
   /* a tile is a toggle here, not a door: the kit's `selected` tile (PlatformTile) draws it — no arrow; chosen = held
    * on its wall, ringed inside and checked, its words at the reading edge */
   .intro__hint {
-    font: var(--type-sm);
+    font: var(--type-read); /* reading text (v2.1 G7: 16px / 1.75; it was 14 / 1.5) */
     color: var(--ink-2);
     text-align: center;
     animation: intro-rise 220ms var(--ease-settle) both;

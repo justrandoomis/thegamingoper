@@ -1,11 +1,13 @@
 /**
- * A list whose filters hide every product (Design System v2 §6.2 states): «لا منتجات بهذه الفلاتر», the view's one
- * primary «امسح الفلاتر» (a choice made in the chip row stays), the filter whose removal alone shows products (with how
- * many), then a few products of the scope that can be bought now. Its own module: the filter sheet's primary belongs
- * to another view (the sheet).
+ * A list whose filters hide every product (Design System v2 §6.2 states; v2.1: on the kit's soft card, the funnel
+ * large on its disc): «لا منتجات بهذه الفلاتر», the view's one primary «امسح الفلاتر» (a choice made in the chip row
+ * stays), the filter whose removal alone shows products (with how many) on its own lines under the key, then a few
+ * products of the scope that can be bought now. Its own module: the filter sheet's primary belongs to another view
+ * (the sheet).
  */
 import { useId, type ReactNode } from "react";
 
+import { Icon } from "~/art/Icon";
 import type { ProductCardData } from "~/lib/dto";
 import { useFormat, useT } from "~/i18n/react";
 import { EmptyState } from "~/ui/EmptyState";
@@ -35,44 +37,52 @@ export function ZeroResults({ list, nav, zero, picks, picksTitle, elsewhere, wis
   const filters = list.filters;
   const groups = activeGroups(filters);
   const picksId = useId();
+  const nearest =
+    list.relax.length > 0 ? (
+      <div className="catalog-zero__nearest">
+        <p className="type-sm-strong text-ink">{t("zero.nearest")}</p>
+        <ul role="list" className="grid">
+          {list.relax.slice(0, 3).map((entry) => {
+            const words =
+              entry.group === "platforms"
+                ? filters.platforms.map((platform) => label("platforms", filters, platform)).join("، ")
+                : entry.group === "formats"
+                  ? filters.formats.map((format) => label("formats", filters, format)).join("، ")
+                  : label(entry.group, filters);
+            return (
+              <li key={entry.group}>
+                <TextLink as={HrefLink} to={nav.href(withoutGroup(filters, entry.group))}>
+                  {t("zero.remove", { label: words, count: entry.count, n: f.number(entry.count) })}
+                </TextLink>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ) : null;
   return (
     <div className="catalog-zero">
-      {/* the mascot in its disc (v2 §4.23), like every empty state that stands as a page's message */}
+      {/* the funnel large on its disc, on the soft card: what happened, the one key, then the nearest way back */}
       <EmptyState
         layout="stack"
+        panel
+        art={<Icon name="funnel" size={44} className="text-red-ink" />}
         title={zero.title}
         text={zero.text}
         headingLevel={3}
         action={
-          groups.length > 0 ? (
-            <Key variant="primary" as={HrefLink} to={nav.href({ ...NO_FILTERS, ...keepElsewhere(nav.query, elsewhere) })}>
-              {t("zero.clearAll")}
-            </Key>
+          groups.length > 0 || nearest ? (
+            <>
+              {groups.length > 0 ? (
+                <Key variant="primary" as={HrefLink} to={nav.href({ ...NO_FILTERS, ...keepElsewhere(nav.query, elsewhere) })} icon="x">
+                  {t("zero.clearAll")}
+                </Key>
+              ) : null}
+              {nearest}
+            </>
           ) : undefined
         }
       />
-      {list.relax.length > 0 ? (
-        <div className="catalog-zero__nearest">
-          <p className="type-sm-strong text-ink">{t("zero.nearest")}</p>
-          <ul role="list" className="grid">
-            {list.relax.slice(0, 3).map((entry) => {
-              const words =
-                entry.group === "platforms"
-                  ? filters.platforms.map((platform) => label("platforms", filters, platform)).join("، ")
-                  : entry.group === "formats"
-                    ? filters.formats.map((format) => label("formats", filters, format)).join("، ")
-                    : label(entry.group, filters);
-              return (
-                <li key={entry.group}>
-                  <TextLink as={HrefLink} to={nav.href(withoutGroup(filters, entry.group))}>
-                    {t("zero.remove", { label: words, count: entry.count, n: f.number(entry.count) })}
-                  </TextLink>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ) : null}
       {zero.extra}
       {picks.length > 0 ? (
         <section aria-labelledby={picksId} className="grid grid-cols-[minmax(0,1fr)] gap-4">

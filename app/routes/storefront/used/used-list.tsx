@@ -37,6 +37,7 @@ import { GRADES, GradeTag, gradeKey } from "~/ui/GradeBadge";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
 import { HrefLink, ShowMore } from "~/ui/Pagination";
+import { revealProps } from "~/ui/reveal";
 import { Sheet } from "~/ui/Sheet";
 import { TextLink } from "~/ui/TextLink";
 import { UsedUnitCard } from "~/ui/UsedUnitCard";
@@ -286,7 +287,7 @@ export default function UsedList({ loaderData }: Route.ComponentProps) {
 function TradeInEntry({ art }: { art: string | null }) {
   const t = useUsedT();
   return (
-    <section aria-label={t("list.tradeIn.title")}>
+    <section aria-label={t("list.tradeIn.title")} {...revealProps()}>
       <EntryCard to="/trade-in" headingLevel={2} title={t("list.tradeIn.title")} text={t("list.tradeIn.text")} cta={t("list.tradeIn.action")} art={art ?? "mascot"} />
     </section>
   );
@@ -297,7 +298,7 @@ function HowWeInspect() {
   const t = useUsedT();
   const shop = useT("ui-shop");
   return (
-    <section aria-labelledby="used-how" className="panel grid gap-5 p-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10 lg:p-8">
+    <section aria-labelledby="used-how" className="panel grid gap-5 p-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10 lg:p-8" {...revealProps()}>
       <div className="grid content-start gap-3">
         <h2 id="used-how" className="type-h2 text-ink">
           {t("list.how.title")}

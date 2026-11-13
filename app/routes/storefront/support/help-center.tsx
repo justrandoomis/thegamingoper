@@ -1,41 +1,53 @@
 /**
- * /support — the support centre (Design System v2 §6.13): the support sections' navigation (as on every support page:
- * the assistant and repair tracking one tap away), h1 «كيف نساعدك؟» with a search box for a problem or an error
- * code (guides only — kb.server searchHelp: a danger sign first, an error code, or guides by the words), four task
- * tiles (track an order · repair a device · returns and warranty · talk to a person), the device picker (a platform
- * segmented control, then that platform's device tiles — a rail below 768, a wrapping grid from 768; choosing one shows
- * its guides here, ?device=<slug>), suggested guides (staff order; ?guides=all lists every one), and how to reach a
- * person: the store's ContactCard when the owner configured channels, «اكتب لموظف» (the assistant's hand-off) when not.
+ * /support — the support centre, in the before's arrangement (client feedback round 1, note 9: "the before is look
+ * better … the feature of search about problems is good to notice — add improvement and more features"):
  *
- * Data: the device directory and approved public guides. Nothing is invented: a device without guides says so; the
- * contact card shows only configured channels. One red primary: the search key.
+ *   1. the support pages' underline tabs (مركز المساعدة · مساعد الصيانة · احجز صيانة · تابع طلب; a sliding underline)
+ *   2. h1 «الدعم والمساعدة» and its line
+ *   3. the problem search (./components/HelpSearch): suggestions while typing, device chips, common problems — a GET
+ *      form, so it works without script; `?q=` shows the grouped results under it (danger · error code · guides ·
+ *      policies, the searched words marked), `?platform=` keeps them to one platform
+ *   4. the before's big list cards (the kit's EntryCard rows: a clay icon disc, the title, one line, an arrow) in two
+ *      short groups — «مشكلة في جهازك؟» (diagnose step by step · book a repair · track a repair) and «طلبك وأسئلتك»
+ *      (track your order · returns and warranty · talk to a person)
+ *   5. «اختر جهازك»: every platform's devices under its colour line and name (a rail of tiles on phones, a grid from
+ *      768); `?device=<slug>` opens the device's panel (photo, the assistant and a repair, the hub link, its guides)
+ *   6. suggested guides in staff order (`?guides=all` lists every one), and the store's ContactCard when the owner
+ *      configured channels (the hand-off is already the «تحدّث مع موظف» card above)
+ *
+ * Data: the device directory, the approved public guides (and their search index: no bodies), the store's policies
+ * (content area, import only). Nothing is invented: a device without guides says so; a chip is offered only while a
+ * guide answers it; the contact card shows only configured channels. One red primary: the search key.
  */
-import { useEffect, useId, useRef, useState, type RefObject } from "react";
-import { Form, useLocation, useNavigation, useRouteLoaderData } from "react-router";
+import { useEffect, useId, useRef, type ReactNode, type RefObject } from "react";
+import { useLocation, useRouteLoaderData } from "react-router";
 
 import type { Route } from "./+types/help-center";
-import { Icon, type IconName } from "~/art/Icon";
+import { Logo } from "~/art/Logo";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useT } from "~/i18n/react";
 import type { MotionHandle } from "~/motion";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
-import { findDevice, getSupportDirectory, listArticlesForDevice, listHelpArticles, searchHelp } from "~/server/services/support/kb.server";
-import type { ArticleSummary, HelpSearch, SupportDevice, SupportPlatformGroup } from "~/server/services/support/types";
+import { listPolicies } from "~/server/services/content.server";
+import { commonProblemsFor, matchPolicies, type PolicyEntry } from "~/server/services/support/helpsearch";
+import { findDevice, getHelpIndex, getSupportDirectory, listArticlesForDevice, listHelpArticles, searchHelp } from "~/server/services/support/kb.server";
+import type { ArticleSummary, SupportDevice, SupportPlatformGroup } from "~/server/services/support/types";
 import { LAYOUT_ROUTE_ID, shellMeta } from "~/routes/storefront/shell/meta";
 import type { ShellData } from "~/routes/storefront/shell/types";
 import { BidiLabel } from "~/ui/BidiText";
 import { ContactCard } from "~/ui/ContactCard";
 import { DemoNote } from "~/ui/DemoNote";
 import { EmptyState } from "~/ui/EmptyState";
-import { TextField } from "~/ui/Field";
+import { EntryCard } from "~/ui/EntryCard";
 import { Key } from "~/ui/Key";
 import { isPlatform, PlatformLed } from "~/ui/PlatformLed";
+import { revealProps } from "~/ui/reveal";
 import { SectionHead } from "~/ui/SectionHead";
-import { Segmented } from "~/ui/Segmented";
 import { TextLink } from "~/ui/TextLink";
 import { DeviceHubLink } from "~/routes/storefront/devices/components/DeviceHubLink";
-import { DeviceArt, DeviceTile, GuideList, PlatformName, SafetyNote, SupportNav } from "./components/parts";
+import { HelpResults, HelpSearchForm, keepsFocus } from "./components/HelpSearch";
+import { DeviceArt, DeviceTile, GuideList, PlatformName, SupportNav } from "./components/parts";
 import "./support.css";
 
 export const handle = { nav: "push", order: 0, group: "support" } satisfies MotionHandle;
@@ -46,10 +58,33 @@ const SUGGESTED = 6;
 export async function loader({ context, url }: Route.LoaderArgs) {
   const ctx = getCtx(context);
   const db = getDb();
-  const [directory, guides, search] = await Promise.all([getSupportDirectory(db, ctx.locale), listHelpArticles(db, ctx.locale), searchHelp(db, ctx.locale, url.searchParams.get("q"))]);
+  const [directory, guides, index, policyRows] = await Promise.all([getSupportDirectory(db, ctx.locale), listHelpArticles(db, ctx.locale), getHelpIndex(db), listPolicies(db, ctx.locale, { now: ctx.now })]);
+  // the device chips: one of the directory's platforms, else every device
+  const asked = url.searchParams.get("platform");
+  const platform = directory.some((group) => group.slug === asked) ? asked : null;
+  const search = await searchHelp(db, ctx.locale, url.searchParams.get("q"), { platform });
+  // kept to one platform and nothing found there: do the same words find guides on every device? (the empty state then
+  // offers «ابحث في كل الأجهزة» — a filter never hides an answer silently)
+  const elsewhere = platform && search?.kind === "guides" && search.articles.length === 0 ? ((await searchHelp(db, ctx.locale, search.query))?.articles.length ?? 0) : 0;
+  const policies: PolicyEntry[] = policyRows.map((policy) => ({ slug: policy.slug, title: policy.title, summary: policy.summary }));
   const device = findDevice(directory, url.searchParams.get("device"));
   const deviceGuides = device ? await listArticlesForDevice(db, ctx.locale, device.id, { related: true }) : [];
-  return { directory, guides, allGuides: url.searchParams.get("guides") === "all", search, device, deviceGuides, i18n: messagesFor(ctx.locale, "support") };
+  return {
+    directory,
+    guides,
+    allGuides: url.searchParams.get("guides") === "all",
+    search,
+    platform,
+    elsewhere,
+    index,
+    policies,
+    policyHits: search?.kind === "guides" ? matchPolicies(policies, search.query, 3) : [],
+    // a common problem is offered only while an approved public guide answers it
+    common: commonProblemsFor(index),
+    device,
+    deviceGuides,
+    i18n: messagesFor(ctx.locale, "support"),
+  };
 }
 
 export const meta: Route.MetaFunction = (args) => {
@@ -59,51 +94,93 @@ export const meta: Route.MetaFunction = (args) => {
 };
 
 export default function HelpCenter({ loaderData }: Route.ComponentProps) {
-  const { directory, guides, allGuides, search, device, deviceGuides } = loaderData;
+  const { directory, guides, allGuides, search, platform, elsewhere, index, policies, policyHits, common, device, deviceGuides } = loaderData;
   const t = useT("support");
+  const ui = useT("ui");
   const location = useLocation();
-  const ids = { devices: useId(), guides: useId(), contact: useId() };
+  const ids = { devices: useId(), guides: useId(), contact: useId(), paths: useId() };
   const demo = guides.some((guide) => guide.isDemo);
   const shown = allGuides ? guides : guides.slice(0, SUGGESTED);
+  const platformName = (group: { slug: string; name: string }) => (isPlatform(group.slug) ? ui(`platform.${group.slug}`) : group.name);
+  const searchedPlatform = platform ? directory.find((group) => group.slug === platform) : undefined;
   // A search made on this page (a new query string, not the address the page opened with): the results heading takes
-  // focus, so the keyboard and screen readers continue from the answer.
+  // focus, so the keyboard and screen readers continue from the answer. Not when a device chip re-ran the search
+  // (KEEP_FOCUS): the focus stays on the chips — the arrow keys walk on — and the results' status line says the outcome.
   const resultsRef = useRef<HTMLHeadingElement>(null);
   const opened = useRef(location.search);
   useEffect(() => {
     if (opened.current === location.search) return;
     opened.current = location.search;
-    if (!search) return;
+    if (!search || keepsFocus(location.state)) return;
     resultsRef.current?.focus({ preventScroll: true });
     resultsRef.current?.scrollIntoView({ block: "nearest" });
-  }, [location.search, search]);
+  }, [location.search, location.state, search]);
+  // A device chosen on this page (a tile, not the address the page opened with): its panel's heading takes focus — the
+  // tile the shopper pressed sits below the panel, out of sight, and nothing said the panel had opened.
+  const deviceHeadingRef = useRef<HTMLHeadingElement>(null);
+  const shownDevice = useRef(device?.slug ?? null);
+  useEffect(() => {
+    const slug = device?.slug ?? null;
+    if (slug === shownDevice.current) return;
+    shownDevice.current = slug;
+    if (slug) deviceHeadingRef.current?.focus({ preventScroll: true });
+  }, [device?.slug]);
 
   return (
     <div className="page sup sup-help">
-      <header className="sup-help__head">
-        {/* the four support sections, as on every support page: the assistant and repair tracking one tap away */}
-        <SupportNav current="help" className="mb-1" />
-        <h1 className="type-h1 text-ink">{t("help.title")}</h1>
-        <p className="type-lead text-ink-2">{t("help.lede")}</p>
-        <SearchBox query={search?.query ?? ""} />
-      </header>
+      <SupportNav current="help" />
 
-      {search ? <SearchResults search={search} headingRef={resultsRef} /> : null}
+      <div className="sup-help__top glow">
+        <div className="sup-help__intro">
+          <header className="sup-help__head">
+            <h1 className="type-h1 text-ink">{t("help.title")}</h1>
+            <p className="sup-help__lede">{t("help.lede")}</p>
+          </header>
+          <HelpSearchForm
+            query={search?.query ?? ""}
+            platform={platform}
+            platforms={directory.map((group) => ({ slug: group.slug, name: group.name }))}
+            index={index}
+            policies={policies}
+            guides={guides}
+            common={common}
+          />
+        </div>
+        {/* from 1024: the store's mascot (it wears a headset) on a disc of real glass over the ambient light */}
+        <div className="sup-help__mascot" aria-hidden="true">
+          <span className="surface--glass sup-help__disc">
+            <Logo variant="mark" className="sup-help__mark text-logo" />
+          </span>
+        </div>
+      </div>
 
-      <nav aria-label={t("help.tasks.label")} className="sup-tasks">
-        <TaskTile to="/track" icon="package" title={t("help.tasks.track.title")} text={t("help.tasks.track.text")} />
-        <TaskTile to="/support/repair" icon="wrench" title={t("help.tasks.repair.title")} text={t("help.tasks.repair.text")} />
-        <TaskTile to="/policies/returns" icon="arrow-counter-clockwise" title={t("help.tasks.returns.title")} text={t("help.tasks.returns.text")} />
-        <TaskTile to="/support/assistant?handoff=1#handoff" icon="chat-circle" title={t("help.tasks.staff.title")} text={t("help.tasks.staff.text")} />
+      {search ? <HelpResults search={search} policies={policyHits} platformName={searchedPlatform ? platformName(searchedPlatform) : null} headingRef={resultsRef} elsewhere={elsewhere} /> : null}
+
+      <nav aria-label={t("help.paths.label")} className="sup-paths">
+        <PathGroup title={t("help.paths.device")}>
+          <EntryCard to="/support/assistant" icon="lifebuoy" title={t("help.paths.assistant.title")} text={t("help.paths.assistant.text")} />
+          <EntryCard to="/support/repair" icon="wrench" title={t("help.paths.repair.title")} text={t("help.paths.repair.text")} />
+          <EntryCard to="/support/repair/status" icon="clipboard-text" title={t("help.paths.status.title")} text={t("help.paths.status.text")} />
+        </PathGroup>
+        <PathGroup title={t("help.paths.orders")}>
+          <EntryCard to="/track" icon="package" title={t("help.paths.track.title")} text={t("help.paths.track.text")} />
+          <EntryCard to="/policies/returns" icon="arrow-counter-clockwise" title={t("help.paths.returns.title")} text={t("help.paths.returns.text")} />
+          <EntryCard to="/support/assistant?handoff=1#handoff" icon="chat-circle" title={t("help.paths.staff.title")} text={t("help.paths.staff.text")} />
+        </PathGroup>
       </nav>
 
-      <section id="devices" aria-labelledby={ids.devices} className="sup-section">
+      <section id="devices" aria-labelledby={ids.devices} className="sup-section" {...revealProps()}>
         <SectionHead id={ids.devices} title={device ? t("help.device.change") : t("help.devices.title")} reason={t("help.devices.hint")} />
-        {device ? <DevicePanel device={device} guides={deviceGuides} /> : null}
-        <DevicePicker directory={directory} current={device} />
+        {device ? <DevicePanel device={device} guides={deviceGuides} headingRef={deviceHeadingRef} /> : null}
+        <div className="sup-directory">
+          {directory.map((group) => (
+            <PlatformDevices key={group.id} group={group} name={platformName(group)} current={device} />
+          ))}
+        </div>
       </section>
 
       <div className="sup-help__foot">
-        <section id="guides" aria-labelledby={ids.guides} className="sup-section">
+        <section id="guides" aria-labelledby={ids.guides} className="sup-section" {...revealProps()}>
           <SectionHead
             id={ids.guides}
             title={allGuides ? t("help.guides.allTitle") : t("help.guides.title")}
@@ -124,176 +201,45 @@ export default function HelpCenter({ loaderData }: Route.ComponentProps) {
   );
 }
 
-/**
- * The search box: a GET form (works without script), the one red primary of the view inside the field's end. After a
- * search the results heading takes focus (below). `action="."`: the page's own path — without it React Router writes
- * the address bar's query into `action`, which the server spells differently («%20» against «+»), and hydration fails.
- */
-function SearchBox({ query }: { query: string }) {
-  const t = useT("support");
-  const navigation = useNavigation();
-  const location = useLocation();
-  const searching = navigation.state === "loading" && navigation.location?.pathname === location.pathname && new URLSearchParams(navigation.location.search).has("q");
+/** One short group of the before's list cards, under a small heading. */
+function PathGroup({ title, children }: { title: string; children: ReactNode }) {
+  const id = useId();
   return (
-    <Form method="get" action="." role="search" className="sup-search" preventScrollReset>
-      <TextField
-        key={query}
-        label={t("help.search.label")}
-        name="q"
-        type="text"
-        inputMode="search"
-        enterKeyHint="search"
-        autoComplete="off"
-        maxLength={300}
-        placeholder={t("help.search.placeholder")}
-        defaultValue={query}
-        inputClassName="sup-search__input"
-        end={
-          <Key type="submit" variant="primary" size="sm" icon="magnifying-glass" loading={searching}>
-            {t("help.search.submit")}
-          </Key>
-        }
-      />
-    </Form>
-  );
-}
-
-function SearchResults({ search, headingRef }: { search: HelpSearch; headingRef: RefObject<HTMLHeadingElement | null> }) {
-  const t = useT("support");
-  const assistantHref = `/support/assistant?${new URLSearchParams({ q: search.query }).toString()}`;
-  const staffHref = `/support/assistant?${new URLSearchParams({ q: search.query, handoff: "1" }).toString()}#handoff`;
-  return (
-    <section aria-labelledby="search-results" className="sup-results">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h2 id="search-results" ref={headingRef} tabIndex={-1} className="type-h3 text-ink">
-          <BidiQuery text={t("help.search.results", { query: search.query })} />
-        </h2>
-        <TextLink as={LocaleLink} to="/support" arrow={false} icon="x">
-          {t("help.search.clear")}
-        </TextLink>
-      </div>
-      {search.kind === "danger" ? (
-        <SafetyNote tone="danger" title={t("help.search.dangerTitle")}>
-          <p>{t("help.search.dangerText")}</p>
-          <p className="mt-3 flex flex-wrap gap-x-6">
-            <TextLink as={LocaleLink} to="/support/repair">
-              {t("assistant.done.repair")}
-            </TextLink>
-            <TextLink as={LocaleLink} to={staffHref}>
-              {t("assistant.done.staff")}
-            </TextLink>
-          </p>
-        </SafetyNote>
-      ) : search.kind === "code" ? (
-        search.articles.length > 0 ? (
-          <>
-            <p className="type-sm text-ink-2">{t("help.search.codeFound", { code: ltr(search.code ?? "") })}</p>
-            <GuideList articles={search.articles} headingLevel={3} />
-          </>
-        ) : (
-          <EmptyState
-            icon="question"
-            title={t("help.search.codeNone", { code: ltr(search.code ?? "") })}
-            action={
-              <Key as={LocaleLink} to={staffHref} size="sm" icon="chat-circle">
-                {t("assistant.done.staff")}
-              </Key>
-            }
-            recovery={
-              <TextLink as={LocaleLink} to={assistantHref}>
-                {t("help.search.ask")}
-              </TextLink>
-            }
-          />
-        )
-      ) : search.articles.length > 0 ? (
-        <>
-          <p className="type-sm text-ink-2" role="status">
-            {t("help.search.count", { count: search.articles.length })}
-          </p>
-          <GuideList articles={search.articles} headingLevel={3} className="sup-guides--cols" />
-          <TextLink as={LocaleLink} to={assistantHref} className="justify-self-start">
-            {t("help.search.ask")}
-          </TextLink>
-        </>
-      ) : (
-        <EmptyState
-          icon="magnifying-glass"
-          title={<BidiQuery text={t("help.search.none", { query: search.query })} />}
-          text={t("help.search.noneText")}
-          action={
-            <Key as={LocaleLink} to={assistantHref} size="sm" icon="lifebuoy">
-              {t("help.search.ask")}
-            </Key>
-          }
-        />
-      )}
+    <section aria-labelledby={id} className="sup-paths__group">
+      <h2 id={id} className="sup-paths__title">
+        {title}
+      </h2>
+      <div className="sup-paths__list">{children}</div>
     </section>
   );
 }
 
-/** A left-to-right isolate inside a sentence (codes): U+2066 … U+2069. */
-const ltr = (text: string) => `${String.fromCharCode(0x2066)}${text}${String.fromCharCode(0x2069)}`;
-
-/** The searched words are the shopper's own, in any script: isolated with their own direction. */
-function BidiQuery({ text }: { text: string }) {
-  return <span className="[unicode-bidi:plaintext]">{text}</span>;
-}
-
-function TaskTile({ to, icon, title, text }: { to: string; icon: IconName; title: string; text: string }) {
-  return (
-    <LocaleLink to={to} className="sup-task" data-press="soft">
-      <span className="sup-task__icon" aria-hidden="true">
-        <Icon name={icon} size={22} />
-      </span>
-      <span className="grid min-w-0 gap-0.5">
-        <span className="sup-task__title">{title}</span>
-        <span className="sup-task__text">{text}</span>
-      </span>
-    </LocaleLink>
-  );
-}
-
 /**
- * The platform segmented control and that platform's device tiles. Every platform's list is in the page: with script
- * the control shows one at a time (support.css hides the others); without script the control is hidden and the lists
- * follow one another under their platform's name, so every device stays one link away.
+ * One platform's devices, as the before grouped them: the platform's colour line and name over its tiles (a rail
+ * with 2.5 tiles on phones, a wrapping grid from 768). Whole model names, never clamped.
  */
-function DevicePicker({ directory, current }: { directory: readonly SupportPlatformGroup[]; current: SupportDevice | null }) {
+function PlatformDevices({ group, name, current }: { group: SupportPlatformGroup; name: string; current: SupportDevice | null }) {
   const t = useT("support");
-  const ui = useT("ui");
-  const [platform, setPlatform] = useState(current?.platform.slug ?? directory[0]?.slug ?? "");
-  const group = directory.find((entry) => entry.slug === platform) ?? directory[0];
-  if (!group) return null;
-  const name = (entry: SupportPlatformGroup) => (isPlatform(entry.slug) ? ui(`platform.${entry.slug}`) : entry.name);
+  const id = useId();
   return (
-    <div className="grid gap-4">
-      <Segmented
-        aria-label={t("help.devices.platforms")}
-        value={group.slug}
-        onChange={setPlatform}
-        className="sup-platforms sup-js"
-        options={directory.map((entry) => ({ value: entry.slug, label: name(entry), icon: isPlatform(entry.slug) ? <PlatformLed platform={entry.slug} /> : undefined }))}
-      />
-      {directory.map((entry) => (
-        <div key={entry.id} className="sup-platform" data-current={entry.slug === group.slug ? "" : undefined}>
-          <h3 className="sup-nojs type-sm-strong text-ink">
-            <PlatformName slug={entry.slug} name={entry.name} />
-          </h3>
-          <ul role="list" aria-label={t("help.devices.list", { platform: name(entry) })} className="sup-devices">
-            {entry.devices.map((device) => (
-              <li key={device.id}>
-                <DeviceTile name={device.name} artKey={device.artKey} kind={device.kind} href={`/support?device=${device.slug}#device-help`} current={device.slug === current?.slug} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
+    <section aria-labelledby={id} className="sup-platform" data-gel={isPlatform(group.slug) ? group.slug : undefined}>
+      <h3 id={id} className="sup-platform__head">
+        {isPlatform(group.slug) ? <PlatformLed bar /> : null}
+        <BidiLabel className="sup-platform__name">{name}</BidiLabel>
+        <span className="sup-platform__count">{t("help.devices.count", { count: group.devices.length })}</span>
+      </h3>
+      <ul role="list" aria-label={t("help.devices.list", { platform: name })} className="sup-devices">
+        {group.devices.map((entry) => (
+          <li key={entry.id}>
+            <DeviceTile name={entry.name} artKey={entry.artKey} kind={entry.kind} href={`/support?device=${entry.slug}#device-help`} current={entry.slug === current?.slug} />
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
-function DevicePanel({ device, guides }: { device: SupportDevice; guides: readonly ArticleSummary[] }) {
+function DevicePanel({ device, guides, headingRef }: { device: SupportDevice; guides: readonly ArticleSummary[]; headingRef?: RefObject<HTMLHeadingElement | null> }) {
   const t = useT("support");
   const headingId = useId();
   const own = guides.filter((guide) => guide.scope !== "related");
@@ -306,23 +252,23 @@ function DevicePanel({ device, guides }: { device: SupportDevice; guides: readon
           <p className="type-xs text-ink-2">
             <PlatformName slug={device.platform.slug} name={device.platform.name} />
           </p>
-          <h2 id={headingId} className="type-h3 text-ink">
+          <h2 id={headingId} ref={headingRef} tabIndex={-1} className="type-h2 text-ink">
             <BidiLabel>{t("help.device.title", { device: device.name })}</BidiLabel>
           </h2>
+          <div className="mt-1 flex flex-wrap gap-2">
+            <Key as={LocaleLink} to={`/support/assistant?device=${device.slug}`} size="sm" icon="lifebuoy">
+              {t("help.device.assistant")}
+            </Key>
+            <Key as={LocaleLink} to={`/support/repair?device=${device.slug}`} size="sm" icon="wrench">
+              {t("help.device.repair")}
+            </Key>
+          </div>
         </div>
       </div>
-      <div className="flex flex-wrap gap-2">
-        <Key as={LocaleLink} to={`/support/assistant?device=${device.slug}`} size="sm" icon="lifebuoy">
-          {t("help.device.assistant")}
-        </Key>
-        <Key as={LocaleLink} to={`/support/repair?device=${device.slug}`} size="sm" icon="wrench">
-          {t("help.device.repair")}
-        </Key>
-      </div>
       {/* The device's hub (devices area): every device listed here has one (published model, active platform). */}
-      <DeviceHubLink device={device} title={t("help.device.hub", { device: device.name })} text={t("help.device.hubText")} className="border border-line" />
-      <div className="grid gap-2">
-        <h3 className="type-sm-strong text-ink">{t("help.device.guides")}</h3>
+      <DeviceHubLink device={device} title={t("help.device.hub", { device: device.name })} text={t("help.device.hubText")} />
+      <div className="grid gap-3">
+        <h3 className="type-h3 text-ink">{t("help.device.guides")}</h3>
         {own.length + related.length === 0 ? <EmptyState title={t("help.device.empty")} text={t("help.device.emptyText")} /> : <GuideList articles={[...own, ...related]} showScope headingLevel={4} />}
       </div>
       <TextLink as={LocaleLink} to="/support#devices" className="justify-self-start">
@@ -332,28 +278,16 @@ function DevicePanel({ device, guides }: { device: SupportDevice; guides: readon
   );
 }
 
-/** How to reach a person: the store's channels when the owner configured them, otherwise the hand-off form. */
+/** The store's own channels (phone, WhatsApp…) when the owner configured them; nothing when not (the hand-off is above). */
 function ContactSection({ id }: { id: string }) {
   const t = useT("support");
   const layout = useRouteLoaderData(LAYOUT_ROUTE_ID) as { shell?: ShellData } | undefined;
   const channels = layout?.shell?.contact?.channels ?? null;
+  if (!channels) return null;
   return (
     <section aria-labelledby={id} className="sup-section sup-contact">
-      {/* the hand-off's own sentence belongs to the hand-off: beside the store's channels it would describe the wrong way */}
-      <SectionHead id={id} title={t("help.contact.title")} reason={channels ? undefined : t("help.contact.text")} />
-      {channels ? (
-        <ContactCard channels={channels} />
-      ) : (
-        <div className="sup-card sup-write">
-          <span className="sup-task__icon" aria-hidden="true">
-            <Icon name="chat-circle" size={22} />
-          </span>
-          <p className="type-sm text-ink-2">{t("help.contact.writeText")}</p>
-          <Key as={LocaleLink} to="/support/assistant?handoff=1#handoff" icon="chat-circle" className="justify-self-start">
-            {t("help.contact.write")}
-          </Key>
-        </div>
-      )}
+      <SectionHead id={id} title={t("help.contact.title")} />
+      <ContactCard channels={channels} />
     </section>
   );
 }

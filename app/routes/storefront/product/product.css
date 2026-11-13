@@ -1,58 +1,372 @@
 /*
- * Product page layout that utilities cannot say on their own (design v2 spec §6.7, §3, §4.14). Tokens, the kit's
- * classes and logical properties only; everything in the components layer, so utilities still win.
+ * Product page layout (design v2.1 "Clay & Glass", client note 5: the before's arrangement with the v2.1 pieces; design
+ * v2 spec §6.7). Tokens, the kit's classes and logical properties only; everything in the components layer, so
+ * utilities still win.
+ *
+ *   .pp-top        the stage card and the information column (5 + 7 from 1024, the column at the inline start)
+ *   .pp-stage      the soft stage card around the kit's <Gallery> (./components/StageCard): the platform's ambient light
+ *                  in the stage's own ground, the whole product with room around it, the counter above the thumbnails,
+ *                  the thumbnails in a clay tray inside the card's foot (corners concentric with the tiles'; six fit a
+ *                  phone from 320), the ring that slides to the chosen one,
+ *                  the page's round keys over the top; a new picture slides in from the side it comes from
+ *   .pp-info       breadcrumbs · brand line · name · facts · price block · versions · buy controls (≥1024) · actions ·
+ *                  notes · highlights (the price block's own layout: components/PriceBlock.css)
+ *   .pp-buybar     the phone bar slides in with the page
+ *   .pp-read       the reading part (two columns from 1024)
  */
 @layer components {
-  /* phones: the stage runs edge to edge, square (the kit's .stage--pdp has no radius below 768). Only the stage — its
-     wrapper is the shared element the card's well grows into — so the thumbnails below it keep the gutter. */
-  @media (max-width: 47.99rem) {
-    .pp-gallery .gallery > [data-share] {
-      margin-inline: calc(-1 * max(var(--gutter), var(--safe-inline)));
+  /* ───────────────────────────── the top: the stage card and the information column ───────────────────────────── */
+  .pp-top {
+    display: grid;
+    align-items: start;
+    row-gap: var(--s-3);
+  }
+  .pp-gallery {
+    display: grid;
+    gap: var(--s-2);
+    min-inline-size: 0;
+  }
+  /* from 768 the card has four round corners inside the page column: it floats under the header, never glued to it */
+  @media (min-width: 48rem) {
+    .pp-top {
+      padding-block-start: var(--s-4);
+    }
+  }
+  @media (min-width: 64rem) {
+    .pp-top {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--s-10);
+      padding-block-start: var(--s-6);
+    }
+    /* the gallery at the inline END, in view beside the column, just under the sticky header */
+    .pp-gallery {
+      grid-column: 6 / span 7;
+      grid-row: 1;
+      position: sticky;
+      inset-block-start: calc(var(--shell-top) + var(--s-4));
+    }
+    .pp-info {
+      grid-column: 1 / span 5;
+      grid-row: 1;
+    }
+  }
+  @media (min-width: 80rem) {
+    .pp-top {
+      column-gap: var(--s-12);
     }
   }
 
-  /* ONE fact line under the name (§6.7 item 5): each fact is an item of a one-line flex row; a second fact that does
-     not fit beside the first wraps onto a clipped second line (readers of the page still hear it). A first fact that is
-     too long for a phone line is drawn in the wrap mode below (text.ts factRow); the ellipsis is only a safety net. */
+  /* ───────────────────────────── the stage card ─────────────────────────────
+   * The card IS the kit's stage (its ground, its corners, the opaque-photo blend on its slot) with the thumbnails' tray
+   * laid over its foot; the light is painted into the stage's own ground (an opaque photo blends into it there).
+   *   --pp-thumb       a thumbnail tile (a 44px target at least)
+   *   --pp-thumb-gap   between two tiles
+   *   --pp-tray-pad    the tray around the tiles: room for the chosen ring (2px at 2px) inside it
+   *   --pp-tray        the tray's height (a tile + its padding)
+   *   --pp-floor       where the product stands: above the tray, with air */
+  .pp-stage {
+    --pp-thumb: 48px;
+    --pp-thumb-gap: 8px;
+    --pp-tray-pad: 6px;
+    --pp-tray: calc(var(--pp-thumb) + 2 * var(--pp-tray-pad));
+    --pp-floor: calc(var(--pp-tray) + var(--s-3) + var(--s-5));
+    --pp-ratio: 39 / 35;
+    --pp-side: 14%;
+    --pp-top: 12%; /* clears the round keys at the top (12 + 44px) */
+    position: relative;
+    border-radius: var(--r-xl);
+    box-shadow: var(--e-surface);
+  }
+  /* phones: edge to edge under the header; the top corners meet the header, the lower ones round off */
+  @media (max-width: 47.99rem) {
+    .pp-stage {
+      margin-inline: calc(-1 * max(var(--gutter), var(--safe-inline)));
+      border-start-start-radius: 0;
+      border-start-end-radius: 0;
+    }
+    .pp-stage .stage--pdp {
+      border-end-start-radius: var(--r-xl);
+      border-end-end-radius: var(--r-xl);
+    }
+  }
+  /* a 360 phone: six tiles, their gaps and the padding fit the 336px the tray has (6 × 48 + 5 × 6 + 2 × 6 = 330), so
+     the tray never scrolls and cuts the last one */
+  @media (max-width: 22.99rem) {
+    .pp-stage {
+      --pp-thumb-gap: 6px;
+    }
+  }
+  /* under 360 (down to 320, a phone page at 400% zoom): 44px tiles — still a 44px target — 4px apart (296px for six) */
+  @media (max-width: 22.49rem) {
+    .pp-stage {
+      --pp-thumb: 44px;
+      --pp-thumb-gap: 4px;
+    }
+  }
+  /* a short phone (360×740, 375×667): a lower card, so the price and the stock line still sit above the buy bar on
+     first load — the whole product, a little smaller, as the before showed it */
+  @media (max-width: 47.99rem) and (max-height: 47.5rem) {
+    .pp-stage {
+      --pp-ratio: 4 / 3;
+    }
+  }
+  @media (min-width: 48rem) {
+    .pp-stage {
+      --pp-ratio: 16 / 11;
+      --pp-side: 18%;
+      --pp-top: 6%;
+    }
+  }
+  @media (min-width: 64rem) {
+    .pp-stage {
+      --pp-thumb: 64px;
+      --pp-ratio: 1;
+      --pp-side: 16%;
+      --pp-top: 14%;
+    }
+  }
+  @media (min-width: 80rem) {
+    .pp-stage {
+      --pp-ratio: 6 / 5;
+      --pp-top: 9%;
+    }
+  }
+  /* one picture: no tray, so no foot to keep free */
+  .pp-stage:not([data-thumbs]) {
+    --pp-tray: 0px;
+  }
+  .pp-stage .gallery {
+    position: relative;
+    gap: 0;
+  }
+  /* the ground with the platform's ambient light (v2.1 G3: a low pool under the product and a wide glow behind it) */
+  .pp-stage[data-gel] .stage--pdp {
+    aspect-ratio: var(--pp-ratio);
+    background:
+      radial-gradient(40% 15% at 50% calc(100% - var(--pp-floor) + 1%), rgb(var(--gel) / var(--glow-a-strong)), transparent 72%),
+      radial-gradient(70% 58% at 50% 48%, rgb(var(--gel) / var(--glow-a)), transparent 76%),
+      var(--product-ground);
+  }
+  /* the whole product with room around it, above the tray (the slot's own box is the kit's: 4% 2% 5%): the zone's
+     height sizes an ordinary product, a wide one takes more of the width; it floats in the middle of its zone over the
+     pool of light and its shadow, as the before's stage showed it (the utilities layer below) */
+  .pp-stage .stage__slot {
+    padding-block: var(--pp-top) calc(var(--pp-floor) - 5%);
+    padding-inline: var(--pp-side);
+  }
+  /* the contact ellipse under the product, on its floor line */
+  .pp-stage .stage--pdp::before {
+    inset-inline: 32%;
+    inset-block-end: calc(var(--pp-floor) - 1%);
+    block-size: 5%;
+  }
+  /* «1 من 6» above the tray, at the start */
+  .pp-stage .stage__count {
+    inset-block-end: calc(var(--pp-tray) + var(--s-5));
+    inset-inline-start: var(--s-4);
+  }
+  /* the thumbnails: a clay tray inside the card's foot, raised clay tiles in it. Its corners are concentric with the
+     tiles' (its radius = theirs + its padding, the before's bank): the tray clips what it holds, and a pill's 28px
+     corners cut the chosen ring at either end */
+  .pp-stage .gallery > .thumbs {
+    position: absolute;
+    z-index: 3;
+    inset-block-end: var(--s-3);
+    inset-inline: var(--s-3);
+    inline-size: fit-content;
+    max-inline-size: calc(100% - 2 * var(--s-3));
+    margin-inline: auto;
+    gap: var(--pp-thumb-gap);
+    padding: var(--pp-tray-pad);
+    border-radius: calc(var(--r-sm) + var(--pp-tray-pad));
+    background: var(--tray);
+    box-shadow: var(--tray-shadow);
+    scroll-padding-inline: var(--pp-tray-pad);
+  }
+  /* raised tiles on the product ground (the lit spot in dark: a dark product stays visible) */
+  .pp-stage .thumbs > .thumb {
+    inline-size: var(--pp-thumb);
+    block-size: var(--pp-thumb);
+    border-radius: var(--r-sm);
+    background: var(--product-ground);
+    box-shadow: var(--e-disc);
+  }
+  /* the ring of the chosen thumbnail slides from one to the next (the kit's sliding indicator measures the tray and
+     sets --ind-x / --ind-w and data-ind; before that — and without script — the chosen tile draws its own ring) */
+  .pp-stage .thumbs[data-ind] > .thumb[aria-checked="true"]:not(:focus-visible) {
+    outline-color: transparent;
+  }
+  .pp-stage .thumbs[data-ind]::after {
+    content: "";
+    position: absolute;
+    inset-block-start: var(--pp-tray-pad);
+    inset-inline-start: 0;
+    inline-size: var(--ind-w, 0px);
+    block-size: var(--pp-thumb);
+    border-radius: var(--r-sm);
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+    translate: var(--ind-x, 0px) 0;
+    pointer-events: none;
+  }
+  .pp-stage .thumbs[data-ind="live"]::after {
+    transition: translate var(--spring-settle-t) var(--spring-settle);
+  }
+  /* the page's round clay keys over the stage (below 1024): back at the start, share at the end beside the kit's
+     full-screen key; the picture under the gap between them still takes a tap */
+  .pp-stage__keys {
+    position: absolute;
+    z-index: 3;
+    inset-block-start: 12px;
+    inset-inline: 12px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .pp-stage__keys > * {
+    pointer-events: auto;
+  }
+  .pp-stage__share {
+    margin-inline-end: calc(var(--target) + var(--s-2));
+  }
+  /* a new picture slides in from the side it comes from (next: from the inline end), fading up; a new set of pictures
+     inflates in place (the kit's entrance) */
+  .pp-stage[data-step="next"] .stage__slot .render[data-enter] {
+    animation: pp-slide-next var(--t-page) var(--ease-settle) both;
+  }
+  .pp-stage[data-step="previous"] .stage__slot .render[data-enter] {
+    animation: pp-slide-previous var(--t-page) var(--ease-settle) both;
+  }
+  @keyframes pp-slide-next {
+    from {
+      opacity: 0;
+      translate: calc(40px * var(--dir)) 0;
+    }
+  }
+  @keyframes pp-slide-previous {
+    from {
+      opacity: 0;
+      translate: calc(-40px * var(--dir)) 0;
+    }
+  }
+  .pp-gallery__note {
+    padding-inline: var(--s-1);
+  }
+
+  /* ───────────────────────────── the information column ───────────────────────────── */
+  .pp-info {
+    display: grid;
+    align-content: start;
+    gap: var(--s-4);
+    min-inline-size: 0;
+  }
+  /* the breadcrumb bar: its 44px links carry their own air. One line on phones: base.css gives every li
+     `text-wrap: pretty`, which undoes the kit's nowrap list (.crumbs--phone; asked of the kit owner) */
+  .pp-crumbs {
+    margin-block: calc(-1 * var(--s-2)) calc(-1 * var(--s-3));
+  }
+  .pp-crumbs .crumbs__list > li {
+    white-space: nowrap;
+  }
+  .pp-head {
+    display: grid;
+    gap: var(--s-1);
+  }
+  /* the brand line: «جديد», then the platform's colour line and name, in a readable size */
+  .pp-brand {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-3);
+    min-block-size: 28px;
+  }
+  .pp-brand .plat {
+    gap: var(--s-2);
+    font: var(--type-sm-strong);
+  }
+  /* the fact line in reading size (G7): running text (text.ts factRow) — never cut with an ellipsis that would cut a
+     Latin name at its start */
   .pp-facts {
+    font: var(--type-read);
+    color: var(--ink-2);
+  }
+  /* a list of contents: its parts, each whole; a phone shows the two lines of them that fit (the box list further down
+     names them all), every part from 768 */
+  .pp-facts--parts {
     display: flex;
     flex-wrap: wrap;
     column-gap: var(--s-1);
-    max-block-size: 1lh;
+    max-block-size: 2lh;
     overflow: hidden;
   }
-  .pp-facts > span {
+  .pp-facts--parts > span {
     min-inline-size: 0;
     max-inline-size: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
   }
-  /* a first fact longer than a phone line (text.ts factRow) is shown alone and wraps — never cut */
-  .pp-facts--wrap {
-    max-block-size: none;
-  }
-  .pp-facts--wrap > span {
-    overflow: visible;
-    white-space: normal;
-  }
-  /* a list of contents cut into its parts (text.ts factRow): one line on a phone like any fact row — the parts that fit,
-     each whole — and every part from 768, where the buy box has the room */
   @media (min-width: 48rem) {
     .pp-facts--parts {
       max-block-size: none;
     }
   }
+  .pp-versions {
+    margin-block-start: var(--s-1);
+  }
+  .pp-buy {
+    margin-block-start: var(--s-1);
+  }
+  /* the notes and the highlights: a section step from the keys above them */
+  .pp-notes {
+    display: grid;
+    gap: var(--s-3);
+    margin-block-start: var(--s-3);
+  }
+  .pp-highlights {
+    margin-block-start: var(--s-5);
+  }
 
-  /* from 1024 the gallery stays in view beside the buy box, just under the sticky header */
-  @media (min-width: 64rem) {
-    .pp-gallery {
-      position: sticky;
-      inset-block-start: calc(var(--shell-top) + var(--s-4));
+  /* the price block (the before's arrangement) is laid out by its own stylesheet, components/PriceBlock.css: the quick
+     look draws it on pages that do not load this file (its offline sentence from 1024: the utilities layer below) */
+
+  /* ───────────────────────────── the phone buy bar ───────────────────────────── */
+  .pp-buybar {
+    animation: pp-bar-in var(--t-page) var(--ease-settle) both;
+  }
+  @keyframes pp-bar-in {
+    from {
+      translate: 0 100%;
+    }
+  }
+  .pp-bar__line {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    font: var(--type-xs-strong);
+  }
+  /* narrow phones (360): the tray and «أضف إلى السلة» share 328px — the key's side padding (the kit's --px) tightens
+     so its words are never cut */
+  @media (max-width: 25rem) {
+    .pp-buybar .key--primary {
+      --px: var(--s-4);
+    }
+  }
+  /* under 360 (down to 320, a phone page at 400% zoom, WCAG 1.4.10): 150–170px are left for the key — its words stay
+     whole («أضف إلى السلة», never «أضف إلى …»); the bag beside them is decoration (aria-hidden) and gives way */
+  @media (max-width: 22.49rem) {
+    .pp-buybar .key--primary {
+      --px: var(--s-3);
+    }
+    .pp-buybar .key--primary > .key__cap > svg[aria-hidden="true"]:first-child {
+      display: none;
     }
   }
 
-  /* the reading part: two columns from 1024; a pair with one member keeps a reading width */
+  /* ───────────────────────────── the reading part ───────────────────────────── */
+  .pp-read {
+    display: grid;
+    gap: var(--gap-section);
+    margin-block-start: var(--gap-section);
+  }
+  /* two columns from 1024; a pair with one member keeps a reading width */
   .pp-duo {
     display: grid;
     align-items: start;
@@ -66,6 +380,59 @@
     .pp-duo > :only-child {
       grid-column: 1 / -1;
       max-inline-size: 48rem;
+    }
+  }
+
+  /* ───────────────────────────── preferences ───────────────────────────── */
+  /* reduced motion (the OS or the store's switch) and the lite tier: no slide, no sliding ring, the bar is simply there */
+  @media (prefers-reduced-motion: reduce) {
+    .pp-stage[data-step] .stage__slot .render[data-enter] {
+      animation: none;
+    }
+    .pp-stage .thumbs[data-ind]::after {
+      transition: none;
+    }
+    .pp-buybar {
+      animation: none;
+    }
+  }
+  :is([data-motion="reduced"], [data-motion="lite"], .fx-low) .pp-stage[data-step] .stage__slot .render[data-enter] {
+    animation: none;
+  }
+  [data-motion="reduced"] .pp-stage .thumbs[data-ind]::after {
+    transition: none;
+  }
+  :is([data-motion="reduced"], [data-motion="lite"], .fx-low) .pp-buybar {
+    animation: none;
+  }
+  /* more contrast: the showcase light goes (the kit hides every ambient light there) */
+  @media (prefers-contrast: more) {
+    .pp-stage[data-gel] .stage--pdp {
+      background: var(--product-ground);
+    }
+  }
+}
+
+/* In the utilities layer because the kit's elements carry utilities there:
+ *   · phones and the 1024–1279 column (375–450px wide): the breadcrumb bar runs up to the product's category — the
+ *     current page is the name right under it, and with it the line no longer fits (395px for 328–358 at 360–390; at
+ *     1024 it broke onto a second line of its own, «‹ Nintendo Switch 2»); 768–1023 (the page's width) and from 1280 the
+ *     trail shows it, and its JSON-LD always lists it (the crumb items carry `flex`);
+ *   · the stage's picture floats in the middle of its zone (the gallery's picture button carries `items-end`);
+ *   · from 1024 the offline sentence under the price gives way to the kit's line under the column's add key, which
+ *     describes that key (product.tsx) — the same words twice, three times with the shell's banner (it carries `flex`). */
+@layer utilities {
+  @media (max-width: 47.99rem), (min-width: 64rem) and (max-width: 79.99rem) {
+    .pp-crumbs .crumbs__list > li:last-child:not(:first-child) {
+      display: none;
+    }
+  }
+  .pp-stage .stage__slot > button {
+    align-items: center;
+  }
+  @media (min-width: 64rem) {
+    .pp-info [data-offline-line] {
+      display: none;
     }
   }
 }

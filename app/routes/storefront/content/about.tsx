@@ -27,6 +27,7 @@ import { ContactCard } from "~/ui/ContactCard";
 import { EntryCard } from "~/ui/EntryCard";
 import { FactList, type Fact } from "~/ui/FactList";
 import { PlatformLed, isPlatform, type Platform } from "~/ui/PlatformLed";
+import { revealProps } from "~/ui/reveal";
 import { aboutLinks, type AboutLink } from "./content-model";
 import { ContentHeader, Section, useShellNav } from "./components/ContentHeader";
 import { useMethodList } from "./components/FactPanel";
@@ -108,7 +109,7 @@ export default function AboutPage({ loaderData }: Route.ComponentProps) {
       ) : null}
 
       <Section id="about-offer" title={t("about.offerTitle")}>
-        <ul className="centries">
+        <ul className="centries" {...revealProps({ stagger: true })}>
           {DOORS.map((door) => {
             const art = door.art === "mascot" ? "mascot" : (artOf(door.art) ?? "mascot");
             return (
@@ -121,13 +122,13 @@ export default function AboutPage({ loaderData }: Route.ComponentProps) {
       </Section>
 
       <div className="csplit">
-        <Section id="about-how" title={t("about.howTitle")}>
+        <Section id="about-how" title={t("about.howTitle")} reveal>
           <FactList facts={how} />
         </Section>
 
         <div className="csplit__aside">
           {platforms.length > 0 ? (
-            <Section id="about-platforms" title={t("about.platformsTitle")} size="sm">
+            <Section id="about-platforms" title={t("about.platformsTitle")} size="sm" reveal>
               <ul className="cplats">
                 {platforms.map((platform) => (
                   <li key={platform.slug}>
@@ -142,14 +143,14 @@ export default function AboutPage({ loaderData }: Route.ComponentProps) {
           ) : null}
 
           {card ? (
-            <Section id="about-contact" title={t("about.contactTitle")} size="sm">
+            <Section id="about-contact" title={t("about.contactTitle")} size="sm" reveal>
               <ContactCard channels={card} />
             </Section>
           ) : (
-            <HandoffCard id="about-handoff" stack />
+            <HandoffCard id="about-handoff" stack reveal />
           )}
 
-          <Section id="about-more" title={t("about.moreTitle")} size="sm">
+          <Section id="about-more" title={t("about.moreTitle")} size="sm" reveal>
             <LinkRows rows={more} />
           </Section>
         </div>

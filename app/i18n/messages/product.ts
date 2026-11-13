@@ -72,9 +72,15 @@ export default defineMessages({
       last: "، أو ",
       sentence: "{methods}",
       rule: "الحوالة تبقى بانتظار التحقق حتى يراجعها موظف.",
+      title: "طرق الدفع",
+      list: "{methods}.",
     },
     bar: {
       label: "شراء {name}",
+    },
+    stage: {
+      back: "رجوع",
+      share: "شارك {name}",
     },
     share: {
       label: "مشاركة",
@@ -242,9 +248,15 @@ export default defineMessages({
       last: " or ",
       sentence: "Payment: {methods}.",
       rule: "A transfer waits for a staff member to verify it.",
+      title: "Ways to pay",
+      list: "{methods}.",
     },
     bar: {
       label: "Buy {name}",
+    },
+    stage: {
+      back: "Back",
+      share: "Share {name}",
     },
     share: {
       label: "Share",
@@ -413,9 +425,15 @@ export default defineMessages({
       last: "، یان ",
       sentence: "{methods}",
       rule: "گواستنەوەکە چاوەڕێی پشتڕاستکردنەوە دەبێت تا فەرمانبەرێک پێیدا دەچێتەوە.",
+      title: "ڕێگاکانی پارەدان",
+      list: "{methods}.",
     },
     bar: {
       label: "کڕینی {name}",
+    },
+    stage: {
+      back: "گەڕانەوە",
+      share: "{name} هاوبەش بکە",
     },
     share: {
       label: "هاوبەشکردن",

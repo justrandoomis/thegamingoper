@@ -3,8 +3,14 @@
  * against a real, throw-away D1 with the demo catalogue. Expectations are derived from the database (platform order,
  * device-model order, stock states, release dates), not from product slugs, so they hold when the catalogue changes.
  */
+import { createElement, type ComponentType } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createRoutesStub } from "react-router";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { messagesFor } from "~/i18n/i18n.server";
 import type { ProductCardData } from "~/lib/dto";
+import { LOCALES, localePath, type Locale } from "~/lib/locales";
+import type { HeroSlide } from "~/routes/storefront/home/Hero";
 import { seedDemo } from "~/server/db/seed/demo";
 import { isAppError } from "~/server/errors";
 import { getCardsByIds, getDeals, getUsedSpotlight } from "~/server/services/catalog/cards.server";
@@ -29,6 +35,7 @@ import {
 import { RECENT_DAYS, RECENT_MAX, cleanRecent, parseConsent, parsePlatformList, pushRecent, serializePlatformList } from "~/routes/storefront/home/personal";
 import {
   FEATURED_PLATFORM,
+  HERO_AUTOPLAY_MS,
   HERO_COPY_MIN,
   MIN_SHELF,
   baghdadDay,
@@ -37,16 +44,21 @@ import {
   focusAfterIntro,
   hasShelf,
   headlineEm,
+  heroSlides,
   heroTitleSizes,
+  keepLastWord,
   keepTogether,
   otherView,
+  photoToWarm,
   pictureFailed,
   plainFinalYeh,
   releaseItemOf,
   releasePlatformOf,
   resolveFocus,
   splitHeadline,
+  stripItems,
   tileArt,
+  twoLineEm,
   type HeroBreakpoint,
 } from "~/routes/storefront/home/view";
 import { productPhotos } from "~/art";
@@ -638,50 +650,153 @@ describe("client rules", () => {
   });
 
   it("estimates headline widths a little above what the faces measure, never below", () => {
-    // measured in Edge on the dev server (em): Noto Kufi Arabic 700 (Arabic, English) and IBM Plex Sans Arabic 600
-    // (Sorani headings). A Latin line may be up to 6% wider, a line with Arabic script up to 15% (one width stands in
-    // for every joined letter) — never narrower.
-    const kufi: Record<string, number> = {
-      "Nintendo Switch 2": 9.278,
-      "PlayStation 5 Pro": 8.643,
-      "Xbox Series X": 6.813,
-      "Steam Deck OLED": 8.968,
-      "Lenovo Legion Go 2": 9.905,
-      "العب على": 4.535,
-      "العب على Nintendo Switch 2": 14.153,
-      "العب على PlayStation 5 Pro": 13.518,
-      "العب على Xbox Series X": 11.688,
-      "Play on Steam Deck OLED": 13.03,
+    // measured in Edge on the dev server (em, 2026-11-12): Kufam Variable 600 (v2.1: the headline face in every
+    // language — it replaced Noto Kufi, whose widths these tests used to pin) and IBM Plex Sans Arabic 600. A Latin line
+    // may be up to 6% wider; a line of the page's OWN Arabic and Sorani headline words too (they are measured word by
+    // word); a staff's Arabic words up to 25% beside a Latin name (one width stands in for every unknown joined letter)
+    // — never narrower.
+    const kufam: Record<string, number> = {
+      "Nintendo Switch 2": 9.195,
+      "PlayStation 5 Pro": 8.6,
+      "Xbox Series X": 6.785,
+      "Steam Deck OLED": 8.918,
+      "Lenovo Legion Go 2": 9.78,
+      "Trade in your device": 10.046,
+      "Used & inspected": 8.668,
+      "العب على": 4.523,
+      "یاری بکە لەسەر": 7.737,
+      "استبدل جهازك": 7.053,
+      "مستعمل ومفحوص": 8.983,
+      "ئامێرەکەت بگۆڕەوە": 10.634,
+      "بەکارهاتوو و پشکنراو": 11.341,
+      "العب على Nintendo Switch 2": 13.963,
+      "العب على PlayStation 5 Pro": 13.368,
+      "العب على Xbox Series X": 11.553,
+      "Nintendo Switch 2 گەیشت": 13.789,
+      "Play on Steam Deck OLED": 12.821,
     };
-    const plex: Record<string, number> = { "Nintendo Switch 2": 8.511, "Steam Deck OLED": 8.298, "Nintendo Switch 2 یاری بکە": 11.878, "یاری بکە": 3.131 };
-    for (const [face, measured] of [["kufi", kufi], ["plex", plex]] as const) {
+    const plex: Record<string, number> = { "Nintendo Switch 2": 8.511, "Steam Deck OLED": 8.298, "Nintendo Switch 2 یاری بکە": 11.878, "یاری بکە": 3.131, "مستعمل ومفحوص": 7.599 };
+    for (const [face, measured] of [["kufam", kufam], ["plex", plex]] as const) {
       for (const [text, em] of Object.entries(measured)) {
-        const arabic = /\p{Script=Arabic}/u.test(text);
         expect(headlineEm(text, face), `${face}: ${text}`).toBeGreaterThanOrEqual(em);
-        if (!arabic) expect(headlineEm(text, face), `${face}: ${text}`).toBeLessThanOrEqual(em * 1.06);
-        else if (/[A-Za-z]{4}/.test(text)) expect(headlineEm(text, face), `${face}: ${text}`).toBeLessThanOrEqual(em * 1.25);
+        expect(headlineEm(text, face), `${face}: ${text}`).toBeLessThanOrEqual(em * 1.06);
       }
     }
+    // a staff pin's words the page has not measured: wider than measured, at most a quarter wider beside a Latin name
+    const pinned: Record<string, number> = { "سعر تقديري الآن": 7.433, "تخفيضات الصيف على الأجهزة": 14.056, "عرض خاص": 5.301 };
+    for (const [text, em] of Object.entries(pinned)) expect(headlineEm(text), text).toBeGreaterThanOrEqual(em);
     expect(headlineEm("")).toBe(1);
   });
 
-  it("sizes the hero headline on its own range's type scale, one step down until its longest line fits the copy column", () => {
-    // v2 §2.6: the Kufi sizes each range already draws, display first (display, price xl, h1, h2). QA 2026-11-12: the
-    // featured console's headline was 36px at 768 — a size that range does not have (the copy column missed 40px by 1px)
-    const scale: Record<HeroBreakpoint, number[]> = { sm: [28, 26, 22], md: [40, 32, 30, 24], lg: [48, 34, 32, 26], xl: [56, 36, 28] };
-    const switch2 = heroTitleSizes(["العب على", keepTogether("Nintendo Switch 2")]);
-    // the featured console's name fits every range at the display size (the 768 copy column is wide enough for 40px)
-    expect(switch2).toEqual({ sm: 28, md: 40, lg: 48, xl: 56 });
-    for (const [range, px] of Object.entries(switch2) as [HeroBreakpoint, number][]) expect(headlineEm("Nintendo Switch 2") * px).toBeLessThanOrEqual(HERO_COPY_MIN[range]);
+  it("finds the best two-line break of a headline, never at a no-break space («Switch 2», «5 Pro»)", () => {
+    expect(twoLineEm(keepLastWord("Nintendo Switch 2"))).toBe(Math.max(headlineEm("Nintendo"), headlineEm("Switch 2")));
+    expect(twoLineEm(keepLastWord("PlayStation 5 Pro"))).toBe(Math.max(headlineEm("PlayStation"), headlineEm("5 Pro")));
+    // keepTogether's one-piece name has no break: two lines are no narrower than one
+    expect(twoLineEm(keepTogether("PlayStation 5 Pro"))).toBe(headlineEm("PlayStation 5 Pro"));
+    expect(twoLineEm("وصل")).toBe(headlineEm("وصل"));
+    // the hero's form of a name keeps only the short last word with the word before it
+    expect(keepLastWord("PlayStation 5 Pro")).toBe("PlayStation 5 Pro");
+    expect(keepLastWord("Steam Deck OLED")).toBe("Steam Deck OLED");
+    expect(keepLastWord("DualSense")).toBe("DualSense");
+  });
+
+  it("sizes a banner's headline on its own range's type scale, one step down until it fits the copy column", () => {
+    // v2 §2.6: the Kufam sizes each range already draws, display first (display, price xl, h1, h2); on phones the
+    // compact banner's own two (h2 22, tile 18) — QA 2026-11-12: a size from another range's scale is one more size
+    const scale: Record<HeroBreakpoint, number[]> = { sm: [22, 18], md: [40, 32, 30, 24], lg: [48, 34, 32, 26], xl: [56, 36, 28] };
+    // the featured console: «العب على» / «Nintendo Switch 2» at the display size from 768; on phones the name alone on
+    // two lines («Nintendo» / «Switch 2») at 22
+    const switch2 = heroTitleSizes(["العب على", keepLastWord("Nintendo Switch 2")], "kufam", { phone: keepLastWord("Nintendo Switch 2") });
+    expect(switch2).toEqual({ sm: 22, md: 40, lg: 48, xl: 56 });
+    for (const range of ["md", "lg", "xl"] as const) expect(headlineEm("Nintendo Switch 2") * switch2[range]).toBeLessThanOrEqual(HERO_COPY_MIN[range]);
+    expect(twoLineEm(keepLastWord("Nintendo Switch 2")) * switch2.sm).toBeLessThanOrEqual(HERO_COPY_MIN.sm);
+    // every platform's hero of the demo catalogue keeps the display size from 768 in Arabic, English and Sorani (Kufam
+    // everywhere now — the Sorani lead words are measured, no longer a guess that stepped them down)
+    for (const lines of [
+      ["العب على", "PlayStation 5 Pro"],
+      ["Play on", "Xbox Series X"],
+      ["یاری بکە لەسەر", "Steam Deck OLED"],
+    ]) {
+      const sizes = heroTitleSizes(lines, "kufam", { phone: lines[1] });
+      expect([sizes.md, sizes.lg, sizes.xl], lines.join(" / ")).toEqual([40, 48, 56]);
+    }
+    // Sorani puts the verb after the name («{name} گەیشت»): that line may break after the name, so the name keeps the
+    // display size (on one line it would step down to 36); phones show the name alone, as they do without the verb
+    const arrived = keepLastWord("Nintendo Switch 2") + " گەیشت";
+    expect(heroTitleSizes(["", arrived]).xl).toBe(36);
+    expect(heroTitleSizes(["", arrived], "kufam", { wrap: true, phone: keepLastWord("Nintendo Switch 2") })).toEqual({ sm: 22, md: 40, lg: 48, xl: 56 });
     // a long name steps down its range's scale and, below the smallest step (the range's h2), wraps there (balanced)
-    // instead of shrinking further
-    const long = heroTitleSizes(["Play on", "Nintendo Switch – OLED Model"]);
-    expect(long).toEqual({ sm: 22, md: 24, lg: 26, xl: 28 });
-    const names = [["العب على", "PlayStation 5 Pro"], ["Play on", "Lenovo Legion Go 2"], ["وصل", "Xbox Series X|S – Galaxy Black Edition"]];
-    const all = [switch2, long, ...names.map((lines) => heroTitleSizes(lines)), heroTitleSizes(["یاری بکە لەسەر", "Steam Deck OLED"], "plex")];
+    const long = heroTitleSizes(["Play on", "Nintendo Switch – OLED Model"], "kufam", { phone: "Nintendo Switch – OLED Model" });
+    expect(long).toEqual({ sm: 18, md: 24, lg: 26, xl: 28 });
+    // a staff pin's headline may take two lines: sized by its best break, so it keeps a larger size than on one line
+    const pin = "عرض خاص على PlayStation 5";
+    expect(heroTitleSizes([pin], "kufam", { wrap: true }).xl).toBeGreaterThan(heroTitleSizes([pin]).xl);
+    // the service banners' two-word titles: the display size from 768 in every language
+    for (const title of ["استبدل جهازك", "مستعمل ومفحوص", "Trade in your device", "Used & inspected", "ئامێرەکەت بگۆڕەوە", "بەکارهاتوو و پشکنراو"]) {
+      expect(heroTitleSizes([title], "kufam", { wrap: true, phone: title }).xl, title).toBe(56);
+    }
+    const all = [switch2, long, heroTitleSizes(["وصل", "Xbox Series X|S – Galaxy Black Edition"]), heroTitleSizes([pin], "kufam", { wrap: true, phone: pin })];
     for (const sizes of all) for (const range of Object.keys(scale) as HeroBreakpoint[]) expect(scale[range], `${range} ${sizes[range]}px`).toContain(sizes[range]);
-    // Sorani is set in Plex: the narrower face keeps a larger size for the same name
-    expect(heroTitleSizes(["یاری بکە لەسەر", "Steam Deck OLED"], "plex").xl).toBeGreaterThanOrEqual(heroTitleSizes(["یاری بکە لەسەر", "Steam Deck OLED"]).xl);
+  });
+
+  it("orders the hero's banners: the featured platform first, the others in the key bank's order, then trade-in and used", () => {
+    const platform = (slug: string, art: string | null, pinned = false) => ({ slug, hero: art === null ? null : { productId: `${slug}-hero`, pin: pinned ? { pinId: "p" } : null }, newArrivals: [] as string[], art });
+    const bank = [platform("nintendo", "nintendo-switch-2--1"), platform("playstation", "playstation-5-pro--1"), platform("xbox", "xbox-series-x--1"), platform("handheld", "steam-deck-oled--1")];
+    const artOf = (entry: (typeof bank)[number]) => entry.art;
+    const usedArt = ["playstation-5-slim--1", "nintendo-switch-oled--1", "xbox-series-s--1", "steam-deck-oled--1"];
+    const plan = heroSlides(bank, artOf, { usedArt, fallbackArt: "playstation-5-pro--1" });
+    expect(plan.map((slide) => slide.key)).toEqual(["nintendo", "playstation", "xbox", "handheld", "trade-in", "used"]);
+    // the service banners show consoles no platform banner shows, upright ones first (the Switch OLED is wide)
+    const service = plan.filter((slide) => slide.kind !== "platform") as { kind: string; art: string | null }[];
+    expect(service).toEqual([
+      { kind: "tradeIn", key: "trade-in", art: "playstation-5-slim--1" },
+      { kind: "used", key: "used", art: "xbox-series-s--1" },
+    ]);
+    // a staff pin leads (what staff chose for this period, as the single hero did); a platform without a hero is left out
+    const pinned = heroSlides([bank[0], platform("playstation", null), bank[2], platform("handheld", "steam-deck-oled--1", true)], artOf, { usedArt: [] });
+    expect(pinned.map((slide) => slide.key)).toEqual(["handheld", "nintendo", "xbox", "trade-in"]);
+    // no used units: no used banner; the trade-in banner falls back to the PlayStation lead device's picture, shown on a
+    // platform banner or not
+    const lean = heroSlides(bank, artOf, { usedArt: [], fallbackArt: "playstation-5-pro--1" });
+    expect(lean.at(-1)).toEqual({ kind: "tradeIn", key: "trade-in", art: "playstation-5-pro--1" });
+    expect(heroSlides([], artOf, { usedArt: [] })).toEqual([{ kind: "tradeIn", key: "trade-in", art: null }]);
+    // the demo catalogue: four platform banners, Nintendo first, then trade-in and used
+    const demo = heroSlides(home.platforms, (entry) => home.cards[entry.hero!.productId]?.image.artKey, { usedArt: home.used.map((unit) => unit.image.artKey) });
+    expect(demo.map((slide) => slide.key)).toEqual([FEATURED_PLATFORM, ...home.platforms.map((entry) => entry.slug).filter((slug) => slug !== FEATURED_PLATFORM), "trade-in", ...(home.used.length > 0 ? ["used"] : [])]);
+    expect(HERO_AUTOPLAY_MS).toBe(6500);
+  });
+
+  it("fetches the next banner's photo ahead while one is shown — never the first banner's (the page's one eager photo), nothing on Save-Data (review 2026-11-13)", () => {
+    // a lazy photo in the sideways track waits until it scrolls in: every banner arrived as a blurred miniature and its
+    // product popped in a moment later (measured in Edge: banners 2–6 not loaded 3 s after the page, nor on arrival)
+    expect(photoToWarm(0, 6)).toBe(1);
+    expect(photoToWarm(3, 6)).toBe(4);
+    expect(photoToWarm(4, 6)).toBe(5);
+    expect(photoToWarm(5, 6)).toBeNull();
+    expect(photoToWarm(0, 6, true)).toBeNull();
+    expect(photoToWarm(0, 1)).toBeNull();
+    expect(photoToWarm(0, 0)).toBeNull();
+  });
+
+  it("offers in the icon strip only the departments that exist, each to its real listing", () => {
+    const categories = [
+      { kind: "consoles", href: "/c/consoles", count: 18 },
+      { kind: "games", href: "/c/games", count: 34 },
+      { kind: "controllers", href: "/c/controllers", count: 0 },
+      { kind: "headsets", href: "/c/headsets", count: 8 },
+      { kind: "digital", href: "/c/digital-cards", count: 6 },
+      { kind: "storage", href: "/c/storage", count: 7 },
+    ];
+    expect(stripItems(categories, 6)).toEqual([
+      { key: "devices", href: "/c/consoles", icon: "kind-console" },
+      { key: "games", href: "/c/games", icon: "kind-game" },
+      { key: "headsets", href: "/c/headsets", icon: "kind-headset" },
+      { key: "topup", href: "/c/digital-cards", icon: "kind-topup" },
+      { key: "used", href: "/used", icon: "kind-used" },
+      { key: "repair", href: "/support/repair", icon: "kind-repair" },
+    ]);
+    // no used units listed: no «المستعمل» door; the repair booking is a service and always there
+    expect(stripItems([], 0)).toEqual([{ key: "repair", href: "/support/repair", icon: "kind-repair" }]);
   });
 
   it("gives a platform tile another view of the product the hero already shows (v2 §7.6)", () => {
@@ -770,5 +885,66 @@ describe("client rules", () => {
     }
     expect([baghdadDay("19/11/2026"), baghdadDay(null), baghdadMidnight("")]).toEqual([null, null, null]);
     expect(daysSinceRelease("2026-11-01", Date.UTC(2026, 10, 11, 12))).toBe(10);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── the hero carousel, as the server renders it
+
+describe("the hero carousel in the server's markup (client note 1; brief §5: CLS 0, the first photo eager)", () => {
+  /** The page's banners from the demo catalogue, as home.tsx builds them (no device hubs, no pins). */
+  const slidesOf = async (data: HomeData): Promise<HeroSlide[]> => {
+    const { isPlatform } = await import("~/ui/PlatformLed");
+    const plan = heroSlides(data.platforms, (entry) => (entry.hero ? data.cards[entry.hero.productId]?.image.artKey : null), { usedArt: data.used.map((unit) => unit.image.artKey) });
+    return plan.flatMap((entry): HeroSlide[] => {
+      if (entry.kind !== "platform") return [entry];
+      const { platform } = entry;
+      const card = platform.hero ? data.cards[platform.hero.productId] : undefined;
+      if (!card || !platform.hero || !isPlatform(platform.slug)) return [];
+      return [{ kind: "product" as const, key: platform.slug, card, platform: platform.slug, mode: platform.hero.mode, pin: null, deviceHref: null, demoPrice: card.isDemo }];
+    });
+  };
+  const render = async (data: HomeData, locale: Locale) => {
+    const { HeroCarousel } = await import("~/routes/storefront/home/Hero");
+    const slides = await slidesOf(data);
+    const Page: ComponentType = () => createElement(HeroCarousel, { slides });
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "*", Component: Page }] }]);
+    const html = renderToStaticMarkup(
+      createElement(Stub, {
+        // the splat route needs a segment to match; the locale comes from the root's data
+        initialEntries: [localePath("/hero", locale)],
+        hydrationData: { loaderData: { root: { locale, dir: LOCALES[locale].dir, fx: null, i18n: messagesFor(locale, "ui", "ui-shop") }, page: { i18n: messagesFor(locale, "home") } } },
+      }),
+    );
+    return { html, slides };
+  };
+
+  it("renders every banner with its words, a group «n من N» each — swiping works before and without JavaScript", async () => {
+    const { html, slides } = await render(home, "ar");
+    expect(slides.length).toBe(home.platforms.length + 1 + (home.used.length > 0 ? 1 : 0));
+    expect(html).toContain('aria-roledescription="عرض شرائح"');
+    expect(html).toContain('aria-label="أبرز ما في المتجر"');
+    expect(html.match(/data-carousel-slide="\d+"/g)).toHaveLength(slides.length);
+    expect(html.match(/<h2[\s>]/g)).toHaveLength(slides.length);
+    for (let i = 1; i <= slides.length; i++) expect(html).toContain(`aria-label="${i} من ${slides.length}"`);
+    // nothing is inert, nothing counts down before the page is live
+    expect(html).not.toMatch(/\sinert(=|\s|>)/);
+    expect(html).not.toContain("data-run");
+    // the trade-in banner says what an estimate is (the final price after the inspection)
+    const strings = messagesFor("ar", "home").home as unknown as { hero: { tradeIn: { text: string } } };
+    expect(html.replaceAll("‍", "")).toContain(strings.hero.tradeIn.text);
+  });
+
+  it("loads only the first banner's photo with the page (eager, high priority); every other photo stays lazy in the markup", async () => {
+    for (const locale of ["ar", "en"] as const) {
+      const { html } = await render(locale === "ar" ? home : homeEn, locale);
+      const imgs = html.match(/<img\b[^>]*>/g) ?? [];
+      expect(imgs.length).toBeGreaterThanOrEqual(home.platforms.length);
+      expect(imgs[0]).toMatch(/loading="eager"/);
+      expect(imgs[0]).toMatch(/fetchpriority="high"/i);
+      for (const img of imgs.slice(1)) {
+        expect(img, locale).toMatch(/loading="lazy"/);
+        expect(img, locale).not.toMatch(/fetchpriority="high"/i);
+      }
+    }
   });
 });

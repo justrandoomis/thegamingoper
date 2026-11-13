@@ -301,8 +301,9 @@ export function TradeInPhotos({ initial, limit, maxBytes, className }: TradeInPh
         }}
         className="proof__drop used-photos__drop"
       >
-        <span className="grid size-11 place-items-center rounded-full bg-niche text-ink-2" aria-hidden="true">
-          <Icon name="camera" size={20} />
+        {/* v2.1: the before's raised circle, the brand's line icon */}
+        <span className="clay-disc used-disc used-disc--lg" aria-hidden="true">
+          <Icon name="camera" size={26} />
         </span>
         <p id={titleId} className="type-card text-ink">
           {dragging ? t("tradein.photos.dropHere") : t("tradein.photos.drop")}

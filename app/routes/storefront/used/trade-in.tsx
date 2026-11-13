@@ -3,12 +3,20 @@
  *
  * The task-flow shell (`chrome: "task"`): the store header, no tab bar — the step's keys in a <TaskBar> below 1024
  * (secondary «رجوع» | primary «تابع», which grows) and at the end of the column from 1024 — and the one-line footer.
- * One centred 720px column; from 1280 a 340px sticky aside beside it (the device, the answers so far, the estimate, what
- * happens next, how to reach a person).
+ * One centred 720px column; from 1280 a 340px sticky aside beside it (steps: the device, the answers so far, the
+ * estimate, what happens next, how to reach a person · the start: the track card).
+ *
+ * The rail is the before's labelled rail (client note 10, v2.1): five numbered discs, each step's word under its disc
+ * on every width (`.used-rail`, used.css — see docs/areas/used.md "Requests").
  *
  * Every step is a URL (./trade-in.server.ts): Back, reload and a shared link work, the question forms are GET forms that
- * submit without script, and steps push sideways in reading order (handle below). Step 1: what trading in is, a device
- * search and the device tiles with «حتى 350,000 د.ع · تقديري». Then one question per screen as option cards with a line
+ * submit without script, and steps push sideways in reading order (handle below). Step 1 is the start page in the
+ * before's order (client note 10): «استبدل جهازك» and its line, the labelled rail, «أي جهاز تريد استبداله؟» with v2's
+ * device search, the device tiles three to a row on phones under each platform's colour line («حتى 350,000 د.ع
+ * تقديرياً» — the best case of the wizard's own rules), then what v2.1 adds: a «تحدّث مع موظف» note for a device not on
+ * the list, how trading in works (a three-step icon strip), what changes the price (the rules the estimate uses), an
+ * FAQ, and the track card (request number + phone → the request's page; also reached from the line under the intro).
+ * Then one question per screen as option cards with a line
  * of explanation («السؤال 1 من 5»). Photos are private uploads (POST /api/upload/tradein). The estimate is a RANGE from
  * the model's price guide with «بانتظار الفحص» and its expiry — or, honestly, "priced after the inspection"; a locked
  * device is refused. The last step POSTs the contact details and a preferred time (a preference, never an appointment,
@@ -22,7 +30,7 @@
  * what was chosen and typed stays) · demo mode (the request is recorded as a demo). The browser's Back from a question
  * shows the previous question with its answer chosen (the history entry is rewritten before moving on).
  */
-import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent, type MouseEvent, type ReactNode } from "react";
 import { data, Form, redirect, useActionData, useLocation, useNavigation, useRouteLoaderData, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/trade-in";
@@ -41,27 +49,33 @@ import { clearCookie, getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { actionError } from "~/server/errors";
 import { createTradeIn, getTradeInDevice, readTradeInAnswers, TRADE_IN_DRAFT_COOKIE, type TradeInDevice, type TradeInEstimate } from "~/server/services/tradein.server";
+import { getSetting } from "~/server/settings.server";
+import { Accordion } from "~/ui/Accordion";
 import { ContactCard } from "~/ui/ContactCard";
 import { cx } from "~/ui/cx";
 import { DemoNote } from "~/ui/DemoNote";
 import { EmptyState } from "~/ui/EmptyState";
+import { FactList } from "~/ui/FactList";
 import { Checkbox, FieldGroup, FormErrorSummary, OptionCard, TextArea, TextField, type FormError } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Niche } from "~/ui/Niche";
+import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
 import { isPlatform, PlatformLabel } from "~/ui/PlatformLed";
 import { PreferencePicker, type Period } from "~/ui/PreferencePicker";
 import { iqdText } from "~/ui/PriceTag";
 import { BidiText, ProductImage } from "~/ui/ProductCard";
 import { ProgressSteps } from "~/ui/ProgressSteps";
+import { revealProps } from "~/ui/reveal";
 import { Status } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
-import { AnswerList, DeviceSummary, EstimatePanel, Journey, useAccessoryLabel, WhatNext } from "./components/TradeInParts";
+import { AnswerList, DeviceSummary, EstimatePanel, useAccessoryLabel, WhatNext } from "./components/TradeInParts";
 import { TradeInPhotos } from "./components/TradeInPhotos";
+import { TradeInTrack } from "./components/TradeInTrack";
 import { combinedErrorT, useErrorText, useUsedT } from "./i18n";
 import { bindDashes, splitQualifier } from "./names";
 import { loadWizard, type WizardView } from "./trade-in.server";
-import { answeredQuestionSearch, filterGroups, TRADE_IN_PATH, WIZARD_STEPS, wizardOrder } from "./wizard";
+import { answeredQuestionSearch, filterGroups, TRADE_IN_PATH, tradeInRefFromInput, WIZARD_STEPS, wizardOrder } from "./wizard";
 import "./used.css";
 
 // The task-flow shell; steps push sideways in their own sibling group (other areas' ordered routes never push against them).
@@ -79,12 +93,17 @@ const STEP_HEADING = { tabIndex: -1, "data-step-heading": "" } as const;
 const FSI = String.fromCharCode(0x2068);
 const PDI = String.fromCharCode(0x2069);
 const NBSP = String.fromCharCode(0xa0);
+/** The start page's track card (the line under the intro links to it). */
+const TRACK_ID = "ti-track";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const ctx = getCtx(context);
-  const wizard = await loadWizard(getDb(), ctx.locale, new URL(request.url), ctx.cookie(TRADE_IN_DRAFT_COOKIE), ctx.now);
+  const db = getDb();
+  const wizard = await loadWizard(db, ctx.locale, new URL(request.url), ctx.cookie(TRADE_IN_DRAFT_COOKIE), ctx.now);
   const t = serverT(ctx.locale, "used");
-  return { ...wizard, meta: { title: t("tradein.title"), description: t("tradein.metaDescription") }, i18n: messagesFor(ctx.locale, "used", "errors") };
+  // the FAQ's "how long is an estimate valid" is the store's own setting, never a number written into the copy
+  const validDays = wizard.view.step === "device" ? await getSetting(db, "tradein.estimate_valid_days") : null;
+  return { ...wizard, validDays, meta: { title: t("tradein.title"), description: t("tradein.metaDescription") }, i18n: messagesFor(ctx.locale, "used", "errors") };
 }
 
 export const meta: Route.MetaFunction = (args) =>
@@ -104,6 +123,16 @@ export async function action({ request, context }: Route.ActionArgs) {
     const value = form.get(name);
     return typeof value === "string" ? value : "";
   };
+  // The start page's track card without script (with script it posts to /trade-in/<ref> itself): a number that can be
+  // a request number sends the browser on to the request's page with a 307, so the form — the phone — goes along and
+  // that page's action looks the request up; anything else is the card's field error.
+  if (text("intent") === "lookup") {
+    const ref = tradeInRefFromInput(text("ref"));
+    // the numbers as typed go back with the refusal, so the card keeps them (review 2026-11-13)
+    const typed = { ref: text("ref").slice(0, 24), phone: text("phone").slice(0, 40) };
+    if (!ref) return data({ intent: "lookup" as const, ok: false as const, code: "invalid", fields: { ref: serverT(ctx.locale, "used")("tradein.start.track.refInvalid") }, values: typed });
+    return redirect(localePath(`/trade-in/${ref}`, ctx.locale), 307);
+  }
   const deviceSlug = text("device");
   const device = await getTradeInDevice(db, ctx.locale, deviceSlug);
   const answers = device ? readTradeInAnswers(form, device) : {};
@@ -156,15 +185,30 @@ export default function TradeIn({ loaderData }: Route.ComponentProps) {
     shown.current = location.search;
     main.current?.querySelector<HTMLElement>("[data-step-heading]")?.focus({ preventScroll: true });
   }, [location.search]);
+  // the before's labelled rail: every step's word under its disc (used.css `.used-rail`)
+  const railNode = <ProgressSteps steps={steps} current={stepIndex} aria-label={t("tradein.steps.label")} className="used-rail" />;
+  const aside = view.step !== "device" || view.groups.length > 0;
   return (
     <div className="page pt-4 pb-6 lg:pt-8">
-      <div className={cx("used-wizard", view.step !== "device" && "used-wizard--aside")}>
+      <div className={cx("used-wizard", aside && "used-wizard--aside")}>
         <div ref={main} className="used-wizard__main">
-          <ProgressSteps steps={steps} current={stepIndex} aria-label={t("tradein.steps.label")} />
-          <Step view={view} />
+          {/* the start page puts the rail under its title and line, as before; the steps keep it on top */}
+          {view.step === "device" ? <DeviceStep view={view} rail={railNode} validDays={loaderData.validDays} /> : (
+            <>
+              {railNode}
+              <Step view={view} />
+            </>
+          )}
           {keys ? <StepKeys keys={keys} className="max-lg:hidden" /> : null}
         </div>
-        {view.step !== "device" ? <WizardAside view={view} /> : null}
+        {view.step !== "device" ? (
+          <WizardAside view={view} />
+        ) : view.groups.length > 0 ? (
+          // below 1280 the card follows the page's sections; from 1280 it stays beside them
+          <div className="used-start__aside">
+            <TradeInTrack id={TRACK_ID} className="panel" />
+          </div>
+        ) : null}
       </div>
       {keys ? (
         <TaskBar aria-label={t("tradein.steps.label")} className="lg:hidden">
@@ -175,10 +219,8 @@ export default function TradeIn({ loaderData }: Route.ComponentProps) {
   );
 }
 
-function Step({ view }: { view: WizardView }) {
+function Step({ view }: { view: Exclude<WizardView, { step: "device" }> }) {
   switch (view.step) {
-    case "device":
-      return <DeviceStep view={view} />;
     case "condition":
       return <ConditionStep view={view} />;
     case "photos":
@@ -237,21 +279,23 @@ function StepKeys({ keys, compact = false, className }: { keys: Keys; compact?: 
   const target: Record<string, unknown> = next === null ? {} : "href" in next ? { as: LocaleLink, to: next.href } : { type: "submit", form: next.form };
   const offline = { disabled: !online, "aria-describedby": online ? undefined : reasonId };
   return (
-    <div className={cx("grid gap-2", className)}>
+    // the column is the bar's width, never the keys' (an auto grid track grew to the keys' widths and pushed the primary
+    // 7px off a 320 screen in Sorani — review 2026-11-13; `.used-keys` in used.css tightens them there)
+    <div className={cx("grid grid-cols-[minmax(0,1fr)] gap-2", className)}>
       {online ? null : (
         <p id={reasonId} className="flex items-start gap-1.5 type-xs text-ink-2" role="status">
           <Icon name="wifi-slash" size={16} className="mt-0.5 shrink-0" />
           {t("tradein.offline")}
         </p>
       )}
-      <div className="flex items-center gap-3">
+      <div className="used-keys flex items-center gap-2 min-[22.5rem]:gap-3">
         {keys.back ? (
           <Key as={LocaleLink} to={keys.back} className="shrink-0" {...offline}>
             {t("tradein.back")}
           </Key>
         ) : null}
         {next ? (
-          <Key variant="primary" iconEnd={keys.label === "submit" ? "paper-plane-tilt" : "arrow-right"} loading={pending} className="flex-1" {...target} {...offline}>
+          <Key variant="primary" iconEnd={keys.label === "submit" ? "paper-plane-tilt" : "arrow-right"} loading={pending} className="min-w-0 flex-1" {...target} {...offline}>
             {t((compact ? SHORT : LABEL)[keys.label])}
           </Key>
         ) : null}
@@ -282,7 +326,11 @@ function rememberAnswerHere(data: FormData, question: string) {
 
 // ───────────────────────────────────────────────────────────────── 1. device
 
-function DeviceStep({ view }: { view: ViewOf<"device"> }) {
+/**
+ * The start page, in the before's order (client note 10): the title and its line (+ the way to the track card), the
+ * labelled rail, «أي جهاز تريد استبداله؟» with the device search and the tiles; then the v2.1 sections below the tiles.
+ */
+function DeviceStep({ view, rail, validDays }: { view: ViewOf<"device">; rail: ReactNode; validDays: number | null }) {
   const t = useUsedT();
   const ui = useT("ui");
   const localePath = useLocalePath();
@@ -290,13 +338,23 @@ function DeviceStep({ view }: { view: ViewOf<"device"> }) {
   const [query, setQuery] = useState(view.query);
   const groups = filterGroups(view.groups, query);
   const found = groups.reduce((sum, group) => sum + group.devices.length, 0);
+  // «امسح البحث» lives in the no-match state, which clearing removes: focus goes back to the field (it fell to the
+  // page's body — review 2026-11-13)
+  const searchInput = useRef<HTMLInputElement>(null);
+  const clearSearch = () => {
+    setQuery("");
+    searchInput.current?.focus();
+  };
+  const title = (
+    <h1 id="ti-title" {...STEP_HEADING} className="type-h1 text-ink outline-none">
+      {t("tradein.title")}
+    </h1>
+  );
 
   if (view.groups.length === 0) {
     return (
       <section aria-labelledby="ti-title" className="grid gap-2">
-        <h1 id="ti-title" {...STEP_HEADING} className="type-h1 text-ink outline-none">
-          {t("tradein.title")}
-        </h1>
+        {title}
         <EmptyState
           layout="stack"
           headingLevel={2}
@@ -312,29 +370,34 @@ function DeviceStep({ view }: { view: ViewOf<"device"> }) {
     );
   }
   return (
-    <section aria-labelledby="ti-title" className="grid gap-8">
+    <div className="used-start">
       <header className="grid gap-2">
-        <h1 id="ti-title" {...STEP_HEADING} className="type-h1 text-ink outline-none">
-          {t("tradein.title")}
-        </h1>
-        <p className="type-lead text-ink-2">{t("tradein.intro")}</p>
+        {title}
+        <p className="max-w-[62ch] type-lead text-ink-2">{t("tradein.intro")}</p>
+        <p className="type-sm text-ink-2">
+          {t("tradein.start.trackAsk")}{" "}
+          <TextLink as="a" href={`#${TRACK_ID}`} inline>
+            {t("tradein.start.trackLink")}
+          </TextLink>
+        </p>
       </header>
-      <Journey />
+      {rail}
       {view.unknown ? (
         <div className="callout callout--warn" role="alert">
           <Icon name="warning" size={20} />
           <span className="callout__text text-ink">{t("tradein.device.unknown")}</span>
         </div>
       ) : null}
-      <section aria-labelledby="ti-device" className="grid gap-4">
+      <section aria-labelledby="ti-device" className="grid gap-5">
         <div className="grid gap-1">
           <h2 id="ti-device" className="type-h2 text-ink">
             {t("tradein.device.title")}
           </h2>
-          <p className="type-sm text-ink-2">{t("tradein.device.text")}</p>
+          <p className="type-read text-ink-2">{t("tradein.device.text")}</p>
         </div>
         <Form method="get" action={localePath(TRADE_IN_PATH)} role="search" onSubmit={(event) => event.preventDefault()}>
           <TextField
+            ref={searchInput}
             label={t("tradein.device.search")}
             hideLabel
             type="search"
@@ -356,7 +419,17 @@ function DeviceStep({ view }: { view: ViewOf<"device"> }) {
             title={t("tradein.device.noMatch", { query })}
             text={t("tradein.device.noMatchText")}
             action={
-              <Key size="sm" onClick={() => setQuery("")}>
+              // a link to the unfiltered page, so it also clears a search sent without script (`?q=`); with script it
+              // clears in place and gives the field back its focus
+              <Key
+                as={LocaleLink}
+                to={TRADE_IN_PATH}
+                size="sm"
+                onClick={(event: MouseEvent) => {
+                  event.preventDefault();
+                  clearSearch();
+                }}
+              >
                 {t("tradein.device.clearSearch")}
               </Key>
             }
@@ -364,8 +437,9 @@ function DeviceStep({ view }: { view: ViewOf<"device"> }) {
         ) : (
           groups.map((group) => (
             <section key={group.platformSlug} aria-labelledby={`ti-platform-${group.platformSlug}`} className="grid gap-3">
-              <h3 id={`ti-platform-${group.platformSlug}`} className="type-sm-strong text-ink">
-                {isPlatform(group.platformSlug) ? <PlatformLabel platform={group.platformSlug} label={ui(`platform.${group.platformSlug}`)} /> : group.platformName}
+              {/* the before's colour line beside the platform's name */}
+              <h3 id={`ti-platform-${group.platformSlug}`} className="used-group">
+                {isPlatform(group.platformSlug) ? <PlatformLabel platform={group.platformSlug} label={ui(`platform.${group.platformSlug}`)} bar /> : group.platformName}
               </h3>
               <ul className="used-devices">
                 {group.devices.map((device) => (
@@ -377,22 +451,114 @@ function DeviceStep({ view }: { view: ViewOf<"device"> }) {
             </section>
           ))
         )}
+        <Note
+          icon="question"
+          title={t("tradein.device.missing")}
+          action={
+            <TextLink as={LocaleLink} to={HANDOFF}>
+              {t("tradein.device.support")}
+            </TextLink>
+          }
+        >
+          {t("tradein.device.missingText")}
+        </Note>
       </section>
-      <p className="type-sm text-ink-2">
-        <b className="font-semibold text-ink">{t("tradein.device.missing")}</b> {t("tradein.device.missingText")}{" "}
-        <TextLink as={LocaleLink} to={HANDOFF} inline>
-          {t("tradein.device.support")}
-        </TextLink>
-      </p>
+      <HowItWorks />
+      <PriceFactors />
+      <TradeInFaq validDays={validDays} />
+    </div>
+  );
+}
+
+/** «كيف يعمل الاستبدال» — three steps as an icon strip: clay discs with red line icons, joined by a line (v2.1). */
+function HowItWorks() {
+  const t = useUsedT();
+  const f = useFormat();
+  const steps = [
+    { icon: "tag", title: t("tradein.journey.estimate"), text: t("tradein.journey.estimateText") },
+    { icon: "clipboard-text", title: t("tradein.journey.inspect"), text: t("tradein.journey.inspectText") },
+    { icon: "hand-coins", title: t("tradein.journey.payout"), text: t("tradein.journey.payoutText") },
+  ] as const;
+  return (
+    <section aria-labelledby="ti-how" className="grid gap-5">
+      <h2 id="ti-how" className="type-h2 text-ink">
+        {t("tradein.journey.label")}
+      </h2>
+      <ol className="used-how" {...revealProps({ stagger: true })}>
+        {steps.map((step, index) => (
+          <li key={step.icon} className="used-how__step">
+            <span className="used-how__mark" aria-hidden="true">
+              <span className="clay-disc used-disc used-disc--lg">
+                <Icon name={step.icon} size={26} />
+              </span>
+              <span className="used-how__n">{f.number(index + 1)}</span>
+            </span>
+            <span className="used-how__title">{step.title}</span>
+            <span className="used-how__text">{step.text}</span>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }
 
 /**
- * A device the store buys: its photo on the product ground, the name (two lines at most), the qualifier that tells two
- * models apart on a meta line of its own («الطراز الأصلي 2020» — the clamp used to cut it, v2 §4.11), and «حتى 350,000
- * د.ع · تقديري» with the amount and «· تقديري» kept on one line (no-break spaces: QA 2026-11-12, "· estimate" started a
- * line at 1440).
+ * «ما الذي يغيّر السعر؟» — the rules the estimate really uses (tradein.server computeEstimate): whether it works, the
+ * body and screen (the grade span), the accessories (a guide deduction each), the account lock (refused) — and the box,
+ * which the estimate does not ask about. Words only: the guide's own figures never leave the server.
+ */
+function PriceFactors() {
+  const t = useUsedT();
+  return (
+    <section aria-labelledby="ti-price" className="grid gap-4" {...revealProps()}>
+      <div className="grid gap-1">
+        <h2 id="ti-price" className="type-h2 text-ink">
+          {t("tradein.start.price.title")}
+        </h2>
+        <p className="max-w-[62ch] type-read text-ink-2">{t("tradein.start.price.text")}</p>
+      </div>
+      <FactList
+        className="used-factors"
+        facts={[
+          { id: "power", icon: "lightning", title: t("tradein.start.price.power"), text: t("tradein.start.price.powerText") },
+          { id: "body", icon: "seal-check", title: t("tradein.start.price.body"), text: t("tradein.start.price.bodyText") },
+          { id: "accessories", icon: "game-controller", title: t("tradein.start.price.accessories"), text: t("tradein.start.price.accessoriesText") },
+          { id: "account", icon: "lock", title: t("tradein.start.price.account"), text: t("tradein.start.price.accountText") },
+          { id: "box", icon: "package", title: t("tradein.start.price.box"), text: t("tradein.start.price.boxText") },
+        ]}
+      />
+    </section>
+  );
+}
+
+const FAQ = ["estimate", "inspection", "payout", "decline", "data", "photos", "broken"] as const;
+
+/** The questions people ask before they start — answered with the wizard's own rules (one open at a time). */
+function TradeInFaq({ validDays }: { validDays: number | null }) {
+  const t = useUsedT();
+  const shop = useT("ui-shop");
+  const f = useFormat();
+  const days = typeof validDays === "number" && validDays > 0 ? shop("days", { count: validDays, n: f.number(validDays) }) : null;
+  const items = FAQ.filter((key) => key !== "estimate" || days !== null).map((key) => ({
+    id: key,
+    summary: t(`tradein.start.faq.${key}.q`),
+    content: <p className="max-w-[62ch] type-read text-ink-2">{t(`tradein.start.faq.${key}.a`, { days: days ?? "" })}</p>,
+  }));
+  return (
+    <section aria-labelledby="ti-faq" className="grid gap-3" {...revealProps()}>
+      <h2 id="ti-faq" className="type-h2 text-ink">
+        {t("tradein.start.faq.title")}
+      </h2>
+      <Accordion exclusive items={items} />
+    </section>
+  );
+}
+
+/**
+ * A device the store buys, the before's picture tile (three to a row on phones): its photo on the product ground, the
+ * name (three lines at most), the qualifier that tells two models apart on a meta line of its own («الطراز الأصلي
+ * 2020» — v2 §4.11), and «حتى 350,000 د.ع تقديرياً»: the amount one unbreakable run (no-break spaces inside an
+ * isolate), the word that says it is an estimate free to take the next line in a narrow tile.
  */
 function DeviceTile({ device, current }: { device: TradeInDevice; current: boolean }) {
   const t = useUsedT();
@@ -406,7 +572,7 @@ function DeviceTile({ device, current }: { device: TradeInDevice; current: boole
       className="used-device group"
       data-press="soft"
     >
-      <Niche as="span">{device.image ? <ProductImage image={device.image} alt="" sizes="(min-width: 768px) 160px, 44vw" /> : null}</Niche>
+      <Niche as="span">{device.image ? <ProductImage image={device.image} alt="" sizes="(min-width: 768px) 160px, 30vw" /> : null}</Niche>
       <span className="used-device__name">
         <BidiText text={bindDashes(name.base)} />
       </span>
@@ -466,7 +632,9 @@ function ConditionStep({ view }: { view: ViewOf<"condition"> }) {
           <FieldGroup legend={legend}>
             <input type="hidden" name="inc" value="1" />
             {view.options.map((key) => (
-              <Checkbox key={key} name="included" value={key} label={accessory(key)} defaultChecked={view.answers.included?.includes(key) ?? false} />
+              // a card like the other questions' option cards (the plain rows looked like a different form — review
+              // 2026-11-13; the kit's checkbox has no option-row form, see docs/areas/used.md "Requests")
+              <Checkbox key={key} className="surface used-check" name="included" value={key} label={accessory(key)} defaultChecked={view.answers.included?.includes(key) ?? false} />
             ))}
           </FieldGroup>
         ) : (
@@ -474,6 +642,8 @@ function ConditionStep({ view }: { view: ViewOf<"condition"> }) {
             {view.options.map((option) => (
               <OptionCard
                 key={option}
+                // the soft raised card (v2.1; until the kit's option card is clay itself — docs/areas/used.md "Requests")
+                className="surface"
                 name={question}
                 value={option}
                 label={t(`tradein.q.${question}.options.${option}.label`)}

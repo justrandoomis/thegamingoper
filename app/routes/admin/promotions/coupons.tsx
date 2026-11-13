@@ -15,7 +15,7 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
 import { openPromotions, respond, runIntent, text } from "./promotions.server";
-import { Arrow, Code, ConfirmAction, DemoNote, Money, Notice, Num, Pct, Section, ToneStatus, usePromotionsT, When, useProgram } from "./ui";
+import { Arrow, Code, ConfirmAction, DemoNote, Money, Notice, Num, Pct, SectionState, Section, ToneStatus, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/coupons — 08.01: every coupon with its state (live, scheduled, waiting for a second person, off,
@@ -130,6 +130,7 @@ export default function CouponsPage({ loaderData }: Route.ComponentProps) {
           </div>
         ) : null}
       </header>
+      <SectionState id="coupons" />
 
       <Section id="prm-coupons" title={t("coupons.listTitle")}>
         <nav aria-label={t("common.views")} className="flex flex-wrap gap-2">

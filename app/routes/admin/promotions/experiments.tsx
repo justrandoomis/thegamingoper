@@ -15,7 +15,7 @@ import { Select, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { promotionsMeta } from "./meta";
 import { fields, openPromotions, respond, runIntent } from "./promotions.server";
-import { Boundary, Code, Failure, newKey, Section, ToneStatus, useIntent, usePromotionsT, When } from "./ui";
+import { Code, Failure, newKey, SectionState, Section, ToneStatus, useIntent, usePromotionsT, When } from "./ui";
 
 /**
  * /admin/promotions/experiments — 08.08: A/B tests of offers (each variant a coupon), their state and the measurement
@@ -59,7 +59,7 @@ export default function ExperimentsPage({ loaderData }: Route.ComponentProps) {
         <h1 className="adm-title">{t("ab.title")}</h1>
         <p className="max-w-[75ch] type-body text-ink-2">{t("ab.lead")}</p>
       </header>
-      <Boundary>{t("ab.boundary")}</Boundary>
+      <SectionState id="experiments" />
       {manage ? (
         <div className="prm-block">
           <CreateTest coupons={coupons} />

@@ -22,6 +22,8 @@ import { getDb } from "~/server/db.server";
 import { contentMessages, getContactDetails } from "~/server/services/content.server";
 import { ContactCard } from "~/ui/ContactCard";
 import { FactList, type Fact } from "~/ui/FactList";
+import { Note } from "~/ui/Note";
+import { revealProps } from "~/ui/reveal";
 import { ContentHeader, Section } from "./components/ContentHeader";
 import { HandoffCard } from "./components/HandoffCard";
 import { MotionChoice } from "./components/MotionChoice";
@@ -50,10 +52,9 @@ export default function AccessibilityPage({ loaderData }: Route.ComponentProps) 
   return (
     <div className="page cpage">
       <ContentHeader crumbs={[{ label: t("common.home"), href: "/" }, { label: t("a11y.title") }]} title={t("a11y.title")} lead={t("a11y.lead")}>
-        <p className="cnote">
-          <Icon name="seal-check" size={20} />
-          <span>{t("a11y.goal")}</span>
-        </p>
+        <Note variant="line" icon="seal-check">
+          {t("a11y.goal")}
+        </Note>
       </ContentHeader>
 
       <Section id="a11y-settings" title={t("a11y.settingsTitle")} text={t("a11y.settingsText")} className="ccol">
@@ -70,11 +71,11 @@ export default function AccessibilityPage({ loaderData }: Route.ComponentProps) 
         </div>
       </Section>
 
-      <Section id="a11y-supports" title={t("a11y.supportsTitle")} className="ccol">
+      <Section id="a11y-supports" title={t("a11y.supportsTitle")} className="ccol" reveal>
         <FactList facts={SUPPORTS.map((item) => ({ id: item.key, icon: item.icon, title: t(`a11y.supports.${item.key}.title`), text: t(`a11y.supports.${item.key}.text`) }))} />
       </Section>
 
-      <Section id="a11y-limits" title={t("a11y.limitsTitle")} className="ccol">
+      <Section id="a11y-limits" title={t("a11y.limitsTitle")} className="ccol" reveal>
         <ul className="climits">
           {(["devices", "readers", "kurdish"] as const).map((key) => (
             <li key={key}>
@@ -85,7 +86,7 @@ export default function AccessibilityPage({ loaderData }: Route.ComponentProps) 
         </ul>
       </Section>
 
-      <div className="ccol grid gap-4">
+      <div className="ccol grid gap-4" {...revealProps()}>
         <HandoffCard id="a11y-report" title={t("a11y.reportTitle")} text={t("a11y.reportText")} action={t("a11y.reportAction")} primary />
         {loaderData.card ? (
           <>

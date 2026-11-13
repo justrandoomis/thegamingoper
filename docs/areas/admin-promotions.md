@@ -2,14 +2,16 @@
 
 Owner: admin promotions. Routes `app/routes/admin/promotions/**`, services `app/server/services/admin/promotions/**`
 (pure rules in `rules.ts`, client-safe types in `types.ts`), strings `app/i18n/messages/admin-promotions.ts` (ar source,
-en, ckb), tests `tests/admin-promotions*.test.ts`. Blueprint 08.01 implemented; 08.02–08.08 partial (the commerce core
-does not apply them at checkout yet — "Requests"). Adversarial review 2026-11-12: `tests/admin-promotions-review.test.ts`.
+en, ckb), tests `tests/admin-promotions*.test.ts`. Blueprint 08.01 implemented; 08.02–08.08 partial — since 2026-11-12
+the online checkout applies coupons, rules, flash prices, points, the member discount and free delivery and records
+referral codes; what each still misses (the till, early access, …) is in "What the checkout and the till apply".
+Adversarial review 2026-11-12: `tests/admin-promotions-review.test.ts`.
 
 ## Routes
 
 | Path | What | Permission (loader / actions) |
 |---|---|---|
-| `/admin/promotions` | What waits for this employee, each section's counted figures, what the checkout applies today, `<ModuleFunctions moduleId="08">` | any promotions.* |
+| `/admin/promotions` | What waits for this employee, each section's counted figures, where each section is applied today (online checkout / till, `checkout-state.ts`), `<ModuleFunctions moduleId="08">` | any promotions.* |
 | `/admin/promotions/approvals` | The module's decisions in one queue (mobile-first cards linking to the deciding page); my own requests apart | any promotions.* |
 | `/admin/promotions/coupons` | States (live, scheduled, waiting, off, expired, used up), uses / limit, discount given; views, search, sort, page in the URL (GET form); table ≥ 768 px, cards below; bulk switch-off with a reason | promotion.read or coupon.manage / coupon.manage |
 | `/admin/promotions/coupons/:couponId` (`new`) | Terms and conditions, approval reasons, edit (stale form → `coupon_changed`), switch on/off, the request (approve / reject for others, withdraw for the requester), **try this coupon** (the core's `evaluateCoupon`), redemptions, history | read / coupon.manage; decide + pricing.discount.override |
@@ -79,13 +81,38 @@ and the queue: the flash checks' floor, margins, "needs the override" and the co
 block likewise (tests check the JSON). Phones masked without customer.phone.read_full. Gift-card codes are in no list,
 history or audit event. Profile links only with customers.customer.read.
 
+## What the checkout and the till apply (read from the core 2026-11-12)
+
+One registry says it to staff: `app/routes/admin/promotions/checkout-state.ts` (`CHECKOUT_STATE`: per section, `web` =
+the online checkout, `pos` = the till; `applied` / `partial` / `missing`) — the overview's «ما يُطبَّق اليوم في الموقع
+ونقطة البيع» and the note at the top of every section page (`SectionState` in `ui.tsx`) read it; the sentences are
+`home.checkout.<section>.<web|pos>`. `tests/admin-promotions-state.test.ts` checks every claim against the core (its
+pure decision, the till's source, a database), so a change on either side that is not written on the other fails.
+
+| Section | Online checkout | Till (admin 06) | Sources (file:line, 2026-11-12) |
+|---|---|---|---|
+| Coupons | applied — validated on every read of the cart, applied after the rules, a redemption row guarded by the limits | missing — the till takes no coupon (the cashier's own discount); a coupon limited to the point of sale is refused online, so it applies nowhere | `cart.server.ts:551`; `orders/promotions.ts:151` (step 3); `orders/place.server.ts:573`; `coupons.server.ts:162`; `admin/pos/sale.server.ts:9–18` |
+| Rules | applied — live rules; the ones that combine with coupons («مع الكوبونات») add up, highest priority first, then the coupon; the best rule that does not combine (by amount, priority on a tie) competes with all of them together and, if it gives more, applies ALONE (no other rule, no coupon — `couponDropped`); rules that do not combine never add up; the best free-delivery rule's waiver applies either way (a member's free delivery first) | missing — no rule at the till; a rule limited to the point of sale applies nowhere (the web passes channel "web") | `orders/promotions.server.ts:127` (`loadPromotionFacts`); `orders/promotions.ts:129–171` (steps 2–3), `:199` (step 6); `admin/promotions/rules.ts:135` |
+| Flash sales | partial — the sale price in the cart and at checkout while the allowance and the shopper's limit cover the line, units claimed in placeOrder's batch, given back on a cancel; product pages, lists and search read no flash sale | missing — the till sells at the SKU's or its price list's price | `cart.server.ts:484, 759`; `orders/promotions.ts:51`; `orders/promotions.server.ts:336, 358, 433`; `orders/place.server.ts:625`; the only reader outside module 08 is `orders/promotions.server.ts` |
+| Points | applied — a signed-in customer redeems (balance, goods left, × the point's worth), a 'redeem' row (overdraft trigger), all given back on a cancel / refused parcel, a share with each refund (ledger rows kind "reversal", ref "redeem" — labelled «نقاط استُبدلت في طلب»); earned after delivery + the return window | partial — a sale to a known account earns (status delivered at once); the till redeems nothing | `orders/promotions.ts:185` (step 5), `:216` (`restoredPointsFor`); `orders/place.server.ts:191, 374, 629`; `orders/promotions.server.ts:364, 400–425, 433, 477`; `admin/promotions/loyalty.server.ts:80` (no channel filter); `orders/pos-sale.server.ts:749, 770` |
+| VIP | partial — the member discount at most the discount limits in force (20 % / 50,000 IQD by default), free delivery, the multiplier when points are posted; early access is read by nothing | partial — the multiplier counts on till sales when points are posted; no member discount at the till | `orders/promotions.ts:174` (step 4), `:199` (step 6); `orders/promotions.server.ts:127` (member); `admin/promotions/loyalty.server.ts:63`; `earlyAccess` only in `db/schema/growth.ts` outside module 08 |
+| Gift cards | applied — redeemed into the wallet (account page or staff), the wallet pays | applied — the wallet pays at the till (a customer identified by number; never offline) | `account/giftcards.server.ts`; `orders/pos-sale.server.ts:879`; `admin/pos/sale.server.ts:19` |
+| Referrals | applied — a friend's code typed at checkout, checked by module 08's rules, recorded "pending" in placeOrder's batch; a cancel closes it and gives the use back; the reward stays a person's decision | missing — staff record it by hand (`recordReferral`); sign-up records no referral | `orders/promotions.server.ts:271, 294, 433`; `orders/place.server.ts:193, 416, 630`; nothing in `server/auth` |
+| A/B tests | partial — results from the orders of each variant's coupon; nothing assigns or counts visitors | missing — the till takes no coupon | no writer of `experiment_assignments` / `experiment_events` |
+
+Points (and the other daily jobs) are posted every night by `jobs.server.ts` (`promotions.points.sync`,
+`promotions.points.expire`, after `promotions.memberships.close`; cron `30 0 * * *`) and at once from the points page.
+
 ## Boundaries (honest)
 
-The checkout applies coupons and the wallet only. Rules, flash prices, points redemption and VIP discount / free
-delivery need the core hooks below; referral codes cannot be typed by shoppers; visitors are not assigned to A/B
-variants; gift cards cannot be sold for money (no liability account, no sale line). Programme limits are settings
-since 2026-11-12 (promotions.* — see the follow-up section). Posting points / expiry / closing memberships are staff actions (no job yet).
-A tier's member discount has no second-person rule yet (harmless until the core applies it; see Requests).
+The till applies no promotion of this module (it takes the wallet, so a gift card's value spends there); early access
+to sales is written on a tier and read by nothing; product pages, lists and search show the regular price during a
+flash sale (the sale price shows from the cart on); referral codes are not recorded at sign-up; visitors are not
+assigned to A/B variants; gift cards are not sold for money — the account «بطاقات هدايا لم تُستخدم بعد»
+(`gift_card_liability`, 2150) exists in the chart, but there is no sale line at the till or the checkout. A tier's
+member discount above the limits is capped by the core at the limits (no second-person rule for tiers): the tier card
+says «يُطبَّق حتى …%» and the discount field says the limits. Programme limits are settings since 2026-11-12
+(promotions.* — see the follow-up section).
 
 ## Tests and verification
 
@@ -96,25 +123,58 @@ A tier's member discount has no second-person rule yet (harmless until the core 
   once), IDOR on the coupon and points pages, redemption replay / demo card / merged customer, the redemption check,
   the referral race, Arabic qty in "try", 100 coupons off, gift-card and VIP counts.
 - `tests/admin-promotions-routes.test.ts` (1): every loader and intent for six roles answers 200 / 400 / 403 / 404.
+- `tests/admin-promotions-state.test.ts` (19, wave B 2026-11-12/13): the state texts in ar/en/ckb and the retired
+  sentences gone; the claims against the core's `applyDiscounts` / `flashLineCap` / `evaluateRule` / `evaluateCoupon`, the
+  till's source (no promotion call, the wallet), the readers of early access, flash sales, A/B visitors and sign-up
+  referrals, and a till sale to a VIP customer earning × the multiplier. Review 2026-11-13 (+6, each failed first):
+  every ledger reference the server writes has a label (the checkout's ref "redeem" showed a raw key), the rules'
+  stacking as the core decides it (the note and the form's hint), a refund's share of redeemed points, the coupon
+  try's regular price, the «not built yet» lines as one sentence and the nightly posting in the empty ledger, and a
+  rule's dry run weighing an order's whole discount (points, no coupon) with words that say «discount».
 
 Browser: `.shots/admin-promotions/` (seed `seed-promotions.ts`, ids `refs.ts`), review shots in `review/`.
 
+Review of the wave-B change (2026-11-13), each found in the browser or against the core: the points ledgers (module
+and customer pages) showed the raw key «points.ref.redeem» for the points the checkout gives back after a cancel or a
+refund — labelled now; the rules' sentence and the rule form's «مع الكوبونات» hint said a rule that does not combine
+only competes with the coupon (the core also drops the combining rules, and only the best such rule applies); the
+points sentence said redeemed points come back when an order is refunded (a refund gives back its share); «جرّب
+الكوبون» said "today's prices" (it prices the regular price; a running flash sale's price comes first at checkout);
+the gift-card and referral «لم يُبنَ بعد:» lines read as a label inside a label; the empty ledger told staff to post
+points by hand only (the jobs post them nightly); the note's stripe was the warning colour on sections that apply
+online (information now; the warning stays on the «not built yet» icon); blueprint 08.04 said "at once from here" on
+the blueprint page; a rule's dry run called each order's whole discount (`orders.discount_iqd` — since the core
+applies rules, the member discount and points, not only the coupon) «خصم الكوبون» and its skip «كوبونه أفضل» (now
+«خصمه القائم»); the dry run's order references broke over three lines (kept on one; the table already scrolled at
+1024–1279); a ×2 multiplier read «×2.0» (tier tag, customer page). Demo records added through the real forms: rule
+«قاعدة للمراجعة: 10% (موقوفة)» (off, demo — applies nowhere; for looking at the dry run); the demo tier «ذهبي» said
+"double points" for ×1.5 (its written benefits corrected, with a reason). Open for the shell: at phone widths a
+focused control can sit under the admin tab bar (no `scroll-padding-block-end`; requested).
+
 ## Requests to other owners
 
-- **Commerce core** — `priceCart` (cart.server.ts): (1) unit price = the running flash sale's price; (2) after the
-  subtotal, before the coupon: `evaluateRule` (rules.ts, pure) over active `promotions` by priority, stacking per rule;
-  (3) membership `discountBps` and free delivery; (4) "redeem N points" = N × `LOYALTY.pointValueIqd` off. `placeOrder`'s
-  batch: claim `flash_sale_items.qty_sold` (guarded by `qty_limit`, per-customer limit), a `loyalty_ledger` 'redeem'
-  row, the rule applied (order event), a `referral_redemptions` row from a typed code. `transitionOrder` → delivered
-  could post the earn row itself (today: staff "post points"). Before the member discount is applied, a tier discount
-  above `DISCOUNT_LIMITS.percentBps` should need a second person (module 08 adds it with the hook).
-- **Schema / data**: a `gift_card_liability` system account and a POS / checkout sale line for gift cards.
-- **Settings 22 + server core**: keys for `DISCOUNT_LIMITS`, `LOYALTY` (incl. `adjustSoloDayPoints`),
-  `REFERRAL.rewardPoints`, `GIFT_CARD` limits.
-- **Jobs**: daily `syncOrderPoints`, `postExpiry`, `expireGiftCards`, `closeEndedMemberships`.
-- **Shell (queues)**: `countDecidable(db, actor)` (approvals.server.ts) → `/admin/promotions/approvals`.
-- **Storefront (account)**: show points, membership benefits, a referral code field and "add a gift card to my wallet"
-  (service: `redeemGiftCard` with a customer actor needs a customer-facing variant — requested from the core).
+Done since the first build (2026-11-12): the commerce core's hooks (flash prices and claims, rules, the member
+discount and free delivery, points redemption, referral codes at checkout — wave F core), the programme limits as
+settings, the daily jobs, the shell's queue (`countDecidable`), the storefront's rewards page and gift-card redemption
+into the wallet. Open:
+
+- **POS (admin 06) + commerce core**: coupons, rules, flash prices, points redemption and the member discount at the
+  till (today: price lists and the cashier's own discount; `CHECKOUT_STATE.*.pos` and `home.checkout.*.pos` change with
+  it — the state test fails until they do).
+- **Catalogue read layer**: show a running flash sale's price on product pages, lists and search (only the cart and
+  checkout read it).
+- **Commerce core + module 08**: early access to sales (a definition from the owner first), and a second person for a
+  tier discount above the limits if tiers should ever give more than the limits.
+- **Commerce core / POS + schema**: a sale line for gift cards (the liability account exists).
+- **Lead (blueprint rows 08.02, 08.03, 08.05, 08.07, outside this module's rows)**: their "Missing" still says the
+  checkout does not apply rules / flash prices / referral codes and that the chart lacks a gift-card account — and
+  `/admin/promotions` shows them right under the «ما يُطبَّق اليوم» table that says otherwise. Proposed text in the
+  wave-B review report (admin-promos-review; 08.02 corrected for the rules' stacking).
+- **Admin shell**: at phone widths a control focused by keyboard can sit under the tab bar — `:root:has(.adm)` has a
+  `scroll-padding-block-start` but no `-end` (fixes it when added for < 48rem: `calc(60px + var(--safe-bottom) + 8px)`).
+- **Module 08 services (comments)**: the headers of `discounts.server.ts`, `flash.server.ts`, `referrals.server.ts`,
+  `rules.ts`, `vip.server.ts` and `giftcards.server.ts` still say the core does not apply them; `loyalty.server.ts`'s
+  header is corrected.
 
 ## Module follow-up 2026-11-12
 

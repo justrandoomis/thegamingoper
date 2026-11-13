@@ -1,25 +1,27 @@
 /**
- * The facts a buyer asks before ordering — design v2 spec §6.7 items 8 and 11, §4.20 FactList, §9 glossary:
+ * The facts a buyer asks before ordering — design v2.1 (client note 5: "the note look better"; brief §2.5, G5): the
+ * side information as the kit's calm <Note>s — a neutral soft card each, an icon in a clay disc, a short bold title,
+ * muted 16px text, an action on its own line with its arrow — never a bold paragraph under the price:
  *
- *   <PaymentLine methods />    item 8, under the price: ONE sentence with the enabled payment methods (15px), and the
- *                              transfer rule under it (13 ink-2) when a transfer method is on.
- *   <FactsCard … />            item 11: a paper card of fact rows — delivery (+ «اطلب بدون حساب»), payment, returns,
- *                              warranty.
+ *   طرق الدفع            the methods the owner switched on (the TamTam wallet only for a signed-in shopper) and, when a
+ *                        transfer is offered, the rule «الحوالة تبقى بانتظار التحقق حتى يراجعها موظف.»
+ *   التوصيل … لكل المحافظات   the fee from settings (or «حسب محافظتك»), and «اطلب بدون حساب — …»; a code: «يصلك الرمز
+ *                        بعد تأكيد الدفع.»
+ *   الإرجاع خلال 7 أيام   from settings, with «سياسة الإرجاع ←»
+ *   الضمان               the STORE's once the owner sets one, the manufacturer's when the research states it (always
+ *                        labelled as theirs), else a question: «اسألنا عن شروط الضمان ←» (the one hand-off form)
  *
- * Only what is true: the fee and the returns window come from settings, the payment methods from the switches the
- * owner turned on (the TamTam wallet only for a signed-in shopper), the warranty is the manufacturer's when the
- * research states it — always labelled as theirs — or the STORE's once the owner sets one; otherwise a question link
- * («اسألنا عن شروط الضمان», to the one "talk to a person" form), never an admission. No delivery time, no call
- * promise. Digital codes take their own facts: no delivery fee or returns row (spec §6.7 states, §13 row 11).
+ * Only what is true: no delivery time, no call promise, no admission. Digital codes take their own facts: no delivery
+ * fee, returns or warranty notes (spec §6.7 states, §13 row 11).
  */
 import { useId, type ReactNode } from "react";
 
-import { LocaleLink, useFormat } from "~/i18n/react";
+import type { IconName } from "~/art/Icon";
+import { LocaleLink, useFormat, useLocale } from "~/i18n/react";
 import { cx } from "~/ui/cx";
-import { FactList, type Fact } from "~/ui/FactList";
+import { Note } from "~/ui/Note";
 import { fillNodes, iqdText } from "~/ui/PriceTag";
 import { TextLink } from "~/ui/TextLink";
-import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { useProductT } from "../i18n";
 
 /** The store's payment switches (layout loader `shell.payments`). */
@@ -46,109 +48,102 @@ export function paymentMethods(switches: PaymentSwitches | null | undefined, sig
 /** A transfer (card or Zain Cash) waits for a person to verify it: the rule is said whenever one is offered. Pure. */
 export const offersTransfer = (methods: readonly PaymentMethod[]) => methods.includes("card") || methods.includes("zaincash");
 
-function useMethodsSentence(methods: readonly PaymentMethod[]): string {
-  const t = useProductT();
-  const names = methods.map((method) => t(`pay.${method}`));
-  const list = names.length < 2 ? (names[0] ?? "") : `${names.slice(0, -1).join(t("pay.join"))}${t("pay.last")}${names[names.length - 1]}`;
-  return t("pay.sentence", { methods: list });
+/** "a, b or c" in the page's language (the names come lower-case in English: the sentence starts with a capital). Pure. */
+export function methodsList(names: readonly string[], join: string, last: string): string {
+  if (names.length < 2) return names[0] ?? "";
+  return `${names.slice(0, -1).join(join)}${last}${names[names.length - 1]}`;
 }
 
-/** Item 8: «الدفع عند الاستلام، أو زين كاش، أو تحويل إلى بطاقة ماستركارد» + the transfer rule. Nothing when no method is on. */
-export function PaymentLine({ methods, className }: { methods: readonly PaymentMethod[]; className?: string }) {
-  const t = useProductT();
-  const sentence = useMethodsSentence(methods);
-  if (methods.length === 0) return null;
-  return (
-    <div className={cx("grid gap-0.5", className)} data-pay-line="">
-      {/* 15px reading text (the card-title size, at the body weight) */}
-      <p className="type-card font-normal text-ink">{sentence}</p>
-      {offersTransfer(methods) ? <p className="type-xs text-ink-2">{t("pay.rule")}</p> : null}
-    </div>
-  );
+/** The first letter of a Latin sentence in upper case; Arabic and Sorani have no case. Pure. */
+export function sentenceStart(text: string, locale: string): string {
+  return locale === "en" && text.length > 0 ? text.charAt(0).toLocaleUpperCase("en") + text.slice(1) : text;
 }
 
-export type FactsCardProps = {
+export type SideNotesProps = {
   delivery: { flatFeeIqd: number; overridesEnabled: boolean };
   methods: readonly PaymentMethod[];
   returnsWindowDays: number;
   makerWarranty: string | null;
   storeWarrantyMonths: number | null;
-  /** A digital code: its own delivery fact, no fee, no returns and no warranty rows. */
+  /** A digital code: its own delivery fact, no fee, no returns and no warranty notes. */
   digital?: boolean;
   className?: string;
 };
 
-/** Item 11: the facts card (FactList on paper), headed for screen readers. */
-export function FactsCard({ delivery, methods, returnsWindowDays, makerWarranty, storeWarrantyMonths, digital = false, className }: FactsCardProps) {
+type NoteEntry = { id: string; icon: IconName; title: ReactNode; text?: ReactNode; action?: ReactNode };
+
+/** The side information as calm notes, headed «التوصيل والدفع والإرجاع» (an h2 for the page's outline). */
+export function SideNotes({ delivery, methods, returnsWindowDays, makerWarranty, storeWarrantyMonths, digital = false, className }: SideNotesProps) {
   const t = useProductT();
   const f = useFormat();
+  const locale = useLocale();
   const titleId = useId();
-  const sentence = useMethodsSentence(methods);
   const link = (label: string, to: string): ReactNode => (
     <TextLink as={LocaleLink} to={to}>
       {label}
     </TextLink>
   );
 
-  const facts: Fact[] = [];
+  const notes: NoteEntry[] = [];
+  if (methods.length > 0) {
+    const list = methodsList(
+      methods.map((method) => t(`pay.${method}`)),
+      t("pay.join"),
+      t("pay.last"),
+    );
+    notes.push({
+      id: "pay",
+      icon: "credit-card",
+      title: t("pay.title"),
+      text: (
+        <>
+          {sentenceStart(t("pay.list", { methods: list }), locale)}
+          {offersTransfer(methods) ? <> {t("pay.rule")}</> : null}
+        </>
+      ),
+    });
+  }
   if (digital) {
-    facts.push({ id: "code", icon: "qr-code", title: t("facts.code"), text: t("facts.guest") });
+    notes.push({ id: "code", icon: "qr-code", title: t("facts.code"), text: t("facts.guest") });
   } else {
-    facts.push({
+    notes.push({
       id: "delivery",
       icon: "truck",
       title: delivery.overridesEnabled ? t("facts.deliveryVaries") : fillNodes(t("facts.delivery"), { fee: <bdi className="nums">{iqdText(f, delivery.flatFeeIqd)}</bdi> }),
       text: t("facts.guest"),
     });
-  }
-  if (methods.length > 0) {
-    facts.push({ id: "pay", icon: "wallet", title: sentence, text: offersTransfer(methods) ? t("pay.rule") : undefined });
-  }
-  if (!digital) {
-    facts.push({
+    notes.push({
       id: "returns",
       icon: "arrow-counter-clockwise",
       title: returnsWindowDays > 0 ? t("facts.returns", { count: returnsWindowDays, n: f.number(returnsWindowDays) }) : t("facts.returnsNone"),
-      text: link(t("facts.returnsPolicy"), "/policies/returns"),
+      action: link(t("facts.returnsPolicy"), "/policies/returns"),
     });
     const ask = link(t("facts.askWarranty"), ASK_HREF);
     if (storeWarrantyMonths) {
-      facts.push({
+      notes.push({
         id: "warranty",
         icon: "shield-check",
         title: t("facts.storeWarranty", { count: storeWarrantyMonths, n: f.number(storeWarrantyMonths) }),
-        text: makerWarranty ? (
-          <span className="grid justify-items-start">
-            <span>{t("facts.makerWarranty", { terms: makerWarranty })}</span>
-            {ask}
-          </span>
-        ) : (
-          ask
-        ),
+        text: makerWarranty ? t("facts.makerWarranty", { terms: makerWarranty }) : undefined,
+        action: ask,
       });
     } else if (makerWarranty) {
-      facts.push({
-        id: "warranty",
-        icon: "shield-check",
-        title: t("facts.makerWarranty", { terms: makerWarranty }),
-        text: (
-          <span className="grid justify-items-start">
-            <span>{t("facts.makerWarrantyNote")}</span>
-            {ask}
-          </span>
-        ),
-      });
+      notes.push({ id: "warranty", icon: "shield-check", title: t("facts.makerWarranty", { terms: makerWarranty }), text: t("facts.makerWarrantyNote"), action: ask });
     } else {
-      facts.push({ id: "warranty", icon: "shield-check", title: t("facts.warranty"), text: ask });
+      notes.push({ id: "warranty", icon: "shield-check", title: t("facts.warranty"), action: ask });
     }
   }
 
   return (
-    <section aria-labelledby={titleId} className={className} data-facts-card="">
-      <VisuallyHidden as="h2" id={titleId}>
+    <section aria-labelledby={titleId} className={cx("pp-notes", className)} data-facts-card="">
+      <h2 id={titleId} className="type-h3 text-ink">
         {t("facts.title")}
-      </VisuallyHidden>
-      <FactList facts={facts} />
+      </h2>
+      {notes.map((note) => (
+        <Note key={note.id} icon={note.icon} title={note.title} action={note.action}>
+          {note.text}
+        </Note>
+      ))}
     </section>
   );
 }

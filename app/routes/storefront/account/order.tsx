@@ -91,7 +91,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <PageHead back={{ to: "/account/orders", label: t("order.back"), order: 1, nav: "rise" }} title={t("order.title")}>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <div className="acct-ordhead">
           <span className="type-sm text-ink-2">{t("order.number")}</span>
           <bdi dir="ltr" className="type-code text-ink">
             {order.ref}
@@ -99,7 +99,10 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
           <CopyKey value={order.ref} label={t("order.copyRef")} />
           {order.isDemo ? <DemoNote variant="tag" what="order" /> : null}
         </div>
-        <p className="type-sm text-ink-2">{t("order.placed", { date: f.dateTime(order.placedAt) })}</p>
+        <p className="flex items-center gap-1.5 type-sm text-ink-2">
+          <Icon name="calendar-blank" size={16} />
+          {t("order.placed", { date: f.dateTime(order.placedAt) })}
+        </p>
       </PageHead>
 
       <section aria-labelledby="order-status-title" className="acct-card">
@@ -107,7 +110,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
           <h2 id="order-status-title" className="acct-card__title">
             {t("order.statusTitle")}
           </h2>
-          <OrderStatusLine status={order.status} size="lg" />
+          <OrderStatusLine status={order.status} size="lg" pill />
         </div>
         {order.status === "cancelled" ? (
           <p className="type-body text-ink-2">{t("order.cancelledOn", { date: f.date(order.cancelledAt ?? order.placedAt, "long") })}</p>
@@ -203,17 +206,16 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
             <h2 id="order-payment-title" className="acct-card__title">
               {t("order.payment")}
             </h2>
-            <dl className="acct-dl">
-              <div>
-                <dt>{t("order.method")}</dt>
-                <dd>{t(`methods.${order.payment.method ?? "none"}`)}</dd>
-              </div>
-              <div>
-                <dt>{t("order.paymentStatus")}</dt>
-                <dd>
-                  <PaymentStatusLine status={order.payment.status} />
-                </dd>
-              </div>
+            <div className="acct-fact">
+              <span className="clay-disc" aria-hidden="true">
+                <Icon name={order.payment.method === "cod" ? "money" : order.payment.method === "wallet" ? "wallet" : order.payment.method === "zaincash" ? "device-mobile" : "credit-card"} size={20} />
+              </span>
+              <span className="acct-fact__title">{t(`methods.${order.payment.method ?? "none"}`)}</span>
+              <span className="justify-self-start">
+                <PaymentStatusLine status={order.payment.status} pill />
+              </span>
+            </div>
+            <dl className="acct-dl border-t border-line pt-3">
               <div>
                 <dt>{t("order.due")}</dt>
                 <dd>
@@ -243,27 +245,55 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
             <h2 id="order-delivery-title" className="acct-card__title">
               {t("order.delivery")}
             </h2>
-            <div className="grid gap-1">
-              <p className="type-sm-strong text-ink">
-                {order.contact.name ? <>{order.contact.name} · </> : null}
-                <bdi dir="ltr" className="nums">
-                  {order.contact.phoneMasked}
-                </bdi>
-              </p>
-              <p className="type-sm text-ink-2">{[order.delivery.governorate, order.delivery.district, order.delivery.area].filter(Boolean).join(f.locale === "en" ? ", " : "، ")}</p>
-              {order.delivery.address ? <p className="type-sm text-ink-2">{order.delivery.address}</p> : null}
-              {order.delivery.notes ? <p className="type-xs text-ink-2">{order.delivery.notes}</p> : null}
-            </div>
-            {order.delivery.preferredDay ? (
-              <div className="grid gap-1 border-t border-line pt-3">
-                <p className="type-sm-strong text-ink">
-                  {order.delivery.preferredWindow && order.delivery.preferredWindow !== "any"
-                    ? t("order.preferredWindow", { day: preferredDay(f, order.delivery.preferredDay), window: t(`windows.${order.delivery.preferredWindow}`) })
-                    : t("order.preferred", { day: preferredDay(f, order.delivery.preferredDay) })}
-                </p>
-                <p className="type-xs text-ink-2">{t("order.preferredNote")}</p>
-              </div>
-            ) : null}
+            <ul className="acct-facts">
+              <li className="acct-fact">
+                <span className="clay-disc" aria-hidden="true">
+                  <Icon name="user" size={20} />
+                </span>
+                {/* who receives it: the name over the number — or, ordered without a name, the number itself */}
+                {order.contact.name?.trim() ? (
+                  <>
+                    <span className="acct-fact__title">{order.contact.name}</span>
+                    <span className="acct-fact__text">
+                      <bdi dir="ltr" className="nums">
+                        {order.contact.phoneMasked}
+                      </bdi>
+                    </span>
+                  </>
+                ) : (
+                  <span className="acct-fact__title">
+                    <bdi dir="ltr" className="nums">
+                      {order.contact.phoneMasked}
+                    </bdi>
+                  </span>
+                )}
+              </li>
+              <li className="acct-fact">
+                <span className="clay-disc" aria-hidden="true">
+                  <Icon name="map-pin" size={20} />
+                </span>
+                <span className="acct-fact__title">{[order.delivery.governorate, order.delivery.district, order.delivery.area].filter(Boolean).join(f.locale === "en" ? ", " : "، ")}</span>
+                {order.delivery.address || order.delivery.notes ? (
+                  <span className="acct-fact__text">
+                    {order.delivery.address}
+                    {order.delivery.notes ? <span className="block type-xs">{order.delivery.notes}</span> : null}
+                  </span>
+                ) : null}
+              </li>
+              {order.delivery.preferredDay ? (
+                <li className="acct-fact">
+                  <span className="clay-disc" aria-hidden="true">
+                    <Icon name="calendar-blank" size={20} />
+                  </span>
+                  <span className="acct-fact__title">
+                    {order.delivery.preferredWindow && order.delivery.preferredWindow !== "any"
+                      ? t("order.preferredWindow", { day: preferredDay(f, order.delivery.preferredDay), window: t(`windows.${order.delivery.preferredWindow}`) })
+                      : t("order.preferred", { day: preferredDay(f, order.delivery.preferredDay) })}
+                  </span>
+                  <span className="acct-fact__text">{t("order.preferredNote")}</span>
+                </li>
+              ) : null}
+            </ul>
           </section>
 
           {order.refunds.length > 0 ? (
@@ -288,20 +318,26 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
           ) : null}
 
           <section aria-labelledby="order-help-title" className="acct-card lg:col-span-2 2xl:col-span-1">
-            <h2 id="order-help-title" className="acct-card__title">
-              {t("order.helpTitle")}
-            </h2>
-            <p className="type-sm text-ink-2">
-              {fillNodes(t("order.helpText"), {
-                ref: (
-                  <bdi key="ref" dir="ltr" className="nums">
-                    {order.ref}
-                  </bdi>
-                ),
-              })}
-            </p>
+            <div className="acct-fact">
+              <span className="clay-disc" aria-hidden="true">
+                <Icon name="chat-circle" size={20} />
+              </span>
+              <h2 id="order-help-title" className="acct-card__title">
+                {t("order.helpTitle")}
+              </h2>
+              <p className="acct-fact__text">
+                {fillNodes(t("order.helpText"), {
+                  // the number stays whole: it never breaks at its hyphen («TT-» at a line's end)
+                  ref: (
+                    <bdi key="ref" dir="ltr" className="nums whitespace-nowrap">
+                      {order.ref}
+                    </bdi>
+                  ),
+                })}
+              </p>
+            </div>
             <div className="flex flex-wrap gap-x-6">
-              <TextLink as={LocaleLink} to={HANDOFF} icon="chat-circle" arrow={false}>
+              <TextLink as={LocaleLink} to={HANDOFF}>
                 {t("common.talk")}
               </TextLink>
               {order.status === "delivered" ? (
@@ -387,7 +423,7 @@ function NextStep({ order, now }: { order: OrderView; now: number }) {
 
   if (payment.proof.status === "submitted" && (order.status === "payment_review" || payment.status === "pending_verification")) {
     return (
-      <Notice tone="warn" title={t("order.next.title")}>
+      <Notice tone="warn" icon="hourglass" title={t("order.next.title")}>
         {t("order.next.review")}
       </Notice>
     );
@@ -404,7 +440,11 @@ function NextStep({ order, now }: { order: OrderView; now: number }) {
 
   if (payment.method === "cod" && payment.status === "cod_due") {
     const total = amount(iqdText(f, payment.amountDueIqd || order.totals.totalIqd));
-    return <Notice title={t("order.next.title")}>{order.status === "new" ? t("order.next.cod", { total }) : t("order.next.codLater", { total })}</Notice>;
+    return (
+      <Notice icon="money" title={t("order.next.title")}>
+        {order.status === "new" ? t("order.next.cod", { total }) : t("order.next.codLater", { total })}
+      </Notice>
+    );
   }
   return null;
 }

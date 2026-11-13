@@ -18,10 +18,11 @@ export type LinkRow = {
 };
 
 /**
- * Rows of links (Design System v2 §4.20 fact-row anatomy, as links): a 20px icon in secondary ink, the title (14/600)
- * over an optional 13px hint, optional words at the end and a caret that points along the reading direction. The
- * whole row is the link — at least 56px tall, the engine's soft press, the title underlined under the pointer.
- * Between hairlines on the page, or `card`: inside one paper card (no shadow).
+ * Rows of links (Design System v2 §4.20 fact-row anatomy, as links; v2.1: the before's rows, client notes 4 and 9 —
+ * the icon at the before's weight on a raised clay disc, the title in Kufam, a 16px hint): the disc, the title over an
+ * optional hint, optional words at the end and a caret that points along the reading direction and nudges toward it
+ * under the pointer. The whole row is the link — at least 64px tall, the engine's soft press, the title underlined
+ * under the pointer. Between hairlines on the page, or `card`: inside one soft raised card (dark: faux glass).
  */
 export function LinkRows({ rows, card = false, className }: { rows: readonly LinkRow[]; card?: boolean; className?: string }) {
   return (
@@ -29,14 +30,16 @@ export function LinkRows({ rows, card = false, className }: { rows: readonly Lin
       {rows.map((row) => (
         <li key={row.to}>
           <MotionLink to={row.to} nav={row.nav ?? "fade"} order={row.order} data-press="soft" className="crow">
-            <Icon name={row.icon} size={20} className="crow__icon" />
+            <span className="clay-disc crow__disc" aria-hidden="true">
+              <Icon name={row.icon} size={20} />
+            </span>
             <span className="crow__copy">
               <span className="crow__title">{row.title}</span>
               {row.hint ? <span className="crow__hint">{row.hint}</span> : null}
             </span>
             <span className="crow__end">
               {row.aside ? <span>{row.aside}</span> : null}
-              <Icon name="caret-right" size={18} />
+              <Icon name="caret-right" size={18} className="crow__go" />
             </span>
           </MotionLink>
         </li>

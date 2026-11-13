@@ -11,6 +11,7 @@ import { normalizeOrderRef } from "~/server/services/orders/manage.server";
 import { DemoNote } from "~/ui/DemoNote";
 import { TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
+import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
 import { fillNodes } from "~/ui/PriceTag";
 import { TextLink } from "~/ui/TextLink";
@@ -183,43 +184,51 @@ export default function TrackPage({ loaderData, actionData }: Route.ComponentPro
               ) : null}
             </Form>
             <section aria-labelledby="track-see" className="grid gap-3">
-              <h2 id="track-see" className="type-sm-strong text-ink">
+              <h2 id="track-see" className="type-h3 text-ink">
                 {t("track.see.heading")}
               </h2>
+              {/* what the lookup shows, as the order page's icon rows */}
               <ul className="co-see">
                 <li>
-                  <Icon name="package" size={16} />
+                  <span className="clay-disc co-fact__icon--static" aria-hidden="true">
+                    <Icon name="package" size={18} />
+                  </span>
                   {t("track.see.status")}
                 </li>
                 <li>
-                  <Icon name="receipt" size={16} />
+                  <span className="clay-disc co-fact__icon--static" aria-hidden="true">
+                    <Icon name="receipt" size={18} />
+                  </span>
                   {t("track.see.items")}
                 </li>
                 <li>
-                  <Icon name="map-pin" size={16} />
+                  <span className="clay-disc co-fact__icon--static" aria-hidden="true">
+                    <Icon name="map-pin" size={18} />
+                  </span>
                   {t("track.see.delivery")}
                 </li>
               </ul>
             </section>
-            <p className="type-xs text-ink-2">
+            {/* one sentence that ends on its link: «لديك حساب؟ طلباتك كلها في صفحة حسابي» */}
+            <Note variant="line" icon="user">
               {t("track.account")}{" "}
               <TextLink as={LocaleLink} to="/account" inline>
                 {t("track.accountLink")}
               </TextLink>
-            </p>
+            </Note>
           </>
         )}
       </div>
 
       {found ? (
         <div className="co-track-result">
-          <div className="grid gap-1">
+          <div className="co-ref">
             <h2 id="track-result" ref={resultRef} tabIndex={-1} className="type-h2 text-ink outline-none">
               {t("track.result", { ref: "⁦" + found.ref + "⁩" })}
             </h2>
             {/* a demo order stays marked as one wherever it is shown (§9.7), as on the order page */}
             {found.isDemo ? <DemoNote variant="tag" what="order" className="justify-self-start" /> : null}
-            <p className="type-xs text-ink-2">{fillNodes(t("order.placedAt"), { date: <When at={found.placedAt} f={f} /> })}</p>
+            <p className="type-sm text-ink-2">{fillNodes(t("order.placedAt"), { date: <When at={found.placedAt} f={f} /> })}</p>
           </div>
           <OrderDetails order={found} mode="tracked" headingLevel={3} />
         </div>

@@ -3,14 +3,17 @@
  * straight to" the platform, department or device hub the words name; results by department as a chip row), with the
  * same filters, sorts and «اعرض المزيد» as the hubs.
  *
- *   start (no query)   the field in the page (focused on wide screens), suggestion chips, the recent searches kept on
- *                      this device (consent-aware) with the small «إعدادات البحث» row, then every platform and
- *                      department to browse, then the devices area's shelves.
- *   results            the listing template with the query in the h1; a corrected spelling shows its results under
- *                      the corrected words and says what was typed.
- *   zero results       «لم نجد نتائج لـ «…»» with what to try, «هل تقصد» (the shorter queries that do find something),
- *                      the platform tiles and «وصل حديثاً» — no sort and no filters. (Filters that hide every match get
- *                      the hubs' recovery instead: the filter to remove.)
+ *   start (no query)   the glass head (v2.1): the h1, the field (focused on wide screens) and suggestion chips with
+ *                      their platforms' device glyphs; the recent searches kept on this device (consent-aware) with the
+ *                      small «إعدادات البحث» row, then every platform and department (icon tiles) to browse, then the
+ *                      devices area's shelves.
+ *   results            the listing template under the glass head with the query in the h1; a corrected spelling shows
+ *                      its results under the corrected words and says what was typed; «اذهب مباشرة إلى» as small
+ *                      clay keys with the hubs' icons.
+ *   zero results       v2.1, friendlier: the soft card with the search glass large on its disc, «لم نجد نتائج لـ «…»»
+ *                      and what to try, «هل تقصد» (the shorter queries that do find something) and «جرّب أحد هذه»
+ *                      as chips, the way home; then the platform tiles, the departments and «وصل حديثاً» — no sort and
+ *                      no filters. (Filters that hide every match get the hubs' recovery instead: the filter to remove.)
  *
  * Counted anonymously in `search_query_stats` (first page of a plain search; bots and queries that may hold personal
  * data are not counted).
@@ -19,8 +22,9 @@ import { isbot } from "isbot";
 import { useEffect } from "react";
 
 import type { Route } from "./+types/search";
+import { Icon } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
-import { useT } from "~/i18n/react";
+import { LocaleLink, useT } from "~/i18n/react";
 import { RecommendationShelves } from "~/routes/storefront/devices/components/RecommendationShelves";
 import { CONSENT_COOKIE, PLATFORMS_COOKIE, parsePlatformList } from "~/routes/storefront/home/personal";
 import { shellMeta } from "~/routes/storefront/shell/meta";
@@ -32,15 +36,18 @@ import { getNewArrivals } from "~/server/services/catalog/cards.server";
 import { recommendationsFor } from "~/server/services/recommendations.server";
 import { MAX_QUERY_LENGTH, recordSearchQuery, searchProducts } from "~/server/services/search.server";
 import { EmptyState } from "~/ui/EmptyState";
+import { Key } from "~/ui/Key";
+import { Note } from "~/ui/Note";
 import { ShelfRail } from "~/ui/ShelfRail";
+import { TextLink } from "~/ui/TextLink";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
-import { ChipRow, KeepInView, TitleRow } from "./components/Hub";
+import { ChipRow, KeepInView, TitleRow, useKindIcon } from "./components/Hub";
 import { CompareTray } from "./components/CompareTray";
 import { ListingView } from "./components/ListingView";
-import { BrowseStore, DidYouMean, SearchJumps, SearchStart } from "./components/SearchParts";
+import { BrowseStore, DidYouMean, SearchJumps, SearchStart, SuggestionChips } from "./components/SearchParts";
 import { useRecentSearches } from "./components/recent-searches";
 import { useListingNav, useOfflineHold } from "./components/use-listing-nav";
-import { SEARCH_SORTS, activeGroups, filtersOf, readListingQuery } from "./listing-model";
+import { SEARCH_SORTS, TYPED_KEY, activeGroups, filtersOf, readListingQuery, typedSearchPath } from "./listing-model";
 import { arrivalsShelf, filterOrderOf, listOf, storeBrowse, wishedOf, withCursorFallback } from "./list.server";
 import "./catalog.css";
 
@@ -64,15 +71,18 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   }
 
   const query = readListingQuery(url.searchParams, SEARCH_SORTS);
+  // «ابحث عنها كما كتبتها» (spec §6.4): `typed=1` searches the words exactly as typed — no corrected spelling
+  const asTyped = url.searchParams.get(TYPED_KEY) === "1";
   // the listing filters in the order staff gave every listing (content module 17.03; null: the page's own) — read beside
   // the search, not after it (filterOrderOf never rejects)
   const filterOrderRead = filterOrderOf(db, null);
   const result = await withCursorFallback(url, query.cursor !== null, () =>
-    searchProducts(db, ctx.locale, q, { filters: filtersOf(query), sort: query.sort, cursor: query.cursor, cumulative: true, now: ctx.now }),
+    searchProducts(db, ctx.locale, q, { filters: filtersOf(query), sort: query.sort, cursor: query.cursor, cumulative: true, now: ctx.now, asTyped }),
   );
 
-  // anonymous statistics: the first page of a plain search, never a bot (filters, sorts and "show more" are not new searches)
-  if (!query.cursor && query.sort === null && activeGroups(query).length === 0 && !isbot(ctx.userAgent)) {
+  // anonymous statistics: the first page of a plain search, never a bot (filters, sorts and "show more" are not new
+  // searches, and neither is the same words asked for as typed)
+  if (!asTyped && !query.cursor && query.sort === null && activeGroups(query).length === 0 && !isbot(ctx.userAgent)) {
     try {
       await recordSearchQuery(db, { locale: ctx.locale, q, total: result.total, now: ctx.now });
     } catch (error) {
@@ -108,8 +118,10 @@ export const meta: Route.MetaFunction = (args) =>
 export default function SearchPage({ loaderData }: Route.ComponentProps) {
   const { q, result, browse, arrivals, wished } = loaderData;
   const t = useT("catalog");
-  const nav = useListingNav({ sorts: SEARCH_SORTS, keep: ["q"] });
+  // `typed` rides along with every filter, sort and «اعرض المزيد» of a search asked for as typed
+  const nav = useListingNav({ sorts: SEARCH_SORTS, keep: ["q", TYPED_KEY] });
   const hold = useOfflineHold();
+  const kindIcon = useKindIcon();
   const recent = useRecentSearches();
   const remember = recent.add;
   // keep the search on this device (when allowed); `remember` is a new function each render, the search is what counts
@@ -120,7 +132,6 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
   if (!result) {
     return (
       <div className="page catalog-page" onClickCapture={hold}>
-        <h1 className="type-h1 text-ink">{t("search.title")}</h1>
         <SearchStart browse={browse} />
         <RecommendationShelves result={loaderData.recommendations} source="search" />
         <CompareTray />
@@ -130,18 +141,35 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
 
   const help = result.zeroResultHelp;
   if (result.total === 0 && help?.reason !== "filters") {
-    // nothing matches the words: what to try, the shorter queries, the platforms, what arrived lately — no sort, no
-    // filters. The picture is the mascot in its disc (v2 §4.23), as on the 404 — not an icon
+    // nothing matches the words (v2.1: friendlier): the search glass on its disc, what happened and what to try, on the
+    // soft card with the ways on — the shorter queries that do find something and device names to try, as chips —
+    // then the platforms, the departments and what arrived lately (the way out). No sort, no filters.
     return (
       <div className="page catalog-page" onClickCapture={hold}>
         <VisuallyHidden as="h1">{t("search.resultsTitle", { q })}</VisuallyHidden>
-        <div className="grid justify-items-center gap-4">
-          <EmptyState layout="stack" title={<bdi>{t("search.zeroTitle", { q })}</bdi>} text={t("search.zeroText")} />
-          <DidYouMean partial={help?.partial ?? []} />
+        <div className="catalog-nomatch glow glow--wide">
+          <EmptyState
+            layout="stack"
+            panel
+            art={<Icon name="magnifying-glass" size={48} className="text-red-ink" />}
+            title={<bdi>{t("search.zeroTitle", { q })}</bdi>}
+            text={t("search.zeroText")}
+            action={
+              <div className="catalog-nomatch__ways">
+                <DidYouMean partial={help?.partial ?? []} layout="panel" />
+                <SuggestionChips title={t("search.zeroTry")} layout="panel" limit={6} />
+              </div>
+            }
+            recovery={
+              <Key as={LocaleLink} to="/" icon="house">
+                {t("search.zeroHome")}
+              </Key>
+            }
+          />
         </div>
         <BrowseStore browse={browse} className="catalog-after" />
         {arrivals.length >= 3 ? (
-          <KeepInView className="catalog-after">
+          <KeepInView className="catalog-after" reveal>
             <ShelfRail shelf={{ key: "arrivals", title: t("search.newTitle"), reason: t("search.newReason"), items: arrivals }} />
           </KeepInView>
         ) : null}
@@ -156,18 +184,29 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="page catalog-page" onClickCapture={hold}>
-      <TitleRow title={<bdi>{t("search.resultsTitle", { q: shownQuery })}</bdi>}>
+      <TitleRow title={<bdi>{t("search.resultsTitle", { q: shownQuery })}</bdi>} icon="magnifying-glass">
         {result.correctedQuery ? (
-          <p className="type-sm text-ink-2" role="status">
+          // the kit's quiet line (v2.1 G5: one pattern for side information) — what was typed, and «ابحث عنها كما
+          // كتبتها» (spec §6.4: the same words, never corrected) as its action on its own line
+          <Note
+            variant="line"
+            icon="info"
+            aria-live="polite"
+            action={
+              <TextLink as={LocaleLink} to={typedSearchPath(q)}>
+                {t("search.asTyped")}
+              </TextLink>
+            }
+          >
             <bdi>{t("search.typed", { q })}</bdi>
-          </p>
+          </Note>
         ) : null}
         <SearchJumps jumps={result.suggestions} />
       </TitleRow>
       {chips ? (
         <ChipRow
           label={t("search.inCategory")}
-          options={result.facets.categories.map((option) => ({ value: option.value, label: option.label, count: option.count }))}
+          options={result.facets.categories.map((option) => ({ value: option.value, label: option.label, count: option.count, icon: kindIcon(option.value) }))}
           selected={nav.query.category}
           allCount={result.facets.without.category}
           hrefFor={(value) => nav.href({ category: value })}

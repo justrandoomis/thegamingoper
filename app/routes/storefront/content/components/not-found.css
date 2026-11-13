@@ -1,0 +1,204 @@
+/*
+ * The 404 (./NotFoundView.tsx) — Design v2.1, client note 11: the before's arrangement (a big «404» in Kufam, the title,
+ * one line, the search field, the clay key home) with v2's mascot and four platform tiles. Linked by the storefront
+ * layout's boundary (shell/ShellError) and by the root boundary, so it is a small, namespaced sheet (.cnf). Tokens only,
+ * logical properties only; motion is transform and opacity on the motion tokens, once, and nothing under reduced motion.
+ *
+ *   .cnf          the page column (centred; the head 600px, the tiles 720px)
+ *   .cnf__art     the mascot: a frosted circle (.surface--glass) over the brand light (.glow-layer)
+ *   .cnf__code    «404» — Kufam 700, decorative (aria-hidden: the h1 says what happened)
+ *   .cnf__search  the field: 520px at most
+ *   .cnf__actions the clay key home with «مركز الدعم» beside it
+ *   .cnf__browse  «أو ابدأ من منصّتك» over the four compact platform tiles
+ *
+ * The root imports this sheet (through ./RootNotFound), so the browser may meet it before app.css: it states the
+ * store's layer order first, as app.css and motion.css do — the first statement a browser meets fixes the order.
+ */
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* the root boundary's page: no shell around it, so the view stands centred on the floor */
+  .cnf-root {
+    display: grid;
+    align-content: center;
+    min-block-size: 100dvh;
+    background-color: var(--ground);
+    color: var(--ink);
+  }
+  .cnf {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    padding-block: var(--s-6) var(--s-12);
+    text-align: center;
+  }
+  @media (min-width: 48rem) {
+    .cnf {
+      padding-block: var(--s-10) var(--s-16);
+    }
+  }
+  .cnf__head {
+    display: grid;
+    justify-items: center;
+    inline-size: min(100%, 600px);
+    min-inline-size: 0;
+  }
+  /* a grid item's automatic minimum is its min-content width — the search form's (its key + the input's intrinsic
+     width in Plex) is ≈341px, which widened this one column past a 328px (360) or 288px (320) screen: the field and the
+     line sat in the gutter and the page went sideways. The pieces shrink to the column instead. */
+  .cnf__head > * {
+    min-inline-size: 0;
+  }
+
+  /* ── the mascot in a circle: real frost over a soft brand light, so the glass has something to show ── */
+  .cnf__art {
+    position: relative;
+    isolation: isolate; /* the light (z-index −1) stays above the page floor */
+    display: grid;
+    place-items: center;
+    inline-size: 104px;
+    block-size: 104px;
+    margin-block-end: var(--s-4);
+    /* the light sits low at the inline end, so the frost shows it as a gradient and a halo peeks out under the rim */
+    --glow-inset: -56%;
+    --glow-size: 44% 44%;
+    --glow-x: calc(50% + 9% * var(--dir));
+    --glow-y: 60%;
+    --glow-alpha: var(--glow-a-strong);
+  }
+  .cnf__disc {
+    display: grid;
+    place-items: center;
+    inline-size: 100%;
+    block-size: 100%;
+    border-radius: var(--r-full);
+  }
+  .cnf__mark {
+    block-size: 58%;
+    inline-size: auto;
+  }
+  @media (min-width: 48rem) {
+    .cnf__art {
+      inline-size: 120px;
+      block-size: 120px;
+      margin-block-end: var(--s-5);
+    }
+  }
+
+  /* ── «404»: the before's big Kufam figures, a little larger, ink fading to the decorative grey ── */
+  .cnf__code {
+    margin-block-end: var(--s-2);
+    font: var(--w-figure) 72px / 1 var(--font-display);
+    font-variant-numeric: tabular-nums lining-nums;
+    color: var(--ink-3);
+    background: linear-gradient(180deg, var(--ink-2) 0%, var(--ink-3) 88%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  @media (min-width: 48rem) {
+    .cnf__code {
+      font: var(--w-figure) 96px / 1 var(--font-display);
+    }
+  }
+  @media (forced-colors: active) {
+    .cnf__code {
+      -webkit-text-fill-color: currentColor;
+      background: none;
+    }
+  }
+
+  .cnf__title {
+    font: var(--type-h1);
+    text-wrap: balance;
+    color: var(--ink);
+  }
+  .cnf__text {
+    max-inline-size: 44ch;
+    margin-block-start: var(--s-2);
+    font: var(--type-read);
+    text-wrap: balance;
+    color: var(--ink-2);
+  }
+
+  /* ── the search field (the shell's form, or the root's plain one), then the key home and the support centre ── */
+  .cnf__search {
+    inline-size: min(100%, 520px);
+    margin-block-start: var(--s-6);
+    text-align: start;
+  }
+  .cnf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-2) var(--s-5);
+    margin-block-start: var(--s-5);
+  }
+
+  /* ── «أو ابدأ من منصّتك» and the four compact platform tiles (2 × 2, four in a row from 768) ── */
+  .cnf__browse {
+    display: grid;
+    gap: var(--s-4);
+    inline-size: min(100%, 720px);
+    margin-block-start: var(--s-10);
+  }
+  @media (min-width: 48rem) {
+    .cnf__browse {
+      margin-block-start: var(--s-12);
+    }
+  }
+  .cnf__label {
+    font: var(--type-sm-strong);
+    color: var(--ink-2);
+  }
+  .cnf__tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-3);
+    text-align: start;
+  }
+  @media (min-width: 48rem) {
+    .cnf__tiles {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--s-4);
+    }
+  }
+  /* a device glyph standing in for the hardware photo (the root boundary has no catalogue to read) */
+  .cnf__glyph {
+    position: absolute;
+    inset-block: auto 12px;
+    inset-inline-end: 12px;
+    inline-size: 40px;
+    block-size: 40px;
+    color: var(--on-color);
+    opacity: 0.9;
+  }
+  .cnf__after {
+    display: flex;
+    justify-content: center;
+    margin-block-start: var(--s-2);
+  }
+
+  /* ── arrival (v2.1 G6): the circle inflates, the «404» rises — once, transform and opacity only ── */
+  @keyframes cnf-inflate {
+    from {
+      opacity: 0;
+      scale: 0.86;
+    }
+  }
+  @keyframes cnf-rise {
+    from {
+      opacity: 0;
+      translate: 0 12px;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-motion="reduced"], [data-motion="lite"], .fx-low) .cnf__disc {
+      animation: cnf-inflate var(--spring-inflate-t) var(--spring-inflate) backwards;
+    }
+    html:not([data-motion="reduced"], [data-motion="lite"], .fx-low) .cnf__code {
+      animation: cnf-rise var(--t-page) var(--ease-settle) 60ms backwards;
+    }
+  }
+}

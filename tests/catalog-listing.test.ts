@@ -6,9 +6,15 @@
  * product slug: the universe agrees with the cards the store shows; platform hubs use the RESEARCHED platforms
  * (multi-platform games and headsets have no platform_id); each filter, facet count, sort and the cursor behave.
  */
-import { RouterContextProvider } from "react-router";
+import { readFileSync } from "node:fs";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { RouterContextProvider, createRoutesStub } from "react-router";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { messagesFor } from "~/i18n/i18n.server";
 import type { ProductCardData } from "~/lib/dto";
+import { LOCALE_CODES, LOCALES, localePath, type Locale } from "~/lib/locales";
+import { HubBand } from "~/routes/storefront/catalog/components/Hub";
 import {
   FILTER_GROUPS,
   NO_FILTERS,
@@ -32,6 +38,7 @@ import { isAppError } from "~/server/errors";
 import { seedDemo } from "~/server/db/seed/demo";
 import { getCardsByIds, getNewArrivals, listCards } from "~/server/services/catalog/cards.server";
 import { listProducts, loadListingRows, scopePicks, type ListingInput, type ListingScope } from "~/server/services/catalog/listing.server";
+import { getNavTaxonomy, invalidateNavTaxonomy } from "~/server/services/catalog/taxonomy.server";
 import { createTestDb, type TestDb } from "./helpers/db";
 
 let t: TestDb;
@@ -427,6 +434,21 @@ describe("«وصل حديثاً» shelves on the catalog pages (v2 §4.7: «جد
     expect(page.arrivals.filter(saysNew)).toEqual([]);
   });
 
+  it("«ابحث عنها كما كتبتها»: typed=1 searches the words as typed — a typo finds nothing — and is not counted as a new search", async () => {
+    type SearchPage = { q: string; result: { total: number; correctedQuery: string | null } | null };
+    const statsOf = async () => (await rows<{ n: number }>("SELECT COALESCE(SUM(searches), 0) AS n FROM search_query_stats WHERE query = 'playstaion'"))[0]?.n ?? 0;
+    const corrected = (await pageData("/search?q=playstaion", searchLoader as never)) as SearchPage;
+    expect(corrected.result?.correctedQuery).toBe("playstation");
+    expect(corrected.result?.total).toBeGreaterThan(0);
+    const counted = await statsOf();
+    expect(counted).toBeGreaterThan(0);
+    const typed = (await pageData("/search?q=playstaion&typed=1", searchLoader as never)) as SearchPage;
+    expect(typed.q).toBe("playstaion");
+    expect(typed.result?.correctedQuery ?? null).toBeNull();
+    expect(typed.result?.total).toBe(0);
+    expect(await statsOf()).toBe(counted);
+  });
+
   it("an empty department offers new arrivals without «جديد»", async () => {
     const departments = await rows<{ slug: string }>("SELECT slug FROM categories WHERE is_active = 1 AND kind <> 'used' ORDER BY slug");
     let empty: string | null = null;
@@ -455,6 +477,35 @@ describe("hub data", () => {
     expect(mixed.hub.devices.length).toBeLessThanOrEqual(8);
     expect(mixed.facets.categories).toEqual([]);
     expect(mixed.facets.platforms.length).toBeGreaterThan(1);
+  });
+
+  it("the navigation's device links carry each model's photo (device_models.art_key) — the mega menu's thumbnails — and the platform hub's device shortcuts show the same", async () => {
+    invalidateNavTaxonomy(t.db);
+    const nav = await getNavTaxonomy(t.db, "en", { now: t.now });
+    const models = await rows<{ slug: string; art_key: string | null }>("SELECT slug, art_key FROM device_models WHERE status = 'published'");
+    const photoOf = new Map(models.map((model) => [model.slug, model.art_key ?? null]));
+    let links = 0;
+    for (const platform of nav.platforms) {
+      for (const link of platform.devices) {
+        links++;
+        const slug = link.href.slice("/device/".length);
+        expect(photoOf.has(slug)).toBe(true);
+        // the model's photo, absent (never null) when it has none — the data owner's menu tests compare links whole
+        expect(link.artKey ?? null).toBe(photoOf.get(slug));
+        if (photoOf.get(slug) === null) expect("artKey" in link).toBe(false);
+      }
+      const hub = (await listProducts(t.db, "en", { scope: { kind: "platform", slug: platform.slug }, now: t.now }))!;
+      const shortcutPhoto = new Map(hub.hub.devices.map((device) => [device.slug, device.artKey]));
+      for (const link of platform.devices) {
+        const slug = link.href.slice("/device/".length);
+        if (shortcutPhoto.has(slug)) expect(link.artKey ?? null).toBe(shortcutPhoto.get(slug));
+      }
+    }
+    expect(links).toBeGreaterThan(0);
+    // every seeded model has a photo: the menu shows pictures, not the glyph
+    expect(nav.platforms.flatMap((platform) => platform.devices).every((link) => typeof link.artKey === "string" && /^[a-z0-9-]+--\d+$/.test(link.artKey))).toBe(true);
+    // category and product links carry none (a NavCategory's own artKey is its tile photo)
+    for (const platform of nav.platforms) for (const link of [...platform.games, ...platform.accessories, ...platform.consoles]) expect(link.artKey).toBeUndefined();
   });
 });
 
@@ -574,5 +625,102 @@ describe("URL model (listing-model.ts)", () => {
     for (const group of FILTER_GROUPS) expect(activeGroups(withoutGroup(filters, group))).not.toContain(group);
     expect(sameFilters({ ...filters, platforms: ["a", "b"] }, { ...filters, platforms: ["b", "a"] })).toBe(true);
     expect(sameFilters(filters, NO_FILTERS)).toBe(false);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── the platform band on phones (catalog review, wave B)
+
+describe("the platform band on phones (v2.1 client note 4, catalog review)", () => {
+  const css = readFileSync(new URL("../app/routes/storefront/catalog/catalog.css", import.meta.url), "utf8");
+  /**
+   * The declarations of `selector` — media "": its first rule in the file (the base rule); else every rule for it inside
+   * the `@media <media> { … }` blocks (brace-matched), joined.
+   */
+  const block = (media: string, selector: string): string => {
+    if (!media) {
+      const at = css.indexOf(`${selector} {`);
+      expect(at, selector).toBeGreaterThanOrEqual(0);
+      return css.slice(at, css.indexOf("}", at));
+    }
+    const found: string[] = [];
+    for (let start = css.indexOf(`${media} {`); start !== -1; start = css.indexOf(`${media} {`, start + 1)) {
+      let depth = 0;
+      let end = css.indexOf("{", start);
+      for (let i = end; i < css.length; i++) {
+        if (css[i] === "{") depth++;
+        else if (css[i] === "}" && --depth === 0) {
+          end = i;
+          break;
+        }
+      }
+      const body = css.slice(start, end);
+      for (let at = body.indexOf(`${selector} {`); at !== -1; at = body.indexOf(`${selector} {`, at + 1)) found.push(body.slice(at, body.indexOf("}", at)));
+    }
+    expect(found.length, `${media} ${selector}`).toBeGreaterThan(0);
+    return found.join("\n");
+  };
+  const lead = "التوصيل 5,000 د.ع لكل المحافظات، والدفع عند الاستلام";
+
+  /** The hub's head as the server renders it, in each language. */
+  const renderBand = (locale: Locale, withLead = true) => {
+    const Stub = createRoutesStub([
+      {
+        id: "root",
+        path: "/",
+        children: [
+          {
+            id: "page",
+            path: "*",
+            Component: () =>
+              createElement(HubBand, { platform: "nintendo", title: "Nintendo", count: "39", lead: withLead ? lead : null, art: "nintendo-switch-2--1", crumbs: [{ label: "home", href: "/" }, { label: "Nintendo" }] }),
+          },
+        ],
+      },
+    ]);
+    return renderToStaticMarkup(
+      createElement(Stub, {
+        initialEntries: [localePath("/platform/nintendo", locale)],
+        hydrationData: { loaderData: { root: { locale, dir: LOCALES[locale].dir, fx: null, i18n: messagesFor(locale, "ui", "ui-shop") }, page: null } },
+      }),
+    );
+  };
+
+  // In the band (72% of its width at 360–390) the two-line delivery line ran into the wide hardware — the Switch 2, the
+  // Steam Deck — in every language: on phones the band holds the name and the count; the line is the kit's quiet line
+  // right under it (the band's own copy shows from 768, where one line fits beside the hardware).
+  it("the delivery line: in the band from 768, the kit's quiet line with its truck under the band on phones — never both at once", () => {
+    for (const locale of LOCALE_CODES) {
+      const html = renderBand(locale);
+      const band = html.indexOf('class="band band--platform');
+      const bandEnd = html.indexOf("</header>", band);
+      const inBand = html.indexOf('class="catalog-band__lead"', band);
+      const note = html.indexOf("catalog-band-note");
+      expect(band, locale).toBeGreaterThanOrEqual(0);
+      expect(inBand, "the band's own copy (768–1023)").toBeGreaterThan(band);
+      expect(inBand).toBeLessThan(bandEnd);
+      expect(note, "the quiet line, after the band").toBeGreaterThan(bandEnd);
+      expect(html.slice(note - 60, note + 40)).toMatch(/class="note note--line catalog-band-note"/);
+      expect(html.split(lead).length - 1, "the same words twice: one copy per width range").toBe(2);
+      expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
+    }
+    // no delivery facts (the shell data is missing): no line anywhere
+    expect(renderBand("ar", false)).not.toContain("catalog-band-note");
+    // the CSS shows one copy per range: the band's below 768 is hidden, the line from 768 is hidden
+    expect(block("@media (max-width: 47.99rem)", ".catalog-band__lead")).toMatch(/display:\s*none/);
+    expect(block("@media (min-width: 48rem)", ".catalog-head > .catalog-band-note")).toMatch(/display:\s*none/);
+    // and from 1024 the shell's strip says it (the band's copy goes too)
+    expect(block("@media (min-width: 64rem)", ".catalog-band__lead")).toMatch(/display:\s*none/);
+  });
+
+  it("the hardware rises into the air under the header on phones, never into the header (the page's 12px top padding)", () => {
+    const media = block("", ".catalog-band__media");
+    const rise = Number(/inset-block:\s*-(\d+)px/.exec(media)?.[1] ?? NaN);
+    expect(rise).toBeGreaterThan(0);
+    expect(rise, "rising 30px, a PS5 crossed the header's foot at 360–390").toBeLessThanOrEqual(12);
+    expect(block("", ".catalog-page")).toMatch(/padding-block:\s*var\(--s-3\)/);
+  });
+
+  it("at 320 (400% zoom) the name keeps its words whole: the glyph disc gives its room", () => {
+    expect(block("@media (max-width: 22.49rem)", ".catalog-band__glyph")).toMatch(/display:\s*none/);
   });
 });

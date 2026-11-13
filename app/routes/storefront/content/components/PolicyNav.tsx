@@ -3,6 +3,7 @@ import { useId } from "react";
 import { useT } from "~/i18n/react";
 import { MotionLink } from "~/motion";
 import { cx } from "~/ui/cx";
+import { revealProps } from "~/ui/reveal";
 import { policyOrder, type PolicySummary } from "../content-model";
 
 /**
@@ -10,12 +11,13 @@ import { policyOrder, type PolicySummary } from "../content-model";
  * hairline rail, the current one marked by an ink bar at the inline start, weight 600 and aria-current — never colour
  * alone. Between the six known policies the link asks for the sideways push in their order (DESIGN.md §7.2); a policy
  * the owner added in the CMS has no order and fades. No per-row "draft" words: the page's status line says it once.
+ * Below the article (phones) it fades up as it comes into view (v2.1 G6); beside it (from 1024) it is simply there.
  */
 export function PolicyNav({ policies, current, className }: { policies: readonly PolicySummary[]; current: string; className?: string }) {
   const t = useT("content");
   const headingId = useId();
   return (
-    <nav aria-labelledby={headingId} className={cx("ctoc", className)}>
+    <nav aria-labelledby={headingId} className={cx("ctoc", className)} {...revealProps()}>
       <h2 id={headingId} className="ctoc__title">
         {t("common.allPolicies")}
       </h2>

@@ -99,7 +99,8 @@ function buildTree(rows: readonly CategoryRow[], locale: Locale): CategoryNode[]
 
 // ───────────────────────────────────────────────────────────────── navigation taxonomy
 
-type DeviceRow = { platform_id: string; slug: string; name: string };
+/** `art_key`: the model's catalogue photo ("<product-slug>--<n>"), the mega menu's device thumbnail. */
+type DeviceRow = { platform_id: string; slug: string; name: string; art_key: string | null };
 type CategoryCountRow = { category_id: string | null; n: number };
 type PlatformCountRow = { platform_id: string; category_id: string | null; n: number };
 /** `attributes`: the product's attributes JSON (its qualifier — card-facts.ts qualifierOf). */
@@ -154,7 +155,7 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
     runBatch(db, [
       batchSql(db, PLATFORMS_SQL),
       batchSql(db, CATEGORIES_SQL),
-      batchSql(db, sql`SELECT platform_id, slug, name FROM device_models WHERE status = 'published' ORDER BY sort, id`),
+      batchSql(db, sql`SELECT platform_id, slug, name, art_key FROM device_models WHERE status = 'published' ORDER BY sort, id`),
       // each listed product once, on its category
       batchSql(db, sql`SELECT p.category_id, COUNT(*) AS n FROM products AS p WHERE ${LISTED} GROUP BY p.category_id`),
       // each listed product once per platform it is RESEARCHED for (a game sold for PS5 and Xbox counts for both)
@@ -280,12 +281,17 @@ async function buildNavTaxonomy(db: Db, locale: Locale, now: number): Promise<Na
       productCount: platformTotal.get(platform.id) ?? 0,
       devices: devices
         .filter((row) => row.platform_id === platform.id)
-        .map((row) => ({
-          label: label(row),
-          href: `/device/${row.slug}`,
-          short: shortModelName(row.slug, label(row)),
-          count: hubRows.filter((hubRow) => hubRow.devices.includes(row.slug)).length,
-        })),
+        .map((row): NavLink => {
+          const link: NavLink = {
+            label: label(row),
+            href: `/device/${row.slug}`,
+            short: shortModelName(row.slug, label(row)),
+            count: hubRows.filter((hubRow) => hubRow.devices.includes(row.slug)).length,
+          };
+          // the model's photo for the mega menu's device rows (the shell reads it); a model without one: the glyph stays
+          if (row.art_key) link.artKey = row.art_key;
+          return link;
+        }),
       accessories,
       games,
       consoles: platformConsoles.slice(0, CONSOLES_PER_PLATFORM).map((row): NavLink => {

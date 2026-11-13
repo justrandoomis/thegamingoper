@@ -1,22 +1,25 @@
 /**
- * Small pieces shared by the /support pages (Design System v2 §6.13): the four-segment sub-navigation, guide rows,
- * device pictures and tiles, the safety callout, the copy key and the "updated" line. Flat by default: rows between
- * hairlines in a paper card, the product ground for pictures, keys only for actions.
+ * Small pieces shared by the /support pages (Design v2.1 «Clay & Glass», client note 9 — the before's support pages):
+ * the section tabs, guide rows (with the searched words marked), device pictures and tiles, the safety note, the copy
+ * keys and the "updated" line. Rows sit in the soft raised card; pictures on the product ground; keys only for actions.
  */
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import { MotionLink } from "~/motion";
+import { highlightParts } from "~/server/services/support/helpsearch";
 import type { ArticleKind, ArticleSummary } from "~/server/services/support/types";
-import { BidiLabel } from "~/ui/BidiText";
+import { BidiLabel, hasRtl, splitBidi } from "~/ui/BidiText";
 import { cx } from "~/ui/cx";
 import { IconKey } from "~/ui/IconKey";
 import { Key } from "~/ui/Key";
 import { Niche } from "~/ui/Niche";
+import { Note } from "~/ui/Note";
 import { isPlatform, PlatformLabel } from "~/ui/PlatformLed";
-import { Segmented } from "~/ui/Segmented";
 import { Render } from "~/ui/Stage";
+import { Tabs } from "~/ui/Tabs";
+import { VisuallyHidden } from "~/ui/VisuallyHidden";
 
 export type SupportSection = "help" | "assistant" | "repair" | "status";
 
@@ -29,27 +32,57 @@ export function Name({ children, className }: { children: string; className?: st
 }
 
 /**
- * The sub-pages' shared navigation (§6.13): four link segments — guides (the support centre), the assistant, book a
- * repair, track a repair. The route handles give the sideways push between them. Segments keep their words: on a
- * narrow phone the track scrolls sideways instead of cutting a label (the kit's link Segmented). `section`: the page
- * belongs to that segment's part of the site but is not the segment's own page (a guide, a message to staff) — the
- * segment then says `aria-current="true"`, not "page".
+ * The support pages' shared navigation — the before's underline tabs (client note 9): «مركز المساعدة · مساعد الصيانة ·
+ * احجز صيانة · تابع طلب», the kit's link Tabs (one ink underline slides from tab to tab; a row too long for a phone
+ * scrolls sideways with the current tab kept in view). The route handles give the sideways push between them.
+ * `section`: the page belongs to that tab's part of the site but is not the tab's own page (a guide, a message to
+ * staff). The kit's link Tabs say `aria-current="page"` for every chosen tab; "true" for such a page waits for the kit
+ * (asked of the design-system owner, round 1 wave B).
  */
-export function SupportNav({ current, section = false, className }: { current: SupportSection; section?: boolean; className?: string }) {
+export function SupportNav({ current, className }: { current: SupportSection; section?: boolean; className?: string }) {
   const t = useT("support");
   return (
-    <Segmented
+    <Tabs
       aria-label={t("nav.label")}
       value={current}
-      current={section ? "true" : "page"}
       className={cx("sup-nav", className)}
-      options={[
-        { value: "help", label: t("nav.guides"), href: "/support" },
+      items={[
+        { value: "help", label: t("nav.help"), href: "/support" },
         { value: "assistant", label: t("nav.assistant"), href: "/support/assistant" },
         { value: "repair", label: t("nav.repair"), href: "/support/repair" },
         { value: "status", label: t("nav.status"), href: "/support/repair/status" },
       ]}
     />
+  );
+}
+
+/**
+ * A text with the words that matched a search marked (<mark>), isolated like the kit's BidiLabel: a Latin run inside
+ * Arabic stays one left-to-right run, and the marks go inside it (cutting the run at a mark would reverse its words).
+ * No query: the plain BidiLabel.
+ */
+export function Highlighted({ text, query, className }: { text: string; query?: string | null; className?: string }) {
+  if (!query) return <BidiLabel className={className}>{text}</BidiLabel>;
+  const marked = (value: string) => highlightParts(value, query).map((part, index) => (part.hit ? <mark key={index} className="sup-hit">{part.text}</mark> : <Fragment key={index}>{part.text}</Fragment>));
+  if (text.trim() !== "" && !hasRtl(text)) {
+    return (
+      <bdi dir="ltr" className={className}>
+        {marked(text)}
+      </bdi>
+    );
+  }
+  return (
+    <span className={cx("bidi", className)}>
+      {splitBidi(text).map((part, index) =>
+        part.ltr ? (
+          <bdi key={index} dir="ltr">
+            {marked(part.text)}
+          </bdi>
+        ) : (
+          <Fragment key={index}>{marked(part.text)}</Fragment>
+        ),
+      )}
+    </span>
   );
 }
 
@@ -84,23 +117,31 @@ function GuideMeta({ article, showScope }: { article: ArticleSummary; showScope:
   );
 }
 
-/** One guide: a row link between hairlines — kind icon, what it is and for whom, the title, one line of summary. */
-export function GuideRow({ article, showScope = false, headingLevel }: { article: ArticleSummary; showScope?: boolean; headingLevel?: 3 | 4 }) {
+/** The icon of a guide's kind (a guide row, a suggestion). */
+export function guideIcon(kind: ArticleKind): IconName {
+  return KIND_ICON[kind] ?? "book-open";
+}
+
+/**
+ * One guide: a row link — the kind's icon on a clay disc, what it is and for whom, the title, two lines of summary, an
+ * arrow that nudges toward the reading end. `highlight`: the searched words, marked in the title and the summary.
+ */
+export function GuideRow({ article, showScope = false, headingLevel, highlight }: { article: ArticleSummary; showScope?: boolean; headingLevel?: 3 | 4; highlight?: string | null }) {
   const Title = headingLevel ? (`h${headingLevel}` as const) : "span";
   return (
     <li className="sup-guide">
       <MotionLink nav="rise" to={`/support/article/${article.slug}`} prefetch="intent" className="sup-guide__link" data-press="soft">
-        <span className="sup-guide__icon" aria-hidden="true">
-          <Icon name={KIND_ICON[article.kind] ?? "book-open"} size={20} />
+        <span className="clay-disc sup-guide__icon" aria-hidden="true">
+          <Icon name={guideIcon(article.kind)} size={20} />
         </span>
         <span className="sup-guide__body">
           <GuideMeta article={article} showScope={showScope} />
           <Title className="sup-guide__title">
-            <BidiLabel>{article.title}</BidiLabel>
+            <Highlighted text={article.title} query={highlight} />
           </Title>
           {article.summary ? (
             <span className="sup-guide__summary">
-              <BidiLabel>{article.summary}</BidiLabel>
+              <Highlighted text={article.summary} query={highlight} />
             </span>
           ) : null}
         </span>
@@ -110,12 +151,26 @@ export function GuideRow({ article, showScope = false, headingLevel }: { article
   );
 }
 
-/** Guide rows in a paper card (`plain`: no card — inside a bubble or another surface). */
-export function GuideList({ articles, showScope, headingLevel, plain = false, className }: { articles: readonly ArticleSummary[]; showScope?: boolean; headingLevel?: 3 | 4; plain?: boolean; className?: string }) {
+/** Guide rows in the soft raised card (`plain`: no card — inside a bubble or another surface). */
+export function GuideList({
+  articles,
+  showScope,
+  headingLevel,
+  plain = false,
+  highlight,
+  className,
+}: {
+  articles: readonly ArticleSummary[];
+  showScope?: boolean;
+  headingLevel?: 3 | 4;
+  plain?: boolean;
+  highlight?: string | null;
+  className?: string;
+}) {
   return (
     <ul role="list" className={cx("sup-guides", plain && "sup-guides--plain", className)}>
       {articles.map((article) => (
-        <GuideRow key={`${article.id}:${article.scope}`} article={article} showScope={showScope} headingLevel={headingLevel} />
+        <GuideRow key={`${article.id}:${article.scope}`} article={article} showScope={showScope} headingLevel={headingLevel} highlight={highlight} />
       ))}
     </ul>
   );
@@ -152,19 +207,44 @@ export function DeviceTile({ name, artKey, kind, href, current = false, sizes = 
 }
 
 /**
- * A safety note as a callout: a paper panel with a 3px inline-start bar in the tone colour, an icon AND the tone's word
- * (never colour alone), never dismissible. `danger` uses --danger (never brand red).
+ * A safety note — the kit's calm Note (client notes 5 and 8: the before's way of writing side information): the
+ * warning icon in its tinted disc, a short bold title, the words, never dismissible. The tone's word is said to screen
+ * readers before the title (never colour alone). `danger` (a stop: smoke, swelling, liquid) tints the disc and the
+ * title with --danger — never brand red; `action`: what to do, on its own line; `flat` inside another card (a bubble).
  */
-export function SafetyNote({ title, children, tone = "warn", className }: { title?: ReactNode; children: ReactNode; tone?: "warn" | "danger"; className?: string }) {
+export function SafetyNote({
+  title,
+  children,
+  tone = "warn",
+  action,
+  flat = false,
+  className,
+}: {
+  title?: ReactNode;
+  children: ReactNode;
+  tone?: "warn" | "danger";
+  action?: ReactNode;
+  flat?: boolean;
+  className?: string;
+}) {
   const ui = useT("ui-overlays");
+  const word = ui(tone === "danger" ? "blocks.danger" : "blocks.warning");
   return (
-    <aside className={cx("sup-callout", tone === "danger" ? "sup-callout--danger" : "sup-callout--warn", className)}>
-      <Icon name="warning" size={20} title={ui(tone === "danger" ? "blocks.danger" : "blocks.warning")} className="sup-callout__icon" />
-      <div className="grid min-w-0 gap-1">
-        {title ? <p className="sup-callout__title">{title}</p> : null}
-        <div className="type-sm text-ink">{children}</div>
-      </div>
-    </aside>
+    <Note
+      tone="warning"
+      icon="warning"
+      variant={flat ? "flat" : "card"}
+      title={
+        <>
+          <VisuallyHidden>{word}: </VisuallyHidden>
+          {title ?? word}
+        </>
+      }
+      action={action}
+      className={cx("sup-safety-note", tone === "danger" && "sup-safety-note--danger", className)}
+    >
+      {children}
+    </Note>
   );
 }
 

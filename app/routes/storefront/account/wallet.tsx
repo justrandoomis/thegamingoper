@@ -3,7 +3,8 @@ import { data, useFetcher, useNavigate, useRevalidator, useSearchParams } from "
 
 import type { Route } from "./+types/wallet";
 import { Icon } from "~/art/Icon";
-import { LocaleLink, useFormat, useLocalePath, useT } from "~/i18n/react";
+import { LocaleLink, useFormat, useLocalePath, useT, type Formatters } from "~/i18n/react";
+import type { TFunction } from "~/i18n/translate";
 import { newId } from "~/lib/ids";
 import { CURRENCIES } from "~/lib/money";
 import type { MotionHandle } from "~/motion";
@@ -12,32 +13,40 @@ import { getDb } from "~/server/db.server";
 import { checkOwnGiftCard, redeemOwnGiftCard } from "~/server/services/account/giftcards.server";
 import { cancelWalletTopup, getTopupDestinations, listWalletTopups, requestWalletTopup, TOPUP_MAX_IQD, TOPUP_MIN_IQD } from "~/server/services/account/topups.server";
 import type { TopupView } from "~/server/services/account/types";
-import { listWalletEntries } from "~/server/services/wallet.server";
+import { listWalletEntries, type WalletEntryView } from "~/server/services/wallet.server";
 import { ConfirmDialog } from "~/ui/Dialog";
 import { FieldGroup, OptionCard, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
+import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
 import { ShowMore } from "~/ui/Pagination";
-import { iqdText } from "~/ui/PriceTag";
+import { Price } from "~/ui/Price";
+import { iqdText, isIqd } from "~/ui/PriceTag";
 import { ProofUploader } from "~/ui/ProofUploader";
-import { Status, type StatusTone } from "~/ui/Tag";
+import { type StatusTone } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { toast } from "~/ui/toast-store";
-import { WalletBalance } from "~/ui/WalletBalance";
 import { accountFailure, formFields, requireSignedIn } from "./account.server";
+import { ActivityList, MetaLine, orderRefText, type ActivityItem } from "./components/Activity";
 import { sectionOrder } from "./components/AccountNav";
 import { CopyKey, fieldError, FormFailure, Notice, rescueFocus, SubmitKey, type ActionAnswer } from "./components/FormBits";
+import { MoneyCard } from "./components/MoneyCard";
+import { StatusPill } from "./components/OrderBits";
 import { PageHead, Section } from "./components/PageHead";
+import { QuickTiles } from "./components/QuickTiles";
 import { accountMeta } from "./components/meta";
+import { signedText, walletLook } from "./components/rewards-view";
 import { amount, grouped, HANDOFF, ltr } from "./components/text";
 import { uploadTopupProof } from "./components/uploadProof";
 import { usePagedList } from "./components/usePagedList";
 import { useAccountData } from "./layout";
 
 /**
- * The wallet (Design System v2 §4.24, §6.12): the balance on the wallet band — the ledger's sum (wallet.server) — with
- * top-ups under review on their own line and «اشحن الرصيد»; the ledger as flat rows; the top-up REQUESTS with their
- * status. The top-up itself is its own step (`?topup=1`, not a form under the balance): a Mastercard-card or Zain Cash
+ * The wallet (Design System v2 §4.24, §6.12; v2.1 — the client's reference card «محفظتي»): the balance on the glossy
+ * money card — the ledger's sum (wallet.server) — with top-ups under review on its foot; quick tiles «اشحن الرصيد»
+ * (only while a method is on) · «بطاقة هدية» · «طلبات الشحن»; the history as rows with the kind's disc and the signed
+ * amount (+ green, − red), an order's row opening the order; the gift card; the top-up REQUESTS with their status in
+ * a tinted pill. The top-up itself is its own step (`?topup=1`, not a form under the balance): a Mastercard-card or Zain Cash
  * transfer with its photo, pending until a staff member approves it in the admin. Nothing on this page credits the
  * wallet.
  */
@@ -95,6 +104,8 @@ const TOPUP_TONE: Record<TopupView["status"], StatusTone> = { pending_verificati
 
 export default function Wallet({ loaderData, actionData }: Route.ComponentProps) {
   const t = useT("account");
+  const tShop = useT("ui-shop");
+  const f = useFormat();
   const [params] = useSearchParams();
   const account = useAccountData();
   const ledger = usePagedList(loaderData.entries, (next: Awaited<ReturnType<typeof loader>>) => next.entries);
@@ -105,11 +116,11 @@ export default function Wallet({ loaderData, actionData }: Route.ComponentProps)
     return (
       <>
         <PageHead back={{ to: "/account/wallet", label: t("wallet.back"), order: sectionOrder("wallet") }} title={t("wallet.topupTitle")} lead={t("wallet.topupLead")} />
-        <ol className="flex flex-wrap gap-x-6 gap-y-2" aria-label={t("wallet.topupTitle")}>
+        <ol className="acct-tsteps" aria-label={t("wallet.topupTitle")}>
           {(["send", "upload", "check"] as const).map((step, index) => (
-            <li key={step} className="flex items-center gap-2 type-sm-strong text-ink">
-              <span className="grid size-6 shrink-0 place-items-center rounded-full border-[1.5px] border-line-strong type-xs-strong nums" aria-hidden="true">
-                {index + 1}
+            <li key={step}>
+              <span className="clay-disc nums" aria-hidden="true">
+                {f.number(index + 1)}
               </span>
               {t(`wallet.steps.${step}`)}
             </li>
@@ -120,29 +131,83 @@ export default function Wallet({ loaderData, actionData }: Route.ComponentProps)
     );
   }
 
+  const balance = account?.wallet.balanceIqd ?? null;
+  const pending = account?.wallet.pendingIqd ?? 0;
   return (
     <>
       <PageHead title={t("wallet.title")} lead={t("wallet.lead")} />
-      <WalletBalance
-        balanceIqd={account?.wallet.balanceIqd ?? null}
-        pendingIqd={account?.wallet.pendingIqd ?? 0}
-        entries={ledger.items}
-        headingLevel={2}
-        topupHref={anyMethod ? "/account/wallet?topup=1" : undefined}
-        footer={ledger.more ? <ShowMore shown={ledger.items.length} total={ledger.total} onMore={ledger.more} loading={ledger.loading} label={t("wallet.olderEntries")} /> : null}
-      />
+      <div className="acct-hero glow glow--wide">
+        <MoneyCard
+          id="wallet-card"
+          label={tShop("wallet.label")}
+          icon="wallet"
+          figure={balance !== null && isIqd(balance) ? <Price amountIqd={balance} size="xl" tone="onColor" approx="off" as="span" /> : <span className="type-sm-strong">{tShop("wallet.error")}</span>}
+          foot={
+            isIqd(pending) && pending > 0 ? (
+              <>
+                <Icon name="hourglass" size={18} />
+                <span>{tShop("wallet.pending", { amount: amount(iqdText(f, pending)) })}</span>
+              </>
+            ) : null
+          }
+        />
+        <QuickTiles
+          label={t("wallet.actions.label")}
+          tiles={[
+            ...(anyMethod ? [{ key: "topup", icon: "plus" as const, label: t("wallet.actions.topup"), to: "/account/wallet?topup=1" }] : []),
+            { key: "gift", icon: "gift", label: t("wallet.actions.gift"), href: "#gift-card" },
+            { key: "requests", icon: "receipt", label: t("wallet.actions.requests"), href: "#topups" },
+          ]}
+        />
+      </div>
       {!anyMethod ? (
-        <Notice>
-          <p>{t("wallet.noMethods")}</p>
-          <TextLink as={LocaleLink} to={HANDOFF} icon="chat-circle" arrow={false}>
-            {t("common.talk")}
-          </TextLink>
+        <Notice
+          icon="chat-circle"
+          action={
+            <TextLink as={LocaleLink} to={HANDOFF}>
+              {t("common.talk")}
+            </TextLink>
+          }
+        >
+          {t("wallet.noMethods")}
         </Notice>
       ) : null}
+      <Section id="activity" anchor title={tShop("wallet.ledger")}>
+        {ledger.items.length === 0 ? (
+          <Note icon="wallet">{tShop("wallet.empty")}</Note>
+        ) : (
+          <div className="grid gap-3">
+            <ActivityList items={ledger.items.map((entry) => walletItem(entry, t, tShop, f))} label={tShop("wallet.ledger")} />
+            {ledger.more ? <ShowMore shown={ledger.items.length} total={ledger.total} onMore={ledger.more} loading={ledger.loading} label={t("wallet.olderEntries")} /> : null}
+          </div>
+        )}
+      </Section>
       <GiftCardForm attempt={loaderData.attempt} posted={(actionData ?? null) as GiftAnswer | null} />
       <TopupList topups={loaderData.topups} />
     </>
   );
+}
+
+/** One wallet entry as a history row: the kind's disc, its words and date, the signed amount (+ green, − red). */
+function walletItem(entry: WalletEntryView, t: TFunction, tShop: TFunction, f: Formatters): ActivityItem {
+  const look = walletLook(entry);
+  const signed = signedText(entry.amountIqd, f.number);
+  return {
+    id: entry.id,
+    icon: look.icon,
+    tone: look.tone,
+    title: tShop(`wallet.kinds.${entry.kind}`),
+    // when and for which order: whole parts of one line (never a dot left at a line's end), the date written as in the
+    // points history and on the order cards
+    meta: <MetaLine parts={[<time key="at" dateTime={new Date(entry.at).toISOString()}>{f.date(entry.at, "medium")}</time>, entry.orderRef ? orderRefText(t, entry.orderRef) : null]} />,
+    amount: (
+      <>
+        <bdi dir="ltr">{signed.text}</bdi> <span className="acct-act__cur">{CURRENCIES.IQD.symbol[f.locale]}</span>
+      </>
+    ),
+    sign: signed.sign,
+    to: entry.orderRef ? `/account/orders/${entry.orderRef}` : undefined,
+  };
 }
 
 /**
@@ -194,7 +259,7 @@ function GiftCardForm({ attempt, posted }: { attempt: string; posted: GiftAnswer
   const postedFailure = posted && posted.ok === false && (posted.intent === "gift_check" || posted.intent === "gift_redeem") ? posted : null;
   const checkFailed = checked && checked.ok === false ? checked : postedFailure;
   return (
-    <Section id="gift-card" title={t("gift.title")} reason={t("gift.lead")}>
+    <Section id="gift-card" anchor title={t("gift.title")} reason={t("gift.lead")}>
       {posted?.ok && posted.done === "gift_redeem" ? (
         <Notice tone="ok">
           <p>{t("gift.added", { amount: amount(iqdText(f, Number(posted.amountIqd ?? 0))) })}</p>
@@ -359,7 +424,7 @@ function TopupForm({ destinations, limits, attempt }: { destinations: Destinatio
         </div>
       </section>
 
-      <Notice>{t("wallet.fraud")}</Notice>
+      <Notice flat>{t("wallet.fraud")}</Notice>
 
       <TextField
         id="topup-amount"
@@ -443,13 +508,16 @@ function TopupList({ topups }: { topups: TopupView[] }) {
   const error = answer && answer.ok === false && answer.intent === "cancel" ? answer.message : undefined;
 
   return (
-    <Section id="topups" title={t("wallet.requestsTitle")}>
+    <Section id="topups" anchor title={t("wallet.requestsTitle")}>
       {topups.length === 0 ? (
-        <p className="type-sm text-ink-2">{t("wallet.requestsEmpty")}</p>
+        <p className="type-read text-ink-2">{t("wallet.requestsEmpty")}</p>
       ) : (
         <ul className="acct-rows">
           {topups.map((topup) => (
-            <li key={topup.id} id={`topup-${topup.id}`} tabIndex={-1} className="acct-row flex-wrap items-start">
+            <li key={topup.id} id={`topup-${topup.id}`} tabIndex={-1} className="acct-row items-start">
+              <span className="clay-disc" aria-hidden="true">
+                <Icon name={topup.method === "zaincash" ? "device-mobile" : "credit-card"} size={20} />
+              </span>
               <div className="acct-row__body">
                 <p className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                   <span className="flex flex-wrap items-center gap-x-2">
@@ -458,12 +526,11 @@ function TopupList({ topups }: { topups: TopupView[] }) {
                     </bdi>
                     <span className="acct-row__meta">{t(`methods.${topup.method}`)}</span>
                   </span>
-                  <Status tone={TOPUP_TONE[topup.status]}>{t(`wallet.topupStatus.${topup.status}`)}</Status>
+                  <StatusPill tone={TOPUP_TONE[topup.status]}>{t(`wallet.topupStatus.${topup.status}`)}</StatusPill>
                 </p>
-                <p className="acct-row__meta">
-                  {f.dateTime(topup.createdAt)}
-                  {topup.declaredAmountIqd !== null ? <> · {t("wallet.declared", { amount: amount(iqdText(f, topup.declaredAmountIqd)) })}</> : null}
-                </p>
+                {/* one idea per line: when it was sent, then what was declared */}
+                <p className="acct-row__meta">{f.dateTime(topup.createdAt)}</p>
+                {topup.declaredAmountIqd !== null ? <p className="acct-row__meta">{t("wallet.declared", { amount: amount(iqdText(f, topup.declaredAmountIqd)) })}</p> : null}
                 {topup.status === "approved" ? <p className="type-xs-strong text-ok">{t("wallet.credited", { amount: amount(iqdText(f, topup.amountIqd)) })}</p> : null}
                 {topup.rejectReason ? <p className="type-xs-strong text-danger">{t("wallet.reason", { reason: topup.rejectReason })}</p> : null}
                 {topup.proofPath || topup.status === "pending_verification" ? (

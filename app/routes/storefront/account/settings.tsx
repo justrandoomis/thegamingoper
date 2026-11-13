@@ -286,7 +286,9 @@ function PhoneCard({ phone }: { phone: { masked: string; verified: boolean } }) 
             <fetcher.Form method="post" className="grid gap-4" noValidate>
               <input type="hidden" name="intent" value="phoneConfirm" />
               <input type="hidden" name="codeId" value={codeId} />
-              <Notice tone="ok">{t("settings.codeSent", { phone: ltr(phone.masked) })}</Notice>
+              <Notice tone="ok" flat>
+                {t("settings.codeSent", { phone: ltr(phone.masked) })}
+              </Notice>
               <TextField id="phone-code" name="code" inputMode="numeric" autoComplete="one-time-code" ltr label={t("settings.phoneCode")} required error={fieldError(failed, "code")} />
               <SubmitKey pending={pending} icon="seal-check">
                 {t("settings.phoneConfirm")}

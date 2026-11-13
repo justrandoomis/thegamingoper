@@ -19,17 +19,24 @@
  * in their order — the availability group stands where its first part (in stock, deals) is, with only the parts
  * named. A group left out is not offered; a value of it that a link brought along still filters (its chip above the
  * results removes it) and rides along as a hidden field.
+ *
+ * v2.1 (client note 4, "better icons"): each group's title carries its icon on a small clay disc; a department carries
+ * its kind icon, a platform its device glyph in its colour, a device its own picture on a warm well; every count is a
+ * quiet pill at the row's end.
  */
 import { useState, type FormEvent, type ReactNode } from "react";
 
+import { Icon, type IconName } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import { Chip } from "~/ui/Chip";
 import { cx } from "~/ui/cx";
 import { Checkbox, FieldGroup, Radio, Switch, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
+import { isPlatform } from "~/ui/PlatformLed";
 import { iqdText } from "~/ui/PriceTag";
+import { Render } from "~/ui/Stage";
 import { parsePriceInput, type FilterGroup, type ListingFacets, type ListingQuery, type ListingSort } from "../listing-model";
-import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
+import { ChipLabel, deviceGlyph, useKindIcon } from "./Hub";
 
 export type FilterPanelProps = {
   query: ListingQuery;
@@ -82,13 +89,51 @@ const SHORT_LIST = 6;
 const SHORT_LABEL = 20;
 const shortList = (labels: readonly string[]) => labels.length <= SHORT_LIST && labels.every((label) => [...label].length <= SHORT_LABEL);
 
-/** A value and how many products it gives, the count at the row's end. */
+/** A value and how many products it gives, the count a quiet pill at the row's end. */
 function Opt({ label, count }: { label: ReactNode; count: number }) {
   const f = useFormat();
   return (
     <span className="catalog-opt">
       <span className="catalog-opt__label">{label}</span>
       <span className="catalog-opt__count nums">{f.number(count)}</span>
+    </span>
+  );
+}
+
+/** A group's title with its icon on a small clay disc (the icon is decoration: the words are the legend). */
+function Legend({ icon, children }: { icon: IconName; children: ReactNode }) {
+  return (
+    <span className="catalog-legend">
+      <span className="clay-disc catalog-legend__disc" aria-hidden="true">
+        <Icon name={icon} size={16} />
+      </span>
+      <span>{children}</span>
+    </span>
+  );
+}
+
+/** A row's words after its icon (a department's kind icon, a platform's glyph in its colour). */
+function IconText({ icon, gel, children }: { icon: IconName; gel?: string; children: ReactNode }) {
+  return (
+    <span className="catalog-opt__with">
+      <Icon name={icon} size={18} className={cx("catalog-opt__icon", gel && "catalog-chip__icon--plat")} data-gel={gel} />
+      <span className="min-w-0">{children}</span>
+    </span>
+  );
+}
+
+/** A device row's words after its picture on a small warm well. */
+function DeviceText({ artKey, children }: { artKey: string | null; children: ReactNode }) {
+  return (
+    <span className="catalog-opt__with">
+      <span className="catalog-opt__thumb" aria-hidden="true">
+        {artKey ? (
+          <span className="render-slot absolute inset-[8%]">
+            <Render name={artKey} alt="" sizes="32px" />
+          </span>
+        ) : null}
+      </span>
+      <span className="min-w-0">{children}</span>
     </span>
   );
 }
@@ -103,13 +148,13 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
   // a group staff left out of this listing is not offered here (its value, if a link brought one, still applies)
   const offered = (group: PanelGroup) => arranged.groups.includes(group);
   const ui = useT("ui");
-  // the dot and the name in the row's own weight (the bold label belongs to running text)
+  const kindIcon = useKindIcon();
+  // the device glyph in the platform's colour and the name in the row's own weight (the bold label belongs to running text)
   const platformLabel = (slug: string, fallback: string) =>
     isPlatform(slug) ? (
-      <span className="inline-flex items-center gap-2">
-        <PlatformLed platform={slug} />
+      <IconText icon={deviceGlyph(slug)} gel={slug}>
         {ui(`platform.${slug}`)}
-      </span>
+      </IconText>
     ) : (
       fallback
     );
@@ -140,7 +185,7 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
   if (stockShown || dealsShown) {
     set(
       "availability",
-      <FieldGroup key="availability" legend={t("filter.availability")} className="catalog-facet">
+      <FieldGroup key="availability" legend={<Legend icon="package">{t("filter.availability")}</Legend>} className="catalog-facet">
         {stockShown ? (
           <Switch name="stock" value="1" checked={query.inStock} disabled={disabled} onChange={(event) => change({ inStock: event.target.checked })} label={<Opt label={t("filter.inStock")} count={facets.inStock} />} />
         ) : null}
@@ -156,14 +201,17 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
     const toggle = (value: string, on: boolean) => change({ platforms: on ? query.platforms.filter((p) => p !== value) : [...query.platforms, value] });
     set(
       "platforms",
-      <FieldGroup key="platforms" legend={t("filter.platform")} className="catalog-facet">
+      <FieldGroup key="platforms" legend={<Legend icon="game-controller">{t("filter.platform")}</Legend>} className="catalog-facet">
         {chipsFit(facets.platforms.map(nameOf)) ? (
           <div className="chips">
             {facets.platforms.map((option) => {
               const on = query.platforms.includes(option.value);
+              const known = isPlatform(option.value) ? option.value : null;
               return (
-                <Chip key={option.value} input="checkbox" name="platform" value={option.value} checked={on} disabled={disabled} onChange={() => toggle(option.value, on)} count={option.count} platform={isPlatform(option.value) ? option.value : undefined}>
-                  {nameOf(option)}
+                <Chip key={option.value} input="checkbox" name="platform" value={option.value} checked={on} disabled={disabled} onChange={() => toggle(option.value, on)} count={option.count}>
+                  <ChipLabel icon={known ? deviceGlyph(known) : null} gel={known}>
+                    {nameOf(option)}
+                  </ChipLabel>
                 </Chip>
               );
             })}
@@ -191,15 +239,15 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
   if (!away("category") && (facets.categories.length >= 2 || query.category !== null)) {
     set(
       "category",
-      <FieldGroup key="category" legend={t("filter.category")} className="catalog-facet">
+      <FieldGroup key="category" legend={<Legend icon="squares-four">{t("filter.category")}</Legend>} className="catalog-facet">
         {chipsFit(facets.categories.map((option) => option.label)) ? (
           <div className="chips">
             <Chip input="radio" name="cat" value="" checked={query.category === null} disabled={disabled} onChange={() => change({ category: null })} count={facets.without.category}>
-              {t("filter.any")}
+              <ChipLabel icon="squares-four">{t("filter.any")}</ChipLabel>
             </Chip>
             {facets.categories.map((option) => (
               <Chip key={option.value} input="radio" name="cat" value={option.value} checked={query.category === option.value} disabled={disabled} onChange={() => change({ category: option.value })} count={option.count}>
-                {option.label}
+                <ChipLabel icon={kindIcon(option.value)}>{option.label}</ChipLabel>
               </Chip>
             ))}
           </div>
@@ -214,7 +262,7 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
                 checked={query.category === option.value}
                 disabled={disabled}
                 onChange={() => change({ category: option.value })}
-                label={<Opt label={option.label} count={option.count} />}
+                label={<Opt label={<IconText icon={kindIcon(option.value)}>{option.label}</IconText>} count={option.count} />}
               />
             ))}
           </>
@@ -226,7 +274,7 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
   if (!away("device") && (facets.devices.length >= 2 || query.device !== null)) {
     set(
       "device",
-      <FieldGroup key="device" legend={t("filter.device")} hint={t("filter.deviceHint")} className="catalog-facet">
+      <FieldGroup key="device" legend={<Legend icon="plugs-connected">{t("filter.device")}</Legend>} hint={t("filter.deviceHint")} className="catalog-facet">
         <Radio name="device" value="" checked={query.device === null} disabled={disabled} onChange={() => change({ device: null })} label={t("filter.any")} />
         {facets.devices.map((option) => (
           <Radio
@@ -236,8 +284,9 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
             checked={query.device === option.value}
             disabled={disabled}
             onChange={() => change({ device: option.value })}
-            // in the page's direction: "PlayStation 5 (الطراز الأصلي 2020)" keeps its brackets right
-            label={<Opt label={option.label} count={option.count} />}
+            // the device's own picture on a warm well; the name in the page's direction: "PlayStation 5 (الطراز الأصلي
+            // 2020)" keeps its brackets right
+            label={<Opt label={<DeviceText artKey={option.artKey}>{option.label}</DeviceText>} count={option.count} />}
           />
         ))}
       </FieldGroup>,
@@ -251,7 +300,7 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
     const levelName = (value: string) => t(`filter.arabicLevel.${value}`);
     set(
       "arabic",
-      <FieldGroup key="arabic" legend={t("filter.arabic")} hint={t("filter.arabicHint")} className="catalog-facet">
+      <FieldGroup key="arabic" legend={<Legend icon="translate">{t("filter.arabic")}</Legend>} hint={t("filter.arabicHint")} className="catalog-facet">
         {chipsFit(facets.arabic.map((option) => levelName(option.value))) ? (
           <div className="chips">
             <Chip input="radio" name="arabic" value="" checked={query.arabic === null} disabled={disabled} onChange={() => change({ arabic: null })} count={facets.without.arabic}>
@@ -288,7 +337,7 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
     const toggle = (value: (typeof query.formats)[number], on: boolean) => change({ formats: on ? query.formats.filter((v) => v !== value) : [...query.formats, value] });
     set(
       "formats",
-      <FieldGroup key="formats" legend={t("filter.format")} hint={t("filter.formatHint")} className="catalog-facet">
+      <FieldGroup key="formats" legend={<Legend icon="disc">{t("filter.format")}</Legend>} hint={t("filter.formatHint")} className="catalog-facet">
         {chipsFit(facets.formats.map((option) => formatName(option.value))) ? (
           <div className="chips">
             {facets.formats.map((option) => {
@@ -323,7 +372,7 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
   // no script: the sort as radio rows, then the submit key (the script path sorts from the toolbar)
   const sortGroup =
     sorts.length > 1 ? (
-      <FieldGroup key="sort" legend={t("sort.label")} className="catalog-facet catalog-nojs">
+      <FieldGroup key="sort" legend={<Legend icon="sort-ascending">{t("sort.label")}</Legend>} className="catalog-facet catalog-nojs">
         {sorts.map((value) => (
           <Radio key={value} name="sort" value={value} defaultChecked={sort === value} label={t(`sort.${value}`)} />
         ))}
@@ -389,7 +438,7 @@ function PriceGroup({ query, facets, onChange, live, disabled }: { query: Listin
   const onBand = facets.priceBands.some((band) => band.min === query.priceMin && band.max === query.priceMax);
 
   return (
-    <FieldGroup legend={t("filter.price")} hint={hint} className="catalog-facet">
+    <FieldGroup legend={<Legend icon="tag">{t("filter.price")}</Legend>} hint={hint} className="catalog-facet">
       <div className="grid grid-cols-2 gap-3">
         <TextField
           label={t("filter.priceMin")}

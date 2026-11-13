@@ -18,7 +18,7 @@ import { promotionsDataKey } from "./env.server";
 import { promotionsMeta } from "./meta";
 import { openPromotions, respond, runIntent, text } from "./promotions.server";
 import { OnceCode } from "./gift-code";
-import { Boundary, ConfirmAction, DemoNote, Failure, Kpis, Money, newKey, Notice, Section, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
+import { ConfirmAction, DemoNote, Failure, Kpis, Money, newKey, Notice, SectionState, Section, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/gift-cards — 08.07: the settlement (issued, outstanding, redeemed — checked against the wallet
@@ -95,7 +95,7 @@ export default function GiftCardsPage({ loaderData }: Route.ComponentProps) {
         <h1 className="adm-title">{t("gift.title")}</h1>
         <p className="max-w-[75ch] type-body text-ink-2">{t("gift.lead")}</p>
       </header>
-      <Boundary>{t("gift.boundary")}</Boundary>
+      <SectionState id="giftCards">{t("gift.boundary")}</SectionState>
       {!dataKeyReady ? (
         <div className="prm-block">
           <Notice tone="warn" icon="warning">

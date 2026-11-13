@@ -14,14 +14,20 @@
  *
  * Earning: 1 point per whole 1,000 IQD of goods paid and kept (pointsFor in ./rules.ts; shipping earns nothing),
  * times the multiplier of the customer's active VIP membership (08.06), once the order is delivered and its return
- * window (`returns.window_days`) has passed — key "loyalty:earn:<order id>", so a re-run or a concurrent run never
- * earns twice. A refund paid after the points were earned reverses its share (key "loyalty:reversal:<refund id>",
- * proportional to what the order kept when it earned; never more than the customer still holds — the rest is counted
- * as spent). Expiry posts one 'expire' row per customer and state (key "loyalty:expire:<customer>:<expired credits>").
+ * window (`returns.window_days`) has passed — any channel: an online order, or a sale at the till to a known customer
+ * (delivered when it is rung up) — key "loyalty:earn:<order id>", so a re-run or a concurrent run never earns twice. A
+ * refund paid after the points were earned reverses its share (key "loyalty:reversal:<refund id>", proportional to
+ * what the order kept when it earned; never more than the customer still holds — the rest is counted as spent).
+ * Expiry posts one 'expire' row per customer and state (key "loyalty:expire:<customer>:<expired credits>"). Posting
+ * runs every night (jobs.server.ts: promotions.points.sync, promotions.points.expire) and at once from the points page.
  *
- * HONEST BOUNDARY: points are not redeemed at checkout yet — the commerce core's `priceCart` / `placeOrder` would
- * need a "redeem N points" input, a discount line worth N × LOYALTY.pointValueIqd and a 'redeem' row in the order
- * batch (the overdraft trigger then keeps it safe). Posting is a staff action here until the jobs owner schedules it.
+ * REDEEMING is the commerce core's, not this file's (since 2026-11-12): a signed-in customer redeems points at the
+ * online checkout — orders/promotions.ts applyDiscounts step 5 (never more than the balance nor the goods left, ×
+ * the point's worth in force), a 'redeem' row in placeOrder's batch (pointsRedeemStatement; the overdraft trigger
+ * keeps it safe), given back on a cancel or a parcel refused at the door and a share on a refund
+ * (orders/promotions.server.ts: 'reversal' rows with ref_type "redeem", which the earn reversals here — ref_type
+ * "order" — never count). HONEST BOUNDARY: the till (admin 06) does not redeem points
+ * (routes/admin/promotions/checkout-state.ts says so to staff).
  */
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";

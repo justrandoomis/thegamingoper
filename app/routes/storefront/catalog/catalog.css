@@ -36,138 +36,256 @@
     }
   }
 
-  /* ───────────────────────────── the platform band (§6.2) ─────────────────────────────
-     The kit's .band--platform paints the surface, the light and the dark cabinet; this places the copy, the hardware
-     and the desktop model switcher. Phones: 104px (title, count, lead line); from 1024 the switcher row. */
-  .catalog-band {
-    min-block-size: 104px;
+  /* ───────────────────────────── the platform band (§6.2; v2.1 client note 4) ─────────────────────────────
+     The kit's .band--platform paints the glossy colour glass (light: the platform's colour, a specular edge, a deeper
+     foot; dark: its deep colour glass with a rim light), its light and the contact shadow; this places the copy and the
+     hardware — larger, standing on its shadow at the inline end and breaking out of the top edge — and pours the
+     platform's light (.glow in the platform's data-gel) around the band onto the floor. At least 124px on phones (the
+     name and the count; the delivery line under the band), 136px from 1024. */
+  .catalog-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-3);
   }
+  /* the light pools under and around the band; the ellipse ends inside its box (a box that cut it drew a hard line), and
+     the box keeps to the band's width (wider, it reached past the viewport at 768–1024: a sideways scroll) */
+  .catalog-band-glow {
+    --glow-y: 55%;
+    --glow-inset: -10% 0 -40%;
+    --glow-size: 60% 48%;
+  }
+  /* the band's light (the kit's sheen) behind the hardware, where this page stands it */
+  .catalog-band {
+    --light-x: calc(50% + 31% * var(--dir));
+    --light-y: 55%;
+    min-block-size: 124px;
+  }
+  /* phones: the hardware rises 10px above the band — into the 12px of air under the header, never into it (rising
+     30px, a PS5 crossed the header's foot at 360–390 and touched its search field) */
   .catalog-band__media {
     position: absolute;
-    inset-block: -14px 6px;
-    inset-inline-end: -1%;
-    inline-size: 33%;
+    inset-block: -10px 6px;
+    inset-inline-end: 0;
+    inline-size: 38%;
   }
   .catalog-band__content {
     display: grid;
     align-content: center;
     gap: 2px;
-    min-block-size: 104px;
-    max-inline-size: 70%;
-    padding: 14px var(--s-4);
+    min-block-size: 124px;
+    max-inline-size: 72%;
+    padding: var(--s-4) var(--s-4);
+  }
+  /* the device glyph on its clay disc beside the name (the before's raised round icons) */
+  .catalog-band__name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-inline-size: 0;
+  }
+  .catalog-band__glyph {
+    --disc: 36px;
+    color: var(--dot);
   }
   .catalog-band__title {
+    min-inline-size: 0;
     text-wrap: balance;
   }
-  .catalog-band__line {
-    font: var(--type-xs-strong);
+  .catalog-band__count {
+    margin-block-start: var(--s-1);
+    font: var(--type-sm-strong);
+  }
+  .catalog-band__lead {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+    font: var(--type-sm);
+  }
+  .catalog-band__lead > svg {
+    margin-block-start: 1px;
+  }
+  /* phones: the band holds the name and the count (112px is room for them; the products keep their place on the first
+     screen); the delivery line is the quiet line right under it, as its caption (HubBand) — in the band, 72% of its
+     width, it ran into the hardware of the wide devices (Switch 2, Steam Deck) */
+  @media (max-width: 47.99rem) {
+    .catalog-band,
+    .catalog-band__content {
+      min-block-size: 112px;
+    }
+    .catalog-band__lead {
+      display: none;
+    }
+    .catalog-head > .catalog-band-note {
+      margin-block-start: calc(-1 * var(--s-1));
+    }
+  }
+  /* 320 (400% zoom): the disc gives its room to the name, which never breaks inside a word («PlayStati|on») */
+  @media (max-width: 22.49rem) {
+    .catalog-band__glyph {
+      display: none;
+    }
   }
   @media (min-width: 48rem) {
+    .catalog-head > .catalog-band-note {
+      display: none;
+    }
+    .catalog-band {
+      --light-x: calc(50% + 30% * var(--dir));
+    }
     .catalog-band__content {
       max-inline-size: 64%;
       padding: var(--s-5) var(--s-6);
     }
+    .catalog-band__glyph {
+      --disc: 44px;
+    }
     .catalog-band__media {
       inline-size: 34%;
-      inset-block: -22px 8px;
-      inset-inline-end: 1%;
+      inset-block: -34px 8px;
+      inset-inline-end: 3%;
     }
   }
-  /* from 1024: 160px with the model switcher inside (v2 §4.18) — title, line and the 56px tiles in 12px padding */
+  /* from 1024: the name and the count — the delivery line is the shell's strip's from here (it stands at the top of
+     every page); 136px, so the device row and the first products follow on the first screen */
   @media (min-width: 64rem) {
+    .catalog-band {
+      --light-x: calc(50% + 32% * var(--dir));
+    }
     .catalog-band,
     .catalog-band__content {
-      min-block-size: 160px;
+      min-block-size: 136px;
+    }
+    .catalog-band__glyph {
+      --disc: 48px;
     }
     .catalog-band__content {
-      gap: var(--s-1);
-      max-inline-size: 70%;
-      padding: var(--s-3) var(--s-8);
+      max-inline-size: 66%;
+      padding: var(--s-4) var(--s-8);
+    }
+    .catalog-band__lead {
+      display: none;
     }
     .catalog-band__media {
-      inline-size: 28%;
-      inset-block: -28px 10px;
-      inset-inline-end: 2%;
+      inline-size: 26%;
+      inset-block: -40px 10px;
+      inset-inline-end: 5%;
     }
   }
 
-  /* the model switcher inside the band (from 1024): paper tiles, never translucent white on the colour */
-  .catalog-switcher {
-    display: none;
-  }
-  @media (min-width: 64rem) {
-    .catalog-switcher {
-      display: block;
-      margin-block-start: var(--s-1);
-    }
-  }
-  .catalog-switcher__list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s-2);
-  }
-  .catalog-model {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: var(--s-2);
-    inline-size: 212px;
-    min-block-size: 56px;
-    padding-block: var(--s-2);
-    padding-inline: var(--s-3) var(--s-2);
-    border-radius: var(--r-sm);
-    background: var(--paper);
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .catalog-model__name {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    flex: 1;
-    min-inline-size: 0;
-    overflow: hidden;
-    font: var(--type-sm-strong);
-  }
-  .catalog-model__art {
-    position: relative;
-    flex: none;
-    inline-size: 40px;
-    block-size: 40px;
-    border-radius: var(--r-xs);
-    background: var(--product-ground);
-    overflow: hidden;
-  }
-  .catalog-model--all {
-    inline-size: auto;
-    padding-inline: var(--s-4);
-  }
-  @media (hover: hover) {
-    .catalog-model:hover .catalog-model__name {
-      text-decoration: underline;
-      text-decoration-thickness: 1px;
-      text-underline-offset: 4px;
-    }
-  }
-
-  /* ───────────────────────────── the title row (category hubs, search) ───────────────────────────── */
+  /* ───────────────────────────── the glass head (category hubs, search results, compare) ─────────────────────────────
+     A frosted card (the kit's .surface--glass: real glass, one per page) over a soft light — brand red, or a
+     one-platform department's colour — with the reference's icon tile at its start (a clay square, the red line icon),
+     the h1, the count and the delivery line, and the department's photo in a warm well at its end. */
+  /* above what follows: a field's suggestion list opened inside the glass (its own stacking context) must not slide
+     under the page's next sections */
   .catalog-title {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-3);
+  }
+  .catalog-title__glow {
+    --glow-y: 55%;
+    --glow-inset: -12% 0 -40%;
+    --glow-size: 60% 48%;
+  }
+  .catalog-title__card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s-3) var(--s-4);
+    padding: var(--s-4);
+    border-radius: var(--r-lg);
+  }
+  .catalog-title__card--icon {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .catalog-title__card--icon.catalog-title__card--art {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .catalog-title__icon {
+    display: grid;
+    place-items: center;
+    inline-size: 52px;
+    block-size: 52px;
+    align-self: start;
+    border-radius: var(--r-sm);
+    background: var(--key-face);
+    box-shadow: var(--e-disc);
+    color: var(--red-ink);
+  }
+  .catalog-title__text {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: var(--s-1);
+    min-inline-size: 0;
   }
-  .catalog-title > h1 {
+  .catalog-title__text > h1 {
     text-wrap: balance;
   }
   .catalog-title__line {
     font: var(--type-sm);
     color: var(--ink-2);
   }
+  /* the department's photo: from 768 (on a phone the icon tile and the name have the card to themselves) */
+  .catalog-title__art {
+    position: relative;
+    display: none;
+    inline-size: 104px;
+    aspect-ratio: 1;
+    border-radius: var(--r-lg);
+    background: var(--product-ground);
+    overflow: hidden;
+  }
+  /* what the page adds under the title runs across the whole card */
+  .catalog-title__more {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-3);
+    min-inline-size: 0;
+  }
+  @media (min-width: 48rem) {
+    .catalog-title__card {
+      padding: var(--s-5) var(--s-6);
+    }
+    .catalog-title__icon {
+      inline-size: 64px;
+      block-size: 64px;
+      align-self: center;
+    }
+    .catalog-title__art {
+      display: block;
+    }
+  }
+  /* from 1024 the shell's strip says the delivery line */
+  @media (min-width: 64rem) {
+    :is(.catalog-title__lead, .catalog-title__sep) {
+      display: none;
+    }
+  }
 
-  /* the chip row: one row that scrolls sideways on phones (the kit's .chips--rail .chips--bleed); chips never shrink */
+  /* ───────────────────────────── the chip row ─────────────────────────────
+     One row that scrolls sideways on phones (the kit's .chips--rail .chips--bleed); chips never shrink. v2.1: each chip
+     carries its kind icon at its start (ChipLabel; a platform chip its device glyph in the platform's colour); a chosen
+     chip shows the kit's check in its place. */
   .catalog-chips > * {
     flex: none;
+  }
+  .catalog-chip__icon {
+    display: inline-block;
+    margin-inline-end: 6px;
+    vertical-align: -4px;
+  }
+  .catalog-chip__icon--after {
+    margin-inline: 6px 0;
+  }
+  .catalog-chip__icon--plat {
+    color: var(--dot);
+  }
+  .key:is([aria-current="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .catalog-chip__icon {
+    display: none;
   }
 
   /* ───────────────────────────── the list: sidebar + results (§6.3) ───────────────────────────── */
@@ -284,16 +402,6 @@
     display: grid;
     min-inline-size: 0;
   }
-  /* phones: the device tiles after the first two rows (from 768 they follow the list) */
-  .catalog-grid__break {
-    grid-column: 1 / -1;
-    min-inline-size: 0;
-  }
-  @media (min-width: 48rem) {
-    .catalog-grid__break {
-      display: none;
-    }
-  }
   /* new results are on their way: the old ones stay usable, a little quieter */
   .catalog-grid--busy {
     opacity: 0.62;
@@ -323,11 +431,21 @@
   .catalog-facet .choice__text {
     flex: 1 1 auto;
   }
-  /* a value and its count at the row's end */
+  /* a group's title with its icon on a small clay disc (v2.1: the before's raised round icons) */
+  .catalog-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .catalog-legend__disc {
+    --disc: 28px;
+    color: var(--red-ink);
+  }
+  /* a value and its count at the row's end: the count a quiet pill */
   .catalog-opt {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     gap: var(--s-3);
   }
   .catalog-opt__label {
@@ -335,7 +453,32 @@
   }
   .catalog-opt__count {
     flex: none;
+    min-inline-size: 28px;
+    padding: 1px var(--s-2);
+    border-radius: var(--r-full);
+    background: var(--niche);
     color: var(--ink-2);
+    font: var(--type-xs);
+    text-align: center;
+  }
+  /* a row's words after its icon or its device's picture */
+  .catalog-opt__with {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-inline-size: 0;
+  }
+  .catalog-opt__icon {
+    color: var(--ink-2);
+  }
+  .catalog-opt__thumb {
+    position: relative;
+    flex: none;
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: var(--r-xs);
+    background: var(--product-ground);
+    overflow: hidden;
   }
   .catalog-filters > .catalog-nojs {
     padding-block-start: var(--s-4);
@@ -364,14 +507,13 @@
       align-items: flex-end;
     }
   }
-  /* «الفلاتر | الترتيب»: solid paper with the float shadow (the header and the tab bar are the two live glass panes) */
+  /* «الفلاتر | الترتيب»: v2.1 floating glass (the kit's .glass.glass--float, like the tab bar under it — with the header,
+     the tab bar and the compare tray at most four live panes; under an open sheet the page's glass turns solid) */
   .catalog-pill {
     display: flex;
     align-items: stretch;
     block-size: var(--target);
     border-radius: var(--r-full);
-    background: var(--paper);
-    box-shadow: var(--e-float);
     overflow: hidden;
   }
   @media (min-width: 64rem) {
@@ -382,8 +524,9 @@
   .catalog-pill__key {
     display: flex;
     align-items: center;
+    gap: var(--s-2);
     min-inline-size: var(--target);
-    padding-inline: var(--s-5);
+    padding-inline: var(--s-4) var(--s-5);
     border: 0;
     background: transparent;
     color: var(--ink);
@@ -419,8 +562,6 @@
     padding-block: var(--s-2);
     padding-inline: var(--s-3) var(--s-1);
     border-radius: var(--r-lg);
-    background: var(--paper);
-    box-shadow: var(--e-float);
   }
   @media (min-width: 64rem) {
     .catalog-tray {
@@ -465,21 +606,52 @@
     }
   }
 
-  /* ───────────────────────────── device tiles ("everything about your device") ───────────────────────────── */
+  /* ───────────────────────────── the device row ("everything about your device", client note 4) ─────────────────────────────
+     The before's soft device tiles (the kit's raised category tile: the picture on the warm well, the name under it),
+     one row at every width that scrolls sideways with the gutter kept: 3.3 tiles in view on phones (the fourth's edge
+     says there are more), 5.4 from 768, 116px tiles from 1024 (124 from 1280) — where a row that does not fit gets two clay arrows in
+     its head. The padding gives the tiles' raised shadows room inside the scroller (it clips); the margin hands it
+     back. */
   .catalog-devices {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-2);
     min-inline-size: 0;
   }
-  .catalog-grid__break > .catalog-devices {
-    padding-block: var(--s-2);
+  .catalog-devices__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s-3);
   }
-  /* phones, inside the grid: one row that scrolls sideways, 2.6 tiles in view, the gutter kept */
+  .catalog-devices__text {
+    display: grid;
+    gap: 2px;
+    min-inline-size: 0;
+  }
+  .catalog-devices__title {
+    font: var(--type-h3);
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  /* the kit's section-head reason size at every width (13px Arabic was the smallest text on the page, G7) */
+  .catalog-devices__note {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .catalog-devices__keys {
+    display: none;
+    flex: none;
+    gap: var(--s-2);
+  }
   .catalog-devices__rail {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: calc((100% - 2 * var(--gap-card)) / 2.6);
+    grid-auto-columns: calc((100% - 3 * var(--gap-card)) / 3.3);
     gap: var(--gap-card);
+    margin-block: calc(-1 * var(--s-1)) calc(-1 * var(--s-3));
     margin-inline: calc(-1 * var(--gutter));
-    padding: var(--s-1) var(--gutter);
+    padding: var(--s-1) var(--gutter) var(--s-4);
     overflow-x: auto;
     overscroll-behavior-inline: contain;
     scroll-padding-inline: var(--gutter);
@@ -489,13 +661,83 @@
   .catalog-devices__rail::-webkit-scrollbar {
     display: none;
   }
-  .catalog-devices__rail > * {
+  .catalog-devices__item {
+    display: grid;
+    min-inline-size: 0;
     scroll-snap-align: start;
+  }
+  .catalog-device__name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+  @media (min-width: 48rem) {
+    .catalog-devices__rail {
+      grid-auto-columns: calc((100% - 5 * var(--gap-card)) / 5.4);
+    }
+  }
+  @media (min-width: 64rem) {
+    .catalog-devices {
+      gap: var(--s-3);
+    }
+    .catalog-devices__title {
+      font: var(--type-h2);
+    }
+    .catalog-devices__keys {
+      display: flex;
+    }
+    /* seven tiles (a platform's usual count) fit in a row from 1024 */
+    .catalog-devices__rail {
+      grid-auto-columns: 116px;
+    }
+  }
+  @media (min-width: 80rem) {
+    .catalog-devices__rail {
+      grid-auto-columns: 124px;
+    }
   }
 
   /* ───────────────────────────── search ───────────────────────────── */
+  /* the start's glass head: the field, then the suggestion chips */
+  .catalog-search-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-4);
+  }
   .catalog-search-field {
     max-inline-size: 720px;
+  }
+  /* a titled chip row («اقتراحات», «جرّب أحد هذه:», «هل تقصد:») */
+  .catalog-suggest {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-2);
+    min-inline-size: 0;
+  }
+  .catalog-suggest__title {
+    font: var(--type-sm-strong);
+    color: var(--ink-2);
+  }
+  /* inside the zero-result card: a centred title; on phones one row that scrolls sideways to the card's edges (its
+     20px padding), from 768 the chips wrap, centred */
+  .catalog-suggest--panel {
+    justify-items: center;
+    text-align: center;
+  }
+  .catalog-chips--panel {
+    justify-self: stretch;
+    margin-inline: calc(-1 * var(--s-5));
+    padding-inline: var(--s-5);
+    scroll-padding-inline: var(--s-5);
+  }
+  @media (min-width: 48rem) {
+    .catalog-chips--panel {
+      justify-content: center;
+      margin-inline: 0;
+      padding-inline: 0;
+    }
   }
   .catalog-recent {
     display: grid;
@@ -547,17 +789,72 @@
       gap: var(--s-4);
     }
   }
+  /* «اذهب مباشرة إلى»: small clay keys with the hub's icon (a platform's glyph in its colour) and an arrow */
   .catalog-jumps {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0 var(--s-4);
+    gap: var(--s-2) var(--s-3);
   }
-  .catalog-didyoumean {
+  .catalog-jumps__label {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .catalog-jumps__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    min-inline-size: 0;
+  }
+  /* phones: one row that scrolls sideways to the card's edges (a key per line pushed the results down) */
+  @media (max-width: 47.99rem) {
+    .catalog-jumps {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .catalog-jumps__list {
+      flex-wrap: nowrap;
+      margin-block-end: -6px;
+      margin-inline: calc(-1 * var(--s-4));
+      padding: 2px var(--s-4) 8px;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scroll-padding-inline: var(--s-4);
+      scrollbar-width: none;
+    }
+    .catalog-jumps__list::-webkit-scrollbar {
+      display: none;
+    }
+    .catalog-jumps__list > li {
+      flex: none;
+    }
+  }
+  .catalog-jump[data-gel] > .key__cap > svg:first-child {
+    color: var(--dot);
+  }
+  .catalog-jump__kind {
+    font-weight: 400;
+    color: var(--ink-2);
+  }
+
+  /* ───────────────────────────── nothing matches the words (v2.1: friendlier) ─────────────────────────────
+     The kit's soft card (EmptyState panel) over a soft brand light, the search glass large on its disc, and the ways
+     on inside it: «هل تقصد:» and «جرّب أحد هذه:» chips, wrapping and centred. */
+  .catalog-nomatch {
+    --glow-y: 40%;
+    --glow-inset: -6% 0;
+    --glow-size: 50% 46%;
+  }
+  /* the light behind the platform tiles (the search start, nothing found), kept to their width */
+  .catalog-ptiles.glow {
+    --glow-inset: -10% 0;
+  }
+  .catalog-nomatch__ways {
     display: grid;
-    justify-items: center;
-    gap: var(--s-1);
-    text-align: center;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-4);
+    inline-size: 100%;
+    margin-block-start: var(--s-2);
   }
 
   /* ───────────────────────────── zero results ───────────────────────────── */
@@ -570,6 +867,7 @@
     display: grid;
     justify-items: center;
     gap: var(--s-1);
+    margin-block-start: var(--s-3);
     text-align: center;
   }
 
@@ -577,11 +875,13 @@
      Paper, hairlines, product headers that stay under the header while the rows scroll. A clip (not a scroll box)
      keeps the headers sticky; on phones a comparison of three or four scrolls sideways (two columns in view), and
      then its headers scroll with it. */
+  /* v2.1: raised like the soft cards (their warm shadow and rim, no hairline box) but solid paper in both themes: the
+     product heads and the names' column stay pinned over the rows, so the table must not be see-through */
   .catalog-compare {
     container-type: inline-size;
-    border: 1px solid var(--line);
     border-radius: var(--r-lg);
     background: var(--paper);
+    box-shadow: var(--e-surface);
     overflow: clip;
   }
   .catalog-compare__table {
@@ -597,6 +897,18 @@
     border-block-end: 1px solid var(--line);
     font: var(--type-sm);
     color: var(--ink);
+  }
+  /* the facts themselves: the reading role (v2.1 G7 — 16px / 1.75; at 14px the specs were the smallest running Arabic
+     on a phone) */
+  .catalog-compare__table tbody td {
+    font: var(--type-read);
+  }
+  /* a tablet's three or four columns (138–184px wide): 14px, or a spec runs to ten lines (G7's 16px is the phones' rule;
+     phones show two columns at a time, from 1024 the columns are wide again) */
+  @media (min-width: 48rem) and (max-width: 63.99rem) {
+    .catalog-compare--wide .catalog-compare__table tbody td {
+      font: var(--type-sm);
+    }
   }
   .catalog-compare__table tbody:last-of-type tr:last-child > * {
     border-block-end: 0;
@@ -676,7 +988,7 @@
   .catalog-compare__labelrow > th {
     padding-block: var(--s-3) 0;
     border-block-end: 0;
-    font: var(--type-xs-strong);
+    font: var(--type-sm-strong);
     color: var(--ink-2);
   }
   .catalog-compare__labelrow > th > span {
@@ -757,9 +1069,9 @@
     align-items: center;
     gap: var(--s-3);
     padding: var(--s-3);
-    border: 1px solid var(--line);
     border-radius: var(--r-lg);
-    background: var(--paper);
+    background: var(--card-face);
+    box-shadow: var(--e-surface);
   }
   .catalog-compare__info {
     display: grid;

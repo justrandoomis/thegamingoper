@@ -354,7 +354,7 @@ describe("«ابحث عنها كما كتبتها»: the words as typed (asTyped
 
 // ───────────────────────────────────────────────────────────────── GET /api/search/suggest (the route)
 
-type SuggestRow = { label: string; href: string; hint?: string; image?: string; priceIqd?: number; kindLabel?: string };
+type SuggestRow = { label: string; href: string; hint?: string; image?: string; priceIqd?: number; kindLabel?: string; qualifier?: string };
 let suggestIp = 0;
 
 /** Runs the route behind the real request middleware (locale, rate limit, headers). */
@@ -392,7 +392,20 @@ describe("GET /api/search/suggest (the header's suggestions)", () => {
     const page = await searchProducts(t.db, "en", "playstation", { now: Date.now() });
     expect(body.total).toBe(page.total);
     // typed rows (platform, department, device) carry no product fields
-    for (const row of body.suggestions.filter((entry) => !entry.href.startsWith("/p/"))) expect(row.image ?? row.priceIqd ?? row.kindLabel).toBeUndefined();
+    for (const row of body.suggestions.filter((entry) => !entry.href.startsWith("/p/"))) expect(row.image ?? row.priceIqd ?? row.kindLabel ?? row.qualifier).toBeUndefined();
+  });
+
+  it("a product row carries the words its Latin title leaves out — the service's qualifier, in its own field, in every language", async () => {
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const { body } = await suggestRoute("ps5 slim", locale);
+      const items = await suggestSearch(t.db, locale, "ps5 slim", { now: Date.now() });
+      expect(body.suggestions.map((row) => row.href)).toEqual(items.map((item) => item.href));
+      for (const [index, row] of body.suggestions.entries()) expect(row.qualifier).toBe(items[index].kind === "product" ? items[index].qualifier : undefined);
+      // the disc edition's «نسخة الأقراص» (en "Disc edition") is printed beside the name by the shell, never glued into it
+      const qualified = body.suggestions.filter((row) => row.qualifier);
+      expect(qualified.length).toBeGreaterThan(0);
+      for (const row of qualified) expect(row.label).not.toContain(row.qualifier);
+    }
   });
 
   it("a typo: the corrected spelling first, products and the total of the corrected search, in every language", async () => {

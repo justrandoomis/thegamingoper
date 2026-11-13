@@ -1,4 +1,4 @@
-import { Icon } from "~/art/Icon";
+import { Icon, type IconName } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import { CURRENCIES } from "~/lib/money";
 import type { DiscountLineView, FlashPriceView, ShippingWaiverView } from "~/server/services/orders/types";
@@ -7,12 +7,16 @@ import { iqdText } from "~/ui/PriceTag";
 // its look (.co-adjust) travels with it: the account's order page shows it too
 import "../checkout.css";
 
+/** Each kind of discount's icon (client round 1: the discount and points rows clearly coloured and told apart). */
+const DISCOUNT_ICON: Record<DiscountLineView["kind"], IconName> = { rule: "sparkle", coupon: "ticket", member: "seal-check", points: "star" };
+
 /**
  * Every amount as charged, under the order summary's rows (the kit's OrderSummary shows the discount's TOTAL; this says
  * what it is made of): the automatic offers, the coupon, the membership discount, the redeemed points — each «−amount»
- * in the summary's tabular type —, the delivery a membership or an offer waived (in words, with the fee it would have been), and
- * a split payment's parts (from the wallet, the rest). Nothing is added up here: the figures are the server's
- * (CartViewData / OrderView). Shared by the cart, the checkout and the order pages.
+ * in the summary's tabular type, in the saving colour with its kind's icon (client round 1: "the discount and points
+ * rows clearly coloured") —, the delivery a membership or an offer waived (in words, with the fee it would have been),
+ * and a split payment's parts (from the wallet, the rest). Nothing is added up here: the figures are the server's
+ * (CartViewData / OrderView). Shared by the cart, the checkout and the order pages (and the account's order page).
  */
 export function Adjustments({ discounts, waiver, split, className }: { discounts: readonly DiscountLineView[]; waiver?: ShippingWaiverView | null; split?: { walletIqd: number; restIqd: number } | null; className?: string }) {
   const t = useT("checkout");
@@ -26,16 +30,23 @@ export function Adjustments({ discounts, waiver, split, className }: { discounts
       <span className="price__cur">{currency}</span>
     </span>
   );
-  // Only what explains the total: one coupon alone is already named by the summary's discount row.
-  const breakdown = discounts.length > 1 || discounts.some((entry) => entry.kind !== "coupon");
+  // Every part of the discount by its kind, in the saving colour (client round 1) — the kit's row above is the total
+  // («الخصم»; `summaryCoupon` no longer names a coupon there when the parts are listed here)
+  const breakdown = discounts.length > 0;
   if (!breakdown && !waiver && !split) return null;
   return (
     <div className={className ? `co-adjust ${className}` : "co-adjust"}>
       {breakdown ? (
         <ul className="co-adjust__list" aria-label={t("discounts.label")}>
           {discounts.map((entry, index) => (
-            <li key={`${entry.kind}:${index}`} className="co-adjust__row">
-              <span className="min-w-0">{discountLabel(entry, t, f)}</span>
+            // one line per part: its icon, its name, its amount (G7 "one idea per line"). The coupon's own words — the
+            // admin's free text, in the store's language only — are said by the coupon field where the code is managed
+            // (CouponForm), never here: on an English or Kurdish page they read as a stray Arabic paragraph.
+            <li key={`${entry.kind}:${index}`} className="co-adjust__row co-adjust__row--off">
+              <span className="flex min-w-0 items-start gap-1.5">
+                <Icon name={DISCOUNT_ICON[entry.kind]} size={16} className="mt-0.5 shrink-0" />
+                <span className="min-w-0">{discountLabel(entry, t, f)}</span>
+              </span>
               {minus(entry.amountIqd)}
             </li>
           ))}
@@ -71,12 +82,12 @@ export function Adjustments({ discounts, waiver, split, className }: { discounts
 }
 
 /**
- * The coupon the kit summary may name on its discount row: only when the coupon IS the whole discount (otherwise the
- * row is «الخصم» — the total — and <Adjustments> lists what it is made of).
+ * The coupon the kit summary may name on its discount row: only when the discount's parts are not listed (an order from
+ * before the itemised discounts). Otherwise the row is «الخصم» — the total — and <Adjustments> names every part, the
+ * coupon included, in the saving colour (client round 1: the discount rows clearly coloured; the kit's row is ink).
  */
 export function summaryCoupon<C>(discounts: readonly DiscountLineView[] | undefined, coupon: C | null): C | null {
-  const list = discounts ?? [];
-  return list.length <= 1 && list.every((entry) => entry.kind === "coupon") ? coupon : null;
+  return (discounts ?? []).length === 0 ? coupon : null;
 }
 
 /** One discount line's words. */

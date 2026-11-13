@@ -23,16 +23,17 @@ import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { messagesFor } from "~/i18n/i18n.server";
 import type { Locale } from "~/lib/locales";
 import type { Actor } from "~/server/actor";
-import { addresses, files, orders, paymentProofs, payments, products, stockLevels, variants } from "~/server/db/schema";
+import { addresses, coupons, files, orders, paymentProofs, payments, products, stockLevels, variants } from "~/server/db/schema";
 import { districtId, governorateId } from "~/server/db/seed/reference";
 import { seedDemo } from "~/server/db/seed/demo";
 import type { Permission } from "~/server/permissions";
 import { kvBlobStore } from "~/server/storage.server";
-import { addToCart, getCartView } from "~/server/services/cart.server";
+import { addToCart, applyCoupon, getCartView, removeLine } from "~/server/services/cart.server";
 import { lineName, type CheckoutWho } from "~/server/services/orders/place.server";
 import { verifyPayment } from "~/server/services/payments/payments.server";
 import {
   attemptFor,
+  cartReadiness,
   cleanOrderRef,
   draftFromPosted,
   draftToForm,
@@ -49,6 +50,7 @@ import {
   stepFocusTarget,
   stepOf,
   stepOfField,
+  stockChanges,
   validateStep,
   withOfferedDay,
   type ValidationContext,
@@ -57,7 +59,7 @@ import CartPage from "~/routes/storefront/checkout/cart";
 import CheckoutPage from "~/routes/storefront/checkout/checkout";
 import OrderPage from "~/routes/storefront/checkout/order";
 import TrackPage from "~/routes/storefront/checkout/track";
-import { cartShelves, checkoutInputFromForm, confirmationPath, findOrderForShopper, loadCartFacts, loadCheckoutData, oneRail, placeCheckout, saveCheckoutAddress, trackOrder, wantsAddressSaved } from "~/routes/storefront/checkout/checkout.server";
+import { cartShelves, checkoutInputFromForm, confirmationPath, couponShortfall, findOrderForShopper, loadCartFacts, loadCheckoutData, oneRail, placeCheckout, saveCheckoutAddress, trackOrder, wantsAddressSaved } from "~/routes/storefront/checkout/checkout.server";
 import { handleProofUpload, MAX_PROOF_BODY_BYTES } from "~/routes/storefront/checkout/proof.server";
 import { createTestDb, TEST_NOW, type TestDb } from "./helpers/db";
 import { fixtures, type Fixtures } from "./helpers/factories";
@@ -683,5 +685,277 @@ describe("QA fixes (transaction matrix, 2026-11-12)", () => {
     expect(cssRule(css, ".co-extra__row > .field")).toMatch(/display:\s*contents/);
     expect(cssRule(css, ".co-extra__row > .field > :first-child")).toMatch(/grid-column:\s*1 \/ -1/);
     expect(cssRule(css, ".co-extra__row > .key")).toMatch(/grid-row:\s*2/);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── client feedback round 1 (wave B): two QA bugs
+
+/** The primary keys of a page as the server renders it: their words and whether they can be pressed. */
+function primaryKeys(html: string): { label: string; enabled: boolean }[] {
+  return [...html.matchAll(/<(a|button)\b([^>]*\bclass="[^"]*\bkey--primary\b[^"]*"[^>]*)>([\s\S]*?)<\/\1>/g)].map((match) => ({
+    label: match[3].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+    enabled: !/\sdisabled(?:=""|\s|$)/.test(match[2]) && !/aria-disabled="true"/.test(match[2]),
+  }));
+}
+/** The step keys of the checkout (the address, payment and review steps' one primary). */
+const STEP_KEY = /تابع إلى الدفع|راجع الطلب|أكّد الطلب/;
+/** The whole first `<div role="alert">` of a page (nested divs counted), or "". */
+function alertOf(html: string): string {
+  const at = html.search(/<div\b[^>]*\brole="alert"/);
+  if (at < 0) return "";
+  const tags = /<div\b|<\/div>/g;
+  tags.lastIndex = at;
+  let depth = 0;
+  for (let match = tags.exec(html); match; match = tags.exec(html)) {
+    depth += match[0] === "</div>" ? -1 : 1;
+    if (depth === 0) return html.slice(at, match.index + match[0].length);
+  }
+  return html.slice(at);
+}
+
+describe("client feedback round 1: QA bugs", () => {
+  test("(a) after a lost stock race the checkout names what changed and never offers a key that cannot work", async () => {
+    // Found by QA: the shopper lost the last unit to someone else; the checkout showed a total of 0 with «تابع إلى الدفع»
+    // still active — the server refuses an order of nothing, so that key led to a dead end.
+    const sold = await make.product({ stock: 1, priceIqd: 120_000 });
+    await t.db.update(products).set({ name: { ar: "جهاز بيع للتو", en: "Just-sold console", ckb: "ئامێری فرۆشراو" } }).where(eq(products.id, sold.productId));
+    const guest = { cartToken: null, customerId: null, locale: "ar" as const };
+    const winner = await addToCart(t.db, guest, { variantId: sold.variantId, qty: 1 }, NOW);
+    const loser = await addToCart(t.db, guest, { variantId: sold.variantId, qty: 1 }, NOW);
+    const seen = (await getCartView(t.db, { ...guest, cartToken: loser.cartToken, governorateId: governorateId("baghdad") }, NOW)).totalIqd;
+    expect((await placeCheckout(t.db, who(winner.cartToken), checkoutForm(seen), NOW)).ok).toBe(true);
+    const page = await loadCheckoutData(t.db, { locale: "ar", now: NOW, customerId: null });
+    const render = (cart: unknown, step: string, actionData?: unknown) =>
+      renderPage(CheckoutPage, { path: "checkout", url: `/checkout?step=${step}`, loaderData: { cart, page, customer: null, savedAddress: null, attemptKey: "k".repeat(22), demo: true, i18n: pageStrings() }, actionData });
+
+    // 1. Everything sold out: nothing is left to order — no step key at all, the line named, the way back to the store.
+    const nothing = await getCartView(t.db, { ...guest, cartToken: loser.cartToken }, NOW);
+    expect(nothing).toMatchObject({ blocked: true, totalIqd: 0 });
+    for (const step of ["address", "payment", "review"]) {
+      const html = render(nothing, step);
+      expect(primaryKeys(html).filter((key) => key.enabled && STEP_KEY.test(key.label)), step).toEqual([]);
+      expect(html, step).toContain("جهاز بيع للتو");
+      expect(html, step).toMatch(/href="\/c\/consoles"/);
+    }
+
+    // 2. Part of the cart sold out: the rest can be ordered once the sold-out line is out of the cart. Until then every
+    //    step's key waits (with its reason) and the page names the line that sold out.
+    const other = await make.product({ stock: 5, priceIqd: 80_000 });
+    await addToCart(t.db, { ...guest, cartToken: loser.cartToken }, { variantId: other.variantId, qty: 1 }, NOW);
+    const partly = await getCartView(t.db, { ...guest, cartToken: loser.cartToken }, NOW);
+    expect(partly).toMatchObject({ blocked: true, totalIqd: 85_000 });
+    for (const step of ["address", "payment", "review"]) {
+      const html = render(partly, step);
+      const keys = primaryKeys(html).filter((key) => STEP_KEY.test(key.label));
+      expect(keys.length, step).toBeGreaterThan(0);
+      expect(keys.filter((key) => key.enabled), step).toEqual([]);
+      expect(html, step).toContain("جهاز بيع للتو");
+    }
+
+    // 3. The refusal itself (a plain post, or the answer the page reads): the alert names the line that sold out and
+    //    says the total now.
+    const refused = await placeCheckout(t.db, who(loser.cartToken), checkoutForm(seen + 80_000), NOW);
+    expect(refused).toMatchObject({ ok: false, status: 409 });
+    const alert = alertOf(render(partly, "review", refused));
+    expect(alert).toContain("جهاز بيع للتو");
+    expect(alert).toContain("85,000");
+
+    // 4. The cart page says it too: the line by name in one note, and «إتمام الطلب» waits (a link: aria-disabled)
+    const cartHtml = renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: partly, facts: await loadCartFacts(t.db), demo: true, recommendations: null, couponShortfall: null, i18n: pageStrings() } });
+    expect(cartHtml).toMatch(/class="note note--warning"[\s\S]*?جهاز بيع للتو/);
+    expect(primaryKeys(cartHtml).filter((key) => /إتمام الطلب/.test(key.label) && key.enabled)).toEqual([]);
+  });
+
+  test("(a) a quantity that came down to what is left is named too, with the total now — and confirming again places it", async () => {
+    const few = await make.product({ stock: 3, priceIqd: 40_000 });
+    await t.db.update(products).set({ name: { ar: "يد تحكم قليلة", en: "Scarce pad", ckb: "دەسکی کەم" } }).where(eq(products.id, few.productId));
+    const guest = { cartToken: null, customerId: null, locale: "ar" as const };
+    const shopper = await addToCart(t.db, guest, { variantId: few.variantId, qty: 3 }, NOW);
+    const other = await addToCart(t.db, guest, { variantId: few.variantId, qty: 2 }, NOW);
+    const seen = (await getCartView(t.db, { ...guest, cartToken: shopper.cartToken, governorateId: governorateId("baghdad") }, NOW)).totalIqd;
+    const otherTotal = (await getCartView(t.db, { ...guest, cartToken: other.cartToken, governorateId: governorateId("baghdad") }, NOW)).totalIqd;
+    expect((await placeCheckout(t.db, who(other.cartToken), checkoutForm(otherTotal), NOW)).ok).toBe(true);
+    // one unit is left: the core prices the line at 1 and refuses the total the shopper saw, with the cart as it is now
+    const refused = await placeCheckout(t.db, who(shopper.cartToken), checkoutForm(seen), NOW);
+    expect(refused).toMatchObject({ ok: false, code: "totals_changed" });
+    if (refused.ok) return;
+    expect(refused.cart?.lines[0]).toMatchObject({ qty: 1, problem: "qty_reduced" });
+    const now = await getCartView(t.db, { ...guest, cartToken: shopper.cartToken }, NOW);
+    const page = await loadCheckoutData(t.db, { locale: "ar", now: NOW, customerId: null });
+    const html = renderPage(CheckoutPage, { path: "checkout", url: "/checkout?step=review", loaderData: { cart: now, page, customer: null, savedAddress: null, attemptKey: "k".repeat(22), demo: true, couponShortfall: null, i18n: pageStrings() }, actionData: refused });
+    const alert = alertOf(html);
+    expect(alert).toContain("يد تحكم قليلة");
+    expect(alert).toContain("الكمية الآن 1");
+    expect(alert).toContain("45,000");
+    // a reduced line still checks out: confirming again with the total now places the order of what is left
+    const again = await placeCheckout(t.db, who(shopper.cartToken), checkoutForm(refused.cart!.totalIqd), NOW);
+    expect(again.ok).toBe(true);
+  });
+
+  test("what the stock did, line by line, and what the checkout can still do (pure)", () => {
+    const line = (id: string, qty: number, problem: string | null = null) => ({ id, name: id, qty, problem });
+    expect(cartReadiness([])).toBe("empty");
+    expect(cartReadiness([line("a", 1)])).toBe("ready");
+    expect(cartReadiness([line("a", 1), line("b", 1, "out_of_stock")])).toBe("blocked");
+    expect(cartReadiness([line("b", 1, "unavailable")])).toBe("empty");
+    // notices are not blocks: a reduced quantity and a changed price still check out
+    expect(cartReadiness([line("a", 2, "qty_reduced"), line("c", 1, "price_changed")])).toBe("ready");
+    const before = [line("a", 3), line("b", 1), line("c", 2)];
+    const after = [line("a", 1, "qty_reduced"), line("b", 1, "out_of_stock"), line("c", 2)];
+    expect(stockChanges(before, after)).toEqual([
+      { id: "a", name: "a", change: "reduced", from: 3, to: 1 },
+      { id: "b", name: "b", change: "sold_out", from: 1, to: 0 },
+    ]);
+    // the shopper's quantity unknown (a page load): no "from"; a reduced quantity the shopper already saw is no news
+    expect(stockChanges(null, [line("x", 1, "unavailable")])).toEqual([{ id: "x", name: "x", change: "unavailable", from: null, to: 0 }]);
+    expect(stockChanges([line("a", 1)], [line("a", 1, "qty_reduced")])).toEqual([]);
+  });
+
+  test("note 7: the empty cart in the before's arrangement — the title, the soft card, the centred key, the track line under the card, then the picks", async () => {
+    const empty = await getCartView(t.db, { cartToken: null, customerId: null, locale: "ar" }, NOW);
+    const shelf = { ok: true, shelves: [] };
+    const html = renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: empty, facts: await loadCartFacts(t.db), demo: true, recommendations: shelf, couponShortfall: null, i18n: pageStrings() } });
+    // a visible page title (v2 had only a hidden one)
+    expect(html).toMatch(/<h1 class="type-h1 text-ink">السلة<\/h1>/);
+    // the words and the key on the soft raised card, the key inside it
+    const card = /<div class="empty empty--panel">([\s\S]*?)<\/div><\/div>/.exec(html)?.[1] ?? "";
+    expect(card).toContain("سلتك فارغة");
+    expect(card).toMatch(/href="\/c\/consoles"/);
+    // «طلبت من قبل؟ تتبّع طلبك» after the card, not beside the key
+    expect(card).not.toContain("طلبت من قبل؟");
+    expect(html.indexOf("طلبت من قبل؟ تتبّع طلبك")).toBeGreaterThan(html.indexOf("empty--panel"));
+  });
+
+  test("note 8: the guest note is the kit's Note — the bag in its circle, the title, the muted line, «سجّل الدخول» on its own line; the fields in section cards with heads", async () => {
+    const cart = await cartWith();
+    const view = await getCartView(t.db, { cartToken: cart.cartToken, customerId: null, locale: "ar" }, NOW);
+    const page = await loadCheckoutData(t.db, { locale: "ar", now: NOW, customerId: null });
+    const html = renderPage(CheckoutPage, { path: "checkout", url: "/checkout", loaderData: { cart: view, page, customer: null, savedAddress: null, attemptKey: "k".repeat(22), demo: true, couponShortfall: null, i18n: pageStrings() } });
+    const note = /<div class="note">([\s\S]*?)<\/div><\/div>/.exec(html)?.[1] ?? "";
+    expect(note).toContain('data-icon="shopping-bag"');
+    expect(note).toMatch(/<p class="note__title">أكمل الطلب بدون حساب\.<\/p>/);
+    expect(note).toMatch(/class="note__action"><a[^>]*href="\/account\/login\?next=%2Fcheckout"/);
+    // not the v2 green strip
+    expect(html).not.toContain("co-guest");
+    // section cards with a head: the contact and the delivery
+    expect(html).toMatch(/<fieldset aria-labelledby="[^"]+" class="co-sec surface"><div class="co-sec__head">[\s\S]*?<h2[^>]*class="co-sec__title">بيانات التواصل<\/h2>/);
+    expect(html).toMatch(/class="co-sec__title">عنوان التوصيل<\/h2>/);
+    // the delivery fee under the governorate is a quiet note line, not a field hint
+    expect(html).toMatch(/class="note note--line"[\s\S]*?التوصيل <bdi class="nums">5,000/);
+  });
+
+  test("(b) a coupon below its minimum says how much more is needed — in ar, en and ckb", async () => {
+    // Found by QA: «مجموع سلتك أقل من الحد الأدنى لهذا الرمز.» said nothing of the minimum or of what is missing.
+    await t.db.insert(coupons).values({ id: "cpn_round1_min", code: "ROUND1MIN", kind: "fixed", value: 10_000, minSubtotalIqd: 100_000, isActive: true, createdAt: NOW - HOUR });
+    const cart = await cartWith({ priceIqd: 80_000 });
+    const request = { cartToken: cart.cartToken, customerId: null, locale: "ar" as const };
+    // the commerce core refuses it, and the page can say by how much: the core's own count of what reaches the minimum
+    await expect(applyCoupon(t.db, request, "round1min", NOW)).rejects.toMatchObject({ code: "coupon_min_subtotal" });
+    expect(await couponShortfall(t.db, request, "round1min", NOW)).toEqual({ code: "ROUND1MIN", minimumIqd: 100_000, moreIqd: 20_000 });
+    // nothing to explain for a code that does not exist
+    expect(await couponShortfall(t.db, request, "NOPE-NOPE", NOW)).toBeNull();
+    // exactly that much more, and the core takes the code
+    const extra = await make.product({ stock: 5, priceIqd: 20_000 });
+    const grown = await addToCart(t.db, request, { variantId: extra.variantId, qty: 1 }, NOW);
+    expect(await couponShortfall(t.db, request, "ROUND1MIN", NOW)).toBeNull();
+    expect((await applyCoupon(t.db, request, "ROUND1MIN", NOW)).coupon?.code).toBe("ROUND1MIN");
+
+    // The stored code stops applying when the cart drops under the minimum again: the cart page says what is missing,
+    // in every language.
+    const added = grown.view.lines.find((line) => line.variantId === extra.variantId);
+    await removeLine(t.db, request, added!.id, NOW);
+    const shortfall = await couponShortfall(t.db, request, "ROUND1MIN", NOW);
+    expect(shortfall).toEqual({ code: "ROUND1MIN", minimumIqd: 100_000, moreIqd: 20_000 });
+    const facts = await loadCartFacts(t.db);
+    const words: Record<Locale, RegExp> = { ar: /أضف منتجات بقيمة/, en: /add [^<]*20,000[^<]* more to use it/, ckb: /زیاد بکە/ };
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const view = await getCartView(t.db, { ...request, locale }, NOW);
+      expect(view.couponIssue).toMatchObject({ code: "ROUND1MIN", reason: "min_subtotal" });
+      const html = renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: view, facts, demo: true, recommendations: null, couponShortfall: shortfall, i18n: pageStrings(locale) }, locale });
+      expect(html, locale).toContain("100,000");
+      expect(html, locale).toContain("20,000");
+      expect(html, locale).toMatch(words[locale]);
+    }
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── client feedback round 1 (wave B): the review's findings
+
+describe("client feedback round 1: review fixes", () => {
+  test("a coupon's own words (the admin's Arabic text) stay out of English and Kurdish pages, and out of the summary's rows", async () => {
+    // Found by the review: «قسيمة تجريبية: خصم 10% بحد أقصى …» showed under «Discount code DEMO10» on /en, its full stop
+    // at the wrong end, and on Arabic pages as three muted lines between the discount rows.
+    await t.db.insert(coupons).values({ id: "cpn_round1_words", code: "WORDS5", kind: "fixed", value: 5_000, description: "قسيمة اختبار: خصم 5,000 د.ع مرة واحدة لكل زبون.", isActive: true, createdAt: NOW - HOUR });
+    const cart = await cartWith({ priceIqd: 80_000 });
+    const request = { cartToken: cart.cartToken, customerId: null, locale: "ar" as const };
+    await applyCoupon(t.db, request, "WORDS5", NOW);
+    const facts = await loadCartFacts(t.db);
+    const render = (view: unknown, locale: Locale) => renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: view, facts, demo: true, recommendations: null, couponShortfall: null, i18n: pageStrings(locale) }, locale });
+    for (const locale of ["en", "ckb"] as const) {
+      const view = await getCartView(t.db, { ...request, locale }, NOW);
+      expect(view.coupon?.label).toBe("قسيمة اختبار: خصم 5,000 د.ع مرة واحدة لكل زبون.");
+      const html = render(view, locale);
+      expect(html, locale).toContain("WORDS5");
+      expect(html, locale).not.toContain("قسيمة اختبار");
+    }
+    // Arabic: the words once, under the applied code in the coupon field — the summary's discount rows say only the code
+    const html = render(await getCartView(t.db, request, NOW), "ar");
+    expect(html.split("قسيمة اختبار").length - 1).toBe(1);
+    const rows = /<div class="co-adjust">[\s\S]*?<\/ul>/.exec(html)?.[0] ?? "";
+    expect(rows).toContain("WORDS5");
+    expect(rows).not.toContain("قسيمة اختبار");
+  });
+
+  test("the order's next step never says its title twice: the note's title is the state, its text what happens next", () => {
+    // Found by the review: the cancelled order's note read «أُلغي الطلب» / «أُلغي هذا الطلب.» (v2's status pill turned into
+    // the Note's bold title, over sentences written to follow a pill). The pairs OrderDetails' NextStep shows.
+    const pairs: [string, string][] = [["new", "new"], ["new", "cod"], ["confirmed", "confirmed"], ["confirmed", "wallet"], ["preparing", "preparing"], ["shipped", "shipped"], ["shipped", "shippedCod"], ["delivered", "delivered"], ["cancelled", "cancelled"], ["cancelled", "cancelledRefund"], ["returned", "returned"]];
+    const words = (text: string) => text.toLocaleLowerCase().replace(/[.,،؛:!?«»"]/g, " ").split(/\s+/).filter((word) => word.length >= 3);
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const order = (pageStrings(locale).checkout as { order: { status: Record<string, string>; next: Record<string, string> } }).order;
+      for (const [status, next] of pairs) {
+        const title = words(order.status[status] ?? "");
+        const text = (order.next[next] ?? "").toLocaleLowerCase();
+        expect(title.length, `${locale} ${status}`).toBeGreaterThan(0);
+        expect(title.every((word) => text.includes(word)), `${locale}: «${order.status[status]}» / «${order.next[next]}»`).toBe(false);
+      }
+    }
+  });
+
+  test("a coupon-minimum read that fails never takes the page down: the cart's clientAction answers instead of throwing", async () => {
+    // Found by the review: one dropped request after a coupon refusal put «لا يوجد اتصال بالإنترنت» (the error boundary)
+    // in place of the whole checkout — a fetcher's failed action goes to the route's boundary. The read only completes
+    // the refusal's sentence, so the coupon fields of the cart AND the checkout post it to the cart route, whose
+    // clientAction turns any failure into an answer.
+    const cartModule = (await import("~/routes/storefront/checkout/cart")) as { clientAction?: (args: unknown) => Promise<unknown> };
+    expect(typeof cartModule.clientAction).toBe("function");
+    const clientAction = cartModule.clientAction as (args: unknown) => Promise<unknown>;
+    const request = new Request("http://localhost/cart", { method: "POST", body: new URLSearchParams({ intent: "coupon-minimum", code: "DEMO5000" }) });
+    for (const failure of [new TypeError("Failed to fetch"), new Response("boom", { status: 500 })]) {
+      await expect(clientAction({ request, params: {}, serverAction: () => Promise.reject(failure) })).resolves.toMatchObject({ ok: false, code: "network" });
+    }
+    // an answer passes through as it came
+    const answer = { ok: true, shortfall: { code: "DEMO5000", minimumIqd: 100_000, moreIqd: 27_750 } };
+    await expect(clientAction({ request, params: {}, serverAction: () => Promise.resolve(answer) })).resolves.toEqual(answer);
+    // both coupon fields post the read to the cart route (the checkout's action never sees it)
+    const source = readFileSync("app/routes/storefront/checkout/components/CouponForm.tsx", "utf8");
+    expect(source).toMatch(/minimum\.submit\([^)]*\{\s*method:\s*"post",\s*action:\s*localePath\("\/cart",\s*locale\)\s*\}/);
+  });
+
+  test("what the shopper typed (an Arabic address on /en) is laid out in its own direction on the order page and the review", async () => {
+    // Found by the review: on /en the review's and the order page's icon rows showed «شارع 62، قرب جامع الكرادة، دار 14»
+    // in the page's left-to-right paragraph, its Arabic commas and the house number at the wrong ends of the line.
+    const order = await placed("cod");
+    const found = await findOrderForShopper(t.db, { ref: order.ref, token: order.accessToken, customerId: null, locale: "en", now: NOW });
+    const html = renderPage(OrderPage, { path: "order/:ref", url: `/order/${order.ref}?t=${order.accessToken}`, loaderData: { found, ref: order.ref, signedIn: false, recommendations: null, i18n: pageStrings("en") }, locale: "en" });
+    expect(html).toMatch(/<span dir="auto" class="co-typed">شارع 62، قرب جامع الكرادة، دار 14<\/span>/);
+    expect(html).toMatch(/<span dir="auto" class="co-typed">[^<]*الكرادة داخل<\/span>/);
+    // the review step of the checkout (the delivery card), the same rows
+    const cart = await cartWith();
+    const view = await getCartView(t.db, { cartToken: cart.cartToken, customerId: null, locale: "en" }, NOW);
+    const page = await loadCheckoutData(t.db, { locale: "en", now: NOW, customerId: null });
+    const posted = { ...draftToForm({ ...EMPTY_DRAFT, phone: "0770 123 4567", contactName: "علي", governorateId: governorateId("baghdad"), districtId: districtId("baghdad", "karrada"), areaText: "الكرادة داخل", addressText: "شارع 62، قرب جامع الكرادة، دار 14", notes: "الطابق الثاني", paymentMethod: "cod" }, { idempotencyKey: newAttemptKey(), expectedTotalIqd: 1 }) };
+    const review = renderPage(CheckoutPage, { path: "checkout", url: "/checkout?step=review", loaderData: { cart: view, page, customer: null, savedAddress: null, attemptKey: "k".repeat(22), demo: true, couponShortfall: null, i18n: pageStrings("en") }, actionData: { ok: false, code: "network", status: 0, values: posted }, locale: "en" });
+    for (const typed of ["علي", "شارع 62، قرب جامع الكرادة، دار 14", "الطابق الثاني"]) expect(review, typed).toContain(`<span dir="auto" class="co-typed">${typed}</span>`);
   });
 });

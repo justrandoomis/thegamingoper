@@ -22,6 +22,8 @@ const SYMPTOM_TERMS: Record<string, string[]> = {
   stick_drift: [
     "drift", "drifting", "drifts", "stick", "sticks", "joystick", "thumbstick", "analog", "analogue", "joy-con", "joycon", "moves by itself", "moves on its own", "moving on its own", "camera moves",
     "انحراف", "ينحرف", "تنحرف", "منحرف", "منحرفه", "عصا", "عصاه", "جويستك", "جوستك", "جويستيك", "انالوج", "يتحرك وحده", "تتحرك وحدها", "يمشي وحده", "تمشي وحدها", "الكاميرا تتحرك",
+    // "joy-con" the way it is written in Arabic (the Latin spellings above already point here)
+    "جويكون", "جوي كون",
     "لادان", "لادەدات", "لادەدا", "جۆیستیک", "خۆی دەجووڵێت", "خۆی دەڕوات",
   ],
   no_power: [
@@ -138,14 +140,32 @@ export type Interpretation =
   | { kind: "topic"; topic: string }
   | { kind: "none" };
 
+/** A text as the code patterns read it: upper case, Arabic-Indic digits Latin, long dashes as hyphens. */
+const codeText = (text: string) => text.toUpperCase().replace(/[٠-٩]/g, (d) => String(ARABIC_INDIC.indexOf(d))).replace(/[–—]/g, "-");
+/** A matched code as the store writes it: "0X80070005" → "0x80070005", others as they are (upper case). */
+const codeOf = (match: string) => (match.startsWith("0X") ? `0x${match.slice(2)}` : match);
+
 /** The error code in a text, upper case ("CE-108255-1", "0X80070005" → "0x80070005"), or null. */
 export function findErrorCode(text: string): string | null {
-  const upper = text.toUpperCase().replace(/[٠-٩]/g, (d) => String(ARABIC_INDIC.indexOf(d))).replace(/[–—]/g, "-");
+  const upper = codeText(text);
   for (const pattern of CODE_PATTERNS) {
     const match = pattern.exec(upper);
-    if (match) return match[1].startsWith("0X") ? `0x${match[1].slice(2)}` : match[1];
+    if (match) return codeOf(match[1]);
   }
   return null;
+}
+
+/**
+ * Every error code a text mentions (a guide's body — the help centre's search index lists them, so a code typed in the
+ * search box opens the guides that name it), each once, in the order of the patterns. Same shapes as findErrorCode.
+ */
+export function findErrorCodes(text: string): string[] {
+  const upper = codeText(text);
+  const found = new Set<string>();
+  for (const pattern of CODE_PATTERNS) {
+    for (const match of upper.matchAll(new RegExp(pattern.source, "g"))) found.add(codeOf(match[1]));
+  }
+  return [...found];
 }
 
 /**
@@ -235,6 +255,35 @@ const OPTIONAL_NAME_WORDS = new Set(["nintendo", "lenovo", "msi", "edition", "mo
 
 /** Words that make a variant of a model: a name that only lacks these is not specific enough ("Switch" vs "Switch Lite"). */
 const VARIANT_WORDS = new Set(["digital", "slim", "lite", "oled", "lcd", "pro", "x", "s", "2", "plus", "ai", "ex", "8", "a8"]);
+
+/** «البلايستيشن» → «بلايستيشن»: an Arabic article or conjunction in front of a name (the rest keeps ≥ 3 letters). */
+const NAME_PREFIX = /^(وال|بال|فال|كال|لل|ال|و|ب)(?=[^\s]{3,}$)/;
+
+/**
+ * The catalogue's words for the device and platform names a text spells the way shoppers write them («بلايستيشن» →
+ * "playstation", «سويتش لايت» → "switch", "lite", "ps5" → "playstation", "5"), each once — with an Arabic article or
+ * conjunction in front of the name too («البلايستيشن»). The help centre's search adds them to the shopper's own words,
+ * so «تجهيز البلايستيشن» finds "PlayStation 5" guides. Routing data: it can only point at names that exist. Pure.
+ */
+export function aliasWords(text: string): string[] {
+  const normalized = normalizeForMatch(text);
+  if (!normalized) return [];
+  const bare = ` ${normalized
+    .split(" ")
+    .map((token) => token.replace(NAME_PREFIX, ""))
+    .join(" ")} `;
+  const plain = ` ${normalized} `;
+  const out = new Set<string>();
+  for (const [spelling, words] of ALIASES) {
+    if (plain.includes(` ${spelling} `) || bare.includes(` ${spelling} `)) for (const word of words.split(" ")) out.add(word);
+  }
+  // "ps5" / "playstation5" glued to its digit
+  for (const match of normalized.matchAll(/\b(?:ps|playstation|switch)(\d)\b/g)) {
+    out.add(match[0].startsWith("switch") ? "switch" : "playstation");
+    out.add(match[1]);
+  }
+  return [...out];
+}
 
 /** The text's words with every known spelling of a name replaced by the catalogue's words. */
 function nameWords(text: string): string[] {

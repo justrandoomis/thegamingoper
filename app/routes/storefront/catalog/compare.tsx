@@ -14,6 +14,7 @@ import { useEffect, useId, useState, type CSSProperties, type ReactNode } from "
 import { useNavigate } from "react-router";
 
 import type { Route } from "./+types/compare";
+import { Icon } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { LocaleLink, useDir, useFormat, useLocalePath, useT } from "~/i18n/react";
 import { shellMeta } from "~/routes/storefront/shell/meta";
@@ -28,11 +29,12 @@ import { Switch } from "~/ui/Field";
 import { IconKey } from "~/ui/IconKey";
 import { Key } from "~/ui/Key";
 import { Niche } from "~/ui/Niche";
+import { Note } from "~/ui/Note";
 import { PriceTag } from "~/ui/PriceTag";
 import { ProductImage, wellKind } from "~/ui/ProductCard";
 import { StockNote } from "~/ui/StockNote";
 import { TextLink } from "~/ui/TextLink";
-import { PlatformName } from "./components/Hub";
+import { PlatformName, TitleRow } from "./components/Hub";
 import { compareHref, syncCompare, useCompare } from "./compare-client";
 import { MAX_COMPARE } from "./listing-model";
 import "./catalog.css";
@@ -89,12 +91,14 @@ function NothingToCompare({ asked }: { asked: number }) {
   }, [reopen, saved.ids, navigate, localePath]);
 
   // a list on this device (the link's products are gone): offer it — never «لا شيء للمقارنة بعد» beside a saved list.
-  // The picture is the mascot in its disc (v2 §4.23), as on the 404 — not an icon
+  // v2.1: on the kit's soft card, the scales large on their disc
   const state = (keep: boolean) => {
     const open = keep && saved.ids.length > 0;
     return (
       <EmptyState
         layout="stack"
+        panel
+        art={<Icon name="scales" size={44} className="text-red-ink" />}
         title={open ? t("compare.allGone") : t("compare.emptyTitle")}
         text={open ? undefined : t("compare.emptyText")}
         action={
@@ -107,7 +111,7 @@ function NothingToCompare({ asked }: { asked: number }) {
   };
   return (
     <div className="page catalog-page">
-      <h1 className="type-h1 text-ink">{t("compare.title")}</h1>
+      <TitleRow title={t("compare.title")} icon="scales" />
       {/* without script the saved list cannot be read: the empty state (the link's products gone, if it had any) */}
       <div className="catalog-nojs">
         {asked > 0 ? <p className="type-body text-ink-2">{t("compare.allGone")}</p> : null}
@@ -197,10 +201,9 @@ export default function ComparePage({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="page catalog-page">
-      <header className="catalog-title">
-        <h1 className="type-h1 text-ink">{t("compare.title")}</h1>
-        <p className="type-body text-ink-2">{t("compare.intro", { kind: t(`compare.kind.${comparison!.kind}`), max: f.number(MAX_COMPARE) })}</p>
-      </header>
+      <TitleRow title={t("compare.title")} icon="scales">
+        <p className="type-read text-ink-2">{t("compare.intro", { kind: t(`compare.kind.${comparison!.kind}`), max: f.number(MAX_COMPARE) })}</p>
+      </TitleRow>
 
       {comparison!.missing > 0 ? <p className="type-sm text-ink-2">{t("compare.missing", { count: comparison!.missing, n: f.number(comparison!.missing) })}</p> : null}
       {comparison!.otherKind.length > 0 ? <p className="type-sm text-ink-2">{t("compare.otherKind", { names: comparison!.otherKind.map((entry) => entry.name).join("، ") })}</p> : null}
@@ -273,7 +276,10 @@ export default function ComparePage({ loaderData }: Route.ComponentProps) {
         </table>
       </div>
       {differences && shown.length === 0 ? <p className="type-body text-ink-2">{t("compare.noDifferences")}</p> : null}
-      <p className="type-xs text-ink-2">{t("compare.sourceNote")}</p>
+      {/* what «غير موثّق» means: the kit's quiet line (v2.1 G5; at 13px it was the smallest text on the page) */}
+      <Note variant="line" icon="info">
+        {t("compare.sourceNote")}
+      </Note>
 
       {canAdd ? (
         <section id="catalog-compare-more" aria-labelledby="catalog-compare-more-title" className="grid grid-cols-[minmax(0,1fr)] gap-4">

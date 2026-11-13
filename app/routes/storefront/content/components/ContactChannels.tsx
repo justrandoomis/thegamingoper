@@ -43,7 +43,9 @@ export function ContactChannels({ channels, className }: { channels: readonly Co
       {channels.map((channel) => (
         <li key={channel.href}>
           <a href={channel.href} className="crow" data-press="soft" {...(channel.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
-            <Icon name={ICON[channel.kind]} size={20} mirror={false} className="crow__icon" />
+            <span className="clay-disc crow__disc" aria-hidden="true">
+              <Icon name={ICON[channel.kind]} size={20} mirror={false} />
+            </span>
             <span className="crow__copy">
               <span className="crow__title">{t(`contact.kind.${channel.kind}`)}</span>
               {/* the line follows the page's alignment; the value inside keeps its left-to-right order */}
@@ -58,7 +60,7 @@ export function ContactChannels({ channels, className }: { channels: readonly Co
                   <VisuallyHidden>{ui("link.external")}</VisuallyHidden>
                 </>
               ) : (
-                <Icon name="caret-right" size={18} />
+                <Icon name="caret-right" size={18} className="crow__go" />
               )}
             </span>
           </a>

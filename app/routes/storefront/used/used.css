@@ -135,19 +135,21 @@
       gap: var(--s-6) var(--s-8);
     }
   }
-  .used-rows > li + li {
-    padding-block-start: var(--s-5);
-    border-block-start: 1px solid var(--line);
+  /* v2.1: the row card is a soft raised card of its own now — the hairlines that used to part the rows are gone (they
+     drew a second line under every card) */
+
+  /* the estimate's ambient light (the kit's .glow behind its glass card) spreads above and below the card only: the
+     kit's default reaches 6% past its sides, wider than a phone's 16px gutter (horizontal scroll, measured) */
+  .used-estimate {
+    --glow-inset: -14% 0;
   }
-  @media (min-width: 64rem) {
-    .used-rows > li + li {
-      padding-block-start: 0;
-      border-block-start: 0;
-    }
-    .used-rows > li:nth-child(n + 3) {
-      padding-block-start: var(--s-6);
-      border-block-start: 1px solid var(--line);
-    }
+
+  /* ───────────────────────────── /used/:slug ───────────────────────────── */
+  /* the platform's ambient light behind the stage (the kit's .glow-layer, from 1024): kept within the page's gutter
+     sideways (no horizontal scroll), a little taller than the stage */
+  .used-stage-light {
+    --glow-inset: -8% -3%;
+    --glow-size: 72% 70%;
   }
 
   /* ───────────────────────────── /trade-in: the wizard ───────────────────────────── */
@@ -182,64 +184,171 @@
     }
   }
 
-  /* «قدّر السعر ← افحص الجهاز ← استلم رصيداً أو نقداً»: three steps in a row from 600, a column on narrow phones */
-  .used-journey {
-    display: grid;
-    gap: var(--s-3);
-    padding: var(--s-4);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
-    background: var(--paper);
-  }
-  .used-journey__step {
-    display: grid;
-    grid-template-columns: 40px minmax(0, 1fr);
-    align-items: center;
-    gap: var(--s-3);
-  }
-  .used-journey__icon {
-    display: grid;
-    place-items: center;
-    inline-size: 40px;
-    block-size: 40px;
-    border-radius: var(--r-full);
-    background: var(--red-tint);
-    color: var(--red-ink);
-  }
-  .used-journey__arrow {
-    display: none;
-  }
-  @media (min-width: 37.5rem) {
-    .used-journey {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--s-4);
+  /* «رجوع» | «تابع» and «ارفض» | «اقبل العرض» on narrow screens: Sorani's longer words put the primary 7–43px past a
+     320 screen's edge (400% zoom, a small phone) and cut «قبووڵی بکە» to «قبووڵی بـ…» at 360. The keys take the kit's
+     own padding knob down (--px, the property .key--sm sets) — Sorani below 390, every language below 360 — and the
+     row's gap tightens below 360 (the classes), so both keys stay whole on the bar (review 2026-11-13). */
+  @media (max-width: 24.37rem) {
+    :lang(ckb) .used-keys > .key {
+      --px: 14px;
     }
-    .used-journey__step {
-      position: relative;
-      grid-template-columns: 40px minmax(0, 1fr) 16px;
+  }
+  @media (max-width: 22.49rem) {
+    .used-keys > .key {
+      --px: 14px;
     }
-    .used-journey__arrow {
-      display: block;
-      color: var(--ink-3);
+    /* the decorative arrow or check gives the words their room (the kit cut «قبووڵی بکە» to «قبووڵی بـ…»); the
+       spinner of a key that is loading is not one of these */
+    .used-keys > .key > .key__cap > svg {
+      display: none;
     }
   }
 
-  /* the device tiles: the photo on the product ground, the name (two lines), a qualifier line when the name has one,
-     «حتى 350,000 د.ع · تقديري» */
-  .used-devices {
+  /* ── the start page (client note 10: the before's order; v2.1 sections under the tiles) ── */
+  .used-start {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--s-6) var(--gap-card);
+    align-content: start;
+    gap: var(--s-8);
+    min-inline-size: 0;
+  }
+  @media (min-width: 64rem) {
+    .used-start {
+      gap: var(--s-10);
+    }
+  }
+  /* the track card: after the start page's sections below 1280; beside them from 1280, staying in view */
+  .used-start__aside {
+    display: grid;
+    align-content: start;
+    min-inline-size: 0;
+  }
+  @media (min-width: 80rem) {
+    .used-start__aside {
+      position: sticky;
+      inset-block-start: calc(var(--shell-header-h) + var(--safe-top) + var(--s-4));
+      align-self: start;
+    }
+  }
+  .used-track {
+    display: grid;
+    gap: var(--s-4);
+    padding: var(--s-5);
+  }
+  .used-track__fields {
+    display: grid;
+    gap: var(--s-4);
+  }
+  /* two fields side by side where the card is wide (in the column, 600–1279); one under the other in the aside */
+  @media (min-width: 37.5rem) and (max-width: 79.99rem) {
+    .used-track {
+      padding: var(--s-6);
+    }
+    .used-track__fields {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+
+  /* a raised clay disc holding a red line icon — the before's raised circles, the reference's icon tiles (.clay-disc is
+     the kit's; this area only sizes it and gives the icon the brand's ink) */
+  .used-disc {
+    --disc: 44px;
+    color: var(--red-ink);
+  }
+  .used-disc--lg {
+    --disc: 56px;
+  }
+
+  /* «كيف يعمل الاستبدال»: three steps as an icon strip — clay discs joined by a line, the words centred under them */
+  .used-how {
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-3);
+  }
+  .used-how__step {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: var(--s-1);
+    min-inline-size: 0;
+    text-align: center;
+  }
+  /* the line from this disc to the next one (reading direction), behind the discs */
+  .used-how__step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset-block-start: 27px;
+    inset-inline-start: calc(50% + 36px);
+    inline-size: calc(100% + var(--s-3) - 72px);
+    block-size: 2px;
+    border-radius: var(--r-full);
+    background: var(--line-2);
+  }
+  .used-how__mark {
+    position: relative;
+    display: grid;
+    place-items: center;
+    margin-block-end: var(--s-2);
+  }
+  .used-how__n {
+    position: absolute;
+    inset-block-start: -4px;
+    inset-inline-end: -8px;
+    display: grid;
+    place-items: center;
+    min-inline-size: 24px;
+    block-size: 24px;
+    padding-inline: 4px;
+    border: 2px solid var(--ground);
+    border-radius: var(--r-full);
+    background: var(--ink);
+    color: var(--paper);
+    font: var(--type-xs-strong);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .used-how__title {
+    font: var(--type-card);
+    color: var(--ink);
+  }
+  .used-how__text {
+    max-inline-size: 26ch;
+    font: var(--type-sm);
+    color: var(--ink-2);
   }
   @media (min-width: 37.5rem) {
-    .used-devices {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    .used-how {
+      gap: var(--s-6);
     }
+    .used-how__step:not(:last-child)::after {
+      inline-size: calc(100% + var(--s-6) - 72px);
+    }
+    .used-how__text {
+      font: var(--type-read);
+    }
+  }
+
+  /* the device tiles — the before's picture tiles: three to a row on phones, four from 768 (the 720px column); the
+     photo on the product ground, the name (three lines at most), a qualifier line when the name has one, the estimate's
+     best case */
+  .used-devices {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-5) var(--s-3);
   }
   @media (min-width: 48rem) {
     .used-devices {
       grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--s-6) var(--gap-card);
     }
+  }
+  /* the platform's name beside its colour line (the before's group head) */
+  .used-group {
+    display: flex;
+    align-items: center;
+    min-block-size: 24px;
   }
   .used-device {
     display: grid;
@@ -259,8 +368,8 @@
   .used-device__name {
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     overflow: hidden;
     font: var(--type-card);
     color: var(--ink);
@@ -274,20 +383,203 @@
     font: var(--type-xs);
     color: var(--ink-2);
   }
-  @media (hover: hover) {
+  /* the photo's 1.03 growth on hover is the kit's own (`a:hover .niche .render`, fine pointers only) */
+  @media (hover: hover) and (pointer: fine) {
     .used-device:hover .used-device__name {
       text-decoration: underline;
       text-decoration-thickness: 1px;
       text-underline-offset: 4px;
     }
-    .used-device:hover .niche .render {
-      scale: 1.03;
-    }
+  }
+
+  /* the accessories question: each box a card like the option cards of the other questions (OptionCard + .surface) —
+     the whole card is the box's label (the kit's .choice fills it), chosen = the 2px ink ring, the ring of focus on the
+     card (review 2026-11-13; the kit's checkbox has no option-row form — docs/areas/used.md "Requests") */
+  .used-check {
+    padding-inline: var(--s-4);
+    border: 1px solid var(--line-strong);
+  }
+  .used-check > .choice {
+    align-items: center;
+    min-block-size: calc(var(--h-option) - 2px);
+    font: var(--type-card);
+  }
+  .used-check:has(> .choice > .choice__input:checked) {
+    padding-inline: calc(var(--s-4) - 1px);
+    border: 2px solid var(--ink);
+  }
+  .used-check:has(> .choice > .choice__input:checked) > .choice {
+    min-block-size: calc(var(--h-option) - 4px);
+  }
+  .used-check:has(> .choice > .choice__input:focus-visible) {
+    outline: var(--focus-w) solid var(--focus);
+    outline-offset: var(--focus-offset);
+  }
+  .used-check > .choice > .choice__input:focus-visible + .choice__box {
+    outline: none;
   }
 
   /* the photo drop area while a file is dragged over it */
   .used-photos__drop[data-dragging] {
     border-color: var(--ink);
     background: var(--niche);
+  }
+
+  /* ───────────────────────────── /trade-in/:ref ───────────────────────────── */
+  /* the final offer on the wallet band (crimson in light, deep crimson glass in dark — the kit's <Band kind="wallet">) */
+  .used-offer__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--s-4);
+  }
+  /* «صالح حتى …» / «العرض صالح حتى …»: a quiet pill in the surrounding ink, a veil of that ink behind it (on the
+     estimate's glass and on the offer's band alike) */
+  .used-date {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    justify-self: start;
+    min-block-size: 32px;
+    padding-inline: var(--s-3);
+    border-radius: var(--r-full);
+    background: color-mix(in oklab, currentColor 12%, transparent);
+    font: var(--type-sm-strong);
+  }
+  /* an estimate past its date: the warning's ink (never colour alone — the hourglass and the words say it) */
+  .used-date--warn {
+    color: var(--warn);
+  }
+  /* the inspection's lines: two columns from 768 (eleven lines are a long single file) */
+  @media (min-width: 48rem) {
+    .used-checks {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--s-6);
+    }
+  }
+  /* the payout cards' icon at their end */
+  .used-pay__icon {
+    --disc: 40px;
+    color: var(--red-ink);
+  }
+  /* the payout that cannot be chosen (store credit on a guest's request): its icon goes as quiet as its words — a red
+     icon on a greyed card read as a choice that works (review 2026-11-13) */
+  .choice:has(> .choice__input:disabled) .used-pay__icon {
+    color: var(--ink-3);
+  }
+  /* «قبلت العرض»: the mark that draws itself, the words beside it */
+  .used-done {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s-2) var(--s-4);
+  }
+
+  /* the request's progress: one vertical timeline (the steps, when each happened, what it brought) */
+  .used-timeline {
+    display: grid;
+  }
+  .used-timeline__row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: var(--s-3);
+    padding-block-end: var(--s-5);
+  }
+  .used-timeline__row:last-child {
+    padding-block-end: 0;
+  }
+  /* the line down to the next row: ink between steps that happened */
+  .used-timeline__row:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    inset-block: 40px 4px;
+    inset-inline-start: 17px;
+    inline-size: 2px;
+    border-radius: var(--r-full);
+    background: var(--line-2);
+  }
+  .used-timeline__row[data-state="done"]:not(:last-child)::before {
+    background: var(--ink);
+  }
+  .used-timeline__dot {
+    display: grid;
+    place-items: center;
+    inline-size: 36px;
+    block-size: 36px;
+    border-radius: var(--r-full);
+    border: 1.5px solid var(--line-strong);
+    background: var(--paper);
+    color: var(--ink-2);
+  }
+  [data-state="done"] > .used-timeline__dot {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  [data-state="ended"] > .used-timeline__dot {
+    border-color: var(--line-2);
+    background: var(--niche-2);
+  }
+  [data-state="current"] > .used-timeline__dot {
+    border: 0;
+    background: var(--key-face);
+    box-shadow: var(--e-disc);
+    color: var(--red-ink);
+  }
+  .used-timeline__body {
+    display: grid;
+    align-content: start;
+    gap: 2px;
+    min-inline-size: 0;
+    padding-block-start: 6px;
+  }
+}
+
+/*
+ * The before's labelled five-step rail (client note 10, v2.1): every step's word under its disc, on every width. The
+ * kit's rail keeps only the current word on phones (the others go to `.sr-only`, a utility), so these placement-only
+ * rules sit in the utilities layer and out-weigh it by specificity. The discs, their colours, the links and the
+ * reading order are the kit's. Kit request (docs/areas/used.md "Requests"): ProgressSteps `labels="under"`.
+ */
+@layer utilities {
+  .used-rail .steps {
+    align-items: flex-start;
+    gap: 0;
+  }
+  .used-rail .steps > li {
+    align-items: flex-start;
+    gap: 0;
+  }
+  .used-rail .step {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: var(--s-1);
+    min-inline-size: var(--target);
+    padding-block-start: 10px;
+    text-align: center;
+    white-space: normal;
+  }
+  .used-rail .step__label {
+    position: static;
+    inline-size: auto;
+    block-size: auto;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
+    white-space: normal;
+    overflow-wrap: normal;
+    font: var(--type-xs);
+  }
+  .used-rail .step[aria-current="step"] .step__label {
+    font: var(--type-xs-strong);
+  }
+  /* the join sits at the discs' middle (10px above the 24px disc + half of it) */
+  .used-rail .step__sep {
+    min-inline-size: 6px;
+    margin-block-start: 21px;
+    margin-inline: 2px;
   }
 }

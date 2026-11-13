@@ -17,16 +17,18 @@
 import { and, eq } from "drizzle-orm";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { createRoutesStub } from "react-router";
+import { createRoutesStub, RouterContextProvider } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { messagesFor } from "~/i18n/i18n.server";
 import { newId, randomToken } from "~/lib/ids";
 import type { Locale } from "~/lib/locales";
 import { splitQualifier } from "~/routes/storefront/used/names";
-import TradeIn from "~/routes/storefront/used/trade-in";
-import TradeInStatus from "~/routes/storefront/used/trade-in-status";
+import { shellChrome } from "~/routes/storefront/shell/chrome";
+import TradeIn, { action as tradeInAction } from "~/routes/storefront/used/trade-in";
+import TradeInStatus, { action as tradeInStatusAction, handle as tradeInStatusHandle } from "~/routes/storefront/used/trade-in-status";
 import { loadWizard } from "~/routes/storefront/used/trade-in.server";
-import { answeredQuestionSearch, filterGroups, searchText, wizardOrder } from "~/routes/storefront/used/wizard";
+import { answeredQuestionSearch, filterGroups, searchText, tradeInRefFromInput, wizardOrder } from "~/routes/storefront/used/wizard";
+import { requestContextMiddleware } from "~/server/context.server";
 import { files, tradeInEvents, tradeIns } from "~/server/db/schema";
 import { seedDemo } from "~/server/db/seed/demo";
 import { isDbError } from "~/server/db/tx.server";
@@ -217,6 +219,19 @@ describe("devices the store buys", () => {
     expect(readTradeInAnswers(new URLSearchParams(""), homeConsole).included).toBeUndefined();
     expect(firstUnanswered(homeConsole, { power: "works", body: "light" })).toBe("included");
     expect(firstUnanswered(homeConsole, bestAnswers(homeConsole))).toBeNull();
+  });
+
+  // v2.1 (client note 10): the start page's track card takes the request number as people type it, and posts straight
+  // to the request's page; the server's own reference check must agree with it on every input.
+  test("a request number as people type it: any case, spaces, the «TI-» left out, Arabic digits — or nothing", () => {
+    expect(tradeInRefFromInput("TI-7K4M2Q9X")).toBe("TI-7K4M2Q9X");
+    expect(tradeInRefFromInput("  ti-7k4m2q9x ")).toBe("TI-7K4M2Q9X");
+    expect(tradeInRefFromInput("ti 7k4m 2q9x")).toBe("TI-7K4M2Q9X");
+    expect(tradeInRefFromInput("7K4M2Q9X")).toBe("TI-7K4M2Q9X");
+    expect(tradeInRefFromInput("TI-٧K٤M٢Q٩X")).toBe("TI-7K4M2Q9X");
+    for (const bad of ["", "TI-", "TI-12", "TI-7K4M2Q9", "TI-7K4M2Q9XX", "TI-OK4M2Q9X", "TI-1K4M2Q9X", "TX-7K4M2Q9X", "<script>", null, 42]) expect(tradeInRefFromInput(bad), String(bad)).toBeNull();
+    // whatever the card accepts, the server accepts (and the other way round for the shapes it writes)
+    for (const typed of ["TI-7K4M2Q9X", "ti 7k4m 2q9x", "7K4M2Q9X", "TI-ZVPCEVNB"]) expect(normalizeTradeInRef(tradeInRefFromInput(typed))).toBe(tradeInRefFromInput(typed));
   });
 
   // Review 2026-11-12: a question's answer lived only in the NEXT step's URL, so the browser's Back showed the question
@@ -605,28 +620,54 @@ describe("the shopper's answer to a final offer", () => {
 
 // ───────────────────────────────────────────────────────────────── the pages (rendered)
 
-function renderPage(Component: unknown, path: string, entry: string, loaderData: unknown, locale: Locale): string {
+/** A page rendered as the server renders it; `actionData`: the answer of the form the shopper just sent. */
+function renderPage(Component: unknown, path: string, entry: string, loaderData: unknown, locale: Locale, actionData?: unknown): string {
   const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path, Component: Component as never }] }]);
   return renderToStaticMarkup(
     createElement(Stub, {
       initialEntries: [entry],
       hydrationData: {
         loaderData: { root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, storeMode: "demo", i18n: messagesFor(locale, "common", "ui", "ui-card", "ui-shop", "ui-overlays") }, page: loaderData as never },
+        ...(actionData === undefined ? {} : { actionData: { page: actionData as never } }),
       },
     }),
   );
 }
 
-async function wizardPage(search: string, locale: Locale = "ar"): Promise<string> {
+async function wizardPage(search: string, locale: Locale = "ar", actionData?: unknown): Promise<string> {
   const wizard = await loadWizard(t.db, locale, new URL(`http://tamtam.test/trade-in${search}`), null, NOW);
   const prefix = locale === "ar" ? "" : `/${locale}`;
-  return renderPage(TradeIn, ":locale?/trade-in", `${prefix}/trade-in${search}`, { ...wizard, meta: { title: "", description: "" }, i18n: messagesFor(locale, "used", "errors") }, locale);
+  return renderPage(TradeIn, ":locale?/trade-in", `${prefix}/trade-in${search}`, { ...wizard, validDays: wizard.view.step === "device" ? VALID_DAYS : null, meta: { title: "", description: "" }, i18n: messagesFor(locale, "used", "errors") }, locale, actionData);
+}
+
+/** The one `<input>` tag named `name` in rendered HTML. */
+const inputTag = (html: string, name: string): string => html.match(new RegExp(`<input[^>]*name="${name}"[^>]*>`))?.[0] ?? "";
+
+/** A route action called as the server calls it (the request context set up by the storefront's middleware). */
+async function postTo(path: string, handler: (args: never) => unknown, form: Record<string, string>, params: Record<string, string> = {}): Promise<unknown> {
+  const SITE = "http://localhost:5173";
+  const request = new Request(`${SITE}${path}`, { method: "POST", headers: { Origin: SITE, "CF-Connecting-IP": `198.51.100.${++phoneCounter % 250}` }, body: new URLSearchParams(form) });
+  const context = new RouterContextProvider();
+  const url = new URL(request.url);
+  let answer: unknown;
+  await requestContextMiddleware({ request, context, url, pattern: path, params } as never, async () => {
+    try {
+      answer = await (handler as (args: unknown) => unknown)({ request, context, params, url, pattern: path });
+    } catch (thrown) {
+      answer = thrown;
+    }
+    return new Response(null);
+  });
+  return answer;
 }
 
 describe("the wizard's pages (rendered)", () => {
   // QA 2026-11-12: the tiles' two-line clamp cut «PlayStation 5 Digital Edition (الطراز الأصلي…» — the part that tells
   // the original model from the Slim — and at 1440 in English "· estimate" started a line of its own.
-  test("device tiles: a qualifier on its own line under the name; the estimate never splits from its amount", async () => {
+  // v2.1 (changed on purpose): the tiles are three to a row on phones (~104px), where «365,000 د.ع · تقديري» bound in
+  // one run could not fit; the amount stays one unbreakable run and the word that says it is an estimate follows it
+  // with an ordinary space (Sorani: its comma) — it may take the next line, and there is no «·» left to start one.
+  test("device tiles: a qualifier on its own line under the name; the amount never splits, the estimate word follows it", async () => {
     expect(splitQualifier("PlayStation 5 Digital Edition (الطراز الأصلي 2020)")).toEqual({ base: "PlayStation 5 Digital Edition", qualifier: "الطراز الأصلي 2020" });
     expect(splitQualifier("PlayStation 5 (original 2020 model)")).toEqual({ base: "PlayStation 5", qualifier: "original 2020 model" });
     expect(splitQualifier("Nintendo Switch – OLED Model")).toEqual({ base: "Nintendo Switch – OLED Model", qualifier: null });
@@ -639,14 +680,75 @@ describe("the wizard's pages (rendered)", () => {
       expect(names.length, locale).toBe(devices.length);
       for (const name of names) expect(name, locale).not.toMatch(/[()]/);
       expect(html.match(/class="used-device__meta"/g)?.length ?? 0, locale).toBe(devices.filter((device) => splitQualifier(device.name).qualifier !== null).length);
-      // «حتى 300,000 د.ع · تقديري»: the amount is one unbreakable run, and «· تقديري» is bound to it
+      // «حتى 300,000 د.ع تقديرياً»: the amount is one unbreakable run; the estimate word follows it
       const amounts = [...html.matchAll(/class="used-device__up">(.*?)<\/span>/g)].map((match) => match[1]).filter((text) => text.includes("⁨"));
       expect(amounts.length, locale).toBe(devices.filter((device) => device.upToIqd !== null).length);
       for (const text of amounts) {
-        expect(text, locale).toMatch(/⁩ · /);
         expect(text.match(/⁨([^⁩]*)⁩/)?.[1], locale).not.toContain(" ");
+        expect(text, locale).toMatch(/⁩،? \S/);
+        expect(text, locale).not.toContain("·");
       }
     }
+  });
+
+  // v2.1, client note 10: the start page in the before's order — the title and its line, the labelled rail, «أي جهاز
+  // تريد استبداله؟» with the device search, the tiles under each platform's colour line — then what v2.1 adds.
+  test("the start page: the before's order, then how it works, what changes the price, the questions, the track card", async () => {
+    const html = await wizardPage("");
+    const at = (needle: string | RegExp) => {
+      const index = typeof needle === "string" ? html.indexOf(needle) : html.search(needle);
+      expect(index, String(needle)).toBeGreaterThanOrEqual(0);
+      return index;
+    };
+    const order = [at(/<h1\b/), at('href="#ti-track"'), at("used-rail"), at('id="ti-device"'), at('name="q"'), at("used-device"), at('id="ti-how"'), at('id="ti-price"'), at('id="ti-faq"'), at('id="ti-track"')];
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
+    // the rail: five numbered steps, each with its words
+    expect(html.match(/class="step__label/g)?.length).toBe(5);
+    // every platform's head is the colour line, not the dot
+    expect(html.match(/class="led led--bar"/g)?.length).toBe(new Set((await listTradeInDevices(t.db, "ar")).map((device) => device.platformSlug)).size);
+    // how it works: three steps; what changes the price: five rows; the questions: seven, the estimate's validity from
+    // the store's own setting (never a number written into the copy)
+    expect(html.match(/class="used-how__step"/g)?.length).toBe(3);
+    expect(html.match(/class="fact"/g)?.length).toBe(5);
+    expect(html.match(/<details\b/g)?.length).toBe(7);
+    expect(html).toContain(`يبقى صالحاً ${VALID_DAYS === 7 ? "7 أيام" : VALID_DAYS}`);
+    // the track card: without script it posts to the wizard (which passes it on), with the request number and phone
+    const card = html.slice(at('id="ti-track"'));
+    expect(card).toMatch(/<form[^>]*action="\/trade-in"/);
+    expect(card).toMatch(/<form[^>]*method="post"/);
+    expect(card).toContain('name="intent" value="lookup"');
+    expect(card).toContain('name="ref"');
+    expect(card).toContain('name="phone"');
+    // the start page's one key that is not a tile is a clay secondary: choosing a device is the page's job
+    expect(html).not.toContain("key--primary");
+  });
+
+  test("without script the track card is passed on to the request's page with its phone (307); a number that cannot be one is a field error", async () => {
+    const passed = await postTo("/trade-in", tradeInAction as never, { intent: "lookup", ref: "ti 7k4m 2q9x", phone: "07701234567" });
+    expect(passed).toBeInstanceOf(Response);
+    expect((passed as Response).status).toBe(307);
+    expect((passed as Response).headers.get("Location")).toBe("/trade-in/TI-7K4M2Q9X");
+    const english = await postTo("/en/trade-in", tradeInAction as never, { intent: "lookup", ref: "TI-7K4M2Q9X", phone: "07701234567" });
+    expect((english as Response).headers.get("Location")).toBe("/en/trade-in/TI-7K4M2Q9X");
+    const refused = (await postTo("/trade-in", tradeInAction as never, { intent: "lookup", ref: "TI-12", phone: "07701234567" })) as { data: { intent: string; ok: boolean; fields: { ref: string } } };
+    expect(refused.data).toMatchObject({ intent: "lookup", ok: false, fields: { ref: expect.stringContaining("TI-7K4M2Q9X") } });
+    // Review 2026-11-13: the card answered with both fields emptied — what was typed comes back and stays in the card
+    expect(refused.data).toMatchObject({ values: { ref: "TI-12", phone: "07701234567" } });
+    const html = await wizardPage("", "ar", refused.data);
+    const card = html.slice(html.indexOf('id="ti-track"'));
+    expect(inputTag(card, "ref")).toContain('value="TI-12"');
+    expect(inputTag(card, "phone")).toContain('value="07701234567"');
+    expect(inputTag(card, "ref")).toContain('aria-invalid="true"');
+  });
+
+  // Review 2026-11-13: «امسح البحث» was a button that only cleared the field with script (without it a `?q=` search had
+  // no way back), and focus fell to the page's body when the no-match state it lives in went away.
+  test("the device search's «clear» is a link to the whole list (it clears in place with script)", async () => {
+    const html = await wizardPage("?q=zzz");
+    expect(html.match(/class="used-device /g)).toBeNull();
+    const clear = html.match(/<a\b[^>]*>(?:(?!<\/a>)[\s\S])*امسح البحث(?:(?!<\/a>)[\s\S])*<\/a>/)?.[0] ?? "";
+    expect(clear).toContain('href="/trade-in"');
+    expect(clear).toContain("key");
   });
 
   // QA 2026-11-12: after «تابع» focus stayed on the task bar's key: nothing told a screen reader the question changed.
@@ -662,6 +764,28 @@ describe("the wizard's pages (rendered)", () => {
     }
   });
 
+  // Review 2026-11-13: the start page's track card posts to the request's page, so a lookup that found nothing arrives on
+  // a page of its own — the phone came back empty, and the reference (the page's address) could not be changed there.
+  test("a lookup that found nothing keeps the phone as typed and leads back to the track card for another number", async () => {
+    const made = await createTradeIn(t.db, who(), input(homeConsole), NOW);
+    const answer = (await postTo(`/trade-in/${made.ref}`, tradeInStatusAction as never, { intent: "lookup", phone: "0770 999 9999" }, { ref: made.ref })) as Record<string, unknown>;
+    expect(answer).toMatchObject({ intent: "lookup", ok: false, code: "not_found", phone: "0770 999 9999" });
+    const loaderData = { ref: made.ref, view: null, created: false, meta: { title: "" }, i18n: messagesFor("ar", "used", "errors") };
+    const html = renderPage(TradeInStatus, ":locale?/trade-in/:ref", `/trade-in/${made.ref}`, loaderData, "ar", answer);
+    expect(inputTag(html, "phone")).toContain('value="0770 999 9999"');
+    expect(html).toContain('role="alert"');
+    expect(html).toContain('href="/trade-in#ti-track"');
+    // an unreadable number is the field's error, with what was typed
+    const unreadable = (await postTo(`/trade-in/${made.ref}`, tradeInStatusAction as never, { intent: "lookup", phone: "12" }, { ref: made.ref })) as { data: Record<string, unknown> };
+    expect(unreadable.data).toMatchObject({ intent: "lookup", ok: false, phone: "12", fields: { phone: expect.any(String) } });
+    expect(inputTag(renderPage(TradeInStatus, ":locale?/trade-in/:ref", `/trade-in/${made.ref}`, loaderData, "ar", unreadable.data), "phone")).toContain('value="12"');
+  });
+
+  // Review 2026-11-13: offline, the request's page said «سلتك محفوظة…» (the store's words) above its lookup and answer forms.
+  test("the request's page is built around its forms: offline, the shell keeps the form's words", () => {
+    expect(shellChrome([{ id: "page", handle: tradeInStatusHandle }], { path: "/trade-in/TI-7K4M2Q9X" })).toMatchObject({ chrome: "store", offline: "form", task: true });
+  });
+
   // QA 2026-11-12: the tracking page tagged a trade-in request "Demo order" (the generic order tag).
   test("the tracking page tags a demo request as a request", async () => {
     const made = await createTradeIn(t.db, who(), input(homeConsole), NOW);
@@ -672,5 +796,61 @@ describe("the wizard's pages (rendered)", () => {
       expect(html, locale).toContain(words);
       if (never) expect(html, locale).not.toContain(never);
     }
+  });
+  // v2.1, client note 12 (the new trade-in offer screen): the offer on the wallet band, counting up once; what the
+  // inspection found with an icon per line, the problems first; the payout as option cards with their icons; one red
+  // primary (one key drawn in the column from 1024 and in the task bar below it); one timeline of what each step brought.
+  test("the offer screen: the band, the inspection with problems first, the payout cards, one primary, one timeline", async () => {
+    const made = await createTradeIn(t.db, who(), input(withScreen), NOW);
+    const [template] = await rows<{ id: string; items: string }>("SELECT id, items FROM inspection_templates WHERE is_active = 1 AND device_kind = ? ORDER BY version DESC LIMIT 1", withScreen.kind);
+    const lines = (JSON.parse(template.items) as { key: string; input: string }[]).filter((item) => item.input === "pass_fail");
+    const checklist = { templateId: template.id, completedAt: NOW, completedBy: "emp_TEST", items: lines.map((line, index) => ({ key: line.key, result: index === lines.length - 1 ? "fail" : "pass" })) };
+    await t.db
+      .update(tradeIns)
+      .set({ status: "offered", finalOfferIqd: 350_000, offeredBy: "emp_TEST", offeredAt: NOW, offerExpiresAt: NOW + 7 * 86_400_000, inspection: { checklist, grade: "A", inspectedAt: NOW } as never })
+      .where(eq(tradeIns.id, made.tradeInId));
+    await t.db.insert(tradeInEvents).values([
+      { id: newId("tie"), tradeInId: made.tradeInId, kind: "inspected", data: { grade: "A" }, actorKind: "employee", actorId: "emp_TEST", at: NOW + 1 },
+      { id: newId("tie"), tradeInId: made.tradeInId, kind: "offered", data: { amountIqd: 350_000, grade: "A", passed: lines.length - 1, failed: 1, included: [] }, actorKind: "employee", actorId: "emp_TEST", at: NOW + 2 },
+    ]);
+    const view = (await getTradeInByRef(t.db, made.ref, { accessToken: made.accessToken }, "ar", NOW + 1000))!;
+    const loaderData = { ref: made.ref, view: { ...view, questions: questionsFor(view.device) }, created: false, meta: { title: "" }, i18n: messagesFor("ar", "used", "errors") };
+    const html = renderPage(TradeInStatus, ":locale?/trade-in/:ref", `/trade-in/${made.ref}?t=${made.accessToken}`, loaderData, "ar");
+    expect(html).toContain("band--wallet");
+    expect(html).toMatch(/class="count"/);
+    expect(html).toContain("350,000");
+    // the problem first, then the lines that passed
+    // (changed on purpose in the review, 2026-11-13: on phones the problems stay in sight and the whole list sits in a
+    // disclosure — eleven mostly green lines stood ~950px between the offer and the answer; from 768 the whole list.
+    // So the page holds the list twice — one copy is display:none at any width — and the problems once more.)
+    const rowsIn = (part: string) => [...part.matchAll(/class="inspect__row">(.*?)<\/li>/g)].map((match) => match[1]);
+    const inspection = html.slice(html.indexOf("data-inspection-result"), html.indexOf("سلّمت معه:"));
+    const phones = inspection.slice(inspection.indexOf('class="grid md:hidden"'), inspection.indexOf('class="max-md:hidden"'));
+    const wide = inspection.slice(inspection.indexOf('class="max-md:hidden"'));
+    const inSight = rowsIn(phones.slice(0, phones.indexOf("<details")));
+    const tucked = rowsIn(phones.slice(phones.indexOf("<details")));
+    expect(inSight.length).toBe(1);
+    expect(inSight[0]).toContain("text-warn");
+    expect(phones).toMatch(/<details\b[^>]*>(?:(?!<\/summary>)[\s\S])*كل بنود الفحص/);
+    for (const checkRows of [tucked, rowsIn(wide)]) {
+      expect(checkRows.length).toBe(lines.length);
+      expect(checkRows[0]).toContain("text-warn");
+      expect(checkRows.slice(1).every((row) => row.includes("text-ok"))).toBe(true);
+    }
+    // review 2026-11-13: one rule between the checklist and what was handed over — the list's own last line (the line
+    // above «سلّمت معه» drew a second one 16px under it)
+    const handedOver = html.indexOf("سلّمت معه:");
+    expect(handedOver).toBeGreaterThan(html.lastIndexOf('class="inspect__row"'));
+    const included = html.slice(html.lastIndexOf("<p", handedOver), handedOver);
+    expect(included).toMatch(/^<p\b/);
+    expect(included).not.toContain("border-t");
+    // the payout cards with their icons; the answer's primary is the same key in the column and in the bar
+    expect(html.match(/class="clay-disc used-pay__icon"/g)?.length).toBe(2);
+    expect(html.match(/key--primary/g)?.length).toBe(2);
+    // the timeline: received; the appointment and the inspection (done once inspected, a walk-in has no appointment);
+    // the offer; the shopper's turn now; the payout later
+    const states = [...html.matchAll(/class="used-timeline__row" data-state="(\w+)"/g)].map((match) => match[1]);
+    expect(states).toEqual(["done", "done", "done", "done", "current", "upcoming"]);
+    expect(html).toContain('aria-current="step"');
   });
 });

@@ -1,8 +1,9 @@
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 
-import { Icon } from "~/art/Icon";
+import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import type { CartView } from "~/lib/dto";
+import { CountUp } from "~/motion";
 import type { FlashPriceView } from "~/server/services/orders/types";
 import { isolate } from "~/ui/BidiText";
 import type { CartEditor } from "~/ui/cart-client";
@@ -12,6 +13,7 @@ import { Disclosure } from "~/ui/Disclosure";
 import { Checkbox, FieldGroup, OptionCard, Select, TextArea, TextField } from "~/ui/Field";
 import { GovernoratePicker } from "~/ui/GovernoratePicker";
 import { Key } from "~/ui/Key";
+import { Note } from "~/ui/Note";
 import { PreferencePicker, type Period } from "~/ui/PreferencePicker";
 import { fillNodes, iqdText } from "~/ui/PriceTag";
 import { TextLink } from "~/ui/TextLink";
@@ -20,14 +22,20 @@ import { isTransferMethod, OTHER_DISTRICT, optionValue, parsePoints, type Checko
 import type { CheckoutPageData } from "../checkout.server";
 import { withFlash } from "./Adjustments";
 import type { CartWithIssue } from "./CouponForm";
+import { Fact, Typed } from "./Fact";
 import { TransferDetails } from "./TransferDetails";
 
 /**
- * The three checkout steps (Design System v2 §6.10; brief §4): the delivery (contact, address, the preferred time,
- * the consent), the payment method, the review. They are plain views of the page's draft: every change goes up
- * through `onChange`, every blur through `onBlur`, and the page decides which issues to show (checked on blur,
- * re-checked on every keystroke once one shows). Field ids are `co-<field>`, so the page can move focus to the first
- * field with a problem and the error summary can link to it.
+ * The three checkout steps (Design System v2 §6.10; brief §4; v2.1 «Clay & Glass», client note 8): the delivery
+ * (contact, address, the preferred time, the consent), the payment method, the review. They are plain views of the
+ * page's draft: every change goes up through `onChange`, every blur through `onBlur`, and the page decides which issues
+ * to show (checked on blur, re-checked on every keystroke once one shows). Field ids are `co-<field>`, so the page can
+ * move focus to the first field with a problem and the error summary can link to it.
+ *
+ * Arrangement (client note 8, "more arrangement"): each step's fields sit in soft section cards (`.surface`) under a
+ * clear head — the icon in a clay circle, the name in Kufam (`Section`); side information is the kit's Note (the
+ * delivery fee under the governorate, the saved address, the transfer rule, the card warning); the review is icon rows
+ * (phone, recipient, place, address, time) with clay «عدّل» keys, and the items with their pictures.
  *
  * Without script (the page renders all three steps and one plain post places the order) every control is native: the
  * governorate is a <select> there (the picker sheet needs script), the time cells, the payment option cards and the
@@ -43,6 +51,8 @@ export type StepProps = {
   /** The cart as priced now (the total a wallet must cover, the lines under review). */
   cart: CartView;
   signedIn: boolean;
+  /** The level of the section heads: one under the step's own heading (2 under the page's h1). Default 2. */
+  headingLevel?: 2 | 3;
 };
 
 export const fieldId = (name: FieldName) => `co-${name}`;
@@ -61,6 +71,50 @@ export function useIssueText(): (name: FieldName, issue: FieldIssue | undefined)
   };
 }
 
+/**
+ * A soft section card under a clear head (client note 8): the icon in a raised clay circle, the name in Kufam, an
+ * optional key at the end («عدّل»). A <fieldset> named by its head when it groups fields, a <section> when it shows
+ * them back (the review).
+ */
+function Section({
+  as = "fieldset",
+  id,
+  icon,
+  title,
+  level = 2,
+  end,
+  className,
+  children,
+}: {
+  as?: "fieldset" | "section";
+  id?: string;
+  icon: IconName;
+  title: ReactNode;
+  level?: 2 | 3;
+  end?: ReactNode;
+  className?: string;
+  children: ReactNode;
+}) {
+  const own = useId();
+  const headId = id ?? own;
+  const Tag = as;
+  const H = `h${level}` as const;
+  return (
+    <Tag aria-labelledby={headId} className={cx("co-sec surface", className)}>
+      <div className="co-sec__head">
+        <span className="clay-disc co-sec__disc" aria-hidden="true">
+          <Icon name={icon} size={20} />
+        </span>
+        <H id={headId} className="co-sec__title">
+          {title}
+        </H>
+        {end ? <span className="co-sec__end">{end}</span> : null}
+      </div>
+      {children}
+    </Tag>
+  );
+}
+
 // ───────────────────────────────────────────────────────────────── 1. delivery
 
 export type AddressStepProps = StepProps & {
@@ -71,14 +125,14 @@ export type AddressStepProps = StepProps & {
   offerSave?: boolean;
 };
 
-export function AddressStep({ draft, issues, onChange, onBlur, data, signedIn, saved, onClearSaved, offerSave = false }: AddressStepProps) {
+export function AddressStep({ draft, issues, onChange, onBlur, data, signedIn, saved, onClearSaved, offerSave = false, headingLevel = 2 }: AddressStepProps) {
   const t = useT("checkout");
   const f = useFormat();
   const issueText = useIssueText();
   const districts = draft.governorateId ? (data.districts[draft.governorateId] ?? []) : [];
   const chosen = data.governorates.find((g) => g.id === draft.governorateId) ?? null;
   const fee = (amount: number) => <bdi className="nums">{f.iqd(amount)}</bdi>;
-  const feeHint = data.shipping.overridesEnabled ? (chosen && chosen.feeIqd !== null ? fillNodes(t("address.feeChosen"), { fee: fee(chosen.feeIqd) }) : t("address.feeVaries")) : fillNodes(t("address.feeFlat"), { fee: fee(data.shipping.flatFeeIqd) });
+  const feeLine = data.shipping.overridesEnabled ? (chosen && chosen.feeIqd !== null ? fillNodes(t("address.feeChosen"), { fee: fee(chosen.feeIqd) }) : t("address.feeVaries")) : fillNodes(t("address.feeFlat"), { fee: fee(data.shipping.flatFeeIqd) });
   const text = (name: FieldName) => ({
     id: fieldId(name),
     name,
@@ -90,54 +144,67 @@ export function AddressStep({ draft, issues, onChange, onBlur, data, signedIn, s
   const governorateError = issueText("governorateId", issues.governorateId);
 
   return (
-    <div className="grid gap-8">
-      <fieldset className="co-group">
-        <legend className="co-group__title">{t("address.contact")}</legend>
+    <div className="co-sections">
+      <Section icon="phone" title={t("address.contact")} level={headingLevel}>
         <TextField {...text("phone")} type="tel" inputMode="tel" autoComplete="tel-national" enterKeyHint="next" maxLength={40} label={t("address.phone")} required hint={t("address.phoneHint")} />
         <TextField {...text("contactName")} autoComplete="name" enterKeyHint="next" maxLength={100} label={t("address.name")} optional hint={signedIn ? t("address.nameHintSignedIn") : t("address.nameHint")} />
-      </fieldset>
+        {/* «أرسل لي العروض على هذا الرقم»: about the number above, never ticked for the shopper */}
+        <Checkbox
+          id={fieldId("marketingConsent")}
+          name="marketingConsent"
+          checked={draft.marketingConsent}
+          onChange={(event) => onChange("marketingConsent", event.currentTarget.checked)}
+          label={t("review.consent")}
+          hint={t("review.consentHint")}
+        />
+      </Section>
 
-      <fieldset className="co-group">
-        <legend className="co-group__title">{t("address.delivery")}</legend>
+      <Section icon="map-pin" title={t("address.delivery")} level={headingLevel}>
         {saved ? (
           // the account area's default address filled these in — a starting point the shopper may change or drop
-          <div className="co-note" role="note">
-            <p className="flex min-w-0 flex-1 items-start gap-2">
-              <Icon name="map-pin" size={16} className="mt-0.5 shrink-0 text-ink-2" />
-              <span>{saved.label ? t("address.savedNamed", { label: saved.label }) : t("address.saved")}</span>
-            </p>
-            {onClearSaved ? (
-              <TextLink as="button" type="button" arrow={false} onClick={onClearSaved}>
-                {t("address.savedClear")}
-              </TextLink>
-            ) : null}
-          </div>
+          <Note
+            variant="flat"
+            icon="map-pin"
+            action={
+              onClearSaved ? (
+                <TextLink as="button" type="button" arrow={false} onClick={onClearSaved}>
+                  {t("address.savedClear")}
+                </TextLink>
+              ) : undefined
+            }
+          >
+            {saved.label ? t("address.savedNamed", { label: saved.label }) : t("address.saved")}
+          </Note>
         ) : null}
-        {/* with script: the picker (a sheet with 52px rows and the fee on top); without: the native list */}
-        <GovernoratePicker
-          id={fieldId("governorateId")}
-          className="co-js"
-          label={t("address.governorate")}
-          required
-          placeholder={t("address.governoratePlaceholder")}
-          governorates={data.governorates.map((g) => ({ id: g.id, name: g.name, unserved: g.feeIqd === null }))}
-          value={draft.governorateId || null}
-          onChange={(id) => onChange("governorateId", id)}
-          feeIqd={data.shipping.overridesEnabled ? null : data.shipping.flatFeeIqd}
-          hint={feeHint}
-          error={governorateError}
-        />
-        <Select
-          {...text("governorateId")}
-          id={NOJS_GOVERNORATE_ID}
-          className="co-nojs"
-          autoComplete="address-level1"
-          label={t("address.governorate")}
-          required
-          placeholder={t("address.governoratePlaceholder")}
-          options={data.governorates.map((g) => ({ value: g.id, label: g.name, disabled: g.feeIqd === null }))}
-          hint={feeHint}
-        />
+        <div className="co-field-note">
+          {/* with script: the picker (a sheet with 52px rows and the fee on top); without: the native list */}
+          <GovernoratePicker
+            id={fieldId("governorateId")}
+            className="co-js"
+            label={t("address.governorate")}
+            required
+            placeholder={t("address.governoratePlaceholder")}
+            governorates={data.governorates.map((g) => ({ id: g.id, name: g.name, unserved: g.feeIqd === null }))}
+            value={draft.governorateId || null}
+            onChange={(id) => onChange("governorateId", id)}
+            feeIqd={data.shipping.overridesEnabled ? null : data.shipping.flatFeeIqd}
+            error={governorateError}
+          />
+          <Select
+            {...text("governorateId")}
+            id={NOJS_GOVERNORATE_ID}
+            className="co-nojs"
+            autoComplete="address-level1"
+            label={t("address.governorate")}
+            required
+            placeholder={t("address.governoratePlaceholder")}
+            options={data.governorates.map((g) => ({ value: g.id, label: g.name, disabled: g.feeIqd === null }))}
+          />
+          {/* the delivery fee under the governorate: the kit's quiet note line (client note 8) */}
+          <Note variant="line" icon="truck">
+            {feeLine}
+          </Note>
+        </div>
         <Select
           {...text("districtId")}
           autoComplete="address-level2"
@@ -151,28 +218,18 @@ export function AddressStep({ draft, issues, onChange, onBlur, data, signedIn, s
         <TextField {...text("areaText")} autoComplete="address-level3" enterKeyHint="next" maxLength={200} label={t("address.area")} required hint={t("address.areaHint")} />
         <TextArea {...text("addressText")} autoComplete="street-address" maxLength={500} rows={3} label={t("address.address")} required hint={t("address.addressHint")} />
         <TextArea {...text("notes")} maxLength={500} rows={2} label={t("address.notes")} optional hint={t("address.notesHint")} />
-      </fieldset>
 
-      {/* the period alone until the owner configures dispatch days (data.days is empty then) — never a promise */}
-      <PreferencePicker
-        name="preferredWindow"
-        value={(draft.preferredWindow || "any") as Period}
-        onChange={(period) => onChange("preferredWindow", period === "any" ? "" : period)}
-        days={data.days.map((day) => ({ value: day.value, label: day.weekday }))}
-        dayName="preferredDay"
-        dayValue={draft.preferredDay || null}
-        onDayChange={(day) => onChange("preferredDay", day)}
-      />
-
-      <div className="grid gap-2">
-        <Checkbox
-          id={fieldId("marketingConsent")}
-          name="marketingConsent"
-          checked={draft.marketingConsent}
-          onChange={(event) => onChange("marketingConsent", event.currentTarget.checked)}
-          label={t("review.consent")}
-          hint={t("review.consentHint")}
+        {/* the period alone until the owner configures dispatch days (data.days is empty then) — never a promise */}
+        <PreferencePicker
+          name="preferredWindow"
+          value={(draft.preferredWindow || "any") as Period}
+          onChange={(period) => onChange("preferredWindow", period === "any" ? "" : period)}
+          days={data.days.map((day) => ({ value: day.value, label: day.weekday }))}
+          dayName="preferredDay"
+          dayValue={draft.preferredDay || null}
+          onDayChange={(day) => onChange("preferredDay", day)}
         />
+
         {signedIn && offerSave ? (
           <Checkbox
             id={fieldId("saveAddress")}
@@ -183,14 +240,14 @@ export function AddressStep({ draft, issues, onChange, onBlur, data, signedIn, s
             hint={t("address.saveAddressHint")}
           />
         ) : null}
-      </div>
+      </Section>
     </div>
   );
 }
 
 // ───────────────────────────────────────────────────────────────── 2. payment
 
-export function PaymentStep({ draft, issues, onChange, onBlur, data, cart, signedIn }: StepProps) {
+export function PaymentStep({ draft, issues, onChange, onBlur, data, cart, signedIn, headingLevel = 2 }: StepProps) {
   const t = useT("checkout");
   const f = useFormat();
   const issueText = useIssueText();
@@ -225,7 +282,7 @@ export function PaymentStep({ draft, issues, onChange, onBlur, data, cart, signe
   }
 
   return (
-    <div className="grid gap-5">
+    <div className="co-sections">
       <FieldGroup legend={t("payment.legend")} required error={issueText("paymentMethod", issues.paymentMethod)}>
         {methods.cod ? option("cod", t("payment.cod"), t("payment.codHint"), t("payment.codMark")) : null}
         {methods.wallet && signedIn ? option("wallet", t("payment.wallet"), <WalletBalance compact balanceIqd={walletBalance} payIqd={cart.totalIqd} />, t("payment.walletMark"), walletShort) : null}
@@ -234,13 +291,17 @@ export function PaymentStep({ draft, issues, onChange, onBlur, data, cart, signe
       </FieldGroup>
 
       {methods.wallet && !signedIn ? (
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 type-xs text-ink-2">
-          <Icon name="wallet" size={16} />
+        <Note
+          variant="line"
+          icon="wallet"
+          action={
+            <TextLink as={LocaleLink} to="/account/login?next=%2Fcheckout%3Fstep%3Dpayment">
+              {t("payment.walletSignIn")}
+            </TextLink>
+          }
+        >
           {t("payment.walletGuest")}
-          <TextLink as={LocaleLink} to="/account/login?next=%2Fcheckout%3Fstep%3Dpayment" inline>
-            {t("payment.walletSignIn")}
-          </TextLink>
-        </p>
+        </Note>
       ) : null}
 
       {canSplit && walletBalance !== null ? (
@@ -255,61 +316,57 @@ export function PaymentStep({ draft, issues, onChange, onBlur, data, cart, signe
         />
       ) : null}
 
-      {signedIn ? <PointsBox draft={draft} issues={issues} onChange={onChange} onBlur={onBlur} cart={cart} /> : null}
-
       {isTransferMethod(draft.paymentMethod) ? (
-        <section aria-labelledby="co-transfer" className="co-card grid gap-4">
-          <h2 id="co-transfer" className="type-h3 text-ink">
-            {t("payment.transferTitle")}
-          </h2>
+        <Section as="section" id="co-transfer" icon="bank" title={t("payment.transferTitle")} level={headingLevel}>
           <ol className="co-tsteps">
             <li>
-              <span className="co-tsteps__n" aria-hidden="true">
+              <span className="clay-disc co-tsteps__n" aria-hidden="true">
                 {f.number(1)}
               </span>
               <span>{t("payment.transferConfirm")}</span>
             </li>
             <li>
-              <span className="co-tsteps__n" aria-hidden="true">
+              <span className="clay-disc co-tsteps__n" aria-hidden="true">
                 {f.number(2)}
               </span>
               <span>{fillNodes(t("payment.transferSend"), { total: <bdi className="nums font-semibold">{f.iqd(toPay)}</bdi> })}</span>
             </li>
             <li>
-              <span className="co-tsteps__n" aria-hidden="true">
+              <span className="clay-disc co-tsteps__n" aria-hidden="true">
                 {f.number(3)}
               </span>
               <span>{t("payment.transferUpload")}</span>
             </li>
           </ol>
-          <p className="flex items-start gap-2 type-sm-strong text-ink">
-            <Icon name="info" size={20} className="shrink-0 text-info" />
-            <span>
-              {t("payment.transferRule")} <span className="font-normal text-ink-2">{t("payment.transferHold", { hours: f.number(data.proofHours) })}</span>
-            </span>
-          </p>
-          <h3 className="type-sm-strong text-ink">{t("payment.transferWhere")}</h3>
+          {/* the rule, the before's calm way (client note 8): the kit's Note, info tone, flat inside this card */}
+          <Note variant="flat" tone="info" icon="hourglass" title={t("payment.transferRule")}>
+            {t("payment.transferHold", { hours: f.number(data.proofHours) })}
+          </Note>
+          {/* one level under the card's head (h3 under its h2 on screen; h4 without script, where the step is an h2) */}
+          {headingLevel === 2 ? <h3 className="type-sm-strong text-ink">{t("payment.transferWhere")}</h3> : <h4 className="type-sm-strong text-ink">{t("payment.transferWhere")}</h4>}
           <TransferDetails
             destination={draft.paymentMethod === "bank_transfer" ? { method: "bank_transfer", accountNumber: data.transfer.accountNumber, recipientName: data.transfer.recipientName } : { method: "zaincash", number: data.transfer.zaincashNumber }}
             amountIqd={null}
           />
-        </section>
+        </Section>
       ) : null}
-      <p className="flex items-start gap-2 type-xs text-ink-2">
-        <Icon name="lock" size={16} className="mt-0.5 shrink-0" />
+
+      {signedIn ? <PointsBox draft={draft} issues={issues} onChange={onChange} onBlur={onBlur} cart={cart} headingLevel={headingLevel} /> : null}
+
+      <Note variant="line" icon="lock">
         {t("payment.noCard")}
-      </p>
+      </Note>
     </div>
   );
 }
 
 /**
  * The points a signed-in customer redeems on this order (module 08's programme; the commerce core prices them): the
- * balance and a point's worth, the number to redeem (never more than `points.max` — the balance, and the goods left
- * after the other discounts), «استخدم …» for all of them, and what comes off. The page prices the cart again when the
- * number changes (GET /api/cart?points=).
+ * balance (counted up once, v2.1 G6) and a point's worth, the number to redeem (never more than `points.max` — the
+ * balance, and the goods left after the other discounts), «استخدم …» for all of them, and what comes off. The page
+ * prices the cart again when the number changes (GET /api/cart?points=).
  */
-function PointsBox({ draft, issues, onChange, onBlur, cart }: Pick<StepProps, "draft" | "issues" | "onChange" | "onBlur" | "cart">) {
+function PointsBox({ draft, issues, onChange, onBlur, cart, headingLevel = 2 }: Pick<StepProps, "draft" | "issues" | "onChange" | "onBlur" | "cart" | "headingLevel">) {
   const t = useT("checkout");
   const f = useFormat();
   const issueText = useIssueText();
@@ -317,21 +374,18 @@ function PointsBox({ draft, issues, onChange, onBlur, cart }: Pick<StepProps, "d
   if (!points) return null;
   if (points.balance <= 0) {
     return (
-      <p className="co-note">
-        <Icon name="star" size={16} className="shrink-0 text-ink-2" />
-        <span className="min-w-0 flex-1">{t("points.none")}</span>
-      </p>
+      <Note variant="line" icon="star">
+        {t("points.none")}
+      </Note>
     );
   }
   const asked = parsePoints(draft.redeemPoints);
   const applied = (cart as CartWithIssue).discounts?.find((entry) => entry.kind === "points") ?? null;
   return (
-    <section aria-labelledby="co-points" className="co-card co-extra">
-      <h2 id="co-points" className="type-h3 text-ink">
-        {t("points.title")}
-      </h2>
-      <p className="type-sm text-ink-2">
-        {t("points.balance", { count: points.balance, n: f.number(points.balance) })} {t("points.worth", { value: isolate(iqdText(f, points.pointValueIqd)) })}
+    <Section as="section" id="co-points" icon="star" title={t("points.title")} level={headingLevel} className="co-extra">
+      <p className="type-read text-ink-2">
+        {fillNodes(t("points.balance", { count: points.balance, n: "{n}" }), { n: <CountUp key="n" value={points.balance} format={f.number} className="nums font-semibold text-ink" /> })}{" "}
+        {t("points.worth", { value: isolate(iqdText(f, points.pointValueIqd)) })}
       </p>
       <div className="co-extra__row">
         <TextField
@@ -353,13 +407,18 @@ function PointsBox({ draft, issues, onChange, onBlur, cart }: Pick<StepProps, "d
           </Key>
         ) : null}
       </div>
-      {applied && applied.kind === "points" ? <p className="type-xs-strong text-ok">{t("points.applied", { amount: isolate(iqdText(f, applied.amountIqd)) })}</p> : null}
+      {applied && applied.kind === "points" ? (
+        <p className="co-saving">
+          <Icon name="check-circle" size={20} />
+          <span>{t("points.applied", { amount: isolate(iqdText(f, applied.amountIqd)) })}</span>
+        </p>
+      ) : null}
       {draft.redeemPoints.trim() !== "" ? (
         <TextLink as="button" type="button" arrow={false} className="justify-self-start" onClick={() => onChange("redeemPoints", "")}>
           {t("points.clear")}
         </TextLink>
       ) : null}
-    </section>
+    </Section>
   );
 }
 
@@ -399,7 +458,12 @@ function ReferralBox({ draft, issues, onChange, onBlur, cart, onCheck, pending }
             </Key>
           ) : null}
         </div>
-        {said && said.status === "ok" ? <p className="type-xs-strong text-ok">{t("referral.ok", { code: isolate(said.code) })}</p> : null}
+        {said && said.status === "ok" ? (
+          <p className="co-saving">
+            <Icon name="check-circle" size={20} />
+            <span>{t("referral.ok", { code: isolate(said.code) })}</span>
+          </p>
+        ) : null}
         {typed !== "" ? (
           <TextLink as="button" type="button" arrow={false} className="justify-self-start" onClick={() => onChange("referralCode", "")}>
             {t("referral.remove")}
@@ -424,7 +488,10 @@ export type ReviewStepProps = StepProps & {
   referralPending?: boolean;
 };
 
-export function ReviewStep({ draft, issues, onChange, onBlur, data, cart, notice, editor, foot, onReferralCheck, referralPending }: ReviewStepProps) {
+/** Each payment method's icon (its words come from the page; never a brand logo). */
+const METHOD_ICON: Record<string, IconName> = { cod: "money", wallet: "wallet", bank_transfer: "credit-card", zaincash: "device-mobile" };
+
+export function ReviewStep({ draft, issues, onChange, onBlur, data, cart, notice, editor, foot, onReferralCheck, referralPending, headingLevel = 2 }: ReviewStepProps) {
   const t = useT("checkout");
   const f = useFormat();
   const governorate = data.governorates.find((g) => g.id === draft.governorateId)?.name ?? "";
@@ -432,23 +499,36 @@ export function ReviewStep({ draft, issues, onChange, onBlur, data, cart, notice
   const day = data.days.find((d) => d.value === draft.preferredDay);
   const preference = [day ? day.weekday : null, draft.preferredWindow ? t(`windows.${draft.preferredWindow}`) : null].filter(Boolean).join(" · ");
   const method = draft.paymentMethod;
+  const itemsTitle = t("review.items", { count: cart.count, n: f.number(cart.count) });
 
   return (
-    <div className="grid gap-4">
+    <div className="co-sections">
       {notice}
       {/* the delivery and payment summaries need the page running: without script every field is on screen above */}
-      <ReviewBlock id="co-review-delivery" title={t("review.delivery")} editTo="/checkout?step=address" editLabel={t("review.editDelivery")} className="co-js">
+      <ReviewBlock id="co-review-delivery" icon="truck" title={t("review.delivery")} editTo="/checkout?step=address" editLabel={t("review.editDelivery")} level={headingLevel} className="co-js">
         <dl className="co-facts">
-          <Fact label={t("address.phone")}>
+          <Fact icon="phone" label={t("address.phone")}>
             <bdi dir="ltr" className="nums">
               {draft.phone.trim()}
             </bdi>
           </Fact>
-          {draft.contactName.trim() ? <Fact label={t("review.recipient")}>{draft.contactName.trim()}</Fact> : null}
-          <Fact label={t("review.place")}>{[governorate, district, draft.areaText.trim()].filter(Boolean).join(" · ")}</Fact>
-          <Fact label={t("address.address")}>{draft.addressText.trim()}</Fact>
-          {draft.notes.trim() ? <Fact label={t("address.notes")}>{draft.notes.trim()}</Fact> : null}
-          <Fact label={t("address.timing")}>
+          {draft.contactName.trim() ? (
+            <Fact icon="user" label={t("review.recipient")}>
+              <Typed>{draft.contactName.trim()}</Typed>
+            </Fact>
+          ) : null}
+          <Fact icon="map-pin" label={t("review.place")}>
+            <Typed>{[governorate, district, draft.areaText.trim()].filter(Boolean).join(" · ")}</Typed>
+          </Fact>
+          <Fact icon="house" label={t("address.address")}>
+            <Typed>{draft.addressText.trim()}</Typed>
+          </Fact>
+          {draft.notes.trim() ? (
+            <Fact icon="chat-circle" label={t("address.notes")}>
+              <Typed>{draft.notes.trim()}</Typed>
+            </Fact>
+          ) : null}
+          <Fact icon="clock" label={t("address.timing")}>
             {preference ? (
               <span className="grid gap-0.5">
                 <span>{preference}</span>
@@ -461,21 +541,24 @@ export function ReviewStep({ draft, issues, onChange, onBlur, data, cart, notice
         </dl>
       </ReviewBlock>
 
-      <ReviewBlock id="co-review-payment" title={t("review.payment")} editTo="/checkout?step=payment" editLabel={t("review.editPayment")} className="co-js">
-        <p className="type-card text-ink">{method ? t(`payment.${methodKey(method)}`) : "—"}</p>
+      <ReviewBlock id="co-review-payment" icon="wallet" title={t("review.payment")} editTo="/checkout?step=payment" editLabel={t("review.editPayment")} level={headingLevel} className="co-js">
+        <dl className="co-facts">
+          <Fact icon={METHOD_ICON[method] ?? "wallet"} label={t("payment.legend")}>
+            <span className="grid gap-0.5">
+              <span className="font-semibold">{method ? t(`payment.${methodKey(method)}`) : "—"}</span>
+              {method === "cod" ? <span className="type-sm text-ink-2">{t("payment.codHint")}</span> : null}
+            </span>
+          </Fact>
+        </dl>
         {isTransferMethod(method) ? (
-          <p className="type-xs text-ink-2">
-            {t("payment.transferRule")} {t("payment.transferHold", { hours: f.number(data.proofHours) })}
-          </p>
-        ) : method === "cod" ? (
-          <p className="type-xs text-ink-2">{t("payment.codHint")}</p>
+          <Note variant="flat" tone="info" icon="hourglass" title={t("payment.transferRule")}>
+            {t("payment.transferHold", { hours: f.number(data.proofHours) })}
+          </Note>
         ) : null}
       </ReviewBlock>
 
-      <ReferralBox draft={draft} issues={issues} onChange={onChange} onBlur={onBlur} cart={cart} onCheck={onReferralCheck} pending={referralPending} />
-
-      <ReviewBlock id="co-review-items" title={t("review.items", { count: cart.count, n: f.number(cart.count) })} editTo="/cart" editLabel={t("review.editCart")}>
-        <ul className="co-lines" aria-label={t("review.items", { count: cart.count, n: f.number(cart.count) })}>
+      <ReviewBlock id="co-review-items" icon="shopping-bag" title={itemsTitle} editTo="/cart" editLabel={t("review.editCart")} level={headingLevel}>
+        <ul className="co-lines" aria-label={itemsTitle}>
           {editor.rows.map((row) => (
             <CartLineRow
               // one key through removal: the row becomes its undo row and the kit moves the focus to «تراجع»
@@ -492,6 +575,8 @@ export function ReviewStep({ draft, issues, onChange, onBlur, data, cart, notice
           ))}
         </ul>
       </ReviewBlock>
+
+      <ReferralBox draft={draft} issues={issues} onChange={onChange} onBlur={onBlur} cart={cart} onCheck={onReferralCheck} pending={referralPending} />
       {foot}
     </div>
   );
@@ -505,30 +590,25 @@ export function withOptionValue<T extends { name: string; optionsLabel: string |
 
 const methodKey = (method: string) => (method === "bank_transfer" ? "bank" : method === "zaincash" ? "zain" : method);
 
-function ReviewBlock({ id, title, editTo, editLabel, className, children }: { id: string; title: string; editTo: string; editLabel: string; className?: string; children: ReactNode }) {
+/** A review card: the icon head and a clay «عدّل» key (pencil; its accessible name says what is edited). */
+function ReviewBlock({ id, icon, title, editTo, editLabel, level, className, children }: { id: string; icon: IconName; title: string; editTo: string; editLabel: string; level: 2 | 3; className?: string; children: ReactNode }) {
   const t = useT("checkout");
   return (
-    <section aria-labelledby={id} className={cx("co-card grid gap-3", className)}>
-      <div className="flex flex-wrap items-center justify-between gap-x-3">
-        <h2 id={id} className="type-h3 text-ink">
-          {title}
-        </h2>
-        {/* «عدّل» with its pencil inline (outside the underline); the accessible name says what is edited */}
-        <TextLink as={LocaleLink} to={editTo} icon="pencil-simple" arrow={false} aria-label={editLabel}>
+    <Section
+      as="section"
+      id={id}
+      icon={icon}
+      title={title}
+      level={level}
+      className={className}
+      end={
+        <Key as={LocaleLink} to={editTo} size="sm" icon="pencil-simple" aria-label={editLabel}>
           {t("review.edit")}
-        </TextLink>
-      </div>
+        </Key>
+      }
+    >
       {children}
-    </section>
-  );
-}
-
-function Fact({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="co-facts__row">
-      <dt className="type-xs text-ink-2">{label}</dt>
-      <dd className="min-w-0 break-words type-body text-ink">{children}</dd>
-    </div>
+    </Section>
   );
 }
 

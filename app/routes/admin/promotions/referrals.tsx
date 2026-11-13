@@ -14,7 +14,7 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
 import { openPromotions, respond, runIntent, text } from "./promotions.server";
-import { Boundary, Code, ConfirmAction, Failure, newKey, Notice, Num, PhoneText, Section, Tag, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
+import { Code, ConfirmAction, Failure, newKey, Notice, Num, PhoneText, SectionState, Section, Tag, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/referrals — 08.05: the abuse rules in words, the referrals to review with their signals (same
@@ -98,7 +98,7 @@ export default function ReferralsPage({ loaderData }: Route.ComponentProps) {
         <h1 className="adm-title">{t("referrals.title")}</h1>
         <p className="max-w-[75ch] type-body text-ink-2">{t("referrals.lead", { points: program.referral.rewardPoints })}</p>
       </header>
-      <Boundary>{t("referrals.boundary")}</Boundary>
+      <SectionState id="referrals">{t("referrals.signup")}</SectionState>
       <div className="prm-layout">
         <div className="prm-main">
           <Section id="prm-ref-list" title={t("referrals.listTitle")}>

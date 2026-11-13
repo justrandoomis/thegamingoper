@@ -5,6 +5,7 @@
  * route components only render them. Nothing here carries another customer's data, cost data, staff identities,
  * storage keys of private files or the duplicate flags staff use to review transfer proofs.
  */
+import type { OrderStatus } from "~/lib/dto";
 import type { Locale } from "~/lib/locales";
 
 /** Error keys produced by the account services (texts: account:errors.<key>, falling back to errors:errors.<key>). */
@@ -172,3 +173,35 @@ export type AccountCounts = {
 
 /** How one-time codes can reach the customer here: never by SMS today (no provider), in development on screen. */
 export type CodeDelivery = "provider" | "dev" | "unavailable";
+
+/**
+ * «طلباتي» by state (Design v2.1, the reference's filter chips; account/orders.server): the groups follow the order's
+ * life (Design System v2 §6.11) — «قيد التنفيذ» placed, awaiting or reviewing payment, confirmed, being prepared or on
+ * its way; «سُلّمت» delivered; «ملغاة ومُرجعة» cancelled or returned.
+ */
+export const ORDER_GROUPS = ["open", "done", "closed"] as const;
+export type OrderGroup = (typeof ORDER_GROUPS)[number];
+export type OrderShow = "all" | OrderGroup;
+
+/** Which group an order's state belongs to. */
+export const GROUP_OF: Record<OrderStatus, OrderGroup> = {
+  new: "open",
+  awaiting_payment: "open",
+  payment_review: "open",
+  confirmed: "open",
+  preparing: "open",
+  shipped: "open",
+  delivered: "done",
+  cancelled: "closed",
+  returned: "closed",
+};
+
+/** The states of a group. */
+export function statusesOf(group: OrderGroup): OrderStatus[] {
+  return (Object.keys(GROUP_OF) as OrderStatus[]).filter((status) => GROUP_OF[status] === group);
+}
+
+/** `?show=` as a group ("all" for anything else). */
+export function orderShow(value: unknown): OrderShow {
+  return typeof value === "string" && (ORDER_GROUPS as readonly string[]).includes(value) ? (value as OrderGroup) : "all";
+}

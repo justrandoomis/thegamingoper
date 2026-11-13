@@ -11,10 +11,14 @@
  * bar once the toolbar has scrolled away) are the script's conveniences. While new results load, the old ones stay
  * usable (marked busy) and every control already shows its new state; when the results land, cards that stayed
  * slide to their new place and new ones grow in (use-flip.ts). Filtering never blocks.
+ *
+ * v2.1 (G6): each card below the fold fades up as it first arrives (the kit's reveal — rows come in as the shopper
+ * scrolls; nothing on the first screen ever moves); the keys are clay with their icons; the floating pill is glass.
  */
-import { Fragment, useEffect, useId, useRef, useState, type ReactNode, type RefObject } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode, type RefObject } from "react";
 import { useLocation } from "react-router";
 
+import { Icon } from "~/art/Icon";
 import type { ProductCardData } from "~/lib/dto";
 import { useFormat, useT } from "~/i18n/react";
 import { Chip } from "~/ui/Chip";
@@ -24,6 +28,7 @@ import { Menu, type MenuTriggerProps } from "~/ui/Menu";
 import { useOnline } from "~/ui/OfflineBanner";
 import { HrefLink, ShowMore } from "~/ui/Pagination";
 import { ProductCard } from "~/ui/ProductCard";
+import { revealProps } from "~/ui/reveal";
 import { Sheet } from "~/ui/Sheet";
 import { TextLink } from "~/ui/TextLink";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
@@ -52,8 +57,6 @@ export type ListingViewProps = {
   heading: string;
   /** Filter groups the page's chip row offers: not repeated in the filters. */
   elsewhere?: readonly FilterGroup[];
-  /** Phones: a block inside the grid after its first two rows (the platform hub's device tiles). */
-  inline?: ReactNode;
   /** Ids of the shopper's wishlist among these cards: the cards show the heart. Null: no hearts. */
   wished?: readonly string[] | null;
   /** The listing's filter groups as staff arranged them (content module, getListingFilterOrder); null: the page's own. */
@@ -62,9 +65,6 @@ export type ListingViewProps = {
 
 /** Consoles and handheld PCs (kind "console") carry «قارن» on their cards (v2 §6.5); other kinds compare on their page. */
 const COMPARABLE_ON_CARDS = new Set<ProductCardData["kind"]>(["console"]);
-
-/** Cards before the phone's inline block: two rows of two. */
-const INLINE_AFTER = 4;
 
 /** One removable chip per active filter value, in the order of the filter groups. */
 function activeChips(filters: ListingFilters, label: ReturnType<typeof useFilterLabel>, nav: ListingNav, elsewhere: readonly FilterGroup[]): { key: string; label: string; href: string }[] {
@@ -167,7 +167,7 @@ function useScrolledPast(target: RefObject<HTMLElement | null>, enabled: boolean
   return past;
 }
 
-export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, heading, elsewhere = [], inline, wished = null, filterOrder = null }: ListingViewProps) {
+export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, heading, elsewhere = [], wished = null, filterOrder = null }: ListingViewProps) {
   const t = useT("catalog");
   const f = useFormat();
   const location = useLocation();
@@ -261,19 +261,17 @@ export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, 
               ) : null}
               <ul ref={grid} role="list" aria-busy={nav.pending || undefined} className={cx("catalog-grid", nav.pending && "catalog-grid--busy")}>
                 {list.items.map((card, index) => (
-                  <Fragment key={card.id}>
-                    <li data-flip={card.id} className="catalog-grid__item">
-                      <ProductCard
-                        card={card}
-                        headingLevel={3}
-                        priority={firstPriority && index === 0}
-                        wishlist={hearts}
-                        wished={wishedIds.has(card.id)}
-                        compare={COMPARABLE_ON_CARDS.has(card.kind) ? <CompareToggle product={{ id: card.id, kind: card.kind, name: card.name, image: card.image }} showLink={false} /> : undefined}
-                      />
-                    </li>
-                    {inline && !pagingAlone && index === INLINE_AFTER - 1 && list.items.length > INLINE_AFTER ? <li className="catalog-grid__break">{inline}</li> : null}
-                  </Fragment>
+                  // each card below the fold fades up as it arrives (the engine leaves what is on screen alone)
+                  <li key={card.id} data-flip={card.id} className="catalog-grid__item" {...revealProps()}>
+                    <ProductCard
+                      card={card}
+                      headingLevel={3}
+                      priority={firstPriority && index === 0}
+                      wishlist={hearts}
+                      wished={wishedIds.has(card.id)}
+                      compare={COMPARABLE_ON_CARDS.has(card.kind) ? <CompareToggle product={{ id: card.id, kind: card.kind, name: card.name, image: card.image }} showLink={false} /> : undefined}
+                    />
+                  </li>
                 ))}
               </ul>
               <ShowMore shown={shownTo} total={list.total} href={moreHref} loading={loadingMore} products step={LISTING_PAGE_SIZE} />
@@ -307,8 +305,10 @@ export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, 
       <CatalogDock
         pill={
           pastToolbar ? (
-            <div className="catalog-pill" role="group" aria-label={t("list.controls")}>
+            <div className="catalog-pill glass glass--float" role="group" aria-label={t("list.controls")}>
+              {/* the toolbar keys' own icons (v2.1: the filter and sort keys carry them; the pill is their floating form) */}
               <button type="button" className="catalog-pill__key" aria-haspopup="dialog" onClick={openSheet} disabled={!online} data-press="soft">
+                <Icon name="sliders-horizontal" size={20} />
                 {filtersLabel}
               </button>
               {sorts.length > 1 ? (
@@ -320,6 +320,7 @@ export function ListingView({ list, nav, scope, sorts, zero, picks, picksTitle, 
                   compact
                   trigger={(props) => (
                     <button {...props} type="button" className="catalog-pill__key" disabled={!online} data-press="soft">
+                      <Icon name="sort-ascending" size={20} />
                       {t("sort.label")}
                     </button>
                   )}

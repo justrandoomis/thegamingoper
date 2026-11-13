@@ -4,6 +4,7 @@ import { Logo } from "~/art/Logo";
 import { LocaleLink, useT } from "~/i18n/react";
 import { cx } from "~/ui/cx";
 import { Key } from "~/ui/Key";
+import { revealProps } from "~/ui/reveal";
 import { HANDOFF_PATH } from "../content-model";
 
 /**
@@ -13,6 +14,7 @@ import { HANDOFF_PATH } from "../content-model";
  * support area's hand-off form (`HANDOFF_PATH`, «تحدّث مع موظف»). `primary`: that key is the view's one red key
  * (/contact, /accessibility); otherwise it is a secondary key. `stack` keeps the key on its own row under the art and
  * the words at every width (a narrow aside); below 768 every card does, so a long label never leaves the card.
+ * v2.1: the soft raised card (dark: faux glass); `reveal` fades it up as it first comes into view below the fold.
  */
 export function HandoffCard({
   title,
@@ -21,6 +23,7 @@ export function HandoffCard({
   headingLevel = 2,
   primary = false,
   stack = false,
+  reveal = false,
   id,
   className,
 }: {
@@ -30,6 +33,7 @@ export function HandoffCard({
   headingLevel?: 2 | 3;
   primary?: boolean;
   stack?: boolean;
+  reveal?: boolean;
   id?: string;
   className?: string;
 }) {
@@ -38,7 +42,7 @@ export function HandoffCard({
   const headingId = id ?? autoId;
   const Heading = `h${headingLevel}` as const;
   return (
-    <section aria-labelledby={headingId} className={cx("chandoff", stack && "chandoff--stack", className)}>
+    <section aria-labelledby={headingId} className={cx("chandoff", stack && "chandoff--stack", className)} {...(reveal ? revealProps() : null)}>
       <span className="chandoff__art text-logo" aria-hidden="true">
         <Logo variant="mark" height="62%" />
       </span>

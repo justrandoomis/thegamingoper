@@ -140,6 +140,7 @@ export default function Wishlist({ loaderData }: Route.ComponentProps) {
         {items.length === 0 ? (
           <EmptyState
             layout="stack"
+            panel
             title={t("wishlist.emptyTitle")}
             text={t("wishlist.emptyText")}
             action={

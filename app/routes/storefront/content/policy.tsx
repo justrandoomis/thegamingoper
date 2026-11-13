@@ -15,7 +15,6 @@
 import { data } from "react-router";
 
 import type { Route } from "./+types/policy";
-import { Icon } from "~/art/Icon";
 import { useLocale, useT } from "~/i18n/react";
 import { LOCALES } from "~/lib/locales";
 import type { MotionHandle } from "~/motion";
@@ -24,6 +23,7 @@ import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { contentMessages, getPolicy, listPolicies } from "~/server/services/content.server";
 import { Blocks } from "~/ui/Blocks";
+import { Note } from "~/ui/Note";
 import { ContentHeader, Section, useHasContact } from "./components/ContentHeader";
 import { FactPanel } from "./components/FactPanel";
 import { LinkRows, type LinkRow } from "./components/LinkRows";
@@ -75,16 +75,15 @@ export default function PolicyPage({ loaderData }: Route.ComponentProps) {
           </ContentHeader>
           <FactPanel facts={policy.facts} />
           {fallback ? (
-            <p className="cnote">
-              <Icon name="translate" size={20} />
-              <span>{t("common.textFallback")}</span>
-            </p>
+            <Note variant="line" icon="translate">
+              {t("common.textFallback")}
+            </Note>
           ) : null}
           <div {...textLang}>
             <Blocks blocks={policy.blocks} />
           </div>
           {related.length > 0 ? (
-            <Section id="policy-related" title={t("common.related")} size="sm">
+            <Section id="policy-related" title={t("common.related")} size="sm" reveal>
               <LinkRows rows={related} card />
             </Section>
           ) : null}

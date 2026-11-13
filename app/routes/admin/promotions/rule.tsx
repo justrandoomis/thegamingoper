@@ -16,7 +16,7 @@ import { Checkbox, Select, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
 import { fields, openPromotions, respond, runIntent, text } from "./promotions.server";
-import { Arrow, Boundary, ChoiceList, Code, ConfirmAction, DemoNote, Facts, Failure, History, Kpis, Money, newKey, Notice, Num, Pct, Section, Tag, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
+import { Arrow, ChoiceList, Code, ConfirmAction, DemoNote, Facts, Failure, History, Kpis, Money, newKey, Notice, Num, Pct, SectionState, Section, Tag, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/rules/:ruleId — 08.02, one automatic discount rule (":ruleId" = "new" opens the empty form): its
@@ -96,7 +96,7 @@ export default function RulePage({ loaderData }: Route.ComponentProps) {
           <h1 className="adm-title">{t("rules.newTitle")}</h1>
           <p className="max-w-[75ch] type-body text-ink-2">{t("rules.newLead")}</p>
         </header>
-        <Boundary>{t("rules.boundary")}</Boundary>
+        <SectionState id="rules" />
         {options ? <RuleForm options={options} rule={null} /> : null}
       </>
     );
@@ -112,7 +112,7 @@ export default function RulePage({ loaderData }: Route.ComponentProps) {
           <span className="type-body text-ink-2">{t(`rules.kind.${rule.terms.kind}`)}</span>
         </div>
       </header>
-      <Boundary>{t("rules.boundary")}</Boundary>
+      <SectionState id="rules" />
       <div className="prm-layout">
         <div className="prm-main">
           <Section id="prm-rule-terms" title={t("coupons.terms")}>
@@ -257,7 +257,7 @@ function RuleForm({ options, rule }: { options: ConditionOptions; rule: RuleDeta
           <ChoiceList name="categoryIds" legend={t("coupons.f.categories")} hint={t("coupons.f.categoriesHint")} options={options.categories.map((entry) => ({ value: entry.id, label: entry.name, depth: entry.depth }))} selected={s?.categoryIds ?? []} error={errors.categoryIds} />
           <ChoiceList name="productKinds" legend={t("coupons.f.productKinds")} options={PRODUCT_KIND_OPTIONS.map((entry) => ({ value: entry, label: t(`kinds.${entry}`) }))} selected={s?.productKinds ?? []} />
           <ChoiceList name="segmentIds" legend={t("coupons.f.segments")} hint={t("coupons.f.segmentsHint")} options={options.segments.map((entry) => ({ value: entry.id, label: entry.name }))} selected={s?.segmentIds ?? []} error={errors.segmentIds} />
-          <ChoiceList name="channels" legend={t("coupons.f.channels")} options={CHANNELS.map((channel) => ({ value: channel, label: t(`channels.${channel}`) }))} selected={s?.channels ?? []} />
+          <ChoiceList name="channels" legend={t("coupons.f.channels")} hint={t("rules.f.channelsHint")} options={CHANNELS.map((channel) => ({ value: channel, label: t(`channels.${channel}`) }))} selected={s?.channels ?? []} />
           <div className="grid content-start gap-3">
             <TextField name="minSubtotalIqd" label={t("coupons.f.minSubtotal")} defaultValue={s?.minSubtotalIqd ?? ""} inputMode="numeric" error={errors.minSubtotalIqd} />
             <TextField name="minQty" label={t("coupons.f.minQty")} defaultValue={s?.minQty ?? ""} inputMode="numeric" error={errors.minQty} />
@@ -347,7 +347,8 @@ function DryRunSection({ run, window }: { run: DryRun; window: { days: number; i
   const t = usePromotionsT();
   const f = useFormat();
   const columns: DataColumn<DryRun["orders"][number]>[] = [
-    { key: "ref", header: t("rules.dry.order"), cell: (row) => <span className="inline-flex items-center gap-1"><Code value={row.ref} /><DemoNote show={row.isDemo} /></span> },
+    // the reference on one line (it broke as «TT-» / «STHCZ5» / «XZ» in the 1440 main column), the demo tag under it
+    { key: "ref", header: t("rules.dry.order"), cell: (row) => <span className="grid justify-items-start gap-1"><Code value={row.ref} className="prm-code--keep" /><DemoNote show={row.isDemo} /></span> },
     { key: "at", header: t("rules.dry.placed"), cell: (row) => <When at={row.placedAt} style="date" /> },
     { key: "channel", header: t("coupons.f.channels"), cell: (row) => t(`channels.${row.channel}`) },
     { key: "subtotal", header: t("rules.dry.subtotal"), numeric: true, cell: (row) => <Money iqd={row.subtotalIqd} /> },

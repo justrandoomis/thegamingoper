@@ -1,14 +1,15 @@
 /**
- * "/" — the home page (Design System v2 §6.1; brief §3.1–3.2), the branded intro and the optional onboarding. Area
- * notes: docs/areas/home.md.
+ * "/" — the home page (Design System v2 §6.1 in v2.1's look — client notes 1–3; brief §3.1–3.2), the branded intro and
+ * the optional onboarding. Area notes: docs/areas/home.md.
  *
  * Server-rendered for everyone (crawlers and returning shoppers get the page, never the intro). Top to bottom: the
- * visually hidden <h1> (the store statement — the hero's headline is an h2 because it changes per campaign), the
- * crimson hero band with the featured console, the four platform tiles, the trust strip, «وصل حديثاً» with platform
- * chips, the release band, used and inspected, the trade-in and support doors, the departments, the personal shelves
- * (consent only) and the personalisation panel. Everything is read from the catalogue and the settings; shelves say
- * the rule they follow, never "trending". Prices and stock are demo placeholders (the shell's demo strip, and
- * «سعر تجريبي» beside the hero's price).
+ * visually hidden <h1> (the store statement — the banners' headlines are h2s because they change per campaign), the
+ * hero carousel (./Hero: every platform's hero on its colour, the featured one first, then the trade-in and used
+ * banners) with the icon strip of departments under it, the four platform tiles, the trust strip, «وصل حديثاً» with
+ * platform chips, the release band, used and inspected, the trade-in and support doors, the departments, the personal
+ * shelves (consent only) and the personalisation panel. Everything is read from the catalogue and the settings; shelves
+ * say the rule they follow, never "trending". Prices and stock are demo placeholders (the shell's demo strip, and
+ * «سعر تجريبي» beside each banner's price).
  *
  * The new-arrivals chip lives in the URL (`?platform=xbox`: shareable, kept by Back) and needs no request — every
  * platform's new arrivals are in the loader data, and shouldRevalidate below skips the loader when only `platform`
@@ -54,12 +55,12 @@ import { Key } from "~/ui/Key";
 import { isPlatform, type Platform } from "~/ui/PlatformLed";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { toast } from "~/ui/toast-store";
-import { Hero } from "./Hero";
+import { HeroCarousel, type HeroSlide } from "./Hero";
 import { Intro, type IntroCorner, type IntroResult, type IntroTile } from "./Intro";
 import { ConsentRow, PersonalPanel, PlatformsSheet } from "./Onboarding";
 import { CONSENT_COOKIE, INTRO_COOKIE, PLATFORMS_COOKIE, parseConsent, parsePlatformList, readIntroSeen, saveConsent, saveIntroSeen, sendOnboarding } from "./personal";
-import { Departments, NewArrivals, PlatformDoors, Releases, RecentlyViewed, RecommendationShelves, Sections, ServiceEntries, TrustFacts, UsedShelf } from "./Shelves";
-import { deviceHubFor, featuredHero, hasShelf, leadArt, MIN_SHELF, RELEASE_LIMIT, resolveFocus, tileArt } from "./view";
+import { CategoryStrip, Departments, NewArrivals, PlatformDoors, Releases, RecentlyViewed, RecommendationShelves, Sections, ServiceEntries, TrustFacts, UsedShelf } from "./Shelves";
+import { deviceHubFor, hasShelf, heroSlides, leadArt, MIN_SHELF, RELEASE_LIMIT, resolveFocus, stripItems, tileArt } from "./view";
 import "./home.css";
 
 /** The one "talk to a person" destination (v2 §6.13). */
@@ -252,10 +253,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   // ── what the page shows
   const navPlatforms = shell?.nav.platforms ?? [];
-  const featured = featuredHero(home.platforms);
-  const heroCard = featured?.hero ? home.cards[featured.hero.productId] : undefined;
-  const heroPlatform = featured && isPlatform(featured.slug) ? featured.slug : null;
-  const heroArt = heroCard?.image.artKey ?? null;
   const shelves = home.platforms.flatMap((platform) => {
     if (!isPlatform(platform.slug)) return [];
     const cards = platform.newArrivals.map((id) => home.cards[id]).filter((card): card is ProductCardData => card !== undefined);
@@ -268,6 +265,20 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const playstationLead = leadArt(playstation, home.cards);
   const playstationTile = navPlatforms.find((platform) => platform.slug === "playstation")?.artKey ?? null;
   const tradeInArt = playstationLead ?? playstationTile;
+  // the hero carousel: every platform's hero, the featured one first, then the trade-in and used banners (./view)
+  const heroCardOf = (platform: (typeof home.platforms)[number]) => (platform.hero ? home.cards[platform.hero.productId] : undefined);
+  const plan = heroSlides(home.platforms, (platform) => heroCardOf(platform)?.image.artKey, { usedArt: home.used.map((unit) => unit.image.artKey), fallbackArt: tradeInArt });
+  const slides: HeroSlide[] = plan.flatMap((entry): HeroSlide[] => {
+    if (entry.kind !== "platform") return [entry];
+    const { platform } = entry;
+    const card = heroCardOf(platform);
+    if (!card || !platform.hero || !isPlatform(platform.slug)) return [];
+    const devices = navPlatforms.find((nav) => nav.slug === platform.slug)?.devices ?? [];
+    return [{ kind: "product", key: platform.slug, card, platform: platform.slug, mode: platform.hero.mode, pin: platform.hero.pin ?? null, deviceHref: deviceHubFor(card.name, devices), demoPrice: card.isDemo || demoMode }];
+  });
+  // the first banner's picture: a platform tile shows another view of it (v2 §7.6), on the page and in the intro
+  const heroArt = slides[0]?.kind === "product" ? slides[0].card.image.artKey : null;
+  const strip = stripItems(shell?.nav.categories ?? [], shell?.nav.usedCount ?? 0);
   // the intro's corner objects are the platforms' consoles: their lead devices, pinned heroes or not
   const corners: IntroCorner[] = home.platforms.flatMap((entry) => {
     const art = leadArt(entry, home.cards);
@@ -334,18 +345,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     <div className="home">
       <VisuallyHidden as="h1">{t("title")}</VisuallyHidden>
       <Sections>
-        {heroCard && heroPlatform && featured?.hero ? (
-          <Hero
-            card={heroCard}
-            platform={heroPlatform}
-            mode={featured.hero.mode}
-            pin={featured.hero.pin ?? null}
-            deviceHref={deviceHubFor(heroCard.name, navPlatforms.find((platform) => platform.slug === heroPlatform)?.devices ?? [])}
-            deliveryFeeIqd={shell?.deliveryFeeIqd ?? null}
-            cod={shell?.payments.cod ?? false}
-            demoPrice={heroCard.isDemo || demoMode}
-          />
-        ) : null}
+        {/* the first screen: the banners and, right under them, the icon strip of departments (one group, a tighter gap) */}
+        <div className="home-top">
+          <HeroCarousel slides={slides} />
+          <CategoryStrip items={strip} />
+        </div>
         {consentRow}
         {tilesLead ? sectionOf.platforms : null}
         <TrustFacts deliveryFeeIqd={shell?.deliveryFeeIqd ?? null} payments={shell?.payments ?? null} />

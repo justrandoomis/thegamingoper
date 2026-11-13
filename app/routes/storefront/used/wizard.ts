@@ -6,6 +6,8 @@
  *   wizardOrder(search)                             the sideways-push order of a wizard URL (steps and questions)
  *   answeredQuestionSearch(entries, question)       a question's URL with its answer (what Back returns to)
  *   filterGroups(groups, query)                     the device search: every word in the device's or platform's name
+ *   tradeInRefFromInput(" ti-7k4m 2q9x ")           a typed request number → "TI-7K4M2Q9X", or null (the start page's
+ *                                                   track card; the same shape as tradein.server normalizeTradeInRef)
  */
 import type { TradeInDevice, TradeInQuestion } from "~/server/services/tradein.server";
 
@@ -41,6 +43,20 @@ export function answeredQuestionSearch(entries: Iterable<[string, FormDataEntryV
   for (const [name, value] of entries) if (typeof value === "string" && name !== "at" && name !== "q") params.append(name, value);
   params.set("q", question);
   return `?${params.toString()}`;
+}
+
+/**
+ * A request number as people type it — any case, spaces or a dash in the middle, the «TI-» left out, Arabic-Indic
+ * digits from a phone keyboard — in the one form the store writes it ("TI-" + 8 Crockford characters), or null when it
+ * cannot be one. The server's own check is ~/server/services/tradein.server normalizeTradeInRef (same alphabet; a test
+ * keeps the two in step). Pure.
+ */
+export function tradeInRefFromInput(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const latin = value.replace(/[٠-٩]/g, (digit) => String(digit.charCodeAt(0) - 0x0660)).replace(/[۰-۹]/g, (digit) => String(digit.charCodeAt(0) - 0x06f0));
+  const compact = latin.toUpperCase().replace(/[\s\-–—_]+/g, "");
+  const body = compact.startsWith("TI") && compact.length === 10 ? compact.slice(2) : compact;
+  return /^[2-9A-HJ-NP-Z]{8}$/.test(body) ? `TI-${body}` : null;
 }
 
 /** Lower-case words of a name for the device search (Latin names stay Latin; dashes and spaces collapse). Pure. */

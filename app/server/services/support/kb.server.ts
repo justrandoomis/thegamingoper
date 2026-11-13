@@ -8,6 +8,8 @@
  *   const near   = await listArticlesForDevice(db, locale, id, { related: true }); // + other models of the platform
  *   const all    = await listHelpArticles(db, locale);                            // help centre, staff order
  *   const page   = await getArticle(db, locale, slug);                            // ArticleDetail | null
+ *   const found  = await searchHelp(db, locale, q, { platform });                 // the help centre's results (?q=)
+ *   const index  = await getHelpIndex(db);                                        // what the search box suggests from
  *
  * Bodies are localized block arrays (ARCHITECTURE §6) returned as stored; <Blocks> (app/ui/Blocks) checks every block
  * before rendering and only ever puts strings into text nodes. A missing translation falls back to Arabic and says so
@@ -19,7 +21,8 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import { LOCALE_CODES, pick, type L10n, type Locale } from "~/lib/locales";
 import type { Db } from "~/server/db/drizzle.server";
 import { deviceModels, knowledgeArticles, platforms, type LocalizedBlocks } from "~/server/db/schema";
-import { findErrorCode, hasDangerSign, interpretText, KNOWN_SYMPTOMS, normalizeForMatch, tokenMatches } from "./matcher";
+import { rankEntries, type HelpIndexEntry } from "./helpsearch";
+import { findErrorCode, findErrorCodes, hasDangerSign } from "./matcher";
 import { cleanQuestion } from "./state";
 import type { ArticleDetail, ArticleKind, ArticleSummary, HelpSearch, SupportDevice, SupportPlatform, SupportPlatformGroup } from "./types";
 
@@ -251,14 +254,6 @@ export async function getArticle(db: Db, locale: Locale, slug: string): Promise<
 
 // ───────────────────────────────────────────────────────────────── help-centre search
 
-/** Symptom keys of the assistant's trees → the article tag that covers them. */
-const SYMPTOM_TAGS: Record<string, string> = { stick_drift: "stick-drift", no_power: "power" };
-
-/** Words too common to rank a guide by — every guide is about "the device" (Arabic, English, Sorani; normalised). */
-const NOISE = new Set(
-  ["في", "من", "على", "عن", "مع", "او", "لا", "ما", "هو", "هي", "the", "a", "an", "my", "is", "it", "to", "of", "and", "or", "not", "لە", "و", "بە", "بۆ", "کە", "كه", "جهاز", "جهازي", "الجهاز", "device", "console", "ئامێر", "ئامێرەکە", "ئامێرەکەم"].map(normalizeForMatch),
-);
-
 /** Every string a block holds, as one text (headings, paragraphs, list items, steps, callouts, table cells). */
 function blockText(blocks: unknown): string {
   if (!Array.isArray(blocks)) return "";
@@ -288,52 +283,72 @@ function blockText(blocks: unknown): string {
 
 const l10nText = (value: L10n | null | undefined) => (value ? LOCALE_CODES.map((code) => value[code] ?? "").join(" ") : "");
 
-/**
- * The help centre's search box: a problem in the shopper's words or an error code (the same routing as the assistant,
- * ./matcher), over the approved public guides only. Returns null for an empty query.
- *   danger   the words carry a danger sign: the page says stop, unplug, book a repair — before any guide
- *   code     an error code: the guides that mention it (possibly none — the page says so honestly)
- *   guides   guides ranked by the words (title 3 · summary and tags 2 · body 1) and by the symptom or topic the words
- *            point to; the staff order breaks ties. At most 8.
- */
-export async function searchHelp(db: Db, locale: Locale, raw: unknown): Promise<HelpSearch | null> {
-  const query = typeof raw === "string" ? cleanQuestion(raw) : null;
-  if (!query) return null;
-  if (hasDangerSign(query)) return { query, kind: "danger", code: null, articles: [] };
-  const code = findErrorCode(query);
-  if (code) return { query, kind: "code", code, articles: await findArticlesMentioning(db, locale, code) };
-
-  const meaning = interpretText(query, { symptoms: KNOWN_SYMPTOMS });
-  const meant = meaning.kind === "symptom" ? SYMPTOM_TAGS[meaning.symptomKey] : meaning.kind === "topic" ? meaning.topic : null;
-  const words = [...new Set(normalizeForMatch(query).split(" "))].filter((word) => word.length >= 2 && !NOISE.has(word));
-  const rows = await db
+/** Every approved public article with its body, in staff order (the search reads bodies; the index reads their codes). */
+async function publicArticlesWithBody(db: Db) {
+  return db
     .select({ ...articleColumns, body: knowledgeArticles.body })
     .from(knowledgeArticles)
     .leftJoin(deviceModels, eq(knowledgeArticles.deviceModelId, deviceModels.id))
     .leftJoin(platforms, eq(knowledgeArticles.platformId, platforms.id))
     .where(isPublic)
     .orderBy(asc(knowledgeArticles.sort), asc(knowledgeArticles.slug));
-  const has = (text: string, word: string) => normalizeForMatch(text).split(" ").some((token) => tokenMatches(token, word));
-  const scored: Array<{ score: number; order: number; summary: ArticleSummary }> = [];
-  rows.forEach((row, order) => {
+}
+
+type BodyRow = Awaited<ReturnType<typeof publicArticlesWithBody>>[number];
+
+/** The words a guide is found by, in every language (./helpsearch HelpEntryText), without its body. */
+function entryText(row: BodyRow) {
+  return {
+    title: l10nText(row.title as L10n),
+    summary: l10nText(row.summary as L10n | null),
+    names: `${row.deviceName ? l10nText(row.deviceName as L10n) : ""} ${row.platformName ? l10nText(row.platformName as L10n) : ""}`.trim(),
+    tags: Array.isArray(row.tags) ? row.tags.filter((tag): tag is string => typeof tag === "string") : [],
+  };
+}
+
+/**
+ * The help centre's search box: a problem in the shopper's words or an error code (the same routing as the assistant,
+ * ./matcher), over the approved public guides only. Returns null for an empty query.
+ *   danger   the words carry a danger sign: the page says stop, unplug, book a repair — before any guide
+ *   code     an error code: the guides that mention it (possibly none — the page says so honestly)
+ *   guides   guides ranked by the words (title 3 · summary and tags 2 · body 1) and by the symptom or topic the words
+ *            point to; the staff order breaks ties (./helpsearch rankEntries — the page's suggestions rank alike). At
+ *            most 8.
+ * `platform` (a platform slug, the box's device chips): only that platform's guides and the guides about every device.
+ */
+export async function searchHelp(db: Db, locale: Locale, raw: unknown, options: { platform?: string | null } = {}): Promise<HelpSearch | null> {
+  const query = typeof raw === "string" ? cleanQuestion(raw) : null;
+  if (!query) return null;
+  const platform = options.platform ?? null;
+  const inScope = (article: ArticleSummary) => !platform || article.platform === null || article.platform.slug === platform;
+  if (hasDangerSign(query)) return { query, kind: "danger", code: null, articles: [], platform };
+  const code = findErrorCode(query);
+  if (code) return { query, kind: "code", code, articles: (await findArticlesMentioning(db, locale, code)).filter(inScope), platform };
+
+  const rows = await publicArticlesWithBody(db);
+  const entries = rows
+    .map((row) => {
+      const body = (row.body ?? {}) as LocalizedBlocks;
+      return { ...entryText(row), body: `${blockText(body[locale])} ${locale === "ar" ? "" : blockText(body.ar)}`, article: toSummary(row as ArticleRow, locale, row.deviceId ? "device" : "platform") };
+    })
+    // ranked within the chosen platform (a body-only match is weighed against that platform's best, not another's)
+    .filter((entry) => inScope(entry.article));
+  return { query, kind: "guides", code: null, articles: rankEntries(entries, query).slice(0, 8).map((entry) => entry.article), platform };
+}
+
+/**
+ * The index the help centre's search box suggests from while the shopper types (./helpsearch suggestHelp): every
+ * approved public guide's title, summary and device / platform names in every language, its tags, its platform and
+ * the error codes its text names — never its body. Small (a few hundred bytes a guide); staff order.
+ */
+export async function getHelpIndex(db: Db): Promise<HelpIndexEntry[]> {
+  const rows = await publicArticlesWithBody(db);
+  return rows.map((row) => {
     const body = (row.body ?? {}) as LocalizedBlocks;
-    const title = l10nText(row.title as L10n);
-    const summary = l10nText(row.summary as L10n | null);
-    const tags = (Array.isArray(row.tags) ? row.tags : []).join(" ").replace(/-/g, " ");
-    const text = `${blockText(body[locale])} ${locale === "ar" ? "" : blockText(body.ar)}`;
-    const names = `${row.deviceName ? l10nText(row.deviceName as L10n) : ""} ${row.platformName ? l10nText(row.platformName as L10n) : ""}`;
-    let score = meant && (row.tags ?? []).includes(meant) ? 3 : 0;
-    for (const word of words) {
-      if (has(title, word) || has(names, word)) score += 3;
-      else if (has(summary, word) || has(tags, word)) score += 2;
-      else if (has(text, word)) score += 1;
-    }
-    if (score > 0) scored.push({ score, order, summary: toSummary(row as ArticleRow, locale, row.deviceId ? "device" : "platform") });
+    const text = entryText(row);
+    const everyText = `${text.title} ${LOCALE_CODES.map((code) => blockText(body[code])).join(" ")}`;
+    return { slug: row.slug, platform: row.platformSlug ?? null, ...text, codes: findErrorCodes(everyText) };
   });
-  scored.sort((a, b) => b.score - a.score || a.order - b.order);
-  // when some guides match by their title, summary, tags or meaning, a word that only appears in another's body is noise
-  const floor = (scored[0]?.score ?? 0) >= 3 ? 2 : 1;
-  return { query, kind: "guides", code: null, articles: scored.filter((entry) => entry.score >= floor).slice(0, 8).map((entry) => entry.summary) };
 }
 
 /** Other approved articles about the same device or platform (for "related guides" under an article). */

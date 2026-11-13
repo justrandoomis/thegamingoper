@@ -248,7 +248,7 @@ function CouponForm({ options, coupon }: { options: ConditionOptions; coupon: Co
           <ChoiceList name="categoryIds" legend={t("coupons.f.categories")} hint={t("coupons.f.categoriesHint")} options={options.categories.map((entry) => ({ value: entry.id, label: entry.name, depth: entry.depth }))} selected={c?.categoryIds ?? []} error={errors.categoryIds} />
           <ChoiceList name="productKinds" legend={t("coupons.f.productKinds")} options={PRODUCT_KIND_OPTIONS.map((kind) => ({ value: kind, label: t(`kinds.${kind}`) }))} selected={c?.productKinds ?? []} />
           <ChoiceList name="segmentIds" legend={t("coupons.f.segments")} hint={t("coupons.f.segmentsHint")} options={options.segments.map((entry) => ({ value: entry.id, label: entry.name }))} selected={c?.segmentIds ?? []} error={errors.segmentIds} />
-          <ChoiceList name="channels" legend={t("coupons.f.channels")} options={CHANNELS.map((channel) => ({ value: channel, label: t(`channels.${channel}`) }))} selected={c?.channels ?? []} />
+          <ChoiceList name="channels" legend={t("coupons.f.channels")} hint={t("coupons.f.channelsHint")} options={CHANNELS.map((channel) => ({ value: channel, label: t(`channels.${channel}`) }))} selected={c?.channels ?? []} />
           <div className="grid content-start gap-3">
             <TextField name="minQty" label={t("coupons.f.minQty")} defaultValue={c?.minQty ?? ""} inputMode="numeric" error={errors.minQty} />
             <Checkbox name="firstOrderOnly" label={t("coupons.f.firstOrderOnly")} defaultChecked={c?.firstOrderOnly ?? false} />
@@ -389,7 +389,7 @@ function TryPanel({ code }: { code: string }) {
           </div>
         ) : null}
         <TextField name="phone" type="tel" label={t("coupons.try.phone")} hint={t("coupons.try.phoneHint")} error={errors.phone} />
-        <Select name="channel" label={t("coupons.f.channels")} options={CHANNELS.map((channel) => ({ value: channel, label: t(`channels.${channel}`) }))} />
+        <Select name="channel" label={t("coupons.f.channels")} hint={t("coupons.try.channelHint")} options={CHANNELS.map((channel) => ({ value: channel, label: t(`channels.${channel}`) }))} />
         <Failure message={message} />
         <div>
           <Key type="submit" size="sm" loading={pending} icon="magnifying-glass">

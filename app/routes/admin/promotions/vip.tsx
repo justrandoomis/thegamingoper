@@ -15,13 +15,14 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { promotionsMeta } from "./meta";
 import { fields, openPromotions, respond, runIntent, text } from "./promotions.server";
-import { Arrow, Boundary, ConfirmAction, Failure, Notice, PhoneText, Section, Tag, ToneStatus, useIntent, usePromotionsT, When } from "./ui";
+import { Arrow, ConfirmAction, Failure, Notice, PhoneText, SectionState, Section, Tag, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/vip — 08.06: the tiers with their written benefits and shipping terms, the members, and the
  * customers module 07's rule labels VIP who hold no membership yet (granting one is a person's decision with a
- * reason). Only the points multiplier takes effect today (points are posted by this module); the discount and free
- * shipping wait for the checkout (boundary note).
+ * reason). The online checkout applies the member discount — at most the discount limits in force, so a tier above
+ * them says how much is applied — and free delivery; the multiplier counts when points are posted; early access is
+ * written but read by nothing, and the till applies no benefit (the note, checkout-state.ts).
  */
 export async function loader({ request, context }: Route.LoaderArgs) {
   const { db, actor, now, locale } = await openPromotions(context, SECTION_READ.vip);
@@ -87,7 +88,7 @@ export default function VipPage({ loaderData }: Route.ComponentProps) {
         <h1 className="adm-title">{t("vip.title")}</h1>
         <p className="max-w-[75ch] type-body text-ink-2">{t("vip.lead")}</p>
       </header>
-      <Boundary>{t("vip.boundary")}</Boundary>
+      <SectionState id="vip" />
       <Section id="prm-tiers" title={t("vip.tiers")}>
         {page.tiers.length === 0 ? <p className="type-body text-ink-2">{manage ? t("vip.noTiers") : t("vip.noTiersRead")}</p> : null}
         <div className="adm-grid">
@@ -195,7 +196,10 @@ function TierCard({ tier, manage }: { tier: TierRow; manage: boolean }) {
   const t = usePromotionsT();
   const f = useFormat();
   const locale = useLocale();
+  const program = useProgram();
   const b = tier.benefits;
+  // the checkout gives a member at most the discount limits in force (orders/promotions.ts step 4): say what applies
+  const capped = b.discountBps !== null && b.discountBps > program.limits.percentBps;
   return (
     <article className="adm-card">
       <p className="flex flex-wrap items-center gap-2 type-strong">
@@ -206,10 +210,20 @@ function TierCard({ tier, manage }: { tier: TierRow; manage: boolean }) {
         {tier.isActive ? null : <ToneStatus tone="out">{t("vip.tierOff")}</ToneStatus>}
       </p>
       <span className="prm-tags">
-        {b.discountBps ? <Tag icon="percent">{t("vip.b.discount", { percent: bpsToPercent(b.discountBps) })}</Tag> : null}
+        {b.discountBps ? (
+          <Tag icon="percent" warn={capped}>
+            {capped ? t("vip.b.discountCapped", { percent: bpsToPercent(b.discountBps), cap: bpsToPercent(program.limits.percentBps) }) : t("vip.b.discount", { percent: bpsToPercent(b.discountBps) })}
+          </Tag>
+        ) : null}
         {b.freeShipping ? <Tag icon="truck">{t("vip.b.freeShipping")}</Tag> : null}
-        {b.pointsMultiplierBps ? <Tag icon="coins">{t("vip.b.multiplier", { factor: (b.pointsMultiplierBps / 10_000).toFixed(2).replace(/0$/, "") })}</Tag> : null}
-        {b.earlyAccess ? <Tag icon="clock">{t("vip.b.earlyAccess")}</Tag> : null}
+        {/* 15,000 bps → "1.5", 20,000 → "2" (it read "2.0": only one trailing zero was dropped) */}
+        {b.pointsMultiplierBps ? <Tag icon="coins">{t("vip.b.multiplier", { factor: (b.pointsMultiplierBps / 10_000).toFixed(2).replace(/\.?0+$/, "") })}</Tag> : null}
+        {/* written on the tier, read by nothing yet (checkout-state.ts): said on the tag itself */}
+        {b.earlyAccess ? (
+          <Tag icon="plugs-connected" warn>
+            {t("vip.b.earlyAccess")}
+          </Tag>
+        ) : null}
       </span>
       {b.notes ? <p className="type-body text-ink-2">{pick(b.notes, locale)}</p> : null}
       <p className="type-caption text-ink-2">
@@ -226,6 +240,8 @@ function TierCard({ tier, manage }: { tier: TierRow; manage: boolean }) {
 
 function TierForm({ tier }: { tier: TierRow | null }) {
   const t = usePromotionsT();
+  const f = useFormat();
+  const program = useProgram();
   const { fetcher, pending, message, fields: errors } = useIntent("tier", (result) => (result.created ? "done.created" : result.changed ? "done.saved" : "done.nothing"));
   const b = tier?.benefits;
   return (
@@ -241,13 +257,13 @@ function TierForm({ tier }: { tier: TierRow | null }) {
         <TextField name="key" label={t("vip.f.key")} hint={t("vip.f.keyHint")} defaultValue={tier?.key ?? ""} required ltr error={errors.key} />
         <TextField name="nameAr" label={t("vip.f.nameAr")} defaultValue={tier?.name.ar ?? ""} required maxLength={60} error={errors.nameAr} />
         <TextField name="nameEn" label={t("vip.f.nameEn")} defaultValue={tier?.name.en ?? ""} maxLength={60} ltr lang="en" error={errors.nameEn} />
-        <TextField name="discount" label={t("vip.f.discount")} hint={t("vip.f.discountHint")} defaultValue={b?.discountBps ? bpsToPercent(b.discountBps) : ""} inputMode="decimal" error={errors.discount} />
+        <TextField name="discount" label={t("vip.f.discount")} hint={t("vip.f.discountHint", { percent: bpsToPercent(program.limits.percentBps), amount: f.iqd(program.limits.perOrderIqd) })} defaultValue={b?.discountBps ? bpsToPercent(b.discountBps) : ""} inputMode="decimal" error={errors.discount} />
         <TextField name="multiplier" label={t("vip.f.multiplier")} hint={t("vip.f.multiplierHint")} defaultValue={b?.pointsMultiplierBps ? (b.pointsMultiplierBps / 10_000).toFixed(2) : ""} inputMode="decimal" error={errors.multiplier} />
         <TextField name="durationDays" label={t("vip.f.duration")} hint={t("vip.f.durationHint")} defaultValue={tier?.durationDays ?? ""} inputMode="numeric" error={errors.durationDays} />
         <TextField name="sort" label={t("vip.f.sort")} defaultValue={tier?.sort ?? 0} inputMode="numeric" error={errors.sort} />
         <div className="grid content-end gap-2">
           <Checkbox name="freeShipping" label={t("vip.f.freeShipping")} defaultChecked={b?.freeShipping ?? false} />
-          <Checkbox name="earlyAccess" label={t("vip.f.earlyAccess")} defaultChecked={b?.earlyAccess ?? false} />
+          <Checkbox name="earlyAccess" label={t("vip.f.earlyAccess")} hint={t("vip.f.earlyAccessHint")} defaultChecked={b?.earlyAccess ?? false} />
           <Checkbox name="isActive" label={t("vip.f.active")} defaultChecked={tier?.isActive ?? true} />
         </div>
         <TextArea name="notesAr" label={t("vip.f.notesAr")} hint={t("vip.f.notesHint")} defaultValue={b?.notes?.ar ?? ""} required rows={3} maxLength={600} className="prm-span" error={errors.notesAr} />

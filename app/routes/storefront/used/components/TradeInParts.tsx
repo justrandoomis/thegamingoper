@@ -7,12 +7,11 @@
  *                     false) it is only «التقدير المبدئي» and the range beside the offer; without a range, nothing.
  *   <AnswerList>      the shopper's description, question by question (with edit links in the wizard).
  *   <DeviceSummary>   the device being traded in: its catalogue photo in a small well, the name, an optional link.
- *   <Journey>         «قدّر السعر ← افحص الجهاز ← استلم رصيداً أو نقداً» — the three-line block of the first step.
  *   <WhatNext>        what happens after the request, as numbered rows (the aside, the estimate step).
  */
 import { useId, type ReactNode } from "react";
 
-import { Icon, type IconName } from "~/art/Icon";
+import { Icon } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import type { ImageRef, UsedGrade } from "~/lib/dto";
 import type { TradeInAnswers, TradeInQuestion } from "~/server/services/tradein.server";
@@ -20,6 +19,7 @@ import { cx } from "~/ui/cx";
 import { FactList } from "~/ui/FactList";
 import { gradeKey } from "~/ui/GradeBadge";
 import { Niche } from "~/ui/Niche";
+import { Note } from "~/ui/Note";
 import { Price } from "~/ui/Price";
 import { fillNodes, iqdText } from "~/ui/PriceTag";
 import { BidiText, ProductImage } from "~/ui/ProductCard";
@@ -93,39 +93,48 @@ export function EstimatePanel({ range, low, high, missing = [], deductionsIqd = 
     );
   }
 
+  // v2.1: the estimate is the step's one showcase — frosted glass over the brand's ambient light (the kit's .glow and
+  // .surface--glass; solid under reduced transparency); the range in price type, the validity as a pill, the note calm.
   return (
-    <section className={cx("panel grid gap-3 p-5 lg:p-6", className)} aria-labelledby="estimate-range" data-estimate="range">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <Heading id="estimate-range" className="type-sm-strong text-ink-2">
-          {awaiting ? t("tradein.estimate.label") : t("tradein.estimate.title")}
-        </Heading>
-        {awaiting ? pending : null}
-      </div>
-      <p className="flex flex-wrap items-baseline gap-x-2 gap-y-1" data-range="">
-        <VisuallyHidden>{t("tradein.estimate.range", { min: iqdText(f, range.minIqd), max: iqdText(f, range.maxIqd) })}</VisuallyHidden>
-        <span aria-hidden="true" className="contents">
-          <Price amountIqd={range.minIqd} size="lg" approx="off" as="span" />
-          <span className="type-h3 text-ink-2">–</span>
-          <Price amountIqd={range.maxIqd} size="lg" approx="off" as="span" />
-        </span>
-      </p>
-      {awaiting && range.expiresAt !== null ? (
-        <p className={cx("type-sm", range.expired ? "font-semibold text-warn" : "text-ink-2")}>
-          {range.expired ? t("tradein.estimate.expired", { date: f.date(range.expiresAt, "short") }) : t("tradein.estimate.validUntil", { date: f.date(range.expiresAt, "short") })}
+    <div className={cx("glow used-estimate", className)}>
+      <section className="surface surface--glass grid gap-3 p-5 lg:p-6" aria-labelledby="estimate-range" data-estimate="range">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <Heading id="estimate-range" className="type-sm-strong text-ink-2">
+            {awaiting ? t("tradein.estimate.label") : t("tradein.estimate.title")}
+          </Heading>
+          {awaiting ? pending : null}
+        </div>
+        <p className="flex flex-wrap items-baseline gap-x-2 gap-y-1" data-range="">
+          <VisuallyHidden>{t("tradein.estimate.range", { min: iqdText(f, range.minIqd), max: iqdText(f, range.maxIqd) })}</VisuallyHidden>
+          <span aria-hidden="true" className="contents">
+            <Price amountIqd={range.minIqd} size="lg" approx="off" as="span" />
+            <span className="type-h3 text-ink-2">–</span>
+            <Price amountIqd={range.maxIqd} size="lg" approx="off" as="span" />
+          </span>
         </p>
-      ) : null}
-      {awaiting ? <p className="type-body text-ink">{t("tradein.estimate.note")}</p> : null}
-      {low && high ? <p className="type-sm text-ink-2">{t("tradein.estimate.grades", { low: words(low), high: words(high) })}</p> : null}
-      {missing.length > 0 && deductionsIqd > 0 ? (
-        <p className="type-sm text-ink-2">
-          {fillNodes(t("tradein.estimate.deduction"), {
-            amount: <bdi className="nums">{iqdText(f, deductionsIqd)}</bdi>,
-            items: missing.map(accessory).join(t("tradein.listJoin")),
-          })}
-        </p>
-      ) : null}
-      {payout ? <PayoutOptions /> : null}
-    </section>
+        {awaiting && range.expiresAt !== null ? (
+          <p className={cx("used-date", range.expired && "used-date--warn")}>
+            <Icon name={range.expired ? "hourglass" : "calendar"} size={16} />
+            {range.expired ? t("tradein.estimate.expired", { date: f.date(range.expiresAt, "short") }) : t("tradein.estimate.validUntil", { date: f.date(range.expiresAt, "short") })}
+          </p>
+        ) : null}
+        {awaiting ? (
+          <Note variant="line" icon="info">
+            {t("tradein.estimate.note")}
+          </Note>
+        ) : null}
+        {low && high ? <p className="type-read text-ink-2">{t("tradein.estimate.grades", { low: words(low), high: words(high) })}</p> : null}
+        {missing.length > 0 && deductionsIqd > 0 ? (
+          <p className="type-read text-ink-2">
+            {fillNodes(t("tradein.estimate.deduction"), {
+              amount: <bdi className="nums">{iqdText(f, deductionsIqd)}</bdi>,
+              items: missing.map(accessory).join(t("tradein.listJoin")),
+            })}
+          </p>
+        ) : null}
+        {payout ? <PayoutOptions /> : null}
+      </section>
+    </div>
   );
 }
 
@@ -237,32 +246,6 @@ export function DeviceSummary({ name, image, action, children, size = "md", clas
         </TextLink>
       ) : null}
     </div>
-  );
-}
-
-/** «قدّر السعر ← افحص الجهاز ← استلم رصيداً أو نقداً» — what trading in is, in three short lines. */
-export function Journey({ className }: { className?: string }) {
-  const t = useUsedT();
-  const steps: { icon: IconName; title: string; text: string }[] = [
-    { icon: "tag", title: t("tradein.journey.estimate"), text: t("tradein.journey.estimateText") },
-    { icon: "magnifying-glass", title: t("tradein.journey.inspect"), text: t("tradein.journey.inspectText") },
-    { icon: "hand-coins", title: t("tradein.journey.payout"), text: t("tradein.journey.payoutText") },
-  ];
-  return (
-    <ol className={cx("used-journey", className)} aria-label={t("tradein.journey.label")}>
-      {steps.map((step, index) => (
-        <li key={step.title} className="used-journey__step">
-          <span className="used-journey__icon" aria-hidden="true">
-            <Icon name={step.icon} size={20} />
-          </span>
-          <span className="grid gap-0.5">
-            <span className="type-sm-strong text-ink">{step.title}</span>
-            <span className="type-xs text-ink-2">{step.text}</span>
-          </span>
-          {index < steps.length - 1 ? <Icon name="arrow-right" size={16} className="used-journey__arrow" aria-hidden="true" /> : null}
-        </li>
-      ))}
-    </ol>
   );
 }
 

@@ -13,12 +13,13 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
 import { openPromotions, respond, runIntent } from "./promotions.server";
-import { Boundary, ConfirmAction, Facts, Kpis, Money, Num, PhoneText, Section, ToneStatus, usePromotionsT, When, useProgram } from "./ui";
+import { ConfirmAction, Facts, Kpis, Money, Num, PhoneText, SectionState, Section, ToneStatus, usePromotionsT, When, useProgram } from "./ui";
 
 /**
- * /admin/promotions/points — 08.04: the programme's rules, the points outstanding and what they are worth, what is due
- * (orders past their return window that have not earned, refunds that came after, points past their date), posting it
- * (idempotent), finding a customer by phone, and the append-only ledger (kind and customer in the URL).
+ * /admin/promotions/points — 08.04: where points are redeemed and earned today (the note: online checkout, till), the
+ * programme's rules, the points outstanding and what they are worth, what is due (orders past their return window that
+ * have not earned, refunds that came after, points past their date) — posted every night by the scheduled jobs and
+ * here at once (idempotent) —, finding a customer by phone, and the append-only ledger (kind and customer in the URL).
  */
 export async function loader({ request, context }: Route.LoaderArgs) {
   const { db, actor, now } = await openPromotions(context, SECTION_READ.points);
@@ -85,7 +86,7 @@ export default function PointsPage({ loaderData }: Route.ComponentProps) {
         <h1 className="adm-title">{t("points.title")}</h1>
         <p className="max-w-[75ch] type-body text-ink-2">{t("points.lead")}</p>
       </header>
-      <Boundary>{t("points.boundary", { value: f.iqd(program.loyalty.pointValueIqd) })}</Boundary>
+      <SectionState id="points" />
       <div className="prm-block">
       <Kpis
         items={[
@@ -154,6 +155,8 @@ export default function PointsPage({ loaderData }: Route.ComponentProps) {
           </Section>
           <div className={overview.ordersWaiting + overview.reversalsWaiting > 0 && manage ? "prm-panel prm-panel--decide" : "prm-panel"}>
             <p className="adm-h3">{t("points.due.title")}</p>
+            {/* the nightly jobs promotions.points.sync / .expire post the same, keyed: a button press repeats nothing */}
+            <p className="type-caption text-ink-2">{t("points.due.nightly")}</p>
             {/* the return window is a setting (returns.window_days): its noun agrees with the number (daySpan) */}
             <p className="type-body">{t("points.due.orders", { count: overview.ordersWaiting, span: t("daySpan", { count: overview.returnWindowDays }) })}</p>
             <p className="type-body">{t("points.due.reversals", { count: overview.reversalsWaiting })}</p>

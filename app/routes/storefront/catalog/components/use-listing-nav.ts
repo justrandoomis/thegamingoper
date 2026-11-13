@@ -23,6 +23,11 @@ import { LISTING_SORTS, listChangeHref, listingSearch, readListingQuery, type Li
  * shell's banner says it too) and the list follows the last held tap once the connection is back. Without it the
  * navigation fails and the results give way to the offline error page (v2 §6.2 states: "offline while filtering").
  * Links to other pages navigate as usual. Attach it to the page as a click CAPTURE handler, so it runs before the link.
+ *
+ * The root's offline guard (app/root.tsx OfflineNavigationGuard, a window capture listener — it runs first) cancels
+ * every same-origin link while offline and says so in a toast. The tap is cancelled already then, but a list change is
+ * still this page's to hold — so an offline tap is held whether or not the guard got to it first (wave B, 2026-11-13:
+ * since the guard arrived the hold never held, and the toolbar's «نحدّث النتائج حين يعود» was not kept).
  */
 export function useOfflineHold(): (event: MouseEvent<HTMLElement>) => void {
   const navigate = useNavigate();
@@ -37,7 +42,8 @@ export function useOfflineHold(): (event: MouseEvent<HTMLElement>) => void {
     return () => window.removeEventListener("online", resume);
   }, [navigate]);
   return useCallback((event: MouseEvent<HTMLElement>) => {
-    if (navigator.onLine || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    // online: nothing to hold; a modified or other-button click is the browser's (a new tab), never held
+    if (navigator.onLine || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
     if (!(link instanceof HTMLAnchorElement) || (link.target !== "" && link.target !== "_self")) return;
     const href = listChangeHref(link.href, window.location.href);

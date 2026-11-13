@@ -45,11 +45,13 @@ import {
 import { getAvailability } from "~/server/services/inventory/stock.server";
 import { getReviewSummary, listVerifiedReviews } from "~/server/services/reviews.server";
 import productMessages from "~/i18n/messages/product";
-import { InTheBox, sourceLine } from "~/routes/storefront/product/components/Details";
-import { offersTransfer, paymentMethods } from "~/routes/storefront/product/components/Facts";
+import { BuyStrip, stripState } from "~/routes/storefront/product/components/BuyStrip";
+import { BeforeYouOrder, Highlights, InTheBox, sourceLine } from "~/routes/storefront/product/components/Details";
+import { methodsList, offersTransfer, paymentMethods, sentenceStart, SideNotes } from "~/routes/storefront/product/components/Facts";
 import { MixedText, splitMixed } from "~/routes/storefront/product/components/MixedText";
-import { PriceBlock, priceLook, struckPrice } from "~/routes/storefront/product/components/PriceBlock";
+import { PriceBlock, priceLook, priceSide, struckPrice } from "~/routes/storefront/product/components/PriceBlock";
 import { alternativesPath, compatRows, DeviceHubSlot } from "~/routes/storefront/product/components/Slots";
+import { stageBack, stageGel, stageStep } from "~/routes/storefront/product/components/StageCard";
 import { pickerLook, VariantPicker } from "~/routes/storefront/product/components/VariantPicker";
 import { jsonForScript, productJsonLd } from "~/routes/storefront/product/jsonld";
 import { claimsPreorder, FACT_LINE_CHARS, factLine, factParts, factRow, isLongName, keepTokens, LONG_NAME_CHARS, proseWithoutPreorder, withoutPreorder } from "~/routes/storefront/product/text";
@@ -605,6 +607,199 @@ describe("product page QA fixes (design v2)", () => {
     expect(renderOnPage(createElement(PriceBlock, { variant: now, variants: [now], delivery, lifecycle: null, isDemo: true, reasonId: "why" }))).toContain("التوصيل");
     const out = version("c", "Y", "1TB", { orderable: false, stock: "out_of_stock" });
     expect(renderOnPage(createElement(PriceBlock, { variant: out, variants: [out], delivery, lifecycle: null, isDemo: true, reasonId: "why" }))).toContain("التوصيل");
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── design v2.1 (client note 5: the before's arrangement)
+
+describe("product page v2.1 (client note 5)", () => {
+  const version = (id: string, sku: string, label: string, extra: Partial<VariantDetail> = {}) =>
+    ({ id, sku, label, title: label, priceIqd: 667_750, compareAtIqd: null, orderable: true, stock: "in_stock", releaseAt: null, images: [], options: {}, modelNumber: null, bundle: null, gel: null, ...extra }) as unknown as VariantDetail;
+  const delivery = { flatFeeIqd: 5_000, overridesEnabled: false };
+  const plat = (gel: "nintendo" | "playstation" | "xbox" | "handheld" | null, slug = gel ?? "pc") => ({ slug, name: slug, gel });
+
+  it("the stage moves next / previous within a set of pictures and swaps for a new set", () => {
+    expect(stageStep(0, 2, true)).toBe("next");
+    expect(stageStep(3, 1, true)).toBe("previous");
+    expect(stageStep(2, 2, true)).toBe("swap");
+    expect(stageStep(0, 1, false)).toBe("swap");
+  });
+
+  it("the stage's light is the version's platform, else the product's, else the first it is for, else the brand red", () => {
+    expect(stageGel({ platform: plat("nintendo"), forPlatforms: [] }, { gel: "playstation" })).toBe("playstation");
+    expect(stageGel({ platform: plat("nintendo"), forPlatforms: [] }, { gel: null })).toBe("nintendo");
+    expect(stageGel({ platform: null, forPlatforms: [plat(null, "pc"), plat("xbox")] }, { gel: null })).toBe("xbox");
+    expect(stageGel({ platform: null, forPlatforms: [] }, { gel: null })).toBe("brand");
+    // back without in-site history: the product's own category, else home
+    expect(stageBack({ categories: [{ slug: "consoles", name: "c" }, { slug: "nintendo-consoles", name: "n" }] })).toBe("/c/nintendo-consoles");
+    expect(stageBack({ categories: [] })).toBe("/");
+  });
+
+  it("the price block: the price and the demo mark at the start, the fee and the stock at the end (coming soon: the day alone)", () => {
+    expect(priceSide({ orderable: true, releaseAt: null }, delivery, false)).toEqual({ fee: true, state: "stock" });
+    expect(priceSide({ orderable: false, releaseAt: null }, delivery, false)).toEqual({ fee: true, state: "stock" });
+    expect(priceSide({ orderable: false, releaseAt: Date.UTC(2027, 4, 19) }, delivery, false)).toEqual({ fee: false, state: "release" });
+    expect(priceSide({ orderable: true, releaseAt: null }, delivery, true)).toEqual({ fee: false, state: "stock" });
+    expect(priceSide({ orderable: true, releaseAt: null }, { overridesEnabled: true }, false)).toEqual({ fee: false, state: "stock" });
+    const now = version("a", "NS2-STD", "النسخة الدولية");
+    const page = renderOnPage(createElement(PriceBlock, { variant: now, variants: [now], delivery, lifecycle: null, isDemo: true, reasonId: "why" }));
+    const main = page.indexOf('class="pp-price__main"');
+    const side = page.indexOf('class="pp-price__side"');
+    expect(main).toBeGreaterThan(-1);
+    expect(side).toBeGreaterThan(main); // the start first, the end second (the reading order)
+    expect(page.slice(main, side)).toContain("price--xl");
+    expect(page.slice(main, side)).toContain('data-demo="tag"');
+    expect(page.slice(side)).toContain("التوصيل");
+    expect(page.slice(side)).toContain("status--ok");
+  });
+
+  it("the side information is calm notes — the payment methods and the transfer rule in a note, never a bold sentence", () => {
+    const methods = paymentMethods({ cod: true, wallet: false, card: true, zaincash: true }, false);
+    const notes = renderOnPage(createElement(SideNotes, { delivery, methods, returnsWindowDays: 7, makerWarranty: null, storeWarrantyMonths: null }));
+    expect(notes.match(/class="note"/g)?.length).toBe(4); // payment, delivery, returns, warranty
+    expect(notes).toContain("طرق الدفع");
+    expect(notes).toContain("الدفع عند الاستلام، أو زين كاش، أو تحويل إلى بطاقة ماستركارد.");
+    expect(notes).toContain("الحوالة تبقى بانتظار التحقق حتى يراجعها موظف.");
+    expect(notes).not.toMatch(/type-card|font-semibold/); // the methods are the note's muted text, not a bold line
+    expect(notes).toContain("سياسة الإرجاع");
+    expect(notes).toContain("اسألنا عن شروط الضمان");
+    // cash only: no transfer rule; a code: no delivery fee, returns or warranty
+    const cash = renderOnPage(createElement(SideNotes, { delivery, methods: ["cod"], returnsWindowDays: 7, makerWarranty: null, storeWarrantyMonths: null }));
+    expect(cash).not.toContain("الحوالة");
+    const code = renderOnPage(createElement(SideNotes, { delivery, methods: ["cod"], returnsWindowDays: 7, makerWarranty: null, storeWarrantyMonths: null, digital: true }));
+    expect(code).not.toContain("سياسة الإرجاع");
+    expect(code).not.toContain("5,000");
+    // English: a sentence that starts with a capital
+    const en = renderOnPage(createElement(SideNotes, { delivery, methods: ["cod", "zaincash"], returnsWindowDays: 7, makerWarranty: null, storeWarrantyMonths: null }), "en");
+    expect(en).toContain("Cash on delivery or Zain Cash.");
+    expect(methodsList(["a", "b", "c"], ", ", " or ")).toBe("a, b or c");
+    expect(sentenceStart("cash", "en")).toBe("Cash");
+    expect(sentenceStart("الدفع", "ar")).toBe("الدفع");
+  });
+
+  it("«قبل أن تطلب» is the kit's warning note; highlights are a checked list in reading size", () => {
+    const before = renderOnPage(createElement(BeforeYouOrder, { text: "اختر النسخة الدولية." }));
+    expect(before).toContain('class="note note--warning"');
+    expect(before).toContain("قبل أن تطلب");
+    expect(renderOnPage(createElement(BeforeYouOrder, { text: null }))).not.toContain("note");
+    const list = renderOnPage(createElement(Highlights, { items: ["ثلاثة أوضاع للعب", "تخزين 256GB"] }));
+    expect(list.match(/type-read/g)?.length).toBe(2);
+    expect(list).not.toContain("list-disc");
+  });
+
+  it("the phone bar: the tray and the red key when it can be added, «عرض السلة» after an add, the kit's words when it cannot", () => {
+    expect(stripState("in_stock", false)).toBe("ready");
+    expect(stripState("low_stock", true)).toBe("added");
+    expect(stripState("out_of_stock", false)).toBe("kit");
+    expect(stripState("preorder", true)).toBe("kit");
+    const base = { item: { variantId: "var_x" }, name: "Nintendo Switch 2", priceIqd: 667_750, releaseAt: null, alternativesHref: "/c/nintendo-consoles" };
+    const ready = renderOnPage(createElement(BuyStrip, { ...base, stock: "in_stock" as const }));
+    expect(ready).toContain('class="stepper"');
+    expect(ready).toContain("key--primary");
+    expect(ready).toContain("أضف إلى السلة");
+    const out = renderOnPage(createElement(BuyStrip, { ...base, stock: "out_of_stock" as const }));
+    expect(out).toContain("نفد حالياً");
+    expect(out).toContain("شاهد بدائل");
+    expect(out).not.toContain('class="stepper"');
+    const soon = renderOnPage(createElement(BuyStrip, { ...base, stock: "preorder" as const, releaseAt: Date.UTC(2027, 4, 19) }));
+    expect(soon).toContain("يصدر");
+    expect(soon).not.toContain("key--primary");
+  });
+});
+
+describe("product page v2.1 review (client note 5)", () => {
+  const area = (path: string) => readFileSync(fileURLToPath(new URL(`../app/routes/storefront/product/${path}`, import.meta.url)), "utf8");
+  /** The declarations of the first rule whose selector is exactly `selector` (after `from`, when given). */
+  const rule = (css: string, selector: string, from = 0): string => {
+    const start = css.indexOf(`${selector} {`, from);
+    expect(start, `${selector} in the stylesheet`).toBeGreaterThan(-1);
+    return css.slice(start, css.indexOf("}", start));
+  };
+  const px = (block: string, property: string): number => {
+    const value = block.match(new RegExp(`${property}:\\s*(\\d+)px`))?.[1];
+    expect(value, `${property} in px`).toBeDefined();
+    return Number(value);
+  };
+
+  it("the price block brings its own stylesheet: the quick look's price block is laid out on every page it opens from", () => {
+    // Review 2026-11-13: the block's rules lived in product.css, which only the product page loads — opened from a
+    // listing, the home or search, the quick look drew the price, the demo tag, the fee and the stock as plain lines.
+    const source = area("components/PriceBlock.tsx");
+    const sheet = source.match(/^import "\.\/([\w.-]+\.css)";$/m)?.[1];
+    expect(sheet, "PriceBlock.tsx imports a stylesheet of its own").toBeDefined();
+    const css = area(`components/${sheet}`);
+    const used = new Set(source.match(/pp-price[\w-]*/g));
+    expect(used.size).toBeGreaterThan(4);
+    for (const name of used) expect(css, `.${name} is styled where the component is`).toMatch(new RegExp(`\\.${name}[\\s{,:]`));
+    expect(area("product.css")).not.toContain(".pp-price");
+    expect(area("QuickPreview.tsx")).toContain('from "./components/PriceBlock"');
+  });
+
+  it("the thumbnail tray holds six pictures on a 360 phone and its ends never clip the chosen ring", () => {
+    // Review 2026-11-13: six 48px tiles, 8px gaps and 6px of padding made the tray 340px in the 336px a 360 phone gives
+    // it (it scrolled and cut the last tile), and the tray's 28px corners cut the chosen ring at either end.
+    const css = area("product.css");
+    const base = rule(css, ".pp-stage");
+    const narrowAt = css.indexOf("@media (max-width: 22.99rem)");
+    expect(narrowAt).toBeGreaterThan(-1);
+    const narrow = rule(css, ".pp-stage", narrowAt);
+    const thumb = px(base, "--pp-thumb");
+    const pad = px(base, "--pp-tray-pad");
+    const gap = px(narrow, "--pp-thumb-gap");
+    const room = 360 - 2 * 12; // the tray keeps 12px (--s-3) from the card's sides
+    expect(6 * thumb + 5 * gap + 2 * pad).toBeLessThanOrEqual(room);
+    expect(thumb).toBeGreaterThanOrEqual(44); // still a 44px target
+    // the tray's corners are concentric with the tiles' (its radius = theirs + its padding), and the ring (2px at 2px)
+    // sits inside the padding
+    expect(rule(css, ".pp-stage .gallery > .thumbs")).toMatch(/border-radius:\s*calc\(var\(--r-sm\) \+ var\(--pp-tray-pad\)\)/);
+    expect(rule(css, ".pp-stage .thumbs > .thumb")).toMatch(/border-radius:\s*var\(--r-sm\)/);
+    const ring = rule(css, ".pp-stage .thumbs[data-ind]::after");
+    expect(px(ring, "outline") + px(ring, "outline-offset")).toBeLessThanOrEqual(pad);
+  });
+
+  it("keepTokens keeps names' short tokens together, never the short words of a sentence: no line is wider than a phone", () => {
+    // Review 2026-11-13: every word of up to three letters was glued to the word before it, so English prose became
+    // runs like «12‑teraflop GPU: 4K at up to 120 FPS and 8K HDR» (47 characters that cannot break) — /en/p/xbox-series-x
+    // was 407px wide on a 390 phone (its highlights pushed the page sideways; the layout viewport grew).
+    expect(keepTokens("12-teraflop GPU: 4K at up to 120 FPS and 8K HDR ready")).toBe("12‑teraflop GPU: 4K at up to 120 FPS and 8K HDR ready");
+    expect(keepTokens("Plays thousands of Xbox One, Xbox 360 games")).toBe("Plays thousands of Xbox One, Xbox 360 games");
+    expect(keepTokens("a 3.5 mm jack, 401 g")).toBe("a 3.5 mm jack, 401 g"); // a unit stays with its number
+    const dir = fileURLToPath(new URL("../catalog/products/", import.meta.url));
+    let longest = "";
+    const walk = (value: unknown, localized: boolean): void => {
+      if (typeof value === "string") {
+        if (!localized) return;
+        // a run that keepTokens made: words joined by its no-break spaces
+        for (const run of keepTokens(value).split(/[ \t\n]+/u)) if (run.includes(" ") && [...run].length > [...longest].length) longest = run;
+      } else if (Array.isArray(value)) value.forEach((entry) => walk(entry, localized));
+      else if (value && typeof value === "object") for (const [key, entry] of Object.entries(value)) walk(entry, localized || LOCALE_CODES.includes(key as Locale));
+    };
+    for (const file of readdirSync(dir).filter((name) => name.endsWith(".json"))) {
+      const product = JSON.parse(readFileSync(dir + file, "utf8")) as Record<string, unknown>;
+      walk([product.name, product.variants, product.inTheBox, product.highlights, product.short, product.description, product.notes], false);
+    }
+    // 28 characters of 16px text take about 240px: they fit the narrowest reading column (296px at 360)
+    expect([...longest].length, longest).toBeLessThanOrEqual(28);
+  });
+
+  it("offline, the reason is said once: the sentence under the price on phones, the kit's line under the key from 1024", () => {
+    // Review 2026-11-13: at 1440 the shell's banner, the sentence under the price and the kit's line under the column's
+    // key said the same thing three times, and the key was described by both sentences.
+    const now = { id: "a", sku: "NS2-STD", label: "النسخة الدولية", title: "النسخة الدولية", priceIqd: 667_750, compareAtIqd: null, orderable: true, stock: "in_stock", releaseAt: null, images: [], options: {}, modelNumber: null, bundle: null } as unknown as VariantDetail;
+    const block = renderOnPage(createElement(PriceBlock, { variant: now, variants: [now], delivery: { flatFeeIqd: 5_000, overridesEnabled: false }, lifecycle: null, isDemo: false, reasonId: "why", offline: true, offlineId: "off" }));
+    expect(block).toMatch(/<p id="off"[^>]*data-offline-line=""/);
+    expect(block).toContain("لا يوجد اتصال");
+    // the page hides that sentence from 1024 (in the utilities layer: the sentence carries `flex`) …
+    const css = area("product.css");
+    const utilities = css.slice(css.indexOf("@layer utilities"));
+    expect(utilities).toMatch(/@media \(min-width: 64rem\) \{\s*\.pp-info \[data-offline-line\] \{\s*display: none;/);
+    // … and the column's key is described by the kit's own line, not by the hidden sentence
+    expect(area("product.tsx")).toContain("<BuyControls {...buy} aria-describedby={variant.orderable ? undefined : reasonId} />");
+    // the quick look says it once too: the kit's line in the pinned foot, after the key it describes — not again under
+    // the price in the sheet's body
+    const quick = area("QuickPreview.tsx");
+    expect(quick).not.toMatch(/offlineId=/);
+    expect(quick).not.toMatch(/aria-describedby=\{offline/);
   });
 });
 

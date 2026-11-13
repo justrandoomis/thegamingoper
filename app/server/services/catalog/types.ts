@@ -94,6 +94,12 @@ export type NavLink = {
    * line or in a lighter run — never glued into the Latin label.
    */
   qualifier?: string;
+  /**
+   * A platform's device links: the model's catalogue photo ("<product-slug>--<n>", device_models.art_key) — the mega
+   * menu's device thumbnail (shell chrome.ts reads it); absent when the model has none. (A NavCategory's `artKey` is
+   * its tile photo.)
+   */
+  artKey?: string | null;
 };
 
 export type NavCategory = NavLink & {

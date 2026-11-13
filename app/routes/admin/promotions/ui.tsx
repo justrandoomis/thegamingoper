@@ -2,7 +2,8 @@
  * Small building blocks shared by the screens of module 08 (promotions). Admin rules (DESIGN.md §10): data has no
  * material, status is words with a dot, numbers are tabular and isolated (<bdi>), money is integer IQD with the figure
  * first, a label always comes with the sentence that explains it (never colour alone); raised clay only where a person
- * must decide.
+ * must decide. Where a section is applied today (online, at the till) is `StateLines` / `SectionState`, read from
+ * ./checkout-state.ts — never a sentence of its own.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import { useFetcher, useRouteLoaderData } from "react-router";
@@ -16,6 +17,7 @@ import { ConfirmDialog, type ImpactRow } from "~/ui/Dialog";
 import { Key } from "~/ui/Key";
 import { Status } from "~/ui/Tag";
 import { toast } from "~/ui/toast-store";
+import { CHECKOUT_STATE, SALE_CHANNELS, STATE_TONE, type StateSection } from "./checkout-state";
 import { PROMOTIONS_LAYOUT_ID } from "./meta";
 
 /** `t()` for the module's strings (sent by the promotions layout's loader, with the shared "errors" namespace). */
@@ -205,16 +207,60 @@ export function Notice({ icon = "info", tone = "neutral", children }: { icon?: I
   );
 }
 
-/** The honest boundary of a section: what the checkout does not apply yet. */
-export function Boundary({ children }: { children: ReactNode }) {
+/** What the state sentences fill in: a point's worth and the discount limits in force (the programme's settings). */
+function useStateVars(): Record<string, string | number> {
+  const program = useProgram();
+  const f = useFormat();
+  return { value: f.iqd(program.loyalty.pointValueIqd), percent: bpsToPercent(program.limits.percentBps), amount: f.iqd(program.limits.perOrderIqd) };
+}
+
+/**
+ * Where one section is applied today, per sale channel (checkout-state.ts): the channel, its state in words with a dot
+ * and the sentence that says exactly what happens there — a row of the overview and the body of each section's note.
+ */
+export function StateLines({ id }: { id: StateSection }) {
   const t = usePromotionsT();
+  const vars = useStateVars();
   return (
-    <div className="prm-boundary" role="note">
-      <p className="flex items-center gap-2 type-label">
-        <Icon name="plugs-connected" size={18} className="text-warn" />
-        {t("common.boundaryTitle")}
+    <dl className="prm-state">
+      {SALE_CHANNELS.map((channel) => {
+        const state = CHECKOUT_STATE[id][channel];
+        return (
+          <div key={channel}>
+            <dt className="flex flex-wrap items-center gap-x-2 type-label">
+              {t(`home.checkout.channel.${channel}`)}
+              <ToneStatus tone={STATE_TONE[state]}>{t(`home.checkout.state.${state}`)}</ToneStatus>
+            </dt>
+            <dd className="type-body text-ink-2">{t(`home.checkout.${id}.${channel}`, vars)}</dd>
+          </div>
+        );
+      })}
+    </dl>
+  );
+}
+
+/**
+ * The honest note at the top of a section's pages: where it is applied today, online and at the till (the same lines
+ * as the overview), and — `children` — what is not built yet beyond the two channels. Follow-up 2026-11-12: it said
+ * «لا يطبّقه الدفع بعد» over sections the checkout had started to apply.
+ */
+export function SectionState({ id, children }: { id: StateSection; children?: ReactNode }) {
+  const t = usePromotionsT();
+  const titleId = `prm-state-${id}`;
+  return (
+    <div className="prm-boundary" role="note" aria-labelledby={titleId}>
+      <p id={titleId} className="type-label">
+        {t("common.stateTitle")}
       </p>
-      <p className="type-body text-ink-2">{children}</p>
+      <StateLines id={id} />
+      {children ? (
+        <p className="flex items-start gap-2 type-body text-ink-2">
+          <Icon name="plugs-connected" size={18} className="mt-0.5 flex-none text-warn" />
+          <span className="min-w-0">
+            <span className="type-label text-ink">{t("common.notBuilt")}</span> {children}
+          </span>
+        </p>
+      ) : null}
     </div>
   );
 }

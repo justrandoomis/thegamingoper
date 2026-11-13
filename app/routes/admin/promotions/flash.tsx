@@ -14,7 +14,7 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
 import { fields, openPromotions, respond, runIntent } from "./promotions.server";
-import { Arrow, Boundary, DemoNote, Failure, newKey, Num, Section, ToneStatus, useIntent, usePromotionsT, When } from "./ui";
+import { Arrow, DemoNote, Failure, newKey, Num, SectionState, Section, ToneStatus, useIntent, usePromotionsT, When } from "./ui";
 
 /**
  * /admin/promotions/flash — 08.03: flash sales with their window (Baghdad time), state (draft, waiting for a second
@@ -81,7 +81,7 @@ export default function FlashPage({ loaderData }: Route.ComponentProps) {
         <h1 className="adm-title">{t("flash.title")}</h1>
         <p className="max-w-[75ch] type-body text-ink-2">{t("flash.lead")}</p>
       </header>
-      <Boundary>{t("flash.boundary")}</Boundary>
+      <SectionState id="flash" />
       {manage ? (
         <div className="prm-block">
           <CreateSale />

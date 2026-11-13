@@ -1,224 +1,505 @@
 /**
- * The home hero — Design System v2 §6.1, §4.18 (the showcase band), §2.10c (light), G2/G15: the crimson band with the
- * featured console (default: the Nintendo platform's lead device, Nintendo Switch 2, until staff pin one — §13 #13).
+ * The home hero — a carousel of banners (client notes 1–3; brief §2.2, Design v2.1 G3/G6). Built on the kit's
+ * `useCarousel` (~/ui/Carousel: a native scroll-snap track, so swiping works before and without JavaScript) with the
+ * page's own banners:
  *
- *   phones   the platform pill · the headline in two lines («العب على» / «Nintendo Switch 2», the name isolated, one
- *            edge) · the product on the brand light (168px, the page's LCP image) · the price (xl, white) and «سعر
- *            تجريبي» · the on-band key «اشترِ Nintendo Switch 2», full width · ONE line «التوصيل 5,000 د.ع لكل
- *            المحافظات · الدفع عند الاستلام» ("Delivery 5,000 IQD · Cash on delivery": the page's own short fact,
- *            `hero.delivery`). 428px tall at 390 (the cap is 440).
- *   ≥ 768    the copy at the inline start (plus the fact line and «تفاصيل الجهاز» → the device hub), the product at
- *            the inline end on its light (≤ 410px wide); 400px tall at 1024, 404 from 1280. English mirrors by itself.
+ *   platform banners   every platform's hero (a staff pin, else its lead device) in the key bank's order, the featured
+ *                      one first (./view heroSlides), each on its platform's glossy colour (Nintendo red, PlayStation
+ *                      blue, Xbox green, the handhelds' violet): the platform pill, the headline in Kufam (two lines at
+ *                      most: «العب على» / «Nintendo Switch 2»), the short facts line, the price and «سعر تجريبي», the
+ *                      white clay key and «تفاصيل الجهاز» as the second way in, the product on a glossy floor with a
+ *                      little parallax as the banners move
+ *   trade-in           brand crimson: «استبدل جهازك» — an estimate now, the final price after the inspection — → /trade-in
+ *   used               graphite: «مستعمل ومفحوص» → /used (only while used units are listed)
  *
- * The key: a product with versions opens the product area's quick look on the version choice (the page keeps its URL
- * and scroll; a real link to the product page underneath for a new tab or no script); a product with one version is
- * added at once by the kit's on-band add key (AddToCartKey `look="onBand"`: the flight to the cart, «تراجع», and flat
- * with its reason while offline). The photo is a link into the product page with the card → page zoom
- * (<SharedElement name="product-image:<id>" slot="hero">). Dark theme: the band is a lit cabinet and the same key
- * renders as the red primary (CSS). If the photo fails, the band keeps its size, the copy and the key.
- * The headline steps down the type scale until its longest line fits (./view heroTitleSizes) — never a fluid size.
+ * Phones (< 768): a compact WIDE banner (`--hero-phone-ratio`, ONE custom property in home.css — about 220px tall at
+ * 390) with the next banner peeking at the end: the name and the price at the start, the product at the end, the key
+ * along the bottom; the dots under it. From 768: the copy at the inline start, the product at the inline end; the dots,
+ * the pause key and the round clay arrows in the bar under the banner. The delivery fee is not repeated here (the
+ * header's strip says it from 1024; the trust strip under the platform tiles on phones).
  *
- * A PINNED hero (staff, content module 17.01): the staff's headline replaces «العب على …» (in the pin's language —
- * Arabic when it has none in the page's — with lang/dir set), and its deck takes the fact line's place.
+ * Behaviour (the kit's hook): autoplay every 6.5 s, held while the pointer is over the hero, while focus is inside it,
+ * while a finger is on it, while the tab is hidden and while it is off screen; stopped for good by a swipe, an arrow, a
+ * dot or a key; ← → (in the reading direction), Home, End; the pause / play key. Reduced motion: no autoplay, instant
+ * moves, no parallax. The current dot fills with the time left while autoplay runs (`data-run`, below). Only the
+ * banner in view is interactive (`inert` on the others once the page is live: one banner's keys in the tab order, and
+ * screen readers meet the banner that is shown — a region «عرض شرائح» named «أبرز ما في المتجر», each banner a group
+ * «1 من 6»; the track is a polite live region only once the shopper has taken over). Every banner is server-rendered;
+ * only the first one's photo loads with the page (eager, fetchpriority high), the others are lazy in the markup and the
+ * next banner's photo is fetched while one is shown (./view photoToWarm), so no banner arrives as a blurred miniature;
+ * the banner's shape is fixed by the stylesheet (CLS 0).
+ *
+ * A product with versions opens the product area's quick look on the version choice (the page keeps its URL and
+ * scroll; a real link to the product page underneath); a product with one version is added at once by the kit's
+ * on-band add key. The photo links into the product page with the card → page zoom (<SharedElement
+ * name="product-image:<id>" slot="hero">). A photo that fails leaves its box empty; the banner keeps its size.
  */
-import { lazy, Suspense, useEffect, useId, useRef, useState, type CSSProperties, type MouseEvent } from "react";
+import { lazy, Suspense, useEffect, useId, useReducer, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, type WheelEvent } from "react";
 
-import { Icon } from "~/art/Icon";
-import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
+import { Icon, type IconName } from "~/art/Icon";
+import { LocaleLink, useLocale, useT } from "~/i18n/react";
 import type { ProductCardData } from "~/lib/dto";
 import { LOCALES, type Locale } from "~/lib/locales";
 import { MotionLink, SharedElement } from "~/motion";
 import { AddToCartKey } from "~/ui/AddToCartKey";
 import { Band } from "~/ui/Band";
 import { BidiText } from "~/ui/BidiText";
+import { autoplayWaits, carouselHold, CarouselArrows, CarouselDots, CarouselPlay, useCarousel, type CarouselApi, type CarouselHold } from "~/ui/Carousel";
 import { DemoNote } from "~/ui/DemoNote";
 import { Key } from "~/ui/Key";
+import { useOnline } from "~/ui/OfflineBanner";
 import { PlatformLed, type Platform } from "~/ui/PlatformLed";
-import { fillNodes, iqdText, isIqd, SafePrice } from "~/ui/PriceTag";
+import { SafePrice } from "~/ui/PriceTag";
 import { ProductImage } from "~/ui/ProductCard";
+import { Render } from "~/ui/Stage";
 import { TextLink } from "~/ui/TextLink";
-import { heroTitleSizes, keepTogether, pictureFailed, plainFinalYeh, splitHeadline } from "./view";
+import { HERO_AUTOPLAY_MS, heroTitleSizes, keepLastWord, photoToWarm, pictureFailed, plainFinalYeh, splitHeadline } from "./view";
 
-/** The product area's quick look — fetched only when a shopper reaches for the key. */
+/** The product area's quick look — fetched only when a shopper reaches for a key. */
 const loadQuickPreview = () => import("~/routes/storefront/product/QuickPreview");
 const QuickPreview = lazy(() => loadQuickPreview().then((module) => ({ default: module.QuickPreview })));
 const warmQuickPreview = () => void loadQuickPreview().catch(() => undefined);
 
-/** The longest product name «اشترِ {name}» takes on the full-width phone key (Arabic, 390px) before it would be cut. */
+/** The longest product name «اشترِ {name}» takes on the key before it would be cut (from 768). */
 const HERO_KEY_NAME_MAX = 24;
 
-/** How wide the photo is drawn: the 168px phone box (≈ 82vw wide), half the band from 768, ≤ 410px from 1024. */
-const HERO_SIZES = "(min-width: 1024px) 410px, (min-width: 768px) 40vw, 82vw";
+/** How wide a banner's photo is drawn: the phone banner's product column, 2/5 at 768, 5/12 from 1024, 1/2 from 1280. */
+const HERO_SIZES = "(min-width: 1280px) 520px, (min-width: 1024px) 380px, (min-width: 768px) 36vw, 40vw";
 
-export type HeroProps = {
-  /** The featured product (a buyable console with a photo). */
+/** A staff pin's words, and the language they are in (HomeHeroPin in ~/server/services/home.server). */
+export type HeroPin = { headline: string; deck: string | null; textLocale: Locale };
+
+export type ProductHeroSlide = {
+  kind: "product";
+  key: string;
+  /** The platform's hero (a buyable product with a photo). */
   card: ProductCardData;
   platform: Platform;
   /** "new": released within the last 120 days («وصل …»); "lead": the platform's lead device («العب على …»). */
   mode: "new" | "lead";
-  /** The device hub of the product's model ("/device/switch-2"); the product page when there is none. */
+  pin: HeroPin | null;
+  /** The device hub of the product's model ("/device/switch-2"); null → the product page. */
   deviceHref: string | null;
-  /** The flat delivery fee from settings; null hides the delivery fact. */
-  deliveryFeeIqd: number | null;
-  /** Cash on delivery is switched on in the settings. */
-  cod: boolean;
   /** The price is a demo value («سعر تجريبي» beside it). */
   demoPrice: boolean;
-  /** Staff pinned this product (content module): their headline and deck, and the language they are in. */
-  pin?: { headline: string; deck: string | null; textLocale: Locale } | null;
 };
 
-export function Hero({ card, platform, mode, deviceHref, deliveryFeeIqd, cod, demoPrice, pin = null }: HeroProps) {
+export type ServiceHeroSlide = {
+  kind: "tradeIn" | "used";
+  key: string;
+  /** The console the banner shows (a catalogue photo key), or null: the banner draws its icon. */
+  art: string | null;
+};
+
+export type HeroSlide = ProductHeroSlide | ServiceHeroSlide;
+
+/** The shopper's side of autoplay, mirrored from the same events the kit's hook reads (./Carousel carouselHold). */
+const STILL: CarouselHold = { playing: true, hovered: false, focused: false, touching: false };
+
+const isTouch = (event: PointerEvent) => event.pointerType === "touch" || event.pointerType === "pen";
+
+/** The shopper asked the browser to save data (Save-Data, Chromium): no photo is fetched ahead. */
+const saveData = () => (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+
+export function HeroCarousel({ slides }: { slides: readonly HeroSlide[] }) {
+  const t = useT("home");
+  const api = useCarousel({ count: slides.length, autoplay: HERO_AUTOPLAY_MS });
+  // what holds autoplay, mirrored from the same events (the kit's hook keeps its own copy and does not expose it): the
+  // current dot fills only while the banners really move on (asked of the kit: CarouselApi.running)
+  const [hold, mirror] = useReducer(carouselHold, STILL);
+  const [hidden, setHidden] = useState(false);
+  const [offscreen, setOffscreen] = useState(false);
+  // the page is live: before that, every banner stays usable (no inert), and nothing pretends to count down
+  const [live, setLive] = useState(false);
+  // the banner that arrived by a move (its words rise in once); none on the first paint
+  const [arrived, setArrived] = useState<number | null>(null);
+  const shown = useRef(api.index);
+  const [preview, setPreview] = useState<{ card: ProductCardData; open: boolean } | null>(null);
+
+  useEffect(() => setLive(true), []);
+  useEffect(() => {
+    if (api.index === shown.current) return;
+    shown.current = api.index;
+    setArrived(api.index);
+  }, [api.index]);
+  useEffect(() => {
+    const onVisibility = () => setHidden(document.visibilityState === "hidden");
+    onVisibility();
+    document.addEventListener("visibilitychange", onVisibility);
+    const element = api.rootProps.ref.current;
+    const io = element && typeof IntersectionObserver === "function" ? new IntersectionObserver((entries) => setOffscreen(!entries.some((entry) => entry.isIntersecting)), { threshold: 0.25 }) : null;
+    if (element) io?.observe(element);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      io?.disconnect();
+    };
+  }, [api.rootProps.ref]);
+  // the next banner's photo is fetched while this one is shown, once the page has loaded (./view photoToWarm): the
+  // markup keeps it lazy, and a lazy photo in the sideways track would wait until it scrolls in — the banner would
+  // arrive as a blurred miniature. React leaves the attribute alone: its prop never changes.
+  const trackRef = api.trackProps.ref;
+  useEffect(() => {
+    if (!live) return;
+    const next = photoToWarm(api.index, slides.length, saveData());
+    const track = trackRef.current;
+    if (next === null || !track) return;
+    const warm = () => {
+      const img = track.querySelector(`[data-carousel-slide="${next}"] img[loading="lazy"]`);
+      if (img instanceof HTMLImageElement) img.loading = "eager";
+    };
+    if (document.readyState === "complete") {
+      warm();
+      return;
+    }
+    window.addEventListener("load", warm, { once: true });
+    return () => window.removeEventListener("load", warm);
+  }, [live, api.index, slides.length, trackRef]);
+
+  const running = live && !autoplayWaits({ ...hold, playing: api.playing, canPlay: api.canPlay, hidden, offscreen });
+
+  const root = api.rootProps;
+  const rootProps = {
+    ...root,
+    onPointerEnter: (event: PointerEvent<HTMLElement>) => {
+      root.onPointerEnter(event);
+      if (event.pointerType === "mouse") mirror({ type: "hover", on: true });
+    },
+    onPointerLeave: (event: PointerEvent<HTMLElement>) => {
+      root.onPointerLeave(event);
+      if (event.pointerType === "mouse") mirror({ type: "hover", on: false });
+    },
+    onFocus: (event: FocusEvent<HTMLElement>) => {
+      root.onFocus(event);
+      mirror({ type: "focus", on: true });
+    },
+    onBlur: (event: FocusEvent<HTMLElement>) => {
+      root.onBlur(event);
+      if (!event.currentTarget.contains(event.relatedTarget as Node | null)) mirror({ type: "focus", on: false });
+    },
+    onKeyDown: (event: KeyboardEvent<HTMLElement>) => {
+      // a key pressed in the quick look is the dialog's: React bubbles a portal's events through this section, so ← → Home
+      // End on its close or add key moved the banners behind it, and closing it dropped the focus to <body> (its opener
+      // had turned inert — review 2026-11-13). Only keys pressed inside the hero's own markup move the banners.
+      if (!event.currentTarget.contains(event.target as Node)) return;
+      root.onKeyDown(event);
+      if (!event.defaultPrevented) return;
+      // the hook moved the banners (← → Home End): the shopper took over
+      mirror({ type: "stop" });
+      // a key pressed on a link inside the banner that is leaving: that banner turns inert and would drop the focus to
+      // <body> — the focus goes to the track instead (the banners' own stop), where the next arrow keeps working
+      const banner = (event.target as HTMLElement).closest(".home-hero__slide");
+      if (banner) api.trackProps.ref.current?.focus({ preventScroll: true });
+    },
+  };
+  const track = api.trackProps;
+  const trackProps = {
+    ...track,
+    onPointerDown: (event: PointerEvent<HTMLDivElement>) => {
+      track.onPointerDown(event);
+      if (isTouch(event)) mirror({ type: "touch", on: true });
+    },
+    onPointerUp: (event: PointerEvent<HTMLDivElement>) => {
+      track.onPointerUp(event);
+      if (isTouch(event)) mirror({ type: "touch", on: false });
+    },
+    onTouchEnd: () => {
+      track.onTouchEnd();
+      mirror({ type: "touch", on: false });
+    },
+    onTouchCancel: () => {
+      track.onTouchCancel();
+      mirror({ type: "touch", on: false });
+    },
+    onScroll: () => {
+      track.onScroll();
+      mirror({ type: "swipe" });
+    },
+    onWheel: (event: WheelEvent<HTMLDivElement>) => {
+      track.onWheel(event);
+      mirror({ type: "wheel", deltaX: event.deltaX, deltaY: event.deltaY });
+    },
+  };
+  // the kit's dots, arrows and pause key, with the mirror told what they did
+  const controls: CarouselApi = {
+    ...api,
+    stop: () => {
+      api.stop();
+      mirror({ type: "stop" });
+    },
+    toggle: () => {
+      api.toggle();
+      mirror({ type: "toggle" });
+    },
+  };
+
+  if (slides.length === 0) return null;
+  return (
+    <section
+      {...rootProps}
+      aria-label={t("hero.label")}
+      className="carousel home-hero"
+      data-live={live ? "" : undefined}
+      data-run={running ? "" : undefined}
+      style={{ "--home-autoplay": `${HERO_AUTOPLAY_MS}ms` } as CSSProperties}
+    >
+      {/* the ambient light on the floor behind the banner, in the colour of the banner in view (crossfades) */}
+      <div className="home-hero__ambient" aria-hidden="true">
+        {slides.map((slide, index) => (
+          <span key={slide.key} className="glow-layer home-hero__light" data-gel={gelOf(slide)} data-on={index === api.index ? "" : undefined} />
+        ))}
+      </div>
+      <div {...trackProps} className="carousel__track home-hero__track">
+        {slides.map((slide, index) => (
+          <div
+            key={slide.key}
+            {...api.slideProps(index)}
+            className="carousel__slide home-hero__slide"
+            inert={live && index !== api.index ? true : undefined}
+            data-current={index === api.index ? "" : undefined}
+            data-arrived={arrived === index ? "" : undefined}
+          >
+            {slide.kind === "product" ? (
+              <ProductSlide slide={slide} first={index === 0} onChoose={(card) => setPreview({ card, open: true })} />
+            ) : (
+              <ServiceSlide slide={slide} />
+            )}
+          </div>
+        ))}
+      </div>
+      {slides.length > 1 ? (
+        <div className="home-hero__bar">
+          <CarouselDots api={controls} className="home-hero__dots" />
+          <div className="home-hero__tools">
+            <CarouselPlay api={controls} />
+            <CarouselArrows api={controls} className="max-md:hidden" />
+          </div>
+        </div>
+      ) : null}
+      {preview ? (
+        <Suspense fallback={null}>
+          <QuickPreview slug={preview.card.slug} name={preview.card.name} card={preview.card} open={preview.open} onClose={() => setPreview((state) => (state ? { ...state, open: false } : state))} />
+        </Suspense>
+      ) : null}
+    </section>
+  );
+}
+
+/** The colour of a banner's light: its platform, the brand crimson (trade-in), none (used: the brand's, low). */
+function gelOf(slide: HeroSlide): string {
+  if (slide.kind === "product") return slide.platform;
+  return "brand";
+}
+
+/** The headline's size in each range, as custom properties (./view heroTitleSizes). */
+function titleStyle(sizes: Record<"sm" | "md" | "lg" | "xl", number>): CSSProperties {
+  return { "--hero-fs-sm": `${sizes.sm}px`, "--hero-fs-md": `${sizes.md}px`, "--hero-fs-lg": `${sizes.lg}px`, "--hero-fs-xl": `${sizes.xl}px` } as CSSProperties;
+}
+
+function ProductSlide({ slide, first, onChoose }: { slide: ProductHeroSlide; first: boolean; onChoose: (card: ProductCardData) => void }) {
   const t = useT("home");
   const ui = useT("ui");
   const shop = useT("ui-shop");
-  const f = useFormat();
   const locale = useLocale();
+  const online = useOnline();
   const headingId = useId();
-  const [preview, setPreview] = useState({ mounted: false, open: false });
-  const [photoFailed, setPhotoFailed] = useState(false);
+  const noticeId = useId();
   const media = useRef<HTMLDivElement>(null);
+  const [photoFailed, setPhotoFailed] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
   // the server-rendered photo may have failed before the page came to life (no onError then): look once
   useEffect(() => {
     if (pictureFailed(media.current?.querySelector("img"))) setPhotoFailed(true);
   }, []);
+
+  const { card, platform, mode, pin, deviceHref } = slide;
   const href = `/p/${card.slug}`;
-  const name = keepTogether(card.name);
+  const name = keepLastWord(card.name);
   const headline = splitHeadline((value) => t(mode === "new" ? "hero.new" : "hero.lead", { name: value }), name);
   const secondLine = headline.after ? `${name} ${headline.after}` : name;
-  // Sorani headings are set in Plex 600 until a native reader approves Kufi's letters (v2 §2.6) — a pin's words in
-  // the face of the language they are written in
-  const titleLocale = pin?.textLocale ?? locale;
-  const sizes = heroTitleSizes(pin ? [pin.headline] : [headline.lead, secondLine], titleLocale === "ckb" ? "plex" : "kufi");
-  const titleStyle = { "--hero-fs-sm": `${sizes.sm}px`, "--hero-fs-md": `${sizes.md}px`, "--hero-fs-lg": `${sizes.lg}px`, "--hero-fs-xl": `${sizes.xl}px` } as CSSProperties;
+  // phones show the name alone (the words around it are read, not shown); a staff pin's headline may take two lines,
+  // and so may the name with the words after it (Sorani's «{name} گەیشت»: the verb goes under the name)
+  const sizes = heroTitleSizes(pin ? [pin.headline] : [headline.lead, secondLine], "kufam", pin ? { wrap: true, phone: pin.headline } : { wrap: Boolean(headline.after), phone: name });
   const pinLang = pin && pin.textLocale !== locale ? { lang: LOCALES[pin.textLocale].bcp47, dir: LOCALES[pin.textLocale].dir } : {};
-  // the pin's deck in its own language, else the product's facts in the page's
-  const deck = pin?.deck ?? null;
-  // «اشترِ {name}» while it fits the full-width key on a phone; a longer name is said by the hero itself (the headline,
-  // or the name line of a pinned hero) and the key keeps the kit's own words («أضف إلى السلة» / «اختر نسخة»)
-  const keyLabel = [...card.name].length <= HERO_KEY_NAME_MAX ? t("hero.buy", { name }) : undefined;
+  // on phones «اشترِ الآن» (short: the key stays beside the product); from 768 «اشترِ {name}» while it fits the key,
+  // else the kit's own words («اختر نسخة» / «أضف إلى السلة»)
+  const own = card.hasVariants ? shop("add.choose") : shop("add.label");
+  const label: ReactNode = (
+    <>
+      <span className="md:hidden">{t("hero.buyNow")}</span>
+      <span className="max-md:hidden">{[...card.name].length <= HERO_KEY_NAME_MAX ? t("hero.buy", { name }) : own}</span>
+    </>
+  );
+  const offline = !online && !card.hasVariants && card.stock !== "out_of_stock";
 
-  const openPreview = (event: MouseEvent<HTMLElement>) => {
+  const choose = (event: MouseEvent<HTMLElement>) => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
-    setPreview({ mounted: true, open: true });
+    onChoose(card);
   };
 
   return (
-    <Band kind="hero" aria-labelledby={headingId} className="home-hero" contentClassName="home-hero__body">
-      <p className="home-hero__pill pill" data-gel={platform}>
+    <Band as="div" kind="platform" platform={platform} className="home-slide" contentClassName="home-slide__body" data-kind="product">
+      <span className="home-slide__gloss" aria-hidden="true" />
+      <p className="home-slide__pill pill" data-gel={platform}>
         <PlatformLed platform={platform} />
         {ui(`platform.${platform}`)}
       </p>
 
       {pin ? (
-        <h2 id={headingId} className="home-hero__title text-balance" style={titleStyle} {...pinLang} data-pinned="">
+        <h2 id={headingId} className="home-slide__title" style={titleStyle(sizes)} {...pinLang} data-pinned="">
           <BidiText text={plainFinalYeh(pin.headline)} />
         </h2>
       ) : (
-        <h2 id={headingId} className="home-hero__title" style={titleStyle}>
+        <h2 id={headingId} className="home-slide__title" style={titleStyle(sizes)}>
           {headline.lead ? (
             <>
-              {headline.lead}
-              <br />
+              {/* on phones the words before the name are read, not shown: the compact banner shows the name */}
+              <span className="home-slide__lead">{`${headline.lead} `}</span>
+              <br className="home-slide__break" />
             </>
           ) : null}
           <BidiText text={name} />
-          {headline.after ? ` ${headline.after}` : null}
+          {headline.after ? <span className="home-slide__lead">{` ${headline.after}`}</span> : null}
         </h2>
       )}
 
       {pin ? (
-        // a pinned hero names its product under the staff's headline (on every width); the deck follows from 768
-        <p className="home-hero__facts home-hero__facts--pinned">
-          <span className="home-hero__name">
+        // a pinned banner names its product under the staff's headline, and the staff's deck follows (from 768)
+        <p className="home-slide__facts home-slide__facts--pinned">
+          <span className="home-slide__name">
             <BidiText text={card.name} />
           </span>
-          {deck ? (
-            <span className="home-hero__deck" {...pinLang}>
-              <BidiText text={plainFinalYeh(deck)} />
+          {pin.deck ? (
+            <span className="home-slide__deck" {...pinLang}>
+              <BidiText text={plainFinalYeh(pin.deck)} />
             </span>
           ) : null}
         </p>
       ) : card.subtitle ? (
         // «حتى 4K على التلفاز» — never Plex's «حق»-shaped ligature (./view plainFinalYeh)
-        <p className="home-hero__facts">{plainFinalYeh(card.subtitle)}</p>
+        <p className="home-slide__facts">{plainFinalYeh(card.subtitle)}</p>
       ) : null}
 
-      {/* a photo that fails to load leaves its box empty (no broken-image frame): the band keeps its size */}
-      <div ref={media} className="home-hero__media" onErrorCapture={() => setPhotoFailed(true)}>
-        {photoFailed ? null : <span className="band__contact" aria-hidden="true" />}
-        <MotionLink nav="zoom" to={href} className="home-hero__link" aria-label={card.name}>
-          <SharedElement name={`product-image:${card.id}`} slot="hero" as="span" className="home-hero__shared render-slot">
-            {photoFailed ? null : <ProductImage image={card.image} alt="" sizes={HERO_SIZES} priority />}
-          </SharedElement>
-        </MotionLink>
-      </div>
-
-      <div className="home-hero__price">
+      <div className="home-slide__price">
         <SafePrice amountIqd={card.priceIqd} size="xl" tone="onColor" approx="off" as="span" />
-        {demoPrice ? <DemoNote variant="tag" what="price" onColor /> : null}
+        {slide.demoPrice ? <DemoNote variant="tag" what="price" onColor /> : null}
       </div>
 
-      <div className="home-hero__buy">
+      <div className="home-slide__buy">
         {card.hasVariants ? (
           <Key
             as={LocaleLink}
             to={href}
             prefetch="none"
             variant="onBand"
-            block
             aria-haspopup="dialog"
-            className="md:w-fit"
-            onClick={openPreview}
+            className="home-slide__key"
+            onClick={choose}
             onPointerEnter={warmQuickPreview}
             onFocus={warmQuickPreview}
             onTouchStart={warmQuickPreview}
           >
-            {keyLabel ?? shop("add.choose")}
+            {label}
           </Key>
         ) : (
-          // one version: nothing to choose — the kit's on-band add key adds it (the bead flies from the photo)
+          // one version: nothing to choose — the kit's on-band add key adds it (the bead flies from the photo); its
+          // offline reason and any failure are said on the band in the band's ink (below), not in the page's grey
           <AddToCartKey
             variant="key"
             look="onBand"
             item={{ variantId: card.variantId }}
             name={card.name}
-            label={keyLabel}
+            label={label}
             stock={card.stock}
             image={card.image}
             source={() => media.current?.querySelector("img") ?? null}
-            block
-            className="md:w-fit"
+            message="none"
+            onMessage={(text) => setNotice(text)}
+            aria-describedby={offline || notice ? noticeId : undefined}
+            className="home-slide__key"
           />
         )}
         {/* the device hub when the product is a device that has one, else its own page (a pinned game or accessory) */}
-        <TextLink as={LocaleLink} to={deviceHref ?? href} className="max-md:hidden">
+        <TextLink as={LocaleLink} to={deviceHref ?? href} className="home-slide__more">
           {deviceHref ? t("hero.details") : t("hero.productDetails")}
         </TextLink>
+        {offline || notice ? (
+          <p id={noticeId} className="home-slide__notice" role={notice ? "status" : undefined}>
+            <Icon name={offline ? "wifi-slash" : "warning-circle"} size={16} />
+            <span>{offline ? shop("add.offline") : notice}</span>
+          </p>
+        ) : null}
       </div>
 
-      {isIqd(deliveryFeeIqd) ? (
-        <p className="home-hero__line">
-          <Icon name="truck" size={16} />
-          {/* each fact is one unit: a narrow phone breaks between them (inside one only when it alone is too long) */}
-          <span>
-            <span className="inline-block">{fillNodes(plainFinalYeh(t("hero.delivery")), { price: <bdi className="nums">{iqdText(f, deliveryFeeIqd)}</bdi> })}</span>
-            {cod ? (
-              <>
-                {" · "}
-                <span className="inline-block">{plainFinalYeh(shop("trust.cod"))}</span>
-              </>
-            ) : null}
-          </span>
-        </p>
-      ) : null}
+      {/* a photo that fails to load leaves its box empty (no broken-image frame): the banner keeps its size */}
+      <div ref={media} className="home-slide__media" onErrorCapture={() => setPhotoFailed(true)}>
+        {photoFailed ? null : <span className="home-slide__floor" aria-hidden="true" />}
+        <MotionLink nav="zoom" to={href} className="home-slide__link carousel__parallax" aria-label={card.name}>
+          <SharedElement name={`product-image:${card.id}`} slot="hero" as="span" className="home-slide__shared render-slot">
+            {photoFailed ? null : <ProductImage image={card.image} alt="" sizes={HERO_SIZES} priority={first} />}
+          </SharedElement>
+        </MotionLink>
+      </div>
+    </Band>
+  );
+}
 
-      {preview.mounted ? (
-        <Suspense fallback={null}>
-          <QuickPreview slug={card.slug} name={card.name} card={card} open={preview.open} onClose={() => setPreview((state) => ({ ...state, open: false }))} />
-        </Suspense>
-      ) : null}
+const SERVICE: Record<ServiceHeroSlide["kind"], { to: string; icon: IconName }> = {
+  tradeIn: { to: "/trade-in", icon: "recycle" },
+  used: { to: "/used", icon: "kind-used" },
+};
+
+/**
+ * The trade-in and used banners: their pill, a two-word title, the honest line (from 768), one white clay key and a
+ * console no platform banner shows (decorative: the key is the way in).
+ */
+function ServiceSlide({ slide }: { slide: ServiceHeroSlide }) {
+  const t = useT("home");
+  const { to, icon } = SERVICE[slide.kind];
+  const title = t(`hero.${slide.kind}.title`);
+  const sizes = heroTitleSizes([title], "kufam", { wrap: true, phone: title });
+  return (
+    // the same glossy band as the platforms' banners: the brand's crimson for the trade-in (data-gel="brand"), the
+    // graphite of the page's dark band for the used devices (home.css data-tone)
+    <Band
+      as="div"
+      kind="platform"
+      platform={slide.kind === "tradeIn" ? "brand" : undefined}
+      className="home-slide"
+      contentClassName="home-slide__body"
+      data-kind={slide.kind}
+      data-tone={slide.kind === "used" ? "graphite" : undefined}
+    >
+      <span className="home-slide__gloss" aria-hidden="true" />
+      <p className="home-slide__pill pill">
+        <Icon name={icon} size={16} />
+        {t(`hero.${slide.kind}.pill`)}
+      </p>
+      <h2 className="home-slide__title" style={titleStyle(sizes)}>
+        {title}
+      </h2>
+      <p className="home-slide__facts">{plainFinalYeh(t(`hero.${slide.kind}.text`))}</p>
+      <div className="home-slide__buy">
+        <Key as={LocaleLink} to={to} variant="onBand" iconEnd="arrow-right" className="home-slide__key">
+          {t(`hero.${slide.kind}.cta`)}
+        </Key>
+      </div>
+      <div className="home-slide__media" aria-hidden="true">
+        {slide.art ? (
+          <>
+            <span className="home-slide__floor" />
+            <span className="home-slide__link carousel__parallax">
+              <span className="home-slide__shared render-slot">
+                <Render name={slide.art} alt="" sizes={HERO_SIZES} />
+              </span>
+            </span>
+          </>
+        ) : (
+          <span className="home-slide__glyph">
+            <Icon name={icon} size={64} />
+          </span>
+        )}
+      </div>
     </Band>
   );
 }

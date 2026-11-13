@@ -154,7 +154,7 @@ export default function Addresses({ loaderData, actionData }: Route.ComponentPro
       {atLimit ? <Notice>{t("errors.address_limit")}</Notice> : null}
 
       {loaderData.addresses.length === 0 ? (
-        <EmptyState layout="stack" title={t("addresses.emptyTitle")} text={t("addresses.emptyText")} action={<AddKey />} />
+        <EmptyState layout="stack" panel title={t("addresses.emptyTitle")} text={t("addresses.emptyText")} action={<AddKey />} />
       ) : (
         <ul className="grid gap-card md:grid-cols-2">
           {loaderData.addresses.map((address) => (

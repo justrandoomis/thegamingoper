@@ -17,6 +17,8 @@
  *   sort=featured|newest|price_asc|price_desc|relevance   (relevance: search only, and its default)
  *   cursor=…                             the list up to and including the page after this cursor ("show more")
  *   q=…                                  search only
+ *   typed=1                              search only: the words exactly as typed, no corrected spelling
+ *                                        («ابحث عنها كما كتبتها», spec §6.4)
  *
  * Unknown or malformed values are dropped (never an error page): a hand-edited URL still shows a list.
  */
@@ -75,6 +77,12 @@ export const MAX_COMPARE = 4;
  * produce the same URL — and the server renders the same `location.search` the browser hydrates with.
  */
 export const searchPath = (q: string): string => `/search?${new URLSearchParams({ q }).toString()}`;
+
+/** The search URL key that asks for the words exactly as typed (no corrected spelling). */
+export const TYPED_KEY = "typed";
+
+/** "/search?q=…&typed=1" — «ابحث عنها كما كتبتها»: the same words, never corrected. */
+export const typedSearchPath = (q: string): string => `/search?${new URLSearchParams({ q, [TYPED_KEY]: "1" }).toString()}`;
 
 /** The filter groups — each one can be removed on its own (zero-result recovery, active-filter chips). */
 export const FILTER_GROUPS = ["platforms", "category", "device", "price", "inStock", "deals", "arabic", "formats"] as const;

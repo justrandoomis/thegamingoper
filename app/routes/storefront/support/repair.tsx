@@ -38,6 +38,7 @@ import type { ShellHandle } from "~/routes/storefront/shell/types";
 import { cx } from "~/ui/cx";
 import { FieldGroup, FormErrorSummary, OptionCard, Select, TextArea, TextField, type FormError } from "~/ui/Field";
 import { Key } from "~/ui/Key";
+import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
 import { isPlatform } from "~/ui/PlatformLed";
 import { PreferencePicker, type Period } from "~/ui/PreferencePicker";
@@ -288,168 +289,169 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
   const actions = <RepairActions step={step} busy={busy} online={online} formId={ids.form} statusId={ids.status} onNext={onNext} onBack={onBack} />;
 
   return (
-    <div className="page sup sup-flow">
-      <div className="sup-flow__main">
-        <SupportNav current="repair" />
-        <header className="grid gap-2">
-          <h1 className="type-h1 text-ink">{t("repair.title")}</h1>
-          <p className="type-body text-ink-2">{t("repair.lede")}</p>
-        </header>
+    <div className="page sup">
+      <SupportNav current="repair" />
+      <div className="sup-flow">
+        <div className="sup-flow__main">
+          <header className="grid gap-2">
+            <h1 className="type-h1 text-ink">{t("repair.title")}</h1>
+            <p className="type-body text-ink-2">{t("repair.lede")}</p>
+          </header>
 
-        {step === "device" ? <HowItGoes headingId={ids.how} className="lg:hidden" /> : null}
+          {step === "device" ? <HowItGoes headingId={ids.how} className="lg:hidden" /> : null}
 
-        {fromAssistant && summary ? (
-          <p className="sup-note">
-            <Icon name="info" size={20} />
-            <span>{t("repair.fromAssistant")}</span>
-          </p>
-        ) : null}
-
-        {/* the step rail: numbers and the current step's words below 768 (three long labels do not fit a phone; its done
-            discs are not links there — 24px is too small a target, and «رجوع» goes back) */}
-        <ProgressSteps aria-label={t("repair.steps.label")} current={stepIndex} steps={STEPS.map((s) => ({ label: t(`repair.steps.short.${s}`) }))} variant="compact" className="sup-js md:hidden" />
-        <ProgressSteps aria-label={t("repair.steps.label")} current={stepIndex} steps={railSteps} className="sup-js max-md:hidden" />
-
-        <form ref={formRef} id={ids.form} method="post" encType="multipart/form-data" noValidate onSubmit={onSubmit} className="sup-form">
-          <input type="hidden" name="idempotencyKey" value={values.idempotencyKey || loaderData.formKey} />
-          <input type="hidden" name="source" value={fromAssistant ? "assistant" : "storefront"} />
-          <h2 ref={headingRef} tabIndex={-1} className="sup-js type-h2 text-ink">
-            {stepTitle}
-          </h2>
-          <FormErrorSummary errors={summaryErrors} />
-
-          <fieldset className="sup-step" data-current={step === "device" ? "" : undefined}>
-            <legend className="type-h3 text-ink">{t("repair.steps.device")}</legend>
-            <Select
-              id={id("device")}
-              label={t("repair.device")}
-              name="device"
-              required
-              placeholder={t("repair.choose")}
-              defaultValue={device || ""}
-              error={error("device")}
-              onChange={(event) => {
-                setDevice(event.currentTarget.value);
-                validate("device", event.currentTarget.value);
-              }}
-              onBlur={onBlur("device")}
-            >
-              {directory.map((group) => (
-                <optgroup key={group.id} label={platformLabel(group)}>
-                  {group.devices.map((entry) => (
-                    <option key={entry.id} value={entry.slug}>
-                      {entry.name}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-              <option value={DEVICE_OTHER}>{t("assistant.deviceOther")}</option>
-            </Select>
-            {device === DEVICE_OTHER ? (
-              <TextField id={id("deviceText")} label={t("repair.deviceText")} name="deviceText" required maxLength={120} hint={t("repair.deviceTextHint")} defaultValue={values.deviceText ?? ""} error={error("deviceText")} onBlur={onBlur("deviceText")} onInput={onInput("deviceText")} />
-            ) : null}
-            <TextArea
-              id={id("issue")}
-              label={t("repair.issue")}
-              name="issue"
-              required
-              rows={fromAssistant && summary ? 8 : 5}
-              maxLength={2000}
-              hint={t("repair.issueHint")}
-              defaultValue={values.issue ?? summary}
-              error={error("issue")}
-              onBlur={onBlur("issue")}
-              onInput={onInput("issue")}
-            />
-            <TextField
-              id={id("serial")}
-              label={t("repair.serial")}
-              name="serial"
-              optional
-              ltr
-              autoCapitalize="characters"
-              autoComplete="off"
-              spellCheck={false}
-              maxLength={40}
-              hint={t("repair.serialHint")}
-              defaultValue={values.serial ?? ""}
-              error={error("serial")}
-              onBlur={onBlur("serial")}
-              onInput={onInput("serial")}
-            />
-            {/* phones: the fact strip after the first step's fields (from 1024 it sits in the aside) */}
-            <RepairFacts className="lg:hidden" />
-          </fieldset>
-
-          <fieldset className="sup-step" data-current={step === "photos" ? "" : undefined}>
-            <legend className="type-h3 text-ink">{t("repair.steps.photos")}</legend>
-            <p className="type-body text-ink-2">{t("repair.photosLede")}</p>
-            <PhotoPicker
-              id={id("photos")}
-              name="photos"
-              files={photos}
-              onChange={(files, problem) => {
-                setPhotos(files);
-                // the photos changed: what the store refused is no longer what would be sent
-                setPhotosRefused(false);
-                setLocal((prev) => ({ ...prev, photos: problem ? fieldMessage("photos", problem, t, errorsT) : undefined }));
-              }}
-              label={t("photos.label")}
-              hint={t("photos.hint")}
-              error={error("photos")}
-              disabled={busy}
-            />
-          </fieldset>
-
-          <fieldset className="sup-step" data-current={step === "contact" ? "" : undefined}>
-            <legend className="type-h3 text-ink">{t("repair.steps.contact")}</legend>
-            <div className="grid gap-5 md:grid-cols-2">
-              <TextField
-                id={id("phone")}
-                label={t("repair.phone")}
-                name="phone"
-                type="tel"
-                inputMode="tel"
-                autoComplete="tel-national"
-                required
-                hint={t("repair.phoneHint")}
-                defaultValue={values.phone ?? contact?.phone ?? ""}
-                error={error("phone")}
-                onBlur={onBlur("phone")}
-                onInput={onInput("phone")}
-              />
-              <TextField id={id("contactName")} label={t("repair.name")} name="contactName" autoComplete="name" optional maxLength={80} defaultValue={values.contactName ?? contact?.name ?? ""} error={serverField("contactName")} />
-            </div>
-            {/* the fieldset carries the id the error summary links to (the kit's FieldGroup `id`) */}
-            <FieldGroup id={id("handover")} legend={t("repair.handover")} optional error={serverField("handover")}>
-              <OptionCard name="handover" value="drop_off" label={t("handover.drop_off")} defaultChecked={handoverValue === "drop_off"} />
-              <OptionCard name="handover" value="pickup" label={t("handover.pickup")} hint={t("handover.pickupHint")} defaultChecked={handoverValue === "pickup"} />
-              <OptionCard name="handover" value="" label={t("handover.none")} defaultChecked={handoverValue === ""} />
-            </FieldGroup>
-            <PreferencePicker id={id("preferredWindow")} name="preferredWindow" defaultValue={windowValue as Period} label={t("repair.window")} />
-            <p className="type-xs text-ink-2">{t("repair.privacy")}</p>
-          </fieldset>
-
-          {failure && !failure.fields ? (
-            <p ref={alertRef} role="alert" className="sup-alert">
-              <Icon name="warning-circle" size={20} />
-              <span>{formMessage(failure, t, errorsT)}</span>
-            </p>
+          {fromAssistant && summary ? (
+            <Note tone="info" icon="lifebuoy">
+              {t("repair.fromAssistant")}
+            </Note>
           ) : null}
-          <p id={ids.status} role="status" className="type-xs text-ink-2 empty:hidden">
-            {busy ? (photos.length > 0 ? t("repair.sendingPhotos", { count: photos.length }) : t("repair.sending")) : !online ? t("form.offline") : ""}
-          </p>
-          <div className="sup-actions">{actions}</div>
-        </form>
+
+          {/* the step rail: numbers and the current step's words below 768 (three long labels do not fit a phone; its done
+              discs are not links there — 24px is too small a target, and «رجوع» goes back) */}
+          <ProgressSteps aria-label={t("repair.steps.label")} current={stepIndex} steps={STEPS.map((s) => ({ label: t(`repair.steps.short.${s}`) }))} variant="compact" className="sup-js md:hidden" />
+          <ProgressSteps aria-label={t("repair.steps.label")} current={stepIndex} steps={railSteps} className="sup-js max-md:hidden" />
+
+          <form ref={formRef} id={ids.form} method="post" encType="multipart/form-data" noValidate onSubmit={onSubmit} className="sup-form">
+            <input type="hidden" name="idempotencyKey" value={values.idempotencyKey || loaderData.formKey} />
+            <input type="hidden" name="source" value={fromAssistant ? "assistant" : "storefront"} />
+            <h2 ref={headingRef} tabIndex={-1} className="sup-js type-h2 text-ink">
+              {stepTitle}
+            </h2>
+            <FormErrorSummary errors={summaryErrors} />
+
+            <fieldset className="sup-step" data-current={step === "device" ? "" : undefined}>
+              <legend className="type-h3 text-ink">{t("repair.steps.device")}</legend>
+              <Select
+                id={id("device")}
+                label={t("repair.device")}
+                name="device"
+                required
+                placeholder={t("repair.choose")}
+                defaultValue={device || ""}
+                error={error("device")}
+                onChange={(event) => {
+                  setDevice(event.currentTarget.value);
+                  validate("device", event.currentTarget.value);
+                }}
+                onBlur={onBlur("device")}
+              >
+                {directory.map((group) => (
+                  <optgroup key={group.id} label={platformLabel(group)}>
+                    {group.devices.map((entry) => (
+                      <option key={entry.id} value={entry.slug}>
+                        {entry.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+                <option value={DEVICE_OTHER}>{t("assistant.deviceOther")}</option>
+              </Select>
+              {device === DEVICE_OTHER ? (
+                <TextField id={id("deviceText")} label={t("repair.deviceText")} name="deviceText" required maxLength={120} hint={t("repair.deviceTextHint")} defaultValue={values.deviceText ?? ""} error={error("deviceText")} onBlur={onBlur("deviceText")} onInput={onInput("deviceText")} />
+              ) : null}
+              <TextArea
+                id={id("issue")}
+                label={t("repair.issue")}
+                name="issue"
+                required
+                rows={fromAssistant && summary ? 8 : 5}
+                maxLength={2000}
+                hint={t("repair.issueHint")}
+                defaultValue={values.issue ?? summary}
+                error={error("issue")}
+                onBlur={onBlur("issue")}
+                onInput={onInput("issue")}
+              />
+              <TextField
+                id={id("serial")}
+                label={t("repair.serial")}
+                name="serial"
+                optional
+                ltr
+                autoCapitalize="characters"
+                autoComplete="off"
+                spellCheck={false}
+                maxLength={40}
+                hint={t("repair.serialHint")}
+                defaultValue={values.serial ?? ""}
+                error={error("serial")}
+                onBlur={onBlur("serial")}
+                onInput={onInput("serial")}
+              />
+              {/* phones: the fact strip after the first step's fields (from 1024 it sits in the aside) */}
+              <RepairFacts className="lg:hidden" />
+            </fieldset>
+
+            <fieldset className="sup-step" data-current={step === "photos" ? "" : undefined}>
+              <legend className="type-h3 text-ink">{t("repair.steps.photos")}</legend>
+              <p className="type-body text-ink-2">{t("repair.photosLede")}</p>
+              <PhotoPicker
+                id={id("photos")}
+                name="photos"
+                files={photos}
+                onChange={(files, problem) => {
+                  setPhotos(files);
+                  // the photos changed: what the store refused is no longer what would be sent
+                  setPhotosRefused(false);
+                  setLocal((prev) => ({ ...prev, photos: problem ? fieldMessage("photos", problem, t, errorsT) : undefined }));
+                }}
+                label={t("photos.label")}
+                hint={t("photos.hint")}
+                error={error("photos")}
+                disabled={busy}
+              />
+            </fieldset>
+
+            <fieldset className="sup-step" data-current={step === "contact" ? "" : undefined}>
+              <legend className="type-h3 text-ink">{t("repair.steps.contact")}</legend>
+              <div className="grid gap-5 md:grid-cols-2">
+                <TextField
+                  id={id("phone")}
+                  label={t("repair.phone")}
+                  name="phone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel-national"
+                  required
+                  hint={t("repair.phoneHint")}
+                  defaultValue={values.phone ?? contact?.phone ?? ""}
+                  error={error("phone")}
+                  onBlur={onBlur("phone")}
+                  onInput={onInput("phone")}
+                />
+                <TextField id={id("contactName")} label={t("repair.name")} name="contactName" autoComplete="name" optional maxLength={80} defaultValue={values.contactName ?? contact?.name ?? ""} error={serverField("contactName")} />
+              </div>
+              {/* the fieldset carries the id the error summary links to (the kit's FieldGroup `id`) */}
+              <FieldGroup id={id("handover")} legend={t("repair.handover")} optional error={serverField("handover")}>
+                <OptionCard name="handover" value="drop_off" label={t("handover.drop_off")} defaultChecked={handoverValue === "drop_off"} />
+                <OptionCard name="handover" value="pickup" label={t("handover.pickup")} hint={t("handover.pickupHint")} defaultChecked={handoverValue === "pickup"} />
+                <OptionCard name="handover" value="" label={t("handover.none")} defaultChecked={handoverValue === ""} />
+              </FieldGroup>
+              <PreferencePicker id={id("preferredWindow")} name="preferredWindow" defaultValue={windowValue as Period} label={t("repair.window")} />
+              <p className="type-xs text-ink-2">{t("repair.privacy")}</p>
+            </fieldset>
+
+            {failure && !failure.fields ? (
+              <p ref={alertRef} role="alert" className="sup-alert">
+                <Icon name="warning-circle" size={20} />
+                <span>{formMessage(failure, t, errorsT)}</span>
+              </p>
+            ) : null}
+            <p id={ids.status} role="status" className="type-xs text-ink-2 empty:hidden">
+              {busy ? (photos.length > 0 ? t("repair.sendingPhotos", { count: photos.length }) : t("repair.sending")) : !online ? t("form.offline") : ""}
+            </p>
+            <div className="sup-actions">{actions}</div>
+          </form>
+        </div>
+
+        <aside aria-labelledby={`${ids.how}-aside`} className="sup-flow__aside">
+          <HowItGoes headingId={`${ids.how}-aside`} facts />
+        </aside>
+
+        <TaskBar aria-label={stepTitle} className="lg:hidden sup-bar">
+          {actions}
+        </TaskBar>
       </div>
-
-      <aside aria-labelledby={`${ids.how}-aside`} className="sup-flow__aside">
-        <HowItGoes headingId={`${ids.how}-aside`} facts />
-      </aside>
-
-      <TaskBar aria-label={stepTitle} className="lg:hidden sup-bar">
-        {actions}
-      </TaskBar>
     </div>
   );
 }
@@ -498,7 +500,8 @@ function HowItGoes({ headingId, facts = false, className }: { headingId: string;
       <ol className="sup-how__list">
         {(["send", "review", "check", "approve"] as const).map((key, index) => (
           <li key={key} className="sup-how__item">
-            <span className="sup-how__n nums" aria-hidden="true">
+            {/* the step's number on a clay disc (the before's raised circles) */}
+            <span className="clay-disc sup-how__n nums" aria-hidden="true">
               {index + 1}
             </span>
             <span>{t(`repair.how.${key}`)}</span>
@@ -511,8 +514,9 @@ function HowItGoes({ headingId, facts = false, className }: { headingId: string;
 }
 
 /**
- * The fact strip: only the facts that are true today («الدفع: بعد موافقتك على عرض السعر», the private photos and
- * serial). The owner has configured no inspection fee and no repair warranty, so those facts are not shown.
+ * The facts that are true today («الدفع: بعد موافقتك على عرض السعر», the private photos and serial), written the
+ * before's calm way: the kit's quiet note lines (an icon, a short bold title, the muted words). The owner has
+ * configured no inspection fee and no repair warranty, so those facts are not shown.
  */
 function RepairFacts({ className }: { className?: string }) {
   const t = useT("support");
@@ -523,11 +527,10 @@ function RepairFacts({ className }: { className?: string }) {
   return (
     <ul aria-label={t("repair.facts.label")} className={cx("sup-facts", className)}>
       {facts.map((fact) => (
-        <li key={fact.key} className="sup-facts__item">
-          <Icon name={fact.icon} size={20} />
-          <span>
-            <b className="font-semibold text-ink">{t(`repair.facts.${fact.key}.title`)}:</b> {t(`repair.facts.${fact.key}.text`)}
-          </span>
+        <li key={fact.key}>
+          <Note variant="line" icon={fact.icon} title={t(`repair.facts.${fact.key}.title`)}>
+            {t(`repair.facts.${fact.key}.text`)}
+          </Note>
         </li>
       ))}
     </ul>

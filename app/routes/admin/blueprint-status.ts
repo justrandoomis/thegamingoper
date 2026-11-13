@@ -551,8 +551,8 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
     status: "partial",
     route: "/admin/promotions/points",
     note: n(
-      "Earning after delivery and the return window (idempotent), reversal of later refunds, FIFO expiry, manual adjustments (a confirm dialog; a second person above 5,000 points or beyond 10,000 points one employee gives alone in 24 hours), the append-only ledger and each customer's balance. Missing: points are not redeemed at checkout (priceCart discount + a 'redeem' row in placeOrder's batch); posting is a staff action until the jobs owner schedules it.",
-      "الكسب بعد التسليم ومدة الإرجاع (دون تكرار)، واسترجاع النقاط عند استرداد لاحق، والانتهاء بالأقدم أولاً، والتسويات اليدوية (بتأكيد؛ وشخص ثانٍ فوق 5,000 نقطة أو فوق 10,000 نقطة يمنحها موظف وحده خلال 24 ساعة)، ودفتر لا يُعدّل ورصيد كل عميل. الناقص: لا تُستبدل النقاط عند الدفع (خصم في priceCart وسطر استبدال في دفعة placeOrder)؛ والترحيل إجراء موظف حتى تُجدول مهمة.",
+      "Earning after delivery and the return window (idempotent; online orders and sales at the till to a known customer, times the VIP multiplier), reversal of later refunds and FIFO expiry (posted every night by the scheduled jobs, or at once from the points page), manual adjustments (a confirm dialog; a second person above 5,000 points or beyond 10,000 points one employee gives alone in 24 hours), the append-only ledger and each customer's balance. A signed-in customer redeems points at the online checkout (the commerce core: up to the balance and the goods left; all given back when the order is cancelled, a share with each refund). Missing: the point of sale does not redeem points.",
+      "الكسب بعد التسليم ومدة الإرجاع (دون تكرار؛ طلبات الموقع ومبيعات نقطة البيع لعميل معروف، مع مضاعف العضوية)، واسترجاع النقاط عند استرداد لاحق، والانتهاء بالأقدم أولاً (يرحّلها النظام كل ليلة، أو فوراً من صفحة النقاط)، والتسويات اليدوية (بتأكيد؛ وشخص ثانٍ فوق 5,000 نقطة أو فوق 10,000 نقطة يمنحها موظف وحده خلال 24 ساعة)، ودفتر لا يُعدّل ورصيد كل عميل. يستبدل العميل المسجّل نقاطه عند الدفع في الموقع (نواة التجارة: في حدود رصيده وما بقي من ثمن البضاعة؛ تعود كلها إن أُلغي الطلب، وحصتها مع كل مبلغ يُردّ). الناقص: نقطة البيع لا تستبدل النقاط.",
     ),
   },
   "08.05": {
@@ -567,8 +567,8 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
     status: "partial",
     route: "/admin/promotions/vip",
     note: n(
-      "Tiers with written benefits and delivery terms, members, and the customers eligible by module 07's own VIP rule; granting and ending with a reason. The points multiplier works. Missing: the member discount and free delivery are not applied at checkout (priceCart and the delivery fee must read the active membership); memberships are not sold.",
-      "فئات بمزايا مكتوبة وشروط توصيل، والأعضاء، والعملاء المؤهلون بقاعدة VIP نفسها من القسم 07؛ المنح والإنهاء مع السبب. مضاعف النقاط يعمل. الناقص: خصم العضوية والتوصيل المجاني لا يُطبقان عند الدفع (يجب أن تقرأ priceCart ورسم التوصيل العضوية الفعّالة)، والعضويات لا تُباع.",
+      "Tiers with written benefits and delivery terms, members, and the customers eligible by module 07's own VIP rule; granting and ending with a reason. At the online checkout the commerce core applies the member discount (at most the discount limits in force — 20 % and 50,000 IQD an order by default; a tier above them gets the limit, and its card says so) and free delivery; the points multiplier counts when points are posted, sales at the till included. Missing: early access to sales (written on a tier, read by nothing); no member discount at the point of sale; memberships are not sold.",
+      "فئات بمزايا مكتوبة وشروط توصيل، والأعضاء، والعملاء المؤهلون بقاعدة VIP نفسها من القسم 07؛ المنح والإنهاء مع السبب. عند الدفع في الموقع تطبّق نواة التجارة خصم العضوية (حتى حدود الخصم في الإعدادات — 20% و50,000 د.ع للطلب افتراضياً؛ والفئة التي تتجاوزها تأخذ الحد، وتقول بطاقتها ذلك) والتوصيل المجاني؛ ومضاعف النقاط يُحسب عند ترحيلها، ومنها مبيعات نقطة البيع. الناقص: الوصول المبكر للعروض (مكتوب في الفئة ولا يقرؤه شيء)، ولا خصم عضوية في نقطة البيع، والعضويات لا تُباع.",
     ),
   },
   "08.07": {

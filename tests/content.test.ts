@@ -5,9 +5,21 @@
  * demo slug, so the tests keep holding when the catalogue changes.
  */
 import { eq, inArray } from "drizzle-orm";
+import { readFileSync } from "node:fs";
+import { createElement, type ReactElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createRoutesStub } from "react-router";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { LOCALE_CODES, pick, type L10n, type Locale } from "~/lib/locales";
+import { messagesFor } from "~/i18n/i18n.server";
+import shellStrings from "~/i18n/messages/shell";
+import uiStrings from "~/i18n/messages/ui";
+import { LOCALE_CODES, LOCALES, localePath, pick, type L10n, type Locale } from "~/lib/locales";
+import { ErrorBoundary as RootErrorBoundary } from "~/root";
+import { ROOT_NOT_FOUND_WORDS } from "~/routes/storefront/content/components/RootNotFound";
 import { POLICY_SLUGS, aboutLinks, type PolicyView } from "~/routes/storefront/content/content-model";
+import { ShellMessages } from "~/routes/storefront/shell/i18n";
+import { ShellError, focusesNotFoundField } from "~/routes/storefront/shell/ShellError";
+import type { NavPlatform } from "~/routes/storefront/shell/types";
 import { categories, governorates, knowledgeArticles, pages, products, settings, shippingRates, usedUnits, variants, type LocalizedBlocks } from "~/server/db/schema";
 import { seedDemo } from "~/server/db/seed/demo";
 import { RETENTION_DAYS } from "~/server/jobs.server";
@@ -660,3 +672,187 @@ describe("copy (Design System v2 §9)", () => {
     expect(ckb).toContain("جزدانی طمطم");
   });
 });
+
+// ───────────────────────────────────────────────────────────────── the 404 (Design v2.1, client note 11)
+
+describe("the 404 (v2.1, client note 11: the before's page with v2's mascot and four platform tiles)", () => {
+  /** What React Router hands a boundary for a thrown `data(…, { status: 404 })`. */
+  const notFound = (data: unknown = { error: "not_found" }) => ({ status: 404, statusText: "Not Found", internal: false, data });
+  const platform = (slug: string, count: number): NavPlatform =>
+    ({ id: `plt_${slug}`, slug, name: slug, accent: slug, artKey: `${slug}-lead--1`, href: `/platform/${slug}`, productCount: count, devices: [], accessories: [], games: [], consoles: [], allConsoles: null, used: null }) as unknown as NavPlatform;
+  const PLATFORMS = [platform("nintendo", 39), platform("playstation", 42), platform("xbox", 28), platform("handheld", 15)];
+  const shellOf = (locale: Locale) => (shellStrings as unknown as Record<Locale, { error: Record<string, string>; search: Record<string, string>; footer: Record<string, string> }>)[locale];
+  const uiOf = (locale: Locale) => (uiStrings as unknown as Record<Locale, { platform: Record<string, string> }>)[locale];
+  const escaped = escapedText;
+
+  /** Render a boundary as a storefront page renders on the server: the root's data and strings around it. */
+  const render = (element: () => ReactElement, locale: Locale) => {
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "*", Component: element }] }]);
+    return renderToStaticMarkup(
+      createElement(Stub, {
+        initialEntries: [localePath("/nothing-here", locale)],
+        hydrationData: { loaderData: { root: { locale, dir: LOCALES[locale].dir, fx: null, i18n: messagesFor(locale, "ui", "ui-shop") }, page: null } },
+      }),
+    );
+  };
+  const inShell = (error: unknown, locale: Locale) =>
+    render(() => createElement(ShellMessages, { messages: messagesFor(locale, "shell").shell, children: createElement(ShellError, { error, platforms: PLATFORMS }) }), locale);
+  const atRoot = (error: unknown, locale: Locale) => render(() => createElement(RootErrorBoundary as never, { error, params: {} }), locale);
+
+  /** The view's pieces in the order note 11 asks for, by where they first appear in the markup. */
+  const order = (html: string, words: { title: string; home: string; help: string; browse: string }) => [
+    html.indexOf('class="cnf__art"'),
+    html.indexOf(">404</p>"),
+    html.indexOf(`>${escaped(words.title)}</h1>`),
+    html.indexOf('class="cnf__text"'),
+    html.indexOf('role="search"'),
+    html.indexOf(escaped(words.home)),
+    html.indexOf(escaped(words.help)),
+    html.indexOf(`>${escaped(words.browse)}</h2>`),
+    html.indexOf("ptile ptile--compact"),
+  ];
+  const ascending = (positions: number[]) => positions.every((at, index) => at >= 0 && (index === 0 || at > positions[index - 1]));
+
+  it("inside the shell: the mascot, «404», the title, one line, the search field, home with the support centre beside it, then the four tiles — in every language", () => {
+    for (const locale of LOCALE_CODES) {
+      const html = inShell(notFound(), locale);
+      const error = shellOf(locale).error;
+      const positions = order(html, { title: error.notFoundTitle, home: error.home, help: error.help, browse: error.browse });
+      expect(ascending(positions), `${locale}: ${positions.join(", ")}`).toBe(true);
+      expect(html).toContain(escaped(error.notFoundText));
+      expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
+      // the four doors with their counts and photos, as router links in the page's language
+      expect(html.match(/ptile ptile--compact/g)).toHaveLength(4);
+      expect(html).toContain("ptile__count");
+      for (const slug of ["nintendo", "playstation", "xbox", "handheld"]) expect(html).toContain(`href="${localePath(`/platform/${slug}`, locale)}"`);
+      expect(html).toContain(`href="${localePath("/", locale)}"`);
+      expect(html).toContain(`href="${localePath("/support", locale)}"`);
+      // the shell's own field (with its suggestions), empty; no red key — nothing here moves an order forward
+      expect(html).toMatch(/class="shell-search"[^>]*data-variant="panel"/);
+      expect(html).toMatch(/<input[^>]*name="q"[^>]*value=""/);
+      expect(html).not.toContain("key--primary");
+      // «404» is decorative (the h1 says what happened) and reads left to right
+      expect(html).toContain('<p class="cnf__code" dir="ltr" aria-hidden="true">404</p>');
+    }
+  });
+
+  it("a missing product is the same view: its own title and line, the field starting with the address's words, the used devices under the tiles", () => {
+    for (const locale of LOCALE_CODES) {
+      const html = inShell(notFound({ what: "product", query: "nintendo switch 9" }), locale);
+      const shell = shellOf(locale);
+      const positions = order(html, { title: shell.error.productTitle, home: shell.error.home, help: shell.error.help, browse: shell.error.browse });
+      expect(ascending(positions), `${locale}: ${positions.join(", ")}`).toBe(true);
+      expect(html).toContain(escaped(shell.error.productText));
+      expect(html).toMatch(/<input[^>]*name="q"[^>]*value="nintendo switch 9"/);
+      expect(html).toContain(`href="${localePath("/used", locale)}"`);
+      expect(html.indexOf(escaped(shell.footer.used))).toBeGreaterThan(html.lastIndexOf("ptile ptile--compact"));
+      expect(html).not.toContain("key--primary");
+    }
+  });
+
+  it("through the root boundary (no shell): the same view in the page's language, with document links and a plain search", () => {
+    for (const locale of LOCALE_CODES) {
+      const html = atRoot(notFound(), locale);
+      const words = ROOT_NOT_FOUND_WORDS[locale];
+      expect(ascending(order(html, words)), locale).toBe(true);
+      expect(html).toContain(`<main class="cnf-root" lang="${LOCALES[locale].bcp47}" dir="${LOCALES[locale].dir}">`);
+      expect(html).toContain(`action="${localePath("/search", locale)}"`);
+      expect(html).toContain(`href="${localePath("/", locale)}"`);
+      expect(html.match(/ptile ptile--compact/g)).toHaveLength(4);
+      for (const slug of ["nintendo", "playstation", "xbox", "handheld"]) expect(html).toContain(`href="${localePath(`/platform/${slug}`, locale)}"`);
+      // nothing invented: no product counts without the catalogue
+      expect(html).not.toContain("ptile__count");
+      expect(html).not.toContain("root-error");
+    }
+    // the other failures keep the root's own plain panel
+    const forbidden = atRoot({ status: 403, statusText: "Forbidden", internal: false, data: null }, "ar");
+    expect(forbidden).toContain('class="root-error"');
+    expect(forbidden).not.toContain("cnf");
+  });
+
+  it("the root's copied words are the shell's and the kit's, word for word", () => {
+    for (const locale of LOCALE_CODES) {
+      const words = ROOT_NOT_FOUND_WORDS[locale];
+      const shell = shellOf(locale);
+      expect(words.title, locale).toBe(shell.error.notFoundTitle);
+      expect(words.text, locale).toBe(shell.error.notFoundText);
+      expect(words.home, locale).toBe(shell.error.home);
+      expect(words.help, locale).toBe(shell.error.help);
+      expect(words.browse, locale).toBe(shell.error.browse);
+      expect(words.searchLabel, locale).toBe(shell.search.label);
+      expect(words.searchPlaceholder, locale).toBe(shell.search.placeholder);
+      expect(words.searchSubmit, locale).toBe(shell.search.submit);
+      expect(words.platforms, locale).toEqual(uiOf(locale).platform);
+    }
+  });
+
+  it("the other failures inside the shell keep their panel: one red retry, the code, no 404 view", () => {
+    const html = inShell({ status: 503, statusText: "", internal: false, data: null }, "ar");
+    expect(html).toContain(escaped(shellOf("ar").error.unavailableTitle));
+    expect(html.match(/key--primary/g)).toHaveLength(1);
+    expect(html).toContain("503");
+    expect(html).not.toContain("cnf__");
+  });
+
+  // content review: at 320 the page went 37px sideways and at 360 the field sat 3px from the screen edge — a grid
+  // item's automatic minimum is its min-content width, and the search form's (its key + the input's intrinsic width in
+  // Plex) is ≈341px, so it widened the head's one column past a 288 / 328px screen
+  it("the head's column fits a 320px screen: its pieces may shrink below their min-content width", () => {
+    const css = readFileSync(new URL("../app/routes/storefront/content/components/not-found.css", import.meta.url), "utf8");
+    expect(css).toMatch(/\.cnf__head\s*>\s*\*\s*\{[^}]*min-inline-size:\s*0\s*;/);
+  });
+
+  // content review: with remembered searches the focused field opened that list over the home key and «مركز الدعم»
+  it("the field is focused on arrival only where nothing then opens over the page: desktop, a plain 404, no recent searches kept", () => {
+    expect(focusesNotFoundField({ product: null, desktop: true, keepsRecent: false })).toBe(true);
+    expect(focusesNotFoundField({ product: null, desktop: false, keepsRecent: false }), "a phone: the keyboard would cover the page").toBe(false);
+    expect(focusesNotFoundField({ product: "zelda", desktop: true, keepsRecent: false }), "a missing product: its suggestions").toBe(false);
+    expect(focusesNotFoundField({ product: "", desktop: true, keepsRecent: false }), "a missing product without words").toBe(false);
+    expect(focusesNotFoundField({ product: null, desktop: true, keepsRecent: true }), "recent searches: their list").toBe(false);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── the pages' v2.1 look (structure unchanged)
+
+describe("the content pages in the v2.1 look (Design v2.1: the before's bar, rows and notes)", () => {
+  /** A content page as it renders on the server, its loader's data handed in. */
+  const renderPage = (Component: unknown, loaderData: unknown, locale: Locale, path: string) => {
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "*", Component: Component as never }] }]);
+    return renderToStaticMarkup(
+      createElement(Stub, {
+        initialEntries: [localePath(path, locale)],
+        hydrationData: { loaderData: { root: { locale, dir: LOCALES[locale].dir, fx: null, i18n: messagesFor(locale, "ui", "ui-shop") }, page: loaderData as never } },
+      }),
+    );
+  };
+
+  it("a policy: the trail on phones too, its one «نسخة أولى» line, «باختصار», and the related rows on clay discs with Kufam titles", async () => {
+    const { default: PolicyPage } = await import("~/routes/storefront/content/policy");
+    const [policy, policies] = await Promise.all([getPolicy(t.db, "ar", "shipping", { now: NOW, storeMode: "demo" }), listPolicies(t.db, "ar", { now: NOW })]);
+    const html = renderPage(PolicyPage, { policy, policies, i18n: contentMessages("ar") }, "ar", "/policies/shipping");
+    const ar = (contentStrings as Record<Locale, { common: Record<string, string> }>).ar.common;
+    expect(html).toContain("crumbs crumbs--phone");
+    expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
+    expect(html).toContain(escapedText(ar.statusDraft));
+    expect(html).toContain(escapedText(ar.glance));
+    expect(html).toMatch(/class="clay-disc crow__disc"/);
+    expect(html).toContain('class="crow__title"');
+    // a reading view: no red key
+    expect(html).not.toContain("key--primary");
+  });
+
+  it("a landing page shown in Arabic to an English reader says so in the kit's quiet note line, and the text carries its lang and dir", async () => {
+    const { default: LandingPage } = await import("~/routes/storefront/content/landing");
+    const page = { slug: "eid-offers", title: "عروض العيد", description: null, blocks: parseBlocks([{ type: "p", text: "نص الصفحة بالعربية." }]), textLocale: "ar", noindex: false, updatedAt: NOW, endsAt: null };
+    const html = renderPage(LandingPage, { page, i18n: contentMessages("en") }, "en", "/pages/eid-offers");
+    const en = (contentStrings as Record<Locale, { common: Record<string, string> }>).en.common;
+    expect(html).toMatch(/class="note note--line"/);
+    expect(html).toContain(escapedText(en.textFallback));
+    expect(html).toContain('lang="ar-IQ" dir="rtl"');
+    expect(html).not.toContain("cnote");
+  });
+});
+
+function escapedText(text: string): string {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
+}

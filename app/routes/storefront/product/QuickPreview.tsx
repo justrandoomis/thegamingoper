@@ -142,9 +142,9 @@ export function QuickPreview({ slug, name, open, onClose, card, image }: QuickPr
   const variant = product ? (product.variants.find((entry) => entry.id === (chosen?.slug === slug ? chosen.variantId : null)) ?? shownDefault(product)) : null;
   const choose = (variantId: string) => setChosen({ slug, variantId });
   const ready = product !== null && variant !== null && (status === "ready" || status === "loading");
-  // one pair of ids for the body's reason sentences and the foot's key that points at them
+  // the id of the body's "why it cannot be added" sentence (offline, the foot's key carries its own line)
   const base = useId();
-  const ids = { reason: `ql-reason-${base}`, offline: `ql-offline-${base}` };
+  const ids = { reason: `ql-reason-${base}` };
 
   return (
     <ProductMessages messages={messages}>
@@ -155,10 +155,10 @@ export function QuickPreview({ slug, name, open, onClose, card, image }: QuickPr
         description={ready ? <DetailsLink product={product} variant={variant} /> : null}
         presentation="side"
         sideFrom={768}
-        footer={ready ? <QuickFoot product={product} variant={variant} offline={!online} ids={ids} /> : null}
+        footer={ready ? <QuickFoot product={product} variant={variant} offline={!online} /> : null}
       >
         {ready ? (
-          <PreviewBody product={product} variant={variant} onChoose={choose} offline={!online} ids={ids} />
+          <PreviewBody product={product} variant={variant} onChoose={choose} ids={ids} />
         ) : status === "gone" ? (
           <Gone />
         ) : status === "failed" || status === "offline" ? (
@@ -237,9 +237,13 @@ function DetailsLink({ product, variant }: { product: ProductPreview; variant: V
   );
 }
 
-type Ids = { reason: string; offline: string };
+type Ids = { reason: string };
 
-function PreviewBody({ product, variant, onChoose, offline, ids }: { product: ProductPreview; variant: VariantDetail; onChoose: (variantId: string) => void; offline: boolean; ids: Ids }) {
+/**
+ * The body. Offline, the reason is said once — by the kit's line under the add key in the pinned foot, which describes
+ * that key — not again under the price (review 2026-11-13: the sheet said it twice and the key read both).
+ */
+function PreviewBody({ product, variant, onChoose, ids }: { product: ProductPreview; variant: VariantDetail; onChoose: (variantId: string) => void; ids: Ids }) {
   const t = useProductT();
   const gallery = galleryFor(product, variant);
 
@@ -257,8 +261,6 @@ function PreviewBody({ product, variant, onChoose, offline, ids }: { product: Pr
         isDemo={product.isDemo}
         digital={isDigital(product)}
         reasonId={ids.reason}
-        offline={offline && variant.orderable}
-        offlineId={ids.offline}
       />
       {product.variants.length > 1 ? <VariantPicker variants={product.variants} selector={product.selector} value={variant.id} onChange={onChoose} form={false} /> : null}
     </div>
@@ -270,7 +272,7 @@ function PreviewBody({ product, variant, onChoose, offline, ids }: { product: Pr
  * After an add of this version: «✓ في السلة» over the price and «عرض السلة (n)» (another version restores the add key).
  * Sold out: «نفد حالياً», no key. Not out yet: «يصدر … · الطلب يفتح عند وصوله», no key. Offline: the key is flat.
  */
-function QuickFoot({ product, variant, offline, ids }: { product: ProductPreview; variant: VariantDetail; offline: boolean; ids: Ids }) {
+function QuickFoot({ product, variant, offline }: { product: ProductPreview; variant: VariantDetail; offline: boolean }) {
   const shop = useT("ui-shop");
   const f = useFormat();
   const { count } = useCartCount();
@@ -313,8 +315,8 @@ function QuickFoot({ product, variant, offline, ids }: { product: ProductPreview
           image={picture}
           optionsLabel={product.variants.length > 1 ? variant.label : null}
           source={() => document.querySelector("[data-quick-stage] img")}
+          // offline: flat, and the kit's own line after it says why (and describes it)
           disabled={offline}
-          aria-describedby={offline ? ids.offline : undefined}
           className="min-w-[168px]"
           onAdded={() => setAddedFor(variant.id)}
         />

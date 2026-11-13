@@ -89,7 +89,7 @@ export default function CustomerPointsPage({ loaderData }: Route.ComponentProps)
         items={[
           { label: t("points.k.balance"), value: <Num value={points.balance} />, note: t("points.k.worth", { amount: f.iqd(points.valueIqd) }) },
           { label: t("points.k.expiringSoon"), value: <Num value={points.expiringSoon} /> },
-          { label: t("points.k.multiplier"), value: points.multiplierBps ? <bdi className="nums">×{(points.multiplierBps / 10_000).toFixed(2).replace(/0$/, "")}</bdi> : "—", note: points.multiplierBps ? t("points.k.multiplierNote") : t("points.k.noMultiplier") },
+          { label: t("points.k.multiplier"), value: points.multiplierBps ? <bdi className="nums">×{(points.multiplierBps / 10_000).toFixed(2).replace(/\.?0+$/, "")}</bdi> : "—", note: points.multiplierBps ? t("points.k.multiplierNote") : t("points.k.noMultiplier") },
           { label: t("points.k.entries"), value: <Num value={points.entries.length} /> },
         ]}
       />

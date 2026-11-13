@@ -76,6 +76,8 @@ export type HelpSearch = {
   kind: "danger" | "code" | "guides";
   code: string | null;
   articles: ArticleSummary[];
+  /** The platform the search was kept to (the search box's device chips), or null / absent for every device. */
+  platform?: string | null;
 };
 
 // ───────────────────────────────────────────────────────────────── assistant

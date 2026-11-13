@@ -20,6 +20,7 @@ import { Checkbox, FormErrorSummary, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
 import { fillNodes } from "~/ui/PriceTag";
+import { SuccessMark } from "~/ui/SuccessMark";
 import { Status, type StatusTone } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { fieldMessage, formMessage, phoneProblem, type FormFailure } from "../client";
@@ -49,15 +50,14 @@ export function HandoffReceiptCard({ receipt, summary, token = null }: { receipt
   const statusWords = t(statusKey) === statusKey ? receipt.status : t(statusKey);
   return (
     <section aria-labelledby={headingId} className="sup-card sup-receipt">
-      <div className="flex items-start gap-3">
-        <span className="sup-done-disc" aria-hidden="true">
-          <Icon name="check" size={24} />
-        </span>
+      <div className="sup-done">
+        {/* the check that draws itself, once (v2.1 G6); finished at once under reduced motion */}
+        <SuccessMark size={56} />
         <div className="grid min-w-0 gap-1">
-          <h2 id={headingId} ref={headingRef} tabIndex={-1} className="type-h3 text-ink">
+          <h2 id={headingId} ref={headingRef} tabIndex={-1} className="sup-done__title">
             {t("handoff.success.title")}
           </h2>
-          <p className="type-sm text-ink-2">{t("handoff.success.text")}</p>
+          <p className="type-read text-ink-2">{t("handoff.success.text")}</p>
           {/* this page's link is one way back to the reply (a key copies it); the reference and the phone are the other */}
           <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1">
             <CopyLinkKey />
@@ -207,7 +207,7 @@ export function HandoffForm({ view, formKey, contact, failure, orderRef = null }
         <h2 id={headingId} ref={headingRef} tabIndex={-1} className="type-h3 text-ink">
           {t("handoff.title")}
         </h2>
-        <p className="type-sm text-ink-2">{t("handoff.text")}</p>
+        <p className="type-read text-ink-2">{t("handoff.text")}</p>
         {orderRef ? (
           <p className="flex flex-wrap items-center gap-x-1.5 type-sm-strong text-ink" data-handoff-order={orderRef}>
             <Icon name="package" size={16} />
@@ -215,7 +215,7 @@ export function HandoffForm({ view, formKey, contact, failure, orderRef = null }
           </p>
         ) : null}
       </div>
-      <div className="grid gap-1 rounded-sm bg-niche px-4 py-3">
+      <div className="sup-well">
         <p className="type-sm-strong text-ink">{t("handoff.preview")}</p>
         <pre className="sup-summary">{view.summary}</pre>
       </div>

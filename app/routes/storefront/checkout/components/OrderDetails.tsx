@@ -1,29 +1,36 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 import { Icon, type IconName } from "~/art/Icon";
 import { useFormat, useT, type Formatters } from "~/i18n/react";
 import type { OrderLineView, OrderView } from "~/server/services/orders/types";
 import { cx } from "~/ui/cx";
 import { Disclosure } from "~/ui/Disclosure";
+import { Note, type NoteTone } from "~/ui/Note";
 import { OrderSummary } from "~/ui/OrderSummary";
 import { fillNodes, iqdText } from "~/ui/PriceTag";
 import { Status, type StatusTone } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { ORDER_STAGES, orderStage, splitLineName } from "../checkout-form";
 import { Adjustments, summaryCoupon, withFlash } from "./Adjustments";
+import { Fact, Typed } from "./Fact";
 import { DigitalCodes } from "./DigitalCodes";
 import { ProofSection, type JustSent } from "./ProofSection";
 import { TransferDetails } from "./TransferDetails";
 
 /**
- * One order as its shopper sees it — the order status template of Design System v2 §6.11, shared by the order page
- * and /track: "what happens next" (a rail of the five real stages: استلمنا · تأكيد · تجهيز · في الطريق · تم التسليم —
- * the current one an ink disc, the upcoming ones control-line rings), the next-step box by payment (cash on delivery:
- * «سنؤكد طلبك قبل تجهيزه. تدفع … نقداً عند الاستلام.»; a transfer: where to send it, the deadline and the proof uploader,
- * then «بانتظار التحقق» until a person approves it), the shipments, ONE summary card (the items, the totals with
- * «الإجمالي» the one red figure, then the payment and the delivery side by side from 1024) and the dated history behind
- * a disclosure. Everything comes from the commerce core's OrderView (statuses, amounts, instructions from settings);
- * nothing is computed here but words.
+ * One order as its shopper sees it — the order status template of Design System v2 §6.11 (v2.1, client round 1: the
+ * new order screen), shared by the order page and /track:
+ *   · the status rail — the five real stages (استلمنا · تأكيد · تجهيز · في الطريق · تم التسليم), each with its icon in a
+ *     circle (reached ones ink, the next ones raised clay), joined by a line that fills up to where the order is (it
+ *     draws itself once under full motion; reduced motion: drawn);
+ *   · the next step as the kit's Note, its tone by the order's state (cash on delivery: «سنؤكد طلبك قبل تجهيزه. تدفع …
+ *     نقداً عند الاستلام.»; a transfer: where to send it, the deadline and the proof uploader, then «بانتظار التحقق»
+ *     until a person approves it);
+ *   · the shipments, ONE summary card (the items with their pictures, the totals with «الإجمالي» the one red figure and
+ *     every discount in the saving colour, then the payment and the delivery — icon rows — side by side from 1024) and
+ *     the dated history behind a disclosure.
+ * Everything comes from the commerce core's OrderView (statuses, amounts, instructions from settings); nothing is
+ * computed here but words.
  *
  * `mode`: "owner" — the confirmation link or the signed-in owner (a proof can be uploaded); "tracked" — found by
  * reference + phone on /track (read-only: uploading needs the confirmation link, the core's rule).
@@ -55,6 +62,22 @@ const STATUS_TONE: Record<OrderView["status"], StatusTone> = {
   returned: "neutral",
 };
 
+/** The next-step note: its tone (only the circle is tinted) and its icon, by the order's state. */
+const NEXT_LOOK: Record<OrderView["status"], { tone: NoteTone; icon: IconName }> = {
+  new: { tone: "info", icon: "receipt" },
+  awaiting_payment: { tone: "warning", icon: "hourglass" },
+  payment_review: { tone: "info", icon: "hourglass" },
+  confirmed: { tone: "success", icon: "seal-check" },
+  preparing: { tone: "info", icon: "package" },
+  shipped: { tone: "info", icon: "truck" },
+  delivered: { tone: "success", icon: "check-circle" },
+  cancelled: { tone: "neutral", icon: "x-circle" },
+  returned: { tone: "neutral", icon: "arrow-counter-clockwise" },
+};
+
+/** Each stage's icon on the status rail. */
+const STAGE_ICON: Record<(typeof ORDER_STAGES)[number], IconName> = { received: "receipt", confirmed: "seal-check", preparing: "package", shipped: "truck", delivered: "house" };
+
 const TIMELINE_ICON: Partial<Record<string, IconName>> = {
   placed: "receipt",
   proof_submitted: "upload-simple",
@@ -69,6 +92,9 @@ const TIMELINE_ICON: Partial<Record<string, IconName>> = {
   returned: "arrow-counter-clockwise",
   refunded: "hand-coins",
 };
+
+/** Each payment method's icon (never a brand logo). */
+const METHOD_ICON: Record<string, IconName> = { cod: "money", wallet: "wallet", bank_transfer: "credit-card", zaincash: "device-mobile" };
 
 /** A Baghdad-time stamp; formatted on both sides with the same Intl data, the attribute is only a guard for ICU drift. */
 export function When({ at, f, kind = "dateTime" }: { at: number; f: Formatters; kind?: "dateTime" | "date" }) {
@@ -93,30 +119,35 @@ export function OrderDetails({ order, mode, access, proofUrl = null, codesSignIn
 
   const payment = order.payment;
   const transfer = isTransfer(payment.method);
-  const iqd = (amount: number) => <bdi className="nums font-semibold">{f.iqd(amount)}</bdi>;
+  const iqd = (amount: number) => <bdi className="nums font-semibold text-ink">{f.iqd(amount)}</bdi>;
   const stage = orderStage(order.status);
 
   return (
-    <div className={cx("grid gap-8", className)}>
-      {/* ── what happens next: the five real stages ── */}
+    <div className={cx("co-order-body", className)}>
+      {/* ── where the order is: the five real stages, a line that fills up to it ── */}
       {stage !== null ? (
         <section aria-labelledby={`${order.ref}-stages`} className="grid gap-4">
           <H id={`${order.ref}-stages`} className="type-h3 text-ink">
             {t("order.stages.label")}
           </H>
-          <ol className="co-stages">
-            {ORDER_STAGES.map((name, index) => {
-              const state = index < stage ? "done" : index === stage ? "current" : "upcoming";
-              return (
-                <li key={name} className="co-stage" data-state={state} aria-current={state === "current" ? "step" : undefined}>
-                  <span className="co-stage__n" aria-hidden="true">
-                    {state === "done" ? <Icon name="check" size={16} /> : f.number(index + 1)}
-                  </span>
-                  <span className="co-stage__label">{t(`order.stages.${name}`)}</span>
-                </li>
-              );
-            })}
-          </ol>
+          <div className="co-progress" style={{ "--progress": stage / (ORDER_STAGES.length - 1) } as CSSProperties}>
+            <span className="co-progress__track" aria-hidden="true">
+              <span className="co-progress__fill" />
+            </span>
+            <ol className="co-stages">
+              {ORDER_STAGES.map((name, index) => {
+                const state = index < stage ? "done" : index === stage ? "current" : "upcoming";
+                return (
+                  <li key={name} className="co-stage" data-state={state} aria-current={state === "current" ? "step" : undefined}>
+                    <span className="co-stage__disc" aria-hidden="true">
+                      <Icon name={STAGE_ICON[name]} size={20} />
+                    </span>
+                    <span className="co-stage__label">{t(`order.stages.${name}`)}</span>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         </section>
       ) : null}
 
@@ -134,10 +165,9 @@ export function OrderDetails({ order, mode, access, proofUrl = null, codesSignIn
             {payment.canUploadProof && mode === "owner" && access ? (
               <ProofSection order={order} access={access} onSent={setJustSent} headingLevel={headingLevel === 2 ? 3 : 2} />
             ) : payment.canUploadProof ? (
-              <p className="co-note">
-                <Icon name="link" size={16} className="shrink-0 text-ink-2" />
-                <span className="min-w-0 flex-1">{t("order.payment.trackedUpload")}</span>
-              </p>
+              <Note variant="line" icon="link">
+                {t("order.payment.trackedUpload")}
+              </Note>
             ) : null}
           </>
         ) : null}
@@ -162,7 +192,7 @@ export function OrderDetails({ order, mode, access, proofUrl = null, codesSignIn
                 <Status tone={shipment.status === "delivered" ? "ok" : shipment.status === "failed" || shipment.status === "returned" ? "bad" : "info"}>{t(`order.shipment.status.${shipment.status}`)}</Status>
               </p>
               {shipment.trackingNo ? (
-                <p className="flex flex-wrap items-center gap-x-2 type-xs text-ink-2">
+                <p className="flex flex-wrap items-center gap-x-2 type-sm text-ink-2">
                   {t("order.shipment.trackingNo")}{" "}
                   <bdi dir="ltr" className="nums text-ink">
                     {shipment.trackingNo}
@@ -206,32 +236,52 @@ export function OrderDetails({ order, mode, access, proofUrl = null, codesSignIn
           split={(order.walletPaidIqd ?? 0) > 0 ? { walletIqd: order.walletPaidIqd ?? 0, restIqd: order.totals.totalIqd - (order.walletPaidIqd ?? 0) } : null}
         />
         <div className="co-pair">
-          <section aria-labelledby={`${order.ref}-payment`} className="grid content-start gap-2">
+          <section aria-labelledby={`${order.ref}-payment`} className="grid content-start gap-3">
             <Sub id={`${order.ref}-payment`} className="type-sm-strong text-ink">
               {t("order.payment.heading")}
             </Sub>
-            <p className="type-body text-ink">{payment.method ? t(`order.payment.method.${payment.method}`) : t("order.payment.method.none")}</p>
-            <Status tone={paymentTone(order)}>{paymentStatusText(order, t)}</Status>
-            {payment.amountDueIqd > 0 && order.status !== "cancelled" ? <p className="type-xs text-ink-2">{fillNodes(t("order.payment.due"), { amount: iqd(payment.amountDueIqd) })}</p> : null}
-            {payment.paidIqd > 0 ? <p className="type-xs text-ink-2">{fillNodes(t("order.payment.paid"), { amount: iqd(payment.paidIqd) })}</p> : null}
-            {payment.refundedIqd > 0 ? <p className="type-xs text-ink-2">{fillNodes(t("order.payment.refunded"), { amount: iqd(payment.refundedIqd) })}</p> : null}
+            <dl className="co-facts">
+              <Fact icon={(payment.method && METHOD_ICON[payment.method]) || "wallet"} label={t("payment.legend")}>
+                <span className="grid justify-items-start gap-1.5">
+                  <span className="font-semibold">{payment.method ? t(`order.payment.method.${payment.method}`) : t("order.payment.method.none")}</span>
+                  <Status tone={paymentTone(order)}>{paymentStatusText(order, t)}</Status>
+                </span>
+              </Fact>
+            </dl>
+            {payment.amountDueIqd > 0 && order.status !== "cancelled" ? <p className="type-sm text-ink-2">{fillNodes(t("order.payment.due"), { amount: iqd(payment.amountDueIqd) })}</p> : null}
+            {payment.paidIqd > 0 ? <p className="type-sm text-ink-2">{fillNodes(t("order.payment.paid"), { amount: iqd(payment.paidIqd) })}</p> : null}
+            {payment.refundedIqd > 0 ? <p className="type-sm text-ink-2">{fillNodes(t("order.payment.refunded"), { amount: iqd(payment.refundedIqd) })}</p> : null}
           </section>
-          <section aria-labelledby={`${order.ref}-delivery`} className="grid content-start gap-2">
+          <section aria-labelledby={`${order.ref}-delivery`} className="grid content-start gap-3">
             <Sub id={`${order.ref}-delivery`} className="type-sm-strong text-ink">
               {t("order.delivery.heading")}
             </Sub>
             <dl className="co-facts">
-              {order.contact.name ? <Fact label={t("order.delivery.recipient")}>{order.contact.name}</Fact> : null}
-              <Fact label={t("order.delivery.phone")}>
+              {order.contact.name ? (
+                <Fact icon="user" label={t("order.delivery.recipient")}>
+                  <Typed>{order.contact.name}</Typed>
+                </Fact>
+              ) : null}
+              <Fact icon="phone" label={t("order.delivery.phone")}>
                 <bdi dir="ltr" className="nums">
                   {order.contact.phoneMasked}
                 </bdi>
               </Fact>
-              <Fact label={t("order.delivery.place")}>{[order.delivery.governorate, order.delivery.district, order.delivery.area].filter(Boolean).join(" · ")}</Fact>
-              {order.delivery.address ? <Fact label={t("order.delivery.address")}>{order.delivery.address}</Fact> : null}
-              {order.delivery.notes ? <Fact label={t("order.delivery.notes")}>{order.delivery.notes}</Fact> : null}
+              <Fact icon="map-pin" label={t("order.delivery.place")}>
+                <Typed>{[order.delivery.governorate, order.delivery.district, order.delivery.area].filter(Boolean).join(" · ")}</Typed>
+              </Fact>
+              {order.delivery.address ? (
+                <Fact icon="house" label={t("order.delivery.address")}>
+                  <Typed>{order.delivery.address}</Typed>
+                </Fact>
+              ) : null}
+              {order.delivery.notes ? (
+                <Fact icon="chat-circle" label={t("order.delivery.notes")}>
+                  <Typed>{order.delivery.notes}</Typed>
+                </Fact>
+              ) : null}
               {order.delivery.preferredDay || (order.delivery.preferredWindow && order.delivery.preferredWindow !== "any") ? (
-                <Fact label={t("order.delivery.preference")}>
+                <Fact icon="clock" label={t("order.delivery.preference")}>
                   <span className="grid gap-0.5">
                     <span>
                       {[
@@ -280,8 +330,8 @@ export function OrderDetails({ order, mode, access, proofUrl = null, codesSignIn
           <ol className="grid">
             {order.timeline.map((event, index) => (
               <li key={`${event.kind}:${event.at}:${index}`} className="flex items-center gap-3 border-b border-line py-3 last:border-b-0">
-                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-niche text-ink" aria-hidden="true">
-                  <Icon name={TIMELINE_ICON[event.kind] ?? "check"} size={16} />
+                <span className="clay-disc co-fact__icon--static" aria-hidden="true">
+                  <Icon name={TIMELINE_ICON[event.kind] ?? "check"} size={18} />
                 </span>
                 <span className="grid min-w-0 gap-0.5">
                   <span className="type-sm-strong text-ink">{t(`order.timeline.${event.kind}`)}</span>
@@ -298,12 +348,12 @@ export function OrderDetails({ order, mode, access, proofUrl = null, codesSignIn
   );
 }
 
-/** The order's state and the next step, in words (never colour alone) — the next-step box. */
+/** The order's state and the next step, in words (never colour alone) — the kit's Note, its tone by the state. */
 function NextStep({ order }: { order: OrderView }) {
   const t = useT("checkout");
   const f = useFormat();
   const payment = order.payment;
-  const iqd = (amount: number) => <bdi className="nums font-semibold">{f.iqd(amount)}</bdi>;
+  const iqd = (amount: number) => <bdi className="nums font-semibold text-ink">{f.iqd(amount)}</bdi>;
   let next: ReactNode = null;
   // cash still to collect (an order of 0 — all points and free delivery — is placed paid: nothing to hand over)
   if (order.status === "new" && payment.method === "cod" && payment.status === "cod_due") {
@@ -311,7 +361,7 @@ function NextStep({ order }: { order: OrderView }) {
   } else if (order.status === "awaiting_payment") {
     if (payment.canUploadProof) {
       const key = payment.proof.status === "rejected" ? "order.next.rejected" : "order.next.transfer";
-      next = fillNodes(t(key), { total: iqd(payment.amountDueIqd), deadline: payment.dueAt !== null ? <b className="font-semibold"><When at={payment.dueAt} f={f} /></b> : "" });
+      next = fillNodes(t(key), { total: iqd(payment.amountDueIqd), deadline: payment.dueAt !== null ? <b className="font-semibold text-ink"><When at={payment.dueAt} f={f} /></b> : "" });
     } else {
       next = t("order.next.windowClosed");
     }
@@ -326,13 +376,11 @@ function NextStep({ order }: { order: OrderView }) {
   } else {
     next = t(`order.next.${order.status}`);
   }
+  const look = NEXT_LOOK[order.status];
   return (
-    <div className="co-card grid gap-2" aria-live="polite">
-      <Status tone={STATUS_TONE[order.status]} size="lg">
-        {t(`order.status.${order.status}`)}
-      </Status>
-      <p className="type-body text-ink">{next}</p>
-    </div>
+    <Note tone={look.tone} icon={look.icon} title={t(`order.status.${order.status}`)} aria-live="polite" className="co-next">
+      {next}
+    </Note>
   );
 }
 
@@ -373,10 +421,10 @@ function SubmittedProof({ order, justSent, storedUrl = null }: { order: OrderVie
       <Status tone="warn" size="lg">
         {t("proof.submitted.title")}
       </Status>
-      <p className="type-body text-ink">{t("proof.submitted.text")}</p>
-      {proof.declaredAmountIqd !== null ? <p className="type-xs text-ink-2">{fillNodes(t("proof.submitted.amount"), { amount: <bdi className="nums">{f.iqd(proof.declaredAmountIqd)}</bdi> })}</p> : null}
+      <p className="type-read text-ink">{t("proof.submitted.text")}</p>
+      {proof.declaredAmountIqd !== null ? <p className="type-sm text-ink-2">{fillNodes(t("proof.submitted.amount"), { amount: <bdi className="nums">{f.iqd(proof.declaredAmountIqd)}</bdi> })}</p> : null}
       {proof.submittedAt !== null ? (
-        <p className="type-xs text-ink-2">{fillNodes(t("proof.submitted.at"), { date: <When at={proof.submittedAt} f={f} /> })}</p>
+        <p className="type-sm text-ink-2">{fillNodes(t("proof.submitted.at"), { date: <When at={proof.submittedAt} f={f} /> })}</p>
       ) : null}
       {justSent ? (
         <span className="flex items-center gap-3">
@@ -408,13 +456,4 @@ function lineFacts(line: OrderLineView, t: (key: string, vars?: Record<string, s
   ]
     .filter(Boolean)
     .join(" · ");
-}
-
-function Fact({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="co-facts__row">
-      <dt className="type-xs text-ink-2">{label}</dt>
-      <dd className="min-w-0 break-words type-sm text-ink">{children}</dd>
-    </div>
-  );
 }

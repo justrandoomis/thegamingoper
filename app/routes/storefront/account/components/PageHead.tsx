@@ -4,6 +4,7 @@ import { Icon } from "~/art/Icon";
 import { useT } from "~/i18n/react";
 import { MotionLink } from "~/motion";
 import { cx } from "~/ui/cx";
+import { revealProps } from "~/ui/reveal";
 import { SectionHead } from "~/ui/SectionHead";
 
 /**
@@ -71,7 +72,9 @@ export function PageHead({
 
 /**
  * A section of an account page: the kit's section head (h2, an honest reason line, a link at the end) and its content.
- * `action` sits at the end of the head (a small key) when there is no «عرض الكل» link.
+ * `action` sits at the end of the head (a small key) when there is no «عرض الكل» link. `anchor`: the section carries
+ * `id` itself (a quick tile links to it). `reveal`: it fades up as it first comes into view (v2.1 G6; below the fold
+ * only — never a form).
  */
 export function Section({
   id,
@@ -80,6 +83,8 @@ export function Section({
   href,
   linkLabel,
   action,
+  anchor = false,
+  reveal = false,
   children,
   className,
 }: {
@@ -89,11 +94,13 @@ export function Section({
   href?: string;
   linkLabel?: ReactNode;
   action?: ReactNode;
+  anchor?: boolean;
+  reveal?: boolean;
   children: ReactNode;
   className?: string;
 }) {
   return (
-    <section aria-labelledby={`${id}-title`} className={cx("grid min-w-0", className)}>
+    <section id={anchor ? id : undefined} aria-labelledby={`${id}-title`} className={cx("grid min-w-0", className)} {...(reveal ? revealProps() : {})}>
       {action ? (
         <div className="sechead">
           <div className="sechead__text">

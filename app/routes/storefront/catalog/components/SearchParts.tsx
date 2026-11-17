@@ -21,7 +21,7 @@ import { isPlatform, type Platform } from "~/ui/PlatformLed";
 import { PlatformTile } from "~/ui/PlatformTile";
 import { revealProps } from "~/ui/reveal";
 import { searchPath, type StoreBrowse } from "../listing-model";
-import { ChipLabel, TitleRow, deviceGlyph, keepInView, useKindIcon, useShellNav } from "./Hub";
+import { TitleRow, deviceGlyph, keepInView, useKindIcon, useShellNav } from "./Hub";
 import { useRecentSearches } from "./recent-searches";
 
 type Suggestion = { name: string; platform: Platform | null };
@@ -65,10 +65,8 @@ export function SuggestionChips({ title, layout = "rail", limit = 8, className }
       </h2>
       <div className={chipRow(layout)} onFocus={keepInView}>
         {suggestions.map(({ name, platform }) => (
-          <Chip key={name} as={LocaleLink} to={searchPath(name)}>
-            <ChipLabel icon={platform ? deviceGlyph(platform) : "magnifying-glass"} gel={platform}>
-              {name}
-            </ChipLabel>
+          <Chip key={name} as={LocaleLink} to={searchPath(name)} icon={platform ? deviceGlyph(platform) : "magnifying-glass"} data-gel={platform ?? undefined}>
+            {name}
           </Chip>
         ))}
       </div>
@@ -116,8 +114,9 @@ export function RecentSearches() {
 
 /**
  * «تسوّق حسب المنصّة» and «تسوّق حسب القسم»: the four vivid platform tiles and the departments as the reference's icon
- * tiles (a clay square with the red line kind icon — v2.1 G4), with the hubs' counts. Each section fades up as it first
- * arrives (below the fold only).
+ * tiles (a clay square with the red line kind icon — v2.1 G4), with the hubs' counts. As each section first arrives
+ * (below the fold only) its heading fades up and its tiles follow one after another (the kit's stagger, as the kit's
+ * `CategoryTiles reveal` does — the lists stay lists here).
  */
 export function BrowseStore({ browse, headingLevel = 2, className }: { browse: StoreBrowse | null; headingLevel?: 2 | 3; className?: string }) {
   const t = useT("catalog");
@@ -138,11 +137,11 @@ export function BrowseStore({ browse, headingLevel = 2, className }: { browse: S
   return (
     <div className={cx("catalog-browse", className)}>
       {platforms.length > 0 ? (
-        <section aria-labelledby={platformsId} className="grid grid-cols-[minmax(0,1fr)] gap-4" {...revealProps()}>
-          <Heading id={platformsId} className={headingLevel === 2 ? "type-h2 text-ink" : "type-h3 text-ink"}>
+        <section aria-labelledby={platformsId} className="grid grid-cols-[minmax(0,1fr)] gap-4">
+          <Heading id={platformsId} className={headingLevel === 2 ? "type-h2 text-ink" : "type-h3 text-ink"} {...revealProps()}>
             {t("search.byPlatform")}
           </Heading>
-          <ul role="list" className="catalog-ptiles glow glow--wide">
+          <ul role="list" className="catalog-ptiles glow glow--wide" {...revealProps({ stagger: true })}>
             {platforms.map((platform) =>
               isPlatform(platform.accent) ? (
                 <li key={platform.slug} className="grid">
@@ -161,11 +160,11 @@ export function BrowseStore({ browse, headingLevel = 2, className }: { browse: S
         </section>
       ) : null}
       {categories.length > 0 ? (
-        <section aria-labelledby={categoriesId} className="grid grid-cols-[minmax(0,1fr)] gap-4" {...revealProps()}>
-          <Heading id={categoriesId} className={headingLevel === 2 ? "type-h2 text-ink" : "type-h3 text-ink"}>
+        <section aria-labelledby={categoriesId} className="grid grid-cols-[minmax(0,1fr)] gap-4">
+          <Heading id={categoriesId} className={headingLevel === 2 ? "type-h2 text-ink" : "type-h3 text-ink"} {...revealProps()}>
             {t("search.byCategory")}
           </Heading>
-          <ul role="list" className="cats catalog-cats">
+          <ul role="list" className="cats catalog-cats" {...revealProps({ stagger: true })}>
             {categories.map((category) => (
               <li key={category.slug} className="grid">
                 <CategoryTile to={category.href} label={category.label} count={category.count} icon={kindIcon(category.slug)} />
@@ -193,7 +192,8 @@ export function SearchStart({ browse }: { browse: StoreBrowse | null }) {
     <div className="grid grid-cols-[minmax(0,1fr)] gap-8">
       <TitleRow title={t("search.title")} icon="magnifying-glass">
         <div className="catalog-search-head">
-          <SearchForm variant="panel" inputRef={field} className="catalog-search-field" />
+          {/* a search landmark of its own name: the header's field («ابحث في المتجر») is a search landmark too */}
+          <SearchForm variant="panel" inputRef={field} className="catalog-search-field" aria-label={t("search.field")} />
           <SuggestionChips title={t("search.suggestions")} />
         </div>
       </TitleRow>
@@ -241,8 +241,8 @@ export function DidYouMean({ partial, layout = "rail", className }: { partial: {
       </h2>
       <div className={chipRow(layout)} onFocus={keepInView}>
         {partial.map((entry) => (
-          <Chip key={entry.q} as={LocaleLink} to={searchPath(entry.q)} count={entry.count}>
-            <ChipLabel icon="magnifying-glass">{entry.q}</ChipLabel>
+          <Chip key={entry.q} as={LocaleLink} to={searchPath(entry.q)} count={entry.count} icon="magnifying-glass">
+            {entry.q}
           </Chip>
         ))}
       </div>

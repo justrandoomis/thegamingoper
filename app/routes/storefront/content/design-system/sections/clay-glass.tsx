@@ -50,6 +50,7 @@ const COPY = defineCopy({
     read: "التوصيل 5,000 د.ع لكل المحافظات، والدفع عند الاستلام أو بزين كاش أو بتحويل إلى بطاقة ماستركارد.",
     keys: "الأزرار",
     keysNote: "الأساسي أحمر لامع (واحد في كل شاشة) يرتفع بكسلاً عند المرور ويغوص على جداره عند الضغط؛ الثانوي طين أبيض؛ الشبحي مسطّح. أسماء الأزرار بخط Kufam.",
+    wrapKey: "تحدّث مع موظف عن طلبك أو عن جهازك",
     add: "أضف إلى السلة",
     details: "تفاصيل الجهاز",
     cancel: "إلغاء",
@@ -151,6 +152,7 @@ const COPY = defineCopy({
     read: "Delivery is 5,000 IQD to every governorate; pay cash on delivery, with Zain Cash or by transfer to a Mastercard card.",
     keys: "Keys",
     keysNote: "The primary is glossy red (one per view): it rises a pixel under the pointer and sinks onto its wall when pressed; the secondary is white clay; ghost keys are flat. Key labels are set in Kufam.",
+    wrapKey: "Talk to a person about your order or your device",
     add: "Add to cart",
     details: "Device details",
     cancel: "Cancel",
@@ -252,6 +254,7 @@ const COPY = defineCopy({
     read: "گەیاندن 5,000 د.ع بۆ هەموو پارێزگاکان؛ پارەدان لە کاتی وەرگرتن، یان بە زەین کاش، یان بە گواستنەوە بۆ کارتی ماستەرکارد.",
     keys: "دوگمەکان",
     keysNote: "دوگمەی سەرەکی سووری بریقەدارە (یەک دانە لە هەر شاشەیەک): لە کاتی هاتنی نیشاندەر پیکسڵێک بەرز دەبێتەوە و لە کاتی پەستاندن دادەنیشێت؛ دوگمەی لاوەکی قوڕی سپییە؛ دوگمەی شەبەح تەختە. ناوی دوگمەکان بە Kufam نووسراون.",
+    wrapKey: "لەگەڵ کارمەندێک قسە بکە دەربارەی داواکاری یان ئامێرەکەت",
     add: "بیخە ناو سەبەتە",
     details: "وردەکاری ئامێر",
     cancel: "هەڵوەشاندنەوە",
@@ -441,6 +444,12 @@ export default function ClayGlassSection() {
                 </Key>
                 <Key loading>{c.busy}</Key>
                 <Key disabled>{c.off}</Key>
+              </div>
+              {/* <Key wrap>: a long label takes a second line (line height 1.45: room for the marks between the lines) */}
+              <div className="max-w-[14rem]">
+                <Key wrap block icon="chat-circle">
+                  {c.wrapKey}
+                </Key>
               </div>
               <div className="band band--hero grid justify-items-start gap-3 p-5">
                 <span className="band__light" aria-hidden="true" />

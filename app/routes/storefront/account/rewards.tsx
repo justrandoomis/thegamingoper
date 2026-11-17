@@ -118,7 +118,8 @@ export default function Rewards({ loaderData }: Route.ComponentProps) {
           icon="star"
           figure={
             <>
-              <CountUp value={points.balance} format={f.number} className="acct-money__num" />
+              {/* the page's one focus figure: it counts the last stretch on a direct open too (the kit's playOnLoad) */}
+              <CountUp value={points.balance} format={f.number} playOnLoad className="acct-money__num" />
               <span className="acct-money__unit">{t("rewards.unit", { count: points.balance })}</span>
             </>
           }

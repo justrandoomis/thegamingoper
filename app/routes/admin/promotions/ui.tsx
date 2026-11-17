@@ -5,13 +5,14 @@
  * must decide. Where a section is applied today (online, at the till) is `StateLines` / `SectionState`, read from
  * ./checkout-state.ts — never a sentence of its own.
  */
-import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import { useFetcher, useRouteLoaderData } from "react-router";
 
 import { Icon, type IconName } from "~/art/Icon";
 import { useDir, useFormat, useLocale, useT } from "~/i18n/react";
 import { translate, type MessageTree, type TFunction } from "~/i18n/translate";
 import { DEFAULT_PROGRAM, PROMOTIONS_NS, bpsToPercent, type HistoryRow, type ProgramRules, type Tone } from "~/server/services/admin/promotions/types";
+import type { LoyaltyReason } from "~/server/services/orders/loyalty-reasons";
 import { cx } from "~/ui/cx";
 import { ConfirmDialog, type ImpactRow } from "~/ui/Dialog";
 import { Key } from "~/ui/Key";
@@ -59,6 +60,40 @@ export function Arrow() {
 export function useChangeText(): (from: string, to: string) => string {
   const rtl = useDir() === "rtl";
   return (from, to) => (rtl ? `‏${from} ← ${to}` : `${from} → ${to}`);
+}
+
+/** A reference or code inside a sentence: isolated left to right (U+2066 … U+2069), so «TT-5TQZ9GXP» never reorders. */
+const isolated = (value: string) => `⁦${value}⁩`;
+
+/**
+ * What a points-ledger row's reason (or a referral's closing reason) says, in the admin's language: a reason the store
+ * wrote itself — `said`, read back on the server (promotions.server `withSaid`) — as `points.reason.<code>` with its
+ * order reference isolated and its day formatted; a person's own words as typed; nothing when it would only repeat the
+ * reference the row already shows (an order's own redemption or earning: «TT-X» under «TT-X»).
+ */
+export function useReasonText(): (said: LoyaltyReason | null, typed: string | null, shownRef?: string | null) => string | null {
+  const t = usePromotionsT();
+  const f = useFormat();
+  return useCallback(
+    (said: LoyaltyReason | null, typed: string | null, shownRef: string | null = null) => {
+      if (!said) return typed?.trim() ? typed : null;
+      switch (said.code) {
+        case "order":
+          return said.ref === shownRef ? null : t("points.reason.order", { ref: isolated(said.ref) });
+        case "expired": {
+          // the day it expired by (UTC midnight of that date), in the admin's own date format
+          const at = Date.parse(`${said.date}T00:00:00Z`);
+          return t("points.reason.expired", { date: Number.isFinite(at) ? f.date(at) : isolated(said.date) });
+        }
+        case "referral":
+          return t("points.reason.referral", { referralCode: isolated(said.referralCode) });
+        default:
+          // under its own order's reference (module 08's refund share, a reversal that names its order): what happened only
+          return said.ref === shownRef ? t(`points.reason.here.${said.code}`) : t(`points.reason.${said.code}`, { ref: isolated(said.ref) });
+      }
+    },
+    [t, f],
+  );
 }
 
 /** An IQD amount, figure first ("749,000 د.ع"), isolated; "—" when there is no number. */

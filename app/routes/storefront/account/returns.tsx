@@ -1,5 +1,6 @@
 import type { Route } from "./+types/returns";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
+import { keepTokens } from "~/lib/keep-tokens";
 import { MotionLink, type MotionHandle } from "~/motion";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
@@ -68,7 +69,7 @@ export default function Returns({ loaderData }: Route.ComponentProps) {
                 <span className="acct-row__body">
                   <MotionLink to={`/account/orders/${order.ref}`} nav="rise" className="acct-row__title inline-flex min-h-11 items-center justify-self-start underline-offset-4 hover:underline">
                     <span>
-                      <BidiText text={order.firstItemName || order.ref} />
+                      <BidiText text={keepTokens(order.firstItemName || order.ref)} />
                     </span>
                   </MotionLink>
                   <span className="acct-row__meta">

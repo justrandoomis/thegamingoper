@@ -1,5 +1,6 @@
 import type { Route } from "./+types/warranties";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
+import { keepTokens } from "~/lib/keep-tokens";
 import { MotionLink, type MotionHandle } from "~/motion";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
@@ -55,7 +56,7 @@ export default function Warranties({ loaderData }: Route.ComponentProps) {
               <article className="acct-card flex flex-col">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <h2 className="acct-card__title">
-                    <BidiText text={warranty.itemName} />
+                    <BidiText text={keepTokens(warranty.itemName)} />
                   </h2>
                   <Status tone={warranty.state === "active" ? "ok" : warranty.state === "void" ? "bad" : "neutral"}>{t(`warranties.state.${warranty.state}`)}</Status>
                 </div>

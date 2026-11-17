@@ -14,6 +14,7 @@
  * (accept / decline, payout rules, closed and expired offers) and what the inspection found beside it (the offered
  * event's snapshot, the checklist in words, no staff-only data) · the database rule that an estimate is not an offer.
  */
+import { readFileSync } from "node:fs";
 import { and, eq } from "drizzle-orm";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -26,7 +27,7 @@ import { newId, randomToken } from "~/lib/ids";
 import type { Locale } from "~/lib/locales";
 import { splitQualifier } from "~/routes/storefront/used/names";
 import { shellChrome } from "~/routes/storefront/shell/chrome";
-import TradeIn, { action as tradeInAction } from "~/routes/storefront/used/trade-in";
+import TradeIn, { action as tradeInAction, handle as tradeInHandle } from "~/routes/storefront/used/trade-in";
 import TradeInStatus, { action as tradeInStatusAction, handle as tradeInStatusHandle } from "~/routes/storefront/used/trade-in-status";
 import { loadWizard } from "~/routes/storefront/used/trade-in.server";
 import { answeredQuestionSearch, filterGroups, searchText, tradeInRefFromInput, wizardOrder } from "~/routes/storefront/used/wizard";
@@ -758,10 +759,13 @@ describe("the wizard's pages (rendered)", () => {
       expect(index, String(needle)).toBeGreaterThanOrEqual(0);
       return index;
     };
-    const order = [at(/<h1\b/), at('href="#ti-track"'), at("used-rail"), at('id="ti-device"'), at('name="q"'), at("used-device"), at('id="ti-how"'), at('id="ti-price"'), at('id="ti-faq"'), at('id="ti-track"')];
+    // (changed on purpose in the polish round, 2026-11-13: the rail is the kit's labelled rail, `steps-under`, in place
+    // of the area's `.used-rail` restyling of the kit's beside-labels rail)
+    const order = [at(/<h1\b/), at('href="#ti-track"'), at('class="steps-under"'), at('id="ti-device"'), at('name="q"'), at("used-device"), at('id="ti-how"'), at('id="ti-price"'), at('id="ti-faq"'), at('id="ti-track"')];
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     // the rail: five numbered steps, each with its words
     expect(html.match(/class="step__label/g)?.length).toBe(5);
+    expect(html).not.toContain("used-rail");
     // every platform's head is the colour line, not the dot
     expect(html.match(/class="led led--bar"/g)?.length).toBe(new Set((await listTradeInDevices(t.db, "ar")).map((device) => device.platformSlug)).size);
     // how it works: three steps; what changes the price: five rows; the questions: seven, the estimate's validity from
@@ -779,6 +783,39 @@ describe("the wizard's pages (rendered)", () => {
     expect(card).toContain('name="phone"');
     // the start page's one key that is not a tile is a clay secondary: choosing a device is the page's job
     expect(html).not.toContain("key--primary");
+  });
+
+  // Polish round 2026-11-13 (the shell's request): the start page is where the shopper browses the devices the store
+  // buys — a store page, with the tab bar; the questions after it are the task flow. Offline, the banner keeps the
+  // form's words on both (the track card, the questions, the contact form), never «سلتك محفوظة».
+  test("the start page is a store page with the tab bar; the steps are the task flow; offline both keep the form's words", () => {
+    const chrome = (search: string) => shellChrome([{ id: "page", handle: tradeInHandle }], { path: "/trade-in", search });
+    for (const search of ["", "?q=ps5", `?device=${homeConsole.slug}`]) expect(chrome(search), search).toMatchObject({ chrome: "store", tabBar: true, task: false, offline: "form" });
+    for (const step of ["condition", "photos", "estimate", "inspection"]) expect(chrome(`?step=${step}&device=${homeConsole.slug}`), step).toMatchObject({ chrome: "task", tabBar: false, task: true, offline: "form" });
+  });
+
+  // Polish round 2026-11-13 (the design system's requests): the kit's clay option cards and checkbox rows in place of
+  // the area's `.surface` / `.used-check` cards, and the kit's compact keys in the task bar in place of `.used-keys`.
+  test("the questions are the kit's clay option cards, the accessories its checkbox rows in the same clay, the task bar's keys compact", async () => {
+    const power = await wizardPage(`?step=condition&device=${homeConsole.slug}`);
+    expect(power.match(/class="choice choice--radio choice--row choice--clay"/g)?.length).toBeGreaterThanOrEqual(2);
+    expect(power).not.toMatch(/choice--row[^"]*surface/);
+    // the two keys of the task bar (below 1024) are the kit's compact keys; the column's keys (from 1024) keep 48px
+    expect(power.match(/key--compact/g)?.length).toBe(2);
+    expect(power.indexOf("key--compact")).toBeGreaterThan(power.indexOf("shell-taskbar"));
+    expect(power).not.toContain("used-keys");
+
+    const accessories = await wizardPage(`?step=condition&device=${homeConsole.slug}&power=works&body=light`);
+    expect(accessories.match(/<div class="field used-clay"><label class="choice choice--row choice--check">/g)?.length).toBe(homeConsole.accessories.length);
+    expect(accessories).not.toContain("used-check");
+    expect(accessories.match(/name="included"/g)?.length).toBe(homeConsole.accessories.length);
+  });
+
+  test("reading measures are in em, never ch (a ch measure moved when the web font replaced the fallback)", () => {
+    for (const file of ["../app/routes/storefront/used/used.css", "../app/routes/storefront/used/trade-in.tsx"]) {
+      const text = readFileSync(new URL(file, import.meta.url), "utf8");
+      expect(text, file).not.toMatch(/(?:(?:inline-size|width)\s*:\s*|max-w-\[)\d+(?:\.\d+)?ch\b/);
+    }
   });
 
   test("without script the track card is passed on to the request's page with its phone (307); a number that cannot be one is a field error", async () => {
@@ -903,8 +940,14 @@ describe("the wizard's pages (rendered)", () => {
     expect(included).toMatch(/^<p\b/);
     expect(included).not.toContain("border-t");
     // the payout cards with their icons; the answer's primary is the same key in the column and in the bar
-    expect(html.match(/class="clay-disc used-pay__icon"/g)?.length).toBe(2);
+    // (changed on purpose in the polish round, 2026-11-13: the kit's <OptionCard clay icon> — the icon in its clay disc
+    // after the radio — in place of the area's `.surface` cards with a `.used-pay__icon` at their end)
+    expect(html.match(/class="choice choice--radio choice--row choice--clay"/g)?.length).toBe(2);
+    expect(html.match(/class="choice__icon"/g)?.length).toBe(2);
+    expect(html).not.toContain("used-pay__icon");
     expect(html.match(/key--primary/g)?.length).toBe(2);
+    // the offer is the kit's price, on the band, counting up once (the kit's CountUp inside its figure)
+    expect(html).toMatch(/<p class="price price--xl price--on-color"><span class="price__amount" aria-hidden="true"><span class="price__num"><span[^>]*class="count"/);
     // the timeline: received; the appointment and the inspection (done once inspected, a walk-in has no appointment);
     // the offer; the shopper's turn now; the payout later
     const states = [...html.matchAll(/class="used-timeline__row" data-state="(\w+)"/g)].map((match) => match[1]);

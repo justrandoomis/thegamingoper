@@ -312,10 +312,36 @@ export function splitLineName(name: string): { name: string; option: string | nu
 
 /**
  * The intent of the small read the cart and the checkout answer after /api/cart refused a code for its minimum — how
- * much more the cart needs (checkout.server answerCouponMinimum; client round 1, QA). Client-safe: the routes'
- * `shouldRevalidate` and the coupon field read it.
+ * much more the cart needs (checkout.server answerCouponMinimum; client round 1, QA). Since the polish round the
+ * refusal and the cart view carry the figures themselves (couponMinimumOf): this read is only the fallback for an answer
+ * without them. Client-safe: the routes' `shouldRevalidate` and the coupon field read it.
  */
 export const COUPON_MINIMUM_INTENT = "coupon-minimum";
+
+/** How far a cart is from a coupon's minimum: its code, the minimum and what is still missing (whole dinars). */
+export type CouponShortfall = { code: string; minimumIqd: number; moreIqd: number };
+
+/**
+ * A coupon's minimum not reached, as the commerce core counted it (C-fix-core, 2026-11-13): the two figures of
+ * POST /api/cart's 409 `coupon_min_subtotal` answer, or of a cart view's `couponIssue` («min_subtotal») — the minimum
+ * and what is still missing (for a DEMO coupon only its demo goods count; the core's rule, never counted here). The
+ * coupon field and the loaders say «أضف منتجات بقيمة …» from them without asking again. Null when they are missing (an
+ * older answer: the field then asks `intent=coupon-minimum`), not whole dinars, or nothing is missing. `code` as typed
+ * or stored; said the way the core compares it (Latin digits, no spaces, upper case). Pure, client-safe.
+ */
+export function couponMinimumOf(code: string, figures: unknown): CouponShortfall | null {
+  if (!figures || typeof figures !== "object") return null;
+  const { minimumIqd, moreIqd } = figures as { minimumIqd?: unknown; moreIqd?: unknown };
+  if (typeof minimumIqd !== "number" || typeof moreIqd !== "number" || !Number.isSafeInteger(minimumIqd) || !Number.isSafeInteger(moreIqd)) return null;
+  if (moreIqd <= 0 || minimumIqd < moreIqd) return null;
+  const shown = toLatinDigits(code).replace(/\s+/g, "").toUpperCase();
+  return shown ? { code: shown, minimumIqd, moreIqd } : null;
+}
+
+/** A stored code below its minimum, from the cart view's own `couponIssue` (null for any other issue, or none). Pure. */
+export function couponIssueShortfall(issue: { code: string; reason: string; minimumIqd?: number; moreIqd?: number } | null | undefined): CouponShortfall | null {
+  return issue?.reason === "min_subtotal" ? couponMinimumOf(issue.code, issue) : null;
+}
 
 // ───────────────────────────────────────────────────────────────── stock: what the checkout can still do
 

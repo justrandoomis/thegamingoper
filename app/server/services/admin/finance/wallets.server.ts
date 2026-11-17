@@ -10,6 +10,11 @@
  *   · ADJUSTMENTS (goodwill credit): always two people — one requests (approvals row kind "wallet_adjustment" with
  *     the reason), another approves (creditWallet kind "adjustment", key "adjustment:<approval id>").
  *
+ * And the one way money goes OUT of it (since 2026-11-13): a PAYOUT — cash at the store or a bank transfer — asked in
+ * module 07 (services/admin/customers/wallet.server.ts → the core's requestWalletPayout) and DECIDED here by a second
+ * person through the core's decideWalletPayout (ledger debit + Dr wallet liability / Cr cash or bank clearing + audit,
+ * one batch). See "payouts" below.
+ *
  * Order of writes (no interactive transactions on D1): the decision is recorded first in a guarded batch (one winner
  * between two staff and the customer's own "cancel"), then the idempotent credit, then the ledger id is linked.
  * Should the credit fail after the decision, the request shows "approved, not credited yet" and the same action
@@ -26,10 +31,10 @@ import { auditStatement } from "~/server/audit.server";
 import type { Db } from "~/server/db/drizzle.server";
 import { approvals, customers, files, walletLedger, walletTopups, type WalletTopup } from "~/server/db/schema";
 import { expectChanged, expectThat, mapDbError, runBatch } from "~/server/db/tx.server";
-import { AppError, notFound } from "~/server/errors";
+import { AppError, invalid, notFound, toAppError } from "~/server/errors";
 import { getSetting } from "~/server/settings.server";
 import { familyIds, chartOfAccounts, accountSums } from "~/server/services/accounting/reports.server";
-import { creditWallet } from "~/server/services/wallet.server";
+import { creditWallet, decideWalletPayout, WALLET_PAYOUT_KIND } from "~/server/services/wallet.server";
 import { customerLabels, employeeNames, type CustomerLabel } from "./shared.server";
 import { normalizeReference } from "./statement-csv";
 import { PAGE_SIZE, type RangeFilter } from "./types";
@@ -46,6 +51,12 @@ export const WALLET_ADMIN_ERROR_KEYS = [
   "customer_unavailable",
   "wallet_insufficient",
   "idempotency_mismatch",
+  // payouts (2026-11-13): the core's codes, worded for the decision screen
+  "payout_self_approval",
+  "payout_not_pending",
+  "payout_amount_changed",
+  "payout_exceeds_balance",
+  "reference_required",
 ] as const;
 
 /**
@@ -95,6 +106,8 @@ export type WalletOverview = {
   byKind: { kind: string; count: number; iqd: number }[];
   pendingTopups: { count: number; iqd: number };
   pendingAdjustments: { count: number; iqd: number };
+  /** Payouts (money out) waiting for a second person (2026-11-13). */
+  pendingPayouts: { count: number; iqd: number };
 };
 
 /** The wallet as a whole: the ledger against the journal (they must agree to the dinar), movements of the range. */
@@ -102,7 +115,7 @@ export async function walletOverview(db: Db, actor: Actor, range: RangeFilter): 
   requireRead(actor);
   const chart = await chartOfAccounts(db);
   const ids = familyIds(chart, "wallet_liability");
-  const [ledger, sums, holders, kinds, topups, adjustments] = await Promise.all([
+  const [ledger, sums, holders, kinds, topups, adjustments, payouts] = await Promise.all([
     db.all<{ total: number }>(sql`SELECT coalesce(sum(amount_iqd), 0) AS total FROM wallet_ledger`),
     accountSums(db, { includeDemo: true }),
     db.all<{ n: number }>(sql`SELECT count(*) AS n FROM (SELECT customer_id FROM wallet_ledger GROUP BY customer_id HAVING sum(amount_iqd) > 0)`),
@@ -112,6 +125,8 @@ export async function walletOverview(db: Db, actor: Actor, range: RangeFilter): 
     db.all<{ n: number; total: number }>(sql`SELECT count(*) AS n, coalesce(sum(amount_iqd), 0) AS total FROM wallet_topups WHERE status = 'pending_verification'`),
     db.all<{ n: number; total: number }>(sql`
       SELECT count(*) AS n, coalesce(sum(CAST(json_extract(payload, '$.amountIqd') AS INTEGER)), 0) AS total FROM approvals WHERE kind = 'wallet_adjustment' AND status = 'pending'`),
+    db.all<{ n: number; total: number }>(sql`
+      SELECT count(*) AS n, coalesce(sum(CAST(json_extract(payload, '$.amountIqd') AS INTEGER)), 0) AS total FROM approvals WHERE kind = ${WALLET_PAYOUT_KIND} AND status = 'pending'`),
   ]);
   let journal = 0;
   for (const id of ids) {
@@ -127,6 +142,7 @@ export async function walletOverview(db: Db, actor: Actor, range: RangeFilter): 
     byKind: kinds.map((row) => ({ kind: row.kind, count: num(row.n), iqd: num(row.total) })),
     pendingTopups: { count: num(topups[0]?.n), iqd: num(topups[0]?.total) },
     pendingAdjustments: { count: num(adjustments[0]?.n), iqd: num(adjustments[0]?.total) },
+    pendingPayouts: { count: num(payouts[0]?.n), iqd: num(payouts[0]?.total) },
   };
 }
 
@@ -176,6 +192,11 @@ async function decorateEntries(db: Db, actor: Actor, rows: { id: string; at: num
       refLabel = refOfTopup.get(row.refId) ?? null;
       refHref = `/admin/finance/wallets/topups/${row.refId}`;
     }
+    // money paid out (2026-11-13): the decided request on the customer's wallet page
+    if (row.refType === WALLET_PAYOUT_KIND && row.refId) {
+      refLabel = payoutLabel(row.refId);
+      refHref = `/admin/finance/wallets/${encodeURIComponent(row.customerId)}#wallet-payouts`;
+    }
     return {
       id: row.id,
       at: num(row.at),
@@ -223,10 +244,12 @@ export type CustomerWallet = {
   pageCount: number;
   topups: TopupRow[];
   adjustments: AdjustmentRow[];
+  /** Payouts (money out) of this wallet: waiting ones first, then the latest decided (2026-11-13). */
+  payouts: PayoutRow[];
   canDecide: boolean;
 };
 
-/** One customer's wallet: balance (Σ ledger), movements, top-up requests and adjustment requests. */
+/** One customer's wallet: balance (Σ ledger), movements, top-up requests, adjustment and payout requests. */
 export async function customerWallet(db: Db, actor: Actor, customerId: string, page: number): Promise<CustomerWallet> {
   requireRead(actor);
   if (!ID.test(customerId)) throw notFound("customer");
@@ -234,12 +257,13 @@ export async function customerWallet(db: Db, actor: Actor, customerId: string, p
   const customer = labels.get(customerId);
   if (!customer) throw notFound("customer");
   const offset = (page - 1) * PAGE_SIZE;
-  const [balance, rows, count, topups, adjustments] = await Promise.all([
+  const [balance, rows, count, topups, adjustments, payouts] = await Promise.all([
     db.all<{ total: number }>(sql`SELECT coalesce(sum(amount_iqd), 0) AS total FROM wallet_ledger WHERE customer_id = ${customerId}`),
     db.all<Parameters<typeof decorateEntries>[2][number]>(sql`SELECT ${ENTRY_COLUMNS} FROM wallet_ledger AS w WHERE w.customer_id = ${customerId} ORDER BY w.at DESC, w.id DESC LIMIT ${PAGE_SIZE} OFFSET ${offset}`),
     db.all<{ n: number }>(sql`SELECT count(*) AS n FROM wallet_ledger WHERE customer_id = ${customerId}`),
     listTopupsWhere(db, actor, eq(walletTopups.customerId, customerId), 20),
     listAdjustmentsWhere(db, actor, and(eq(approvals.kind, "wallet_adjustment"), eq(approvals.entityId, customerId)), 20),
+    listPayoutsWhere(db, actor, eq(approvals.entityId, customerId), 20),
   ]);
   const total = num(count[0]?.n);
   return {
@@ -251,6 +275,7 @@ export async function customerWallet(db: Db, actor: Actor, customerId: string, p
     pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)),
     topups,
     adjustments,
+    payouts,
     canDecide: can(actor, DECIDE),
   };
 }
@@ -791,16 +816,184 @@ export async function decideWalletAdjustment(db: Db, actor: Actor, raw: { approv
   return { status: "approved", replayed: false, entryId };
 }
 
-/** What waits for this employee here: top-ups to decide (not their own first approval), adjustments by others. */
-export async function walletQueue(db: Db, actor: Actor): Promise<{ topups: number; adjustments: number } | null> {
+/**
+ * What waits for this employee here: top-ups to decide (not their own first approval), adjustments by others, payouts
+ * by others (2026-11-13 — the bell may add `payouts`, or call countDecidablePayouts on its own).
+ */
+export async function walletQueue(db: Db, actor: Actor): Promise<{ topups: number; adjustments: number; payouts: number } | null> {
   if (!can(actor, "finance.wallet.read") || !can(actor, DECIDE)) return null;
   const myId = me(actor);
-  const [topups, adjustments] = await Promise.all([
+  const [topups, adjustments, payouts] = await Promise.all([
     db.all<{ n: number }>(sql`
       SELECT count(*) AS n FROM wallet_topups AS t WHERE t.status = 'pending_verification'
         AND NOT EXISTS (SELECT 1 FROM approvals AS a WHERE a.kind = 'wallet_topup' AND a.entity_id = t.id AND a.status = 'pending' AND a.requested_by = ${myId})`),
     db.all<{ n: number }>(sql`SELECT count(*) AS n FROM approvals WHERE kind = 'wallet_adjustment' AND status = 'pending' AND requested_by <> ${myId}`),
+    db.all<{ n: number }>(decidablePayoutsSql(myId)),
   ]);
-  return { topups: num(topups[0]?.n), adjustments: num(adjustments[0]?.n) };
+  return { topups: num(topups[0]?.n), adjustments: num(adjustments[0]?.n), payouts: num(payouts[0]?.n) };
+}
+
+// ───────────────────────────────────────────────────────────────── payouts (money OUT of a wallet — two people)
+
+/**
+ * PAYOUTS (2026-11-13): money paid OUT of a customer's wallet — cash handed over at the store, or a bank transfer to
+ * the customer — through the commerce core's two-person pair (wallet.server.ts):
+ *   · module 07 ASKS (services/admin/customers/wallet.server.ts requestPayout → requestWalletPayout): a reason, one
+ *     waiting per customer, never more than the balance at that moment (customers.wallet.adjust or
+ *     customers.privacy.manage);
+ *   · here a SECOND person DECIDES (decidePayout → decideWalletPayout): customers.wallet.adjust + finance.wallet.read,
+ *     never the requester. The decider confirms the amount they saw (`expectedAmountIqd` — another figure is
+ *     payout_amount_changed, nothing moves); approving debits the ledger (key "wallet_payout:<approval>") and posts
+ *     Dr wallet liability / Cr cash or bank clearing (a bank transfer needs its outgoing reference) in ONE batch;
+ *     rejecting needs a note. A wallet spent since the request is refused by the overdraft trigger inside that batch
+ *     (payout_exceeds_balance); a request decided by someone else meanwhile is payout_not_pending.
+ *   · countDecidablePayouts / walletQueue().payouts: the requests this employee may decide (not their own), for the
+ *     module's tab and the bell.
+ */
+export const PAYOUT_METHOD_LIST = ["cash", "bank_transfer"] as const;
+export type PayoutMethod = (typeof PAYOUT_METHOD_LIST)[number];
+
+export type PayoutRow = {
+  /** The approval's id (the request). */
+  id: string;
+  customerId: string;
+  customer: CustomerLabel | null;
+  amountIqd: number;
+  method: PayoutMethod;
+  /** The outgoing transfer's reference: given with the request, or by the person who approved it. */
+  reference: string | null;
+  reason: string | null;
+  status: "pending" | "approved" | "rejected";
+  requestedBy: string | null;
+  /** This employee asked for it: someone else decides. */
+  mine: boolean;
+  createdAt: number;
+  decidedBy: string | null;
+  decidedAt: number | null;
+  decisionNote: string | null;
+  /** The wallet's balance now — a waiting request the wallet no longer covers cannot be paid. */
+  balanceIqd: number;
+  /** Paid: the ledger row of the debit. */
+  entryId: string | null;
+};
+
+/** "PO-" + the request's id tail: what a person reads and types to find it (never a secret). */
+export function payoutLabel(approvalId: string): string {
+  return `PO-${approvalId.replace(/^apr_/, "").slice(0, 8).toUpperCase()}`;
+}
+
+/** SQL: payout requests waiting for a decision that `employeeId` may give (everyone's but their own). */
+const decidablePayoutsSql = (employeeId: string) => sql`SELECT count(*) AS n FROM approvals WHERE kind = ${WALLET_PAYOUT_KIND} AND status = 'pending' AND requested_by <> ${employeeId}`;
+
+async function listPayoutsWhere(db: Db, actor: Actor, where: SQL | undefined, limit: number): Promise<PayoutRow[]> {
+  const rows = await db
+    .select()
+    .from(approvals)
+    .where(and(eq(approvals.kind, WALLET_PAYOUT_KIND), where))
+    .orderBy(sql`CASE ${approvals.status} WHEN 'pending' THEN 0 ELSE 1 END`, desc(approvals.createdAt), desc(approvals.id))
+    .limit(Math.min(Math.max(limit, 1), 90));
+  if (rows.length === 0) return [];
+  const customerIds = [...new Set(rows.map((row) => row.entityId).filter((id): id is string => Boolean(id)))];
+  const paidIds = rows.filter((row) => row.status === "approved").map((row) => row.id);
+  const [labels, names, balances, entries, paidEvents] = await Promise.all([
+    customerLabels(db, customerIds, can(actor, "customer.phone.read_full")),
+    employeeNames(db, [...rows.map((row) => row.requestedBy), ...rows.map((row) => row.decidedBy)]),
+    customerIds.length
+      ? db.select({ customerId: walletLedger.customerId, total: sql<number>`coalesce(sum(${walletLedger.amountIqd}), 0)` }).from(walletLedger).where(inArray(walletLedger.customerId, customerIds)).groupBy(walletLedger.customerId)
+      : Promise.resolve([]),
+    db
+      .select({ id: walletLedger.id, key: walletLedger.idempotencyKey })
+      .from(walletLedger)
+      .where(
+        inArray(
+          walletLedger.idempotencyKey,
+          rows.map((row) => `wallet_payout:${row.id}`),
+        ),
+      ),
+    // the reference the approver gave (the core keeps it in its payout event, not on the request)
+    paidIds.length
+      ? db.all<{ approvalId: string; reference: string | null }>(sql`
+          SELECT json_extract(after, '$.approvalId') AS approvalId, json_extract(after, '$.reference') AS reference FROM audit_events
+          WHERE action = 'customers.wallet.payout' AND json_extract(after, '$.approvalId') IN (${sql.join(
+            paidIds.map((id) => sql`${id}`),
+            sql`, `,
+          )})`)
+      : Promise.resolve([]),
+  ]);
+  const balanceOf = new Map(balances.map((row) => [row.customerId, num(row.total)]));
+  const entryOf = new Map(entries.map((row) => [row.key, row.id]));
+  const referenceOf = new Map(paidEvents.map((row) => [row.approvalId, row.reference]));
+  const myId = me(actor);
+  return rows.map((row) => {
+    const payload = (row.payload ?? {}) as { amountIqd?: number; method?: string; reference?: string | null };
+    const decidedReference = referenceOf.get(row.id) ?? null;
+    return {
+      id: row.id,
+      customerId: row.entityId ?? "",
+      customer: row.entityId ? (labels.get(row.entityId) ?? null) : null,
+      amountIqd: num(payload.amountIqd),
+      method: payload.method === "bank_transfer" ? "bank_transfer" : "cash",
+      reference: payload.reference ?? decidedReference,
+      reason: row.reason,
+      status: row.status === "approved" || row.status === "rejected" ? row.status : "pending",
+      requestedBy: names.get(row.requestedBy) ?? null,
+      mine: row.requestedBy === myId,
+      createdAt: row.createdAt,
+      decidedBy: row.decidedBy ? (names.get(row.decidedBy) ?? null) : null,
+      decidedAt: row.decidedAt,
+      decisionNote: row.decisionNote,
+      balanceIqd: balanceOf.get(row.entityId ?? "") ?? 0,
+      entryId: entryOf.get(`wallet_payout:${row.id}`) ?? null,
+    };
+  });
+}
+
+/** Payout requests: waiting ones first, then the latest decided (finance.wallet.read). */
+export async function listPayouts(db: Db, actor: Actor, limit = 50): Promise<PayoutRow[]> {
+  requireRead(actor);
+  return listPayoutsWhere(db, actor, undefined, limit);
+}
+
+/** How many payout requests wait for THIS employee's decision (not their own) — the module's tab and the bell; null without the right. */
+export async function countDecidablePayouts(db: Db, actor: Actor): Promise<number | null> {
+  if (!can(actor, "finance.wallet.read") || !can(actor, DECIDE)) return null;
+  const rows = await db.all<{ n: number }>(decidablePayoutsSql(me(actor)));
+  return num(rows[0]?.n);
+}
+
+const DecidePayoutAdminInput = z.object({
+  approvalId: z.string().regex(ID, "invalid"),
+  decision: z.enum(["approve", "reject"]),
+  /** The amount the decider saw on their screen: a different figure is another request or a stale screen. */
+  expectedAmountIqd: z.number({ error: "invalid" }).int("invalid").min(1, "invalid").max(100_000_000, "invalid"),
+  note: z.preprocess(blank, z.string().trim().min(3, "required").max(500, "too_long").optional()),
+  /** A bank transfer's outgoing reference, when the request did not carry it. */
+  reference: z.preprocess(blank, z.string().trim().max(100, "too_long").optional()),
+});
+export type DecidePayoutAdminInput = z.input<typeof DecidePayoutAdminInput>;
+
+/**
+ * The second person's decision on a payout request (section header). Approving pays it out through the core in one
+ * batch; rejecting closes it with a note (nothing moves). Repeating the same decision answers `replayed`.
+ */
+export async function decidePayout(db: Db, actor: Actor, raw: DecidePayoutAdminInput, now: number): Promise<{ status: "paid" | "rejected"; replayed: boolean; entryId: string | null }> {
+  requireDecide(actor);
+  const input = DecidePayoutAdminInput.parse(raw);
+  const approval = await db.select().from(approvals).where(and(eq(approvals.id, input.approvalId), eq(approvals.kind, WALLET_PAYOUT_KIND))).get();
+  if (!approval || !approval.entityId) throw notFound("approval");
+  const amount = num((approval.payload as { amountIqd?: number } | null)?.amountIqd);
+  // the figure the decider saw must be the request's: a payout is never decided on another number
+  if (amount !== input.expectedAmountIqd) throw new AppError("payout_amount_changed", 409, { detail: String(amount), fields: { amountIqd: "payout_amount_changed" } });
+  if (input.decision === "reject" && !input.note) throw invalid({ note: "required" });
+  try {
+    const result = await decideWalletPayout(db, actor, { approvalId: approval.id, approve: input.decision === "approve", note: input.note ?? null, reference: input.reference ?? null }, now);
+    return { status: result.status, replayed: result.replayed, entryId: result.entryId };
+  } catch (error) {
+    const known = toAppError(error);
+    if (known?.code === "approver_is_requester") throw new AppError("payout_self_approval", 403, { detail: approval.id, cause: error });
+    if (known?.code === "change_not_pending") throw new AppError("payout_not_pending", 409, { detail: approval.status, cause: error });
+    if (known?.code === "wallet_insufficient") throw new AppError("payout_exceeds_balance", 409, { fields: { amountIqd: "payout_exceeds_balance" }, cause: error });
+    throw error;
+  }
 }
 

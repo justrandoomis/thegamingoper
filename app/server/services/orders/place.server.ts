@@ -26,7 +26,9 @@
  *   (bundles reserve components; shortage aborts: "insufficient_stock") · used-unit reservations ·
  *   coupon redemption (usage limits re-checked inside the batch) · payment row · for wallet: the
  *   ledger debit (the overdraft trigger aborts the WHOLE order: "wallet_insufficient") and its
- *   journal entry · marketing consent row (only when given) · order event · audit event.
+ *   journal entry · marketing consent row (only when given) · order event · audit event. The order row also carries
+ *   the campaign its cart came through, when the checkout passes one (`who.attribution` → orders.attribution /
+ *   utm_link_id, admin 16.04; ~/server/attribution.server cleans it again and an unreadable one is simply left out).
  *
  * OUTCOMES
  *   cod                        status new,              payment cod_due   (payment row pending)
@@ -78,6 +80,7 @@ import { newId, publicRef, sha256Hex } from "~/lib/ids";
 import type { L10n, Locale } from "~/lib/locales";
 import { normalizeIraqPhone } from "~/lib/phone";
 import type { Actor } from "~/server/actor";
+import { orderSource } from "~/server/attribution.server";
 import { auditStatement } from "~/server/audit.server";
 import type { BatchStatement, Db } from "~/server/db/drizzle.server";
 import {
@@ -204,6 +207,12 @@ export type CheckoutWho = {
   ip: string | null;
   storeMode: "demo" | "live";
   requestId?: string | null;
+  /**
+   * The campaign the shopper's cart came through (admin 16.04): what `cartAttribution` (~/server/attribution.server)
+   * read for this cart. Written to `orders.attribution` / `orders.utm_link_id`, cleaned again first; optional, and
+   * nothing about it can refuse the order.
+   */
+  attribution?: unknown;
 };
 
 /** A refused checkout that carries the cart as it is now, so the page can show what changed. */
@@ -480,6 +489,8 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
   const pointsUsed = outcome?.pointsUsed ?? 0;
   /** What the wallet pays now: everything (wallet), a part (split), or nothing. */
   const walletPays = method === "wallet" ? totals.totalIqd : walletPart;
+  // Where the order came from (admin 16.04): the cart's campaign, cleaned again, its link by code — never a refusal.
+  const source = await orderSource(db, who.attribution);
 
   for (let attempt = 1; ; attempt++) {
     const orderId = newId("ord");
@@ -520,6 +531,8 @@ async function placeNew(db: Db, who: CheckoutWho, input: ParsedCheckout, phone: 
       preferredDay: input.preferredDay,
       preferredWindow: input.preferredWindow,
       marketingConsent: input.marketingConsent,
+      utmLinkId: source.utmLinkId,
+      attribution: source.attribution,
       locale: who.locale,
       accessTokenHash,
       isDemo,

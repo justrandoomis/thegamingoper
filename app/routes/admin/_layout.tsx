@@ -2,13 +2,14 @@ import { data, isRouteErrorResponse, Outlet } from "react-router";
 
 import type { Route } from "./+types/_layout";
 import { messagesFor, type I18nPayload } from "~/i18n/i18n.server";
+import { translate } from "~/i18n/translate";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { opsTimingMiddleware } from "./ops/observe.server";
 import { AdminShell } from "./shell/AdminShell";
 import { AdminErrorPage } from "./shell/ErrorPage";
 import { adminGate, findAdminSession } from "./shell/gate.server";
-import { adminMeta } from "./shell/meta";
+import { adminMeta, adminMetaT } from "./shell/meta";
 import { loadAdminShell, type AdminShellData } from "./shell/shell.server";
 
 /**
@@ -51,7 +52,26 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { shell, i18n };
 }
 
-export const meta: Route.MetaFunction = (args) => adminMeta(args);
+/** What may travel with an error this layout's boundary renders: the frame's words and data (a refusal, a 503). */
+type ThrownFrame = { i18n?: I18nPayload; shell?: AdminShellData } | null;
+const thrownFrame = (error: unknown): ThrownFrame => (isRouteErrorResponse(error) && error.data && typeof error.data === "object" ? (error.data as ThrownFrame) : null);
+
+export const meta: Route.MetaFunction = (args) => {
+  if (!args.error) return adminMeta(args);
+  // An error page (this layout's boundary): its own title — not allowed, not found, could not load — in the admin's
+  // words, from the layout's data or, when the layout's loader never ran (a client navigation's refusal), the frame
+  // the error carries (polish 2026-11-13: these pages had the brand name alone).
+  const status = isRouteErrorResponse(args.error) ? args.error.status : 500;
+  const key = status === 403 ? "errors.forbiddenTitle" : status === 404 ? "errors.notFoundTitle" : "errors.serverTitle";
+  const frame = thrownFrame(args.error);
+  const tree = frame?.i18n?.admin;
+  if (!adminMetaT(args) && tree) {
+    const locale = frame?.shell?.locale ?? "ar";
+    const t = (text: string) => translate(tree, locale, text) ?? text;
+    return [{ title: `${t(key)} · ${t("brand.suffix")}` }, { name: "robots", content: "noindex, nofollow" }];
+  }
+  return adminMeta(args, (t) => t(key));
+};
 
 export default function AdminLayout({ loaderData }: Route.ComponentProps) {
   return (
@@ -62,10 +82,11 @@ export default function AdminLayout({ loaderData }: Route.ComponentProps) {
 }
 
 export function ErrorBoundary({ error, loaderData }: Route.ErrorBoundaryProps) {
-  // The layout's data when a page below failed; the strings thrown with the error when the layout's own loader did.
-  const thrown = isRouteErrorResponse(error) ? (error.data as { i18n?: I18nPayload } | null) : null;
+  // The layout's data when a page below failed; what was thrown with the error when the layout's own loader did (its
+  // words) or never ran (a client navigation the gate refused: the frame's data and words — gate.server.ts).
+  const frame = thrownFrame(error);
   return (
-    <AdminShell data={loaderData?.shell ?? null} messages={loaderData?.i18n.admin ?? thrown?.i18n?.admin}>
+    <AdminShell data={loaderData?.shell ?? frame?.shell ?? null} messages={loaderData?.i18n.admin ?? frame?.i18n?.admin}>
       <AdminErrorPage error={error} />
     </AdminShell>
   );

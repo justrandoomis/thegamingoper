@@ -260,12 +260,14 @@
     gap: var(--s-4);
     min-inline-size: 0;
   }
-  /* the breadcrumb bar: its 44px links carry their own air. One line on phones: base.css gives every li
-     `text-wrap: pretty`, which undoes the kit's nowrap list (.crumbs--phone; asked of the kit owner) */
+  /* the breadcrumb bar: its 44px links carry their own air. One line on phones is the kit's (.crumbs--phone keeps each
+     crumb's words on one line since the fix round; the phone patch is gone — polish 2026-11-17). The wide trail (from
+     768) still needs it: base.css gives every li `text-wrap: pretty`, so «ألعاب Nintendo Switch» broke onto two lines
+     at 1440 without it (asked of the kit: the same rule for every .crumbs__list li) */
   .pp-crumbs {
     margin-block: calc(-1 * var(--s-2)) calc(-1 * var(--s-3));
   }
-  .pp-crumbs .crumbs__list > li {
+  .pp-crumbs:not(.crumbs--phone) .crumbs__list > li {
     white-space: nowrap;
   }
   .pp-head {
@@ -467,6 +469,16 @@
   }
   @media (min-width: 64rem) {
     .pp-info [data-offline-line] {
+      display: none;
+    }
+  }
+  /* on paper: the picture, the name, the price and the facts — not the keys that only work on a screen (the stage's
+     keys and tools, the thumbnails, favourite / compare / share, the sticky buy bar; they carry `flex` or `grid`) —
+     polish 2026-11-17 */
+  @media print {
+    .pp-stage :is(.pp-stage__keys, .stage__tools, .thumbs),
+    [data-pdp-actions],
+    .pp-buybar {
       display: none;
     }
   }

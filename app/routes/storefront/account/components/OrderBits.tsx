@@ -4,6 +4,7 @@ import { useRouteLoaderData } from "react-router";
 import { Icon } from "~/art/Icon";
 import { useDir, useFormat, useT } from "~/i18n/react";
 import type { OrderStatus, PaymentStatus } from "~/lib/dto";
+import { keepTokens } from "~/lib/keep-tokens";
 import { MotionLink } from "~/motion";
 import type { OrderSummary as OrderSummaryRow } from "~/server/services/orders/types";
 import { BidiText, latinName } from "~/ui/BidiText";
@@ -39,15 +40,14 @@ export const PAYMENT_TONE: Record<PaymentStatus, StatusTone> = {
 
 /**
  * A state as the kit's dot and words; `pill` (v2.1, the reference «طلباتي»): on its tone's tint in a pill — the words
- * and the dot still say it, never the colour alone.
+ * and the dot still say it, never the colour alone. The kit's own `<Status pill>` since the polish round (the account
+ * drew `.acct-pill` around it before the kit had one); `flex: none` keeps it whole beside a long order number.
  */
 export function StatusPill({ tone, size, className, children }: { tone: StatusTone; size?: "md" | "lg"; className?: string; children: ReactNode }) {
   return (
-    <span className={cx("acct-pill", tone !== "neutral" && tone !== "out" && tone !== "soon" && `acct-pill--${tone}`, size === "lg" && "acct-pill--lg", className)}>
-      <Status tone={tone} size={size}>
-        {children}
-      </Status>
-    </span>
+    <Status tone={tone} size={size} pill className={cx("flex-none", className)}>
+      {children}
+    </Status>
   );
 }
 
@@ -111,7 +111,8 @@ export function OrderRow({ order }: { order: OrderSummaryRow }) {
   // What was bought: the name clamped in its own direction (a Latin name left to right, so its ellipsis cuts its end —
   // «Xbox Rechargeable Battery + USB-C…», never «…Xbox Rechargeable Battery +», QA 2026-11-13), the pieces outside the
   // clamp so they always show.
-  const name = splitOption(order.firstItemName).name;
+  // the snapshot name keeps its tokens whole («USB-C», «Switch 2»: never «USB-» / «C» at 360–390)
+  const name = keepTokens(splitOption(order.firstItemName).name);
   const latin = latinName(name, dir);
   return (
     <MotionLink to={`/account/orders/${order.ref}`} nav="rise" className="surface lift acct-order" data-press="soft">

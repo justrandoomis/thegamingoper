@@ -191,3 +191,15 @@ Programme rules in force: `program.server.ts` `programRules(db)` → `{ limits, 
 Tests (each failed before its change): `tests/admin-settings-keys.test.ts`.
 
 Review of the follow-up (2026-11-12): VIP eligibility (`vipPage`'s list and count, the front page's `vip.eligible`) uses module 07's rule with the thresholds in force (`customerRules(db).flags`), like the flags beside each name; `VipPage.rule` carries them and the page states them (no fixed "2,000,000 IQD / 5 / 365 days"). Points given after a second person's approval and referral rewards expire after `promotions.loyalty.expiry_days` (`rewardPointsStatement` takes an optional `expiryDays`). Day counts that are settings read through `daySpan` (VIP flag lines, the return window on the points page). Tests: `tests/admin-followup-review.test.ts`.
+
+## Polish round (2026-11-13, finished 2026-11-17)
+
+- The points ledger and a customer's points say the store's own reasons in the admin's language: the route glue
+  (`promotions.server.ts` `withSaid` / `withRejectSaid`) reads each stored reason with the core's `readLoyaltyReason`
+  (`services/orders/loyalty-reasons.ts`) and the pages render `points.reason.<code>` (ar, en, ckb; `ui.tsx`
+  `useReasonText`); a person's own words show as typed; an order's reference is no longer shown twice (review
+  2026-11-17: also not for a cancellation, return or refund share under its own order's reference — those say
+  `points.reason.here.<code>`, «Refund on this order»). The referrals
+  page says a store-closed referral's reason the same way. Nothing stored changes. `tests/admin-promotions-reasons.test.ts` (4).
+- Blueprint 08.01 (coupons) is **partial**: the point of sale takes no coupon (as 08.02 says for rules);
+  `tests/admin-promotions-state.test.ts` checks the row against `checkout-state.ts`.

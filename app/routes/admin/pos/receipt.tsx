@@ -2,12 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useFetcher, useSearchParams } from "react-router";
 
 import type { Route } from "./+types/receipt";
-import { throwAsResponse } from "~/server/errors";
+import { invalid, throwAsResponse } from "~/server/errors";
+import { saleCodes } from "~/server/services/admin/pos/codes.server";
+import { decideTillRefund, payTillRefundFromDrawer, requestTillRefund, tillDecisionOf, tillRefundView } from "~/server/services/admin/pos/refunds.server";
 import { getReceipt, printReceipt } from "~/server/services/admin/pos/sale.server";
 import { posAccess } from "~/server/services/admin/pos/shared.server";
 import { Key } from "~/ui/Key";
 import { posMeta } from "./meta";
-import { failed, openPos } from "./pos.server";
+import { failed, openPos, text, whole } from "./pos.server";
+import { SaleCodes } from "./codes-ui";
+import { TillRefundPanel } from "./refund-ui";
 import { ReceiptPaper } from "./receipt-paper";
 import { Failure, Notice, usePosT } from "./ui";
 
@@ -18,19 +22,46 @@ import { Failure, Notice, usePosT } from "./ui";
  * phone). Every print goes through the server first (POST): the FIRST print is the original (recorded once), every
  * later one is a COPY — marked, numbered and recorded (pos.receipt.reprint, which it needs). `?print=1` prints at once.
  * A receipt whose original was printed shows the COPY mark even before "print a copy" (a browser print of it is a copy
- * too). The till prints the original in place (receipt-paper.tsx). Never cost data.
+ * too). The till prints the original in place (receipt-paper.tsx). Never cost data. A sale with digital codes lists its
+ * code lines here, on screen only (2026-11-13: codes-ui.tsx — shown on request, audited, never on the receipt), and the
+ * cash a sale took can be paid back from a drawer here (2026-11-13: refund-ui.tsx, services/admin/pos/refunds.server.ts —
+ * the drawer movement rides in the commerce core's refund batch).
  */
 export async function loader({ params, context }: Route.LoaderArgs) {
   const { db, actor, locale } = await openPos(context, ["pos.receipt.reprint", "pos.shift.review"]);
   try {
     const receipt = await getReceipt(db, actor, params.ref, locale);
-    return { receipt, access: posAccess(actor) };
+    const [codes, refunds] = await Promise.all([saleCodes(db, actor, params.ref, locale), tillRefundView(db, actor, params.ref, locale)]);
+    return { receipt, access: posAccess(actor), codes: codes.lines.length ? codes : null, refunds };
   } catch (error) {
     throwAsResponse(error);
   }
 }
 
-export async function action({ params, context }: Route.ActionArgs) {
+export async function action({ request, params, context }: Route.ActionArgs) {
+  const form = await request.formData();
+  const intent = text(form, "intent") || "print";
+  // a cash refund at the till (2026-11-13): asked, decided, or its drawer recorded afterwards — each service checks its own rights
+  if (intent === "refund" || intent === "refund-decide" || intent === "refund-drawer") {
+    const { db, actor, locale, now } = await openPos(context, ["pos.sale.refund", "pos.cash.move", "pos.shift.review"]);
+    try {
+      if (intent === "refund") {
+        const result = await requestTillRefund(db, actor, { ref: params.ref, shiftId: text(form, "shiftId"), paymentId: text(form, "paymentId"), amountIqd: whole(form, "amountIqd") as number, reason: text(form, "reason"), idempotencyKey: text(form, "key") }, now);
+        return { ok: true as const, intent, status: result.status, replayed: result.replayed };
+      }
+      if (intent === "refund-decide") {
+        // only "approve" or "reject": a missing or garbled decision is refused, never read as a rejection
+        const approve = tillDecisionOf(text(form, "decision"));
+        if (approve === null) throw invalid({ decision: "invalid" });
+        const result = await decideTillRefund(db, actor, { ref: params.ref, refundId: text(form, "refundId"), approve, note: text(form, "reason") || undefined }, now);
+        return { ok: true as const, intent, status: result.status, fromDrawer: result.fromDrawer };
+      }
+      const result = await payTillRefundFromDrawer(db, actor, { ref: params.ref, refundId: text(form, "refundId") }, now);
+      return { ok: true as const, intent, replayed: result.replayed };
+    } catch (error) {
+      return failed(error, locale, intent);
+    }
+  }
   const { db, actor, locale, now } = await openPos(context, ["pos.receipt.reprint", "pos.shift.review"]);
   try {
     const result = await printReceipt(db, actor, params.ref, now, locale);
@@ -97,6 +128,16 @@ export default function Receipt({ loaderData }: Route.ComponentProps) {
       {fetcher.data && !fetcher.data.ok ? (
         <div className="pos-noprint mb-4">
           <Failure message={fetcher.data.message ?? t(`errors.${fetcher.data.code ?? "invalid"}`)} />
+        </div>
+      ) : null}
+      {loaderData.codes ? (
+        <div className="pos-noprint mb-4">
+          <SaleCodes saleRef={receipt.ref} initial={loaderData.codes} />
+        </div>
+      ) : null}
+      {loaderData.refunds ? (
+        <div className="pos-noprint mb-4">
+          <TillRefundPanel saleRef={receipt.ref} view={loaderData.refunds} />
         </div>
       ) : null}
       <ReceiptPaper receipt={receipt} copy={copy} />

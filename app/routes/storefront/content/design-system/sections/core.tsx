@@ -92,7 +92,7 @@ const COPY = defineCopy({
     dark: "داكن",
     language: "اللغة",
     supportNav: "الدعم",
-    help: "المساعدة",
+    help: "مركز الدعم",
     track: "تتبّع",
     repair: "الصيانة",
     contact: "تواصل",
@@ -129,6 +129,10 @@ const COPY = defineCopy({
     assistant: "المساعد",
     status: "حالة الصيانة",
     tabsInView: "صف تبويبات أطول من مكانه: التبويب الحالي يبقى ظاهراً",
+    tabsCompact: "صف يجب أن يتسع كاملاً على الهاتف: جانبا كل تبويب 7px تحت 420px، والخط تحته يتبع الحشوة",
+    supportAssistant: "مساعد الصيانة",
+    supportBook: "احجز صيانة",
+    supportTrack: "تابع طلب",
     tabMore: "الأسئلة",
     tabUsed: "المستعمل",
     tabGuides: "الأدلة",
@@ -195,7 +199,7 @@ const COPY = defineCopy({
     dark: "Dark",
     language: "Language",
     supportNav: "Support",
-    help: "Help",
+    help: "Support centre",
     track: "Track",
     repair: "Repair",
     contact: "Contact",
@@ -232,6 +236,10 @@ const COPY = defineCopy({
     assistant: "Assistant",
     status: "Repair status",
     tabsInView: "A row of tabs longer than its room: the current tab stays in view",
+    tabsCompact: "A row that must fit whole on a phone: 7px sides under 420px, the underline following the padding",
+    supportAssistant: "Assistant",
+    supportBook: "Book a repair",
+    supportTrack: "Track",
     tabMore: "Questions",
     tabUsed: "Used",
     tabGuides: "Guides",
@@ -298,7 +306,7 @@ const COPY = defineCopy({
     dark: "تاریک",
     language: "زمان",
     supportNav: "پشتگیری",
-    help: "یارمەتی",
+    help: "ناوەندی پشتگیری",
     track: "بەدواداچوون",
     repair: "چاککردنەوە",
     contact: "پەیوەندی",
@@ -335,6 +343,10 @@ const COPY = defineCopy({
     assistant: "یاریدەدەر",
     status: "دۆخی چاککردنەوە",
     tabsInView: "ڕیزێک تاب درێژتر لە شوێنەکەی: تابی ئێستا دیار دەمێنێت",
+    tabsCompact: "ڕیزێک کە دەبێت بە تەواوی لەسەر مۆبایل جێی ببێتەوە: هەر لایەکی تاب 7px لە ژێر 420px، و هێڵی ژێرەوە بەدوای پەدینگەکەدا دەڕوات",
+    supportAssistant: "یاریدەدەر",
+    supportBook: "چاککردنەوە",
+    supportTrack: "بەدواداچوون",
     tabMore: "پرسیارەکان",
     tabUsed: "بەکارهاتوو",
     tabGuides: "ڕێبەرەکان",
@@ -780,6 +792,19 @@ function Choices({ c }: { c: C }) {
               ]}
             />
           </div>
+        </Specimen>
+        <Specimen label={`<Tabs compact> · ${c.tabsCompact}`} wide>
+          <Tabs
+            compact
+            aria-label={c.supportNav}
+            value="help"
+            items={[
+              { value: "help", label: c.help, href: "/support" },
+              { value: "assistant", label: c.supportAssistant, href: "/support/assistant" },
+              { value: "repair", label: c.supportBook, href: "/support/repair" },
+              { value: "status", label: c.supportTrack, href: "/support/repair/status" },
+            ]}
+          />
         </Specimen>
         <Specimen label="<Tabs> (panels switch in place; 2px ink underline)" wide>
           <Tabs

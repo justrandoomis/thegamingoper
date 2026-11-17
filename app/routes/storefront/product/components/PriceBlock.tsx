@@ -23,11 +23,11 @@
  */
 import { useRouteLoaderData } from "react-router";
 
-import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import type { ProductLifecycle, VariantDetail } from "~/server/services/catalog/product-types";
 import { cx } from "~/ui/cx";
 import { DemoNote } from "~/ui/DemoNote";
+import { Note } from "~/ui/Note";
 import { fillNodes, iqdText, SafePrice, SavingNote } from "~/ui/PriceTag";
 import { stockLook, useDemoMode, useStockWords } from "~/ui/StockNote";
 import { Status } from "~/ui/Tag";
@@ -143,10 +143,12 @@ export function PriceBlock({ variant, variants, delivery, lifecycle, isDemo, dig
           ) : null}
           {offline ? (
             // data-offline-line: the product page hides it from 1024, where the kit says the same under the add key
-            <p id={offlineId} className="flex items-start gap-1.5 font-semibold text-warn" data-offline-line="">
-              <Icon name="wifi-slash" size={18} className="mt-1 shrink-0" />
-              <span>{t("status.offline")}</span>
-            </p>
+            // the kit's quiet line in the warning tone (polish 2026-11-17): the icon tinted, the words ink, 16px
+            <div id={offlineId} data-offline-line="">
+              <Note variant="line" tone="warning" icon="wifi-slash">
+                {t("status.offline")}
+              </Note>
+            </div>
           ) : null}
           {life ? <p>{life}</p> : null}
         </div>

@@ -657,6 +657,10 @@ describe("scheduled jobs", () => {
       ["inventory.reservations.expire", "succeeded"],
       ["catalog.publish_due", "succeeded"],
       ["support.tickets.route", "succeeded"],
+      // polish round (2026-11-13): modules 19 and 16 every five minutes; the campaigns need the store's public
+      // origin for their links, which this run does not pass (tests/jobs-modules.test.ts runs them with it)
+      ["automation.run", "succeeded"],
+      ["marketing.campaigns.release", "skipped"],
       ["outbox.deliver", "skipped"],
     ]);
     expect(run.jobs[0].stats).toMatchObject({ cancelled: expect.any(Number), failed: 0 });
@@ -716,6 +720,10 @@ describe("scheduled jobs", () => {
       ["promotions.gift_cards.expire", "succeeded"],
       ["staff.commissions.sync", "succeeded"],
       ["ops.telemetry.purge", "succeeded"],
+      // polish round (2026-11-13): module 16's cart reminders (nightly; skipped here without the public origin) and
+      // module 19's demand forecasts
+      ["marketing.cart_reminders.prepare", "skipped"],
+      ["automation.forecasts.store", "succeeded"],
       ["consistency.daily", "succeeded"],
     ]);
     expect(run.ok).toBe(true);
@@ -847,6 +855,8 @@ describe("scheduled jobs", () => {
       ["promotions.gift_cards.expire", "succeeded"],
       ["staff.commissions.sync", "succeeded"],
       ["ops.telemetry.purge", "succeeded"],
+      ["marketing.cart_reminders.prepare", "skipped"],
+      ["automation.forecasts.store", "succeeded"],
       ["consistency.daily", "succeeded"],
     ]);
     // one row each, with its counters
@@ -878,7 +888,7 @@ describe("scheduled jobs", () => {
         return typeof value === "function" ? (value as (...args: unknown[]) => unknown).bind(target) : value;
       },
     });
-    const night = await runScheduledJobs(t.db, CRON_DAILY, NOW + DAY, { KV: broken });
+    const night = await runScheduledJobs(t.db, CRON_DAILY, NOW + DAY, { KV: broken, PUBLIC_ORIGIN: "https://tamtamgames.com" /* the nightly cart reminders need it (polish round) */ });
     expect(night.ok).toBe(false);
     expect(night.jobs.filter((job) => job.status !== "succeeded").map((job) => [job.job, job.status])).toEqual([["tradein.drafts.purge", "failed"]]);
     expect(night.jobs.find((job) => job.job === "tradein.drafts.purge")?.error).toContain("the file store is down");

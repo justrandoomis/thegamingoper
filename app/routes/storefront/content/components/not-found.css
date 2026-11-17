@@ -114,7 +114,8 @@
     color: var(--ink);
   }
   .cnf__text {
-    max-inline-size: 44ch;
+    /* 44ch of Plex (1ch = 0.6em) as an em measure: a ch measure moved when the web font replaced the fallback */
+    max-inline-size: 26.4em;
     margin-block-start: var(--s-2);
     font: var(--type-read);
     text-wrap: balance;

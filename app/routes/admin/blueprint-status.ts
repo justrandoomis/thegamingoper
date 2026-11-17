@@ -524,11 +524,12 @@ export const BLUEPRINT_STATUS: Readonly<Record<BlueprintFunctionId, BlueprintEnt
 
   // ── 08 Promotions and loyalty
   "08.01": {
-    status: "implemented",
+    // partial (polish 2026-11-13): the till takes no coupon — checkout-state.ts coupons.pos "missing", as 08.02 for rules
+    status: "partial",
     route: "/admin/promotions/coupons",
     note: n(
-      "Fixed or percentage coupons with a total and a per-customer usage limit, a validity period and conditions (platform, category, product kind, segment, channel, first order, quantity); the commerce core validates and redeems them at checkout. promotions.coupon.manage creates; terms above 20 %, above 50,000 IQD off one order (or uncapped) or without any usage limit are switched on only after another employee holding pricing.discount.override approves — never the requester. Saved views, bulk switch-off, uses and discount given, \"try this coupon\" through the core's own evaluation, history.",
-      "كوبونات بمبلغ أو نسبة مع حد كلي وحد لكل عميل وفترة صلاحية وشروط (منصة، تصنيف، نوع منتج، شريحة، قناة، أول طلب، كمية)، ونواة التجارة تتحقق منها وتسجّل استخدامها عند الدفع. يُنشئها من يملك إدارة الكوبونات؛ الشروط فوق 20% أو فوق 50,000 د.ع للطلب الواحد (أو بلا سقف) أو بلا حد للاستخدام لا تُشغّل إلا بموافقة موظف آخر يملك تجاوز حدود الخصم، ولا يعتمد أحد طلبه. عروض محفوظة وإيقاف جماعي والاستخدام والخصم المعطى وتجربة الكوبون بقاعدة النواة نفسها والسجل.",
+      "Fixed or percentage coupons with a total and a per-customer usage limit, a validity period and conditions (platform, category, product kind, segment, channel, first order, quantity); the commerce core validates and redeems them at checkout. promotions.coupon.manage creates; terms above 20 %, above 50,000 IQD off one order (or uncapped) or without any usage limit are switched on only after another employee holding pricing.discount.override approves — never the requester. Saved views, bulk switch-off, uses and discount given, \"try this coupon\" through the core's own evaluation, history. Missing: the point of sale takes no coupon (a coupon limited to the point of sale applies nowhere; the cashier gives only their own discount, within their limit).",
+      "كوبونات بمبلغ أو نسبة مع حد كلي وحد لكل عميل وفترة صلاحية وشروط (منصة، تصنيف، نوع منتج، شريحة، قناة، أول طلب، كمية)، ونواة التجارة تتحقق منها وتسجّل استخدامها عند الدفع. يُنشئها من يملك إدارة الكوبونات؛ الشروط فوق 20% أو فوق 50,000 د.ع للطلب الواحد (أو بلا سقف) أو بلا حد للاستخدام لا تُشغّل إلا بموافقة موظف آخر يملك تجاوز حدود الخصم، ولا يعتمد أحد طلبه. عروض محفوظة وإيقاف جماعي والاستخدام والخصم المعطى وتجربة الكوبون بقاعدة النواة نفسها والسجل. الناقص: نقطة البيع لا تقبل الكوبونات (والكوبون المحصور بنقطة البيع لا ينطبق في أي مكان؛ يعطي الكاشير خصمه الخاص فقط ضمن حده).",
     ),
   },
   "08.02": {

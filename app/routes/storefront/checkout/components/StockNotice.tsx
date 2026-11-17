@@ -1,6 +1,7 @@
 import type { ReactNode, Ref } from "react";
 
 import { useFormat, useT } from "~/i18n/react";
+import { keepTokens } from "~/lib/keep-tokens";
 import { isolate } from "~/ui/BidiText";
 import { Note } from "~/ui/Note";
 import { fillNodes } from "~/ui/PriceTag";
@@ -42,8 +43,8 @@ export function StockNotice({
   const f = useFormat();
   const sentence = (change: StockChange) => {
     // the name first and in ink (what the line is about); a Latin name inside an Arabic or Kurdish sentence keeps its
-    // own direction (isolated)
-    const name = <b>{isolate(change.name)}</b>;
+    // own direction (isolated) and its tokens whole («USB‑C», «Switch 2»: ~/lib/keep-tokens)
+    const name = <b>{isolate(keepTokens(change.name))}</b>;
     const keep = { name: "{name}" };
     const text =
       change.change === "reduced"

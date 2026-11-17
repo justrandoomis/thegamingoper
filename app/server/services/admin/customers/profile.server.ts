@@ -35,6 +35,7 @@ import { customerFlags } from "./flags.server";
 import { NO_FACTS, rfmFacts, storedSegments } from "./rfm.server";
 import { customerRules } from "./rules.server";
 import { changeableCustomer, customerById, customersAccess, employeeNames, hasLongDigitRun, num, phoneView, type CustomerRow } from "./shared.server";
+import { payoutState } from "./wallet.server";
 import {
   CONSENT_KIND_LIST,
   OPEN_ORDER_STATUSES,
@@ -129,7 +130,7 @@ export async function getCustomerProfile(db: Db, actor: Actor, customerId: strin
     access.warranties ? profileWarranties(db, row.id, locale, can(actor, "inventory.serial.read"), now) : Promise.resolve(null),
     access.repairs ? profileRepairs(db, row.id) : Promise.resolve(null),
     access.tickets ? profileTickets(db, row.id) : Promise.resolve(null),
-    access.wallet ? walletSummary(db, row.id, access.financeWallet) : Promise.resolve(null),
+    access.wallet ? walletSummary(db, actor, row.id, access.financeWallet) : Promise.resolve(null),
     customerNotes(db, noteSubjects, row.id),
     access.consents ? currentConsents(db, row.id) : Promise.resolve(null),
     access.privacy
@@ -254,9 +255,13 @@ async function profileTickets(db: Db, customerId: string): Promise<ProfileTicket
   });
 }
 
-/** Balance = Σ of the ledger (wallet service), the last movements, pending top-ups, and the finance page if allowed. */
-async function walletSummary(db: Db, customerId: string, financeWallet: boolean) {
-  const [balanceIqd, entries, pending] = await Promise.all([
+/**
+ * Balance = Σ of the ledger (wallet service), the last movements, pending top-ups, the payout request waiting or last
+ * decided (2026-11-13: asked here, decided in finance by a second person — wallet.server.ts), and the finance page if
+ * allowed.
+ */
+async function walletSummary(db: Db, actor: Actor, customerId: string, financeWallet: boolean) {
+  const [balanceIqd, entries, pending, payout] = await Promise.all([
     getWalletBalance(db, customerId),
     listWalletEntries(db, customerId, { limit: 5 }),
     db
@@ -264,12 +269,14 @@ async function walletSummary(db: Db, customerId: string, financeWallet: boolean)
       .from(walletTopups)
       .where(and(eq(walletTopups.customerId, customerId), eq(walletTopups.status, "pending_verification")))
       .get(),
+    payoutState(db, actor, customerId),
   ]);
   return {
     balanceIqd,
-    entries: entries.items.map((entry) => ({ id: entry.id, kind: entry.kind, amountIqd: entry.amountIqd, at: entry.at, orderRef: entry.orderRef })),
+    entries: entries.items.map((entry) => ({ id: entry.id, kind: entry.kind, amountIqd: entry.amountIqd, at: entry.at, orderRef: entry.orderRef, refType: entry.refType ?? null })),
     pendingTopups: num(pending?.n),
     financeHref: financeWallet ? `/admin/finance/wallets/${encodeURIComponent(customerId)}` : null,
+    payout,
   };
 }
 

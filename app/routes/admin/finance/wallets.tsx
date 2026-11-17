@@ -3,8 +3,9 @@ import { Form, Link } from "react-router";
 
 import type { Route } from "./+types/wallets";
 import { useFormat } from "~/i18n/react";
-import { decideWalletAdjustment, listAdjustments, listTopups, listWalletLedger, walletOverview, type AdjustmentRow, type TopupRow, type WalletEntryRow } from "~/server/services/admin/finance/wallets.server";
+import { decideWalletAdjustment, listAdjustments, listPayouts, listTopups, listWalletLedger, walletOverview, type AdjustmentRow, type TopupRow, type WalletEntryRow } from "~/server/services/admin/finance/wallets.server";
 import { idParam, pageOf, parseRange, rangeSearch, TOPUP_STATUS_LIST, WALLET_KIND_LIST } from "~/server/services/admin/finance/types";
+import { can } from "~/server/actor";
 import type { DataColumn } from "~/ui/DataTable";
 import { EmptyState } from "~/ui/EmptyState";
 import { Select } from "~/ui/Field";
@@ -13,16 +14,19 @@ import { Pagination } from "~/ui/Pagination";
 import { Status } from "~/ui/Tag";
 import { failed, financeT, ok, openFinance, orRespond, text } from "./finance.server";
 import { financeMeta } from "./meta";
+import { entryKindLabel, PayoutList } from "./payout-ui";
+import { payoutAction, PAYOUT_INTENT } from "./payouts.server";
 import { ActionDialog, Code, DemoHidden, DemoTag, Flag, Kpi, Money, Note, PageHead, Pair, RangeBar, ResponsiveTable, Section, StateTag, useFinT, When } from "./ui";
 
-const TABS = ["topups", "adjustments", "ledger"] as const;
+const TABS = ["topups", "adjustments", "payouts", "ledger"] as const;
 type Tab = (typeof TABS)[number];
 
 /**
  * /admin/finance/wallets — 10.07: the customer wallet as a ledger nobody edits (balance = the sum of its rows), the
  * ledger against its account in the journal (they must agree to the dinar), the top-up requests customers sent from
- * their account (decided on their own page, mobile-first), and wallet adjustments (two people: one asks, another
- * approves; credited through creditWallet). finance.wallet.read; decisions customers.wallet.adjust.
+ * their account (decided on their own page, mobile-first), wallet adjustments (two people: one asks, another
+ * approves; credited through creditWallet), and payouts — money OUT of a wallet, asked in module 07 and decided here
+ * by a second person (2026-11-13). finance.wallet.read; decisions customers.wallet.adjust.
  */
 export async function loader({ context, request }: Route.LoaderArgs) {
   const { db, actor, now } = await openFinance(context, "finance.wallet.read");
@@ -32,20 +36,22 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const status = params.get("status");
   const kind = params.get("kind");
   const page = pageOf(params);
-  const [overview, topups, adjustments, ledger] = await orRespond(() =>
+  const [overview, topups, adjustments, payouts, ledger] = await orRespond(() =>
     Promise.all([
       walletOverview(db, actor, range),
       tab === "topups" ? listTopups(db, actor, { status: (TOPUP_STATUS_LIST as readonly string[]).includes(status ?? "") ? (status as TopupRow["status"]) : null, page }) : Promise.resolve(null),
       tab === "adjustments" ? listAdjustments(db, actor, 50) : Promise.resolve(null),
+      tab === "payouts" ? listPayouts(db, actor, 50) : Promise.resolve(null),
       tab === "ledger" ? listWalletLedger(db, actor, { ...range, kind: (WALLET_KIND_LIST as readonly string[]).includes(kind ?? "") ? kind : null, customer: idParam(params, "customer"), page }) : Promise.resolve(null),
     ]),
   );
-  return { overview, topups, adjustments, ledger, tab, range, now, status: (TOPUP_STATUS_LIST as readonly string[]).includes(status ?? "") ? status : null, kind };
+  return { overview, topups, adjustments, payouts, ledger, tab, range, now, status: (TOPUP_STATUS_LIST as readonly string[]).includes(status ?? "") ? status : null, kind, canDecide: can(actor, "customers.wallet.adjust") };
 }
 
 export async function action({ request, context }: Route.ActionArgs) {
   const req = await openFinance(context, "finance.wallet.read");
   const form = await request.formData();
+  if (text(form, "intent") === PAYOUT_INTENT) return payoutAction(req, form);
   // the service's schema refuses anything but approve / reject (a malformed form must never become a rejection)
   const decision = text(form, "decision") as "approve" | "reject";
   try {
@@ -61,7 +67,7 @@ export const meta: Route.MetaFunction = (args) => financeMeta(args, "wallets.tit
 export default function WalletsPage({ loaderData }: Route.ComponentProps) {
   const t = useFinT();
   const f = useFormat();
-  const { overview, topups, adjustments, ledger, tab, range, now, status, kind } = loaderData;
+  const { overview, topups, adjustments, payouts, ledger, tab, range, now, status, kind, canDecide } = loaderData;
   const [deciding, setDeciding] = useState<{ row: AdjustmentRow; decision: "approve" | "reject" } | null>(null);
   const tabHref = (next: Tab) => `/admin/finance/wallets${rangeSearch(range, { tab: next === "topups" ? null : next })}`;
 
@@ -110,7 +116,7 @@ export default function WalletsPage({ loaderData }: Route.ComponentProps) {
         </Link>
       ),
     },
-    { key: "kind", header: t("walletLedger.col.kind"), cell: (row) => t(`walletKind.${row.kind}`) },
+    { key: "kind", header: t("walletLedger.col.kind"), cell: (row) => entryKindLabel(t, row) },
     { key: "amount", header: t("walletLedger.col.amount"), numeric: true, cell: (row) => <Money iqd={row.amountIqd} plain signed /> },
     { key: "ref", header: t("walletLedger.col.ref"), cell: (row) => (row.refHref ? <Link to={row.refHref} className="adm-link"><Code>{row.refLabel ?? "—"}</Code></Link> : row.refLabel ? <Code>{row.refLabel}</Code> : "—") },
     { key: "reason", header: t("walletLedger.col.reason"), cell: (row) => <span className="line-clamp-2">{row.reason ?? "—"}</span> },
@@ -121,11 +127,12 @@ export default function WalletsPage({ loaderData }: Route.ComponentProps) {
     <>
       <PageHead title={t("wallets.title")} lead={t("wallets.lead")} />
 
-      <div className="fin-kpis mb-5">
+      <div className="fin-kpis fin-kpis--five mb-5">
         <Kpi icon="wallet" label={t("wallets.liability")} value={<Money iqd={overview.ledgerIqd} />} hint={t("wallets.holders", { count: overview.customersWithBalance })} />
         <Kpi icon="book-open" label={t("wallets.journal")} value={<Money iqd={overview.journalIqd} />} hint={overview.differenceIqd === 0 ? t("wallets.agree") : t("wallets.differ", { amount: f.iqd(overview.differenceIqd) })} />
         <Kpi icon="hourglass" label={t("wallets.pendingTopups")} value={<Money iqd={overview.pendingTopups.iqd} />} hint={t("common.countOf", { count: overview.pendingTopups.count })} />
         <Kpi icon="hand-coins" label={t("wallets.pendingAdjustments")} value={<Money iqd={overview.pendingAdjustments.iqd} />} hint={t("common.countOf", { count: overview.pendingAdjustments.count })} />
+        <Kpi icon="arrow-square-out" label={t("wallets.pendingPayouts")} value={<Money iqd={overview.pendingPayouts.iqd} />} hint={t("common.countOf", { count: overview.pendingPayouts.count })} />
       </div>
       {overview.differenceIqd !== 0 ? (
         <Note tone="bad" icon="warning">
@@ -244,6 +251,14 @@ export default function WalletsPage({ loaderData }: Route.ComponentProps) {
         </Section>
       ) : null}
 
+      {payouts ? (
+        <Section id="wallet-payouts" title={t("wallets.tab.payouts")}>
+          <p className="max-w-[72ch] type-body text-ink-2">{t("payouts.lead")}</p>
+          <PayoutList rows={payouts} canDecide={canDecide} />
+          <p className="type-caption text-ink-2">{t("payouts.howToAsk")}</p>
+        </Section>
+      ) : null}
+
       {ledger ? (
         <Section id="wallet-ledger" title={t("wallets.tab.ledger")}>
           <RangeBar range={range} action="/admin/finance/wallets" keep={{ tab: "ledger", kind }} now={now} />
@@ -273,7 +288,7 @@ export default function WalletsPage({ loaderData }: Route.ComponentProps) {
                   </Link>
                   <Money iqd={row.amountIqd} signed className="type-strong" />
                 </span>
-                <Pair label={t("walletLedger.col.kind")}>{t(`walletKind.${row.kind}`)}</Pair>
+                <Pair label={t("walletLedger.col.kind")}>{entryKindLabel(t, row)}</Pair>
                 <Pair label={t("walletLedger.col.at")}>
                   <When at={row.at} />
                 </Pair>

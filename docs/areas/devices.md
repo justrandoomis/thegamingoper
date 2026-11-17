@@ -188,3 +188,6 @@ the column it leaves (English and Sorani «Everything about» / «هەموو ش�
 facts, the price with its demo tag and the key below — about 300 is what that content takes. Reaching 200 would need a
 smaller device and no facts on phones, or the lead-in («كل شيء عن») set smaller than the name: the spec owner's call
 (asked). From 1024, Sorani and the PS5 Pro in English put the key under the price (a longer price line and label; +44).
+
+## Polish (2026-11-17)
+- The compatibility note: phones are the kit's now (`.compat-badge__note` reads at 16 / 1.75 below 768); the hub keeps 16 on tablets only (`.devhub-note .compat-badge__note`, 768–1023). Measured: 16/28 at 390 and 800, 13/19.5 at 1100.

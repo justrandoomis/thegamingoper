@@ -5,17 +5,20 @@
  *   listLinks(db, actor, filters, origin)              marketing.utm.manage | marketing.report.read
  *   attributionReport(db, actor, range, now)           marketing.utm.manage | marketing.report.read
  *   attributedByCampaign(db, scope)                    for the performance report (16.07)
+ *   recordLinkClick(db, code)                          the storefront's capture: one click of a link
  *
- * HONEST BOUNDARY: the storefront does not record where a shopper came from yet — no page reads utm_* or `tt_l`, and
- * `placeOrder` writes neither `orders.utm_link_id` nor `orders.attribution` (requested of the storefront and the
- * commerce core, docs/areas/admin-marketing.md). So a link works as a URL today, but no order carries its source:
- * attribution counts only orders that REALLY carry one (none, today) and says so — never a modelled or guessed share.
- * `utm_links.clicks` is not counted by anything either: shown as "not measured", never as 0.
+ * WHERE THE SOURCE COMES FROM (from the deploy of ~/server/attribution.server, polish round 2026-11 — no cookie, nothing kept on the device):
+ * the root middleware counts a link's click when a person's browser opens a store page through it (`utm_links.clicks`;
+ * not bots, link previews, prefetches or data requests — counted from that day on, so older links show only what came
+ * after it), and keeps the campaign with the shopper's cart on the server when they have one or start one on that page;
+ * `placeOrder` then writes `orders.attribution` and `orders.utm_link_id` — once the checkout hands it the cart's campaign
+ * (requested of the checkout's owner). A shopper who browses on before starting a cart carries no source. Attribution
+ * counts only orders that REALLY carry one and says so — never a modelled or guessed share.
  *
  * A link's URL: `<origin><path>?utm_source=…&utm_medium=…&utm_campaign=…[&utm_content=…][&utm_term=…]&tt_l=<code>`
  * — the code names the link itself, so the capture can store `utm_link_id`.
  */
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { sha256Hex } from "~/lib/ids";
 import { can, type Actor } from "~/server/actor";
@@ -39,6 +42,7 @@ type LinkDbRow = {
   utm_campaign: string | null;
   utm_content: string | null;
   utm_term: string | null;
+  clicks: number;
   created_by: string | null;
   created_at: number;
 };
@@ -87,8 +91,10 @@ export type LinkRow = LinkOption & {
   term: string | null;
   campaignId: string | null;
   campaignName: string | null;
-  /** Orders that carry this link (none until the storefront records it). */
+  /** Orders that carry this link (an order placed from a cart the link's visit was kept with). */
   orders: number;
+  /** Times a person's browser opened a store page through the link — counted from the deploy of the capture on (recordLinkClick); older visits were never counted. */
+  clicks: number;
   createdBy: string | null;
   createdAt: number;
 };
@@ -119,6 +125,7 @@ export async function listLinks(db: Db, actor: Actor, filters: LinkFilters, orig
       campaignId: row.campaign_id,
       campaignName: row.campaign_name,
       orders: num(row.orders),
+      clicks: num(row.clicks),
       createdBy: row.created_by ? (names.get(row.created_by) ?? null) : null,
       createdAt: num(row.created_at),
     })),
@@ -215,6 +222,16 @@ export async function createLink(db: Db, actor: Actor, raw: unknown, now: number
     }
   }
   throw new AppError("utm_taken", 409);
+}
+
+/**
+ * One click of a link: a person's browser opened a store page through it (`tt_l` = its code). Called by the storefront's
+ * capture (~/server/attribution.server: not bots, link previews, prefetches or data requests, within a per-address
+ * limit), never by a page. One guarded statement; false when no link has that code.
+ */
+export async function recordLinkClick(db: Db, code: string): Promise<boolean> {
+  const result = await db.update(utmLinks).set({ clicks: sql`${utmLinks.clicks} + 1` }).where(eq(utmLinks.code, code)).run();
+  return num(result.meta.changes) > 0;
 }
 
 // ───────────────────────────────────────────────────────────────── attribution

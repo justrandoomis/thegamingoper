@@ -64,6 +64,7 @@ import { resolveListPrice } from "../pricing/lists.server";
 import { getAvailability } from "../../inventory/stock.server";
 import { placePosSale, posSaleKeyHash, storeLocationTree, type PosReceiptData, type StoreTree } from "../../orders/pos-sale.server";
 import { getWalletBalance } from "../../wallet.server";
+import { saleCodeSummary } from "./codes.server";
 import { assertAny, employeeNames, ID_PATTERN, KEY_PATTERN } from "./shared.server";
 import {
   baghdadDayRange,
@@ -438,7 +439,7 @@ export async function createSale(db: Db, actor: Actor, raw: SaleRequestInput, co
       },
       now,
     );
-    return { ok: true, ref: replayed.ref, receiptNumber: replayed.receiptNumber, totalIqd: replayed.totalIqd, changeIqd: replayed.changeIqd, replayed: true, lateForClosedShift: false };
+    return { ok: true, ref: replayed.ref, receiptNumber: replayed.receiptNumber, totalIqd: replayed.totalIqd, changeIqd: replayed.changeIqd, replayed: true, lateForClosedShift: false, codes: await saleCodeSummary(db, replayed.orderId, context.locale) };
   }
   const till = await tillOf(db, actor, input.shiftId);
 
@@ -562,7 +563,8 @@ export async function createSale(db: Db, actor: Actor, raw: SaleRequestInput, co
       },
       now,
     );
-    return { ok: true, ref: result.ref, receiptNumber: result.receiptNumber, totalIqd: result.totalIqd, changeIqd: result.changeIqd, replayed: result.replayed, lateForClosedShift: result.lateForClosedShift };
+    // digital codes (2026-11-13): assigned in the sale's batch; the till offers to show them (codes.server.ts)
+    return { ok: true, ref: result.ref, receiptNumber: result.receiptNumber, totalIqd: result.totalIqd, changeIqd: result.changeIqd, replayed: result.replayed, lateForClosedShift: result.lateForClosedShift, codes: await saleCodeSummary(db, result.orderId, context.locale) };
   } catch (error) {
     const appError = toAppError(error);
     if (appError?.code === "insufficient_stock") throw new PosSaleError("insufficient_stock", 409, { resolvable: input.offlineCreatedAt && can(actor, "inventory.oversell.authorize") ? "oversell" : null }, { detail: appError.detail, fields: appError.fields });

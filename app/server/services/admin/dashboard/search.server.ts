@@ -13,8 +13,9 @@
  *                                             an order or RMA reference; digits only with customer.phone.read_full;
  *                                             merged and erased accounts left out); phones masked the same way
  *   skus       catalog.product.read, inventory.stock.read or a pricing permission: SKU (exact, then its start),
- *                                             barcode, product name; the selling price (public); what is available only
- *                                             with inventory.stock.read; never a cost
+ *                                             barcode, product name (a name's kept hyphen «USB‑C» and a typed "-" match
+ *                                             each other: foldHyphens); the selling price (public); what is available
+ *                                             only with inventory.stock.read; never a cost
  *   serials    inventory.serial.read + inventory.stock.read (the inventory serial pages) or devices.registry.read (the
  *                                             device registry): the serial (exact, or its start from 4 characters),
  *                                             status, SKU; never a unit's cost
@@ -81,6 +82,16 @@ const NEEDLE = 20;
 /** D1's limit on a LIKE pattern (SQLITE_LIMIT_LIKE_PATTERN_LENGTH), in UTF-8 bytes. */
 export const LIKE_MAX_BYTES = 50;
 const escapeLike = (value: string) => value.replace(/[\\%_]/g, (char) => `\\${char}`);
+
+/**
+ * Product names keep a Latin token whole with U+2011 NON-BREAKING HYPHEN («USB‑C», «Joy‑Con» — catalog/README.md),
+ * while staff type the plain "-". Both sides of a name's LIKE read either hyphen as "-": the needle here (U+2010 too —
+ * cleanQuery's NFKC turns a typed or pasted U+2011 into it) and the stored name in SQL (`dehyphened`). "USB-C",
+ * "usb-c" and «USB‑C» find «USB‑C» and a plain-hyphen name alike, and nothing else (tests/admin-dashboard-hyphen).
+ */
+export const foldHyphens = (text: string): string => text.replace(/[‐‑]/g, "-");
+/** A stored text with its kept hyphens (U+2011, and U+2010) read as "-" — the SQL side of foldHyphens. */
+export const dehyphened = (column: SQL): SQL => sql`replace(replace(${column}, char(8209), '-'), char(8208), '-')`;
 const num = (value: unknown) => Number(value ?? 0);
 const enc = encodeURIComponent;
 const utf8 = new TextEncoder();
@@ -166,14 +177,16 @@ async function searchCustomers(db: Db, actor: Actor, needle: string, limit: numb
 }
 
 async function searchSkus(db: Db, actor: Actor, q: string, needle: string, limit: number, locale: Locale): Promise<SkuHit[]> {
-  const upper = q.toUpperCase();
-  const like = escapeLike(needle);
-  const start = `${escapeLike(needle.toUpperCase())}%`;
-  const named = needle.length >= 3 && /\p{L}/u.test(needle);
+  // either hyphen typed reads as "-" (foldHyphens); a name's kept hyphen too (dehyphened)
+  const folded = foldHyphens(needle);
+  const upper = foldHyphens(q).toUpperCase();
+  const like = escapeLike(folded);
+  const start = `${escapeLike(folded.toUpperCase())}%`;
+  const named = folded.length >= 3 && /\p{L}/u.test(folded);
   const conditions: SQL[] = [sql`upper(v.sku) = ${upper}`, sql`v.barcode = ${q}`, sql`upper(v.sku) LIKE ${start} ESCAPE '\\'`];
   if (named) {
-    conditions.push(sql`json_extract(p.name, '$.ar') LIKE ${`%${like}%`} ESCAPE '\\'`);
-    conditions.push(sql`lower(json_extract(p.name, '$.en')) LIKE ${`%${like.toLowerCase()}%`} ESCAPE '\\'`);
+    conditions.push(sql`${dehyphened(sql`json_extract(p.name, '$.ar')`)} LIKE ${`%${like}%`} ESCAPE '\\'`);
+    conditions.push(sql`lower(${dehyphened(sql`json_extract(p.name, '$.en')`)}) LIKE ${`%${like.toLowerCase()}%`} ESCAPE '\\'`);
   }
   const rows = await db.all<{ id: string; sku: string; title: string | null; priceIqd: number; isActive: number; productId: string; name: string; productStatus: string }>(sql`
     SELECT v.id AS id, v.sku AS sku, v.title AS title, v.price_iqd AS priceIqd, v.is_active AS isActive, p.id AS productId, p.name AS name, p.status AS productStatus

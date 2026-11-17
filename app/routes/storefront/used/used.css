@@ -267,25 +267,8 @@
     }
   }
 
-  /* «رجوع» | «تابع» and «ارفض» | «اقبل العرض» on narrow screens: Sorani's longer words put the primary 7–43px past a
-     320 screen's edge (400% zoom, a small phone) and cut «قبووڵی بکە» to «قبووڵی بـ…» at 360. The keys take the kit's
-     own padding knob down (--px, the property .key--sm sets) — Sorani below 390, every language below 360 — and the
-     row's gap tightens below 360 (the classes), so both keys stay whole on the bar (review 2026-11-13). */
-  @media (max-width: 24.37rem) {
-    :lang(ckb) .used-keys > .key {
-      --px: 14px;
-    }
-  }
-  @media (max-width: 22.49rem) {
-    .used-keys > .key {
-      --px: 14px;
-    }
-    /* the decorative arrow or check gives the words their room (the kit cut «قبووڵی بکە» to «قبووڵی بـ…»); the
-       spinner of a key that is loading is not one of these */
-    .used-keys > .key > .key__cap > svg {
-      display: none;
-    }
-  }
+  /* («رجوع» | «تابع» and «ارفض» | «اقبل العرض» in the task bar are the kit's compact keys — <Key fit="compact">: both
+     whole on a 320 screen in Sorani, measured 320–768 in ar, en and ckb; polish round 2026-11-13) */
 
   /* ── the start page (client note 10: the before's order; v2.1 sections under the tiles) ── */
   .used-start {
@@ -397,7 +380,8 @@
     color: var(--ink);
   }
   .used-how__text {
-    max-inline-size: 26ch;
+    /* 26ch of Plex (1ch = 0.6em) as an em measure: a ch measure moved when the web font replaced the fallback */
+    max-inline-size: 15.6em;
     font: var(--type-read);
     color: var(--ink-2);
   }
@@ -530,31 +514,13 @@
     }
   }
 
-  /* the accessories question: each box a card like the option cards of the other questions (OptionCard + .surface) —
-     the whole card is the box's label (the kit's .choice fills it), chosen = the 2px ink ring, the ring of focus on the
-     card (review 2026-11-13; the kit's checkbox has no option-row form — docs/areas/used.md "Requests") */
-  .used-check {
-    padding-inline: var(--s-4);
-    border: 1px solid var(--line-strong);
-  }
-  .used-check > .choice {
-    align-items: center;
-    min-block-size: calc(var(--h-option) - 2px);
-    font: var(--type-card);
-  }
-  .used-check:has(> .choice > .choice__input:checked) {
-    padding-inline: calc(var(--s-4) - 1px);
-    border: 2px solid var(--ink);
-  }
-  .used-check:has(> .choice > .choice__input:checked) > .choice {
-    min-block-size: calc(var(--h-option) - 4px);
-  }
-  .used-check:has(> .choice > .choice__input:focus-visible) {
-    outline: var(--focus-w) solid var(--focus);
-    outline-offset: var(--focus-offset);
-  }
-  .used-check > .choice > .choice__input:focus-visible + .choice__box {
-    outline: none;
+  /* the accessories question: the kit's checkbox rows (<Checkbox row>) wearing the clay face of the other questions'
+     option cards (<OptionCard clay>: the soft raised card, no hairline) — chosen keeps the kit's 2px ink border, focus
+     the kit's ring. The kit's checkbox row has no `clay` yet (docs/areas/used.md "Requests") */
+  .used-clay > .choice--row {
+    border-color: transparent;
+    background: var(--card-face);
+    box-shadow: var(--e-surface);
   }
 
   /* the photo drop area while a file is dragged over it */
@@ -596,14 +562,11 @@
       column-gap: var(--s-6);
     }
   }
-  /* the payout cards' icon at their end */
-  .used-pay__icon {
-    --disc: 40px;
-    color: var(--red-ink);
-  }
-  /* the payout that cannot be chosen (store credit on a guest's request): its icon goes as quiet as its words — a red
-     icon on a greyed card read as a choice that works (review 2026-11-13) */
-  .choice:has(> .choice__input:disabled) .used-pay__icon {
+  /* the payout that cannot be chosen (store credit on a guest's request): the kit's option icon goes as quiet as its
+     words — an ink icon in a raised disc on a greyed card read as a choice that works (review 2026-11-13; the kit's
+     <OptionCard icon> keeps its ink: docs/areas/used.md "Requests") */
+  .used-payout .choice:has(> .choice__input:disabled) > .choice__icon {
+    box-shadow: none;
     color: var(--ink-3);
   }
   /* «قبلت العرض»: the mark that draws itself, the words beside it */
@@ -675,50 +638,5 @@
   }
 }
 
-/*
- * The before's labelled five-step rail (client note 10, v2.1): every step's word under its disc, on every width. The
- * kit's rail keeps only the current word on phones (the others go to `.sr-only`, a utility), so these placement-only
- * rules sit in the utilities layer and out-weigh it by specificity. The discs, their colours, the links and the
- * reading order are the kit's. Kit request (docs/areas/used.md "Requests"): ProgressSteps `labels="under"`.
- */
-@layer utilities {
-  .used-rail .steps {
-    align-items: flex-start;
-    gap: 0;
-  }
-  .used-rail .steps > li {
-    align-items: flex-start;
-    gap: 0;
-  }
-  .used-rail .step {
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: var(--s-1);
-    min-inline-size: var(--target);
-    padding-block-start: 10px;
-    text-align: center;
-    white-space: normal;
-  }
-  .used-rail .step__label {
-    position: static;
-    inline-size: auto;
-    block-size: auto;
-    margin: 0;
-    padding: 0;
-    overflow: visible;
-    clip: auto;
-    clip-path: none;
-    white-space: normal;
-    overflow-wrap: normal;
-    font: var(--type-xs);
-  }
-  .used-rail .step[aria-current="step"] .step__label {
-    font: var(--type-xs-strong);
-  }
-  /* the join sits at the discs' middle (10px above the 24px disc + half of it) */
-  .used-rail .step__sep {
-    min-inline-size: 6px;
-    margin-block-start: 21px;
-    margin-inline: 2px;
-  }
-}
+/* (the wizard's rail is the kit's labelled rail, <ProgressSteps labels="under"> — every step's word under its disc on
+   every width; polish round 2026-11-13) */

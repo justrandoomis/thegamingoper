@@ -146,7 +146,8 @@ type FaceMetrics = { chars: Record<string, number>; words: Record<string, number
  * Advance widths of the headline faces in em — measured in Edge on the running site (2026-11-12, scratch scripts
  * measure-em.mjs, measure-arabic.mjs and measure-words.mjs, …/fb1/work/home/tools): every Latin letter, digits and
  * punctuation; the page's OWN headline words exactly (`words`: the hero's lead words and the trade-in and used banners'
- * titles in Arabic and Sorani — a line measures the sum of its words and spaces); and for any other Arabic or Kurdish
+ * titles in Arabic and Sorani — a line measures the sum of its words and spaces; «المستعمل والمفحوص» measured
+ * 2026-11-13 with the store's font files, the old «مستعمل ومفحوص» reproduced to the thousandth); and for any other Arabic or Kurdish
  * word (a staff pin) a width per letter that no measured word exceeds (Kufam: «گەیشت» 0.87 with its wide گ; the
  * letters of longer words measure 0.52–0.73).
  */
@@ -163,7 +164,7 @@ const FACES: Record<HeadlineFace, FaceMetrics> = {
       "+": 0.616, "&": 0.668, "|": 0.308, "(": 0.37, ")": 0.37, "/": 0.545, "!": 0.323, "?": 0.503,
     },
     words: {
-      العب: 2.508, على: 1.77, وصل: 2.434, استبدل: 3.372, جهازك: 3.436, مستعمل: 4.021, ومفحوص: 4.717,
+      العب: 2.508, على: 1.77, وصل: 2.434, استبدل: 3.372, جهازك: 3.436, المستعمل: 4.695, والمفحوص: 5.391,
       یاری: 1.879, بکە: 2.278, لەسەر: 3.09, گەیشت: 4.349, ئامێرەکەت: 5.895, بگۆڕەوە: 4.494, بەکارهاتوو: 5.797, و: 0.64, پشکنراو: 4.414,
     },
     digit: 0.616,
@@ -183,7 +184,7 @@ const FACES: Record<HeadlineFace, FaceMetrics> = {
       "+": 0.6, "&": 0.713, "|": 0.376, "(": 0.337, ")": 0.337, "/": 0.437, "!": 0.309, "?": 0.493,
     },
     words: {
-      العب: 1.968, على: 1.586, وصل: 2.073, استبدل: 2.891, جهازك: 2.509, مستعمل: 3.472, ومفحوص: 3.891,
+      العب: 1.968, على: 1.586, وصل: 2.073, استبدل: 2.891, جهازك: 2.509, المستعمل: 4.067, والمفحوص: 4.486,
       یاری: 1.617, بکە: 1.278, لەسەر: 2.349, گەیشت: 2.951, ئامێرەکەت: 3.94, بگۆڕەوە: 2.928, بەکارهاتوو: 3.906, و: 0.475, پشکنراو: 2.927,
     },
     digit: 0.6,

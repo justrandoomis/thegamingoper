@@ -306,10 +306,10 @@ export default function Repair({ loaderData, actionData }: Route.ComponentProps)
             </Note>
           ) : null}
 
-          {/* the step rail: numbers and the current step's words below 768 (three long labels do not fit a phone; its done
-              discs are not links there — 24px is too small a target, and «رجوع» goes back) */}
-          <ProgressSteps aria-label={t("repair.steps.label")} current={stepIndex} steps={STEPS.map((s) => ({ label: t(`repair.steps.short.${s}`) }))} variant="compact" className="sup-js md:hidden" />
-          <ProgressSteps aria-label={t("repair.steps.label")} current={stepIndex} steps={railSteps} className="sup-js max-md:hidden" />
+          {/* the step rail: the before's labelled rail (the kit's labels="under", polish round 2026-11-13) — every step's
+              words under its disc on every width, balanced over two lines where a phone's third is too narrow; a done
+              step is a 44px link back (every field keeps its value). With script only: without it the form is one page */}
+          <ProgressSteps aria-label={t("repair.steps.label")} current={stepIndex} steps={railSteps} labels="under" className="sup-js" />
 
           <form ref={formRef} id={ids.form} method="post" encType="multipart/form-data" noValidate onSubmit={onSubmit} className="sup-form">
             <input type="hidden" name="idempotencyKey" value={values.idempotencyKey || loaderData.formKey} />

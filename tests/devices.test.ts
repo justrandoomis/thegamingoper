@@ -651,8 +651,9 @@ describe("the hub, QA fixes (wave C, 2026-11-13)", () => {
     // desktop columns keep v2's sizes
     expect(components).toMatch(/\.devhub-read \{\s*font: var\(--type-sm\);/);
     expect(components).toMatch(/\.devhub-hint \{\s*font: var\(--type-xs\);/);
-    // the kit's compatibility note carries a type utility: its reading size lives in the utilities layer
-    expect(css.slice(css.indexOf("@layer utilities"))).toMatch(/\.devhub-note \[data-compat\] > span \+ span \{\s*font: var\(--type-read\);/);
+    // the kit's compatibility note reads at 16 on phones itself (polish 2026-11-17); the hub keeps it at 16 on tablets
+    expect(css).not.toMatch(/\[data-compat\] > span \+ span/);
+    expect(css.slice(css.indexOf("@layer utilities"))).toMatch(/@media \(min-width: 48rem\) and \(max-width: 63\.99rem\) \{\s*\.devhub-note \.compat-badge__note \{\s*font: var\(--type-read\);/);
     // the reading runs use the reading classes, not v2's small type utilities
     const versions = area("components/VersionsSection.tsx");
     expect(versions).not.toMatch(/className="[^"]*\btype-sm\b[^"]*"/);

@@ -13,8 +13,9 @@ import { TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
-import { openPromotions, respond, runIntent, text } from "./promotions.server";
-import { Code, ConfirmAction, Failure, newKey, Notice, Num, PhoneText, SectionState, Section, Tag, ToneStatus, useIntent, usePromotionsT, When, useProgram } from "./ui";
+import type { LoyaltyReason } from "~/server/services/orders/loyalty-reasons";
+import { openPromotions, respond, runIntent, text, withRejectSaid } from "./promotions.server";
+import { Code, ConfirmAction, Failure, newKey, Notice, Num, PhoneText, SectionState, Section, Tag, ToneStatus, useIntent, usePromotionsT, useReasonText, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/referrals — 08.05: the abuse rules in words, the referrals to review with their signals (same
@@ -26,7 +27,9 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const { db, actor, now } = await openPromotions(context, SECTION_READ.referrals);
   const filters = parseReferralFilters(new URL(request.url).searchParams);
   try {
-    return { page: await listReferrals(db, actor, filters, now), filters };
+    const page = await listReferrals(db, actor, filters, now);
+    // a referral the store closed itself («TT-… · cancelled»: its order was cancelled) is said in the admin's language
+    return { page: { ...page, rows: withRejectSaid(page.rows) }, filters };
   } catch (error) {
     throwAsResponse(error);
   }
@@ -152,10 +155,13 @@ export default function ReferralsPage({ loaderData }: Route.ComponentProps) {
   );
 }
 
-function ReferralCard({ row, manage }: { row: ReferralRow; manage: boolean }) {
+function ReferralCard({ row, manage }: { row: ReferralRow & { rejectSaid: LoyaltyReason | null }; manage: boolean }) {
   const program = useProgram();
   const t = usePromotionsT();
+  const reasonText = useReasonText();
   const open = row.status === "pending" || row.status === "qualified";
+  // the store's own closing reason in the admin's language; a reviewer's words as typed
+  const rejected = reasonText(row.rejectSaid, row.rejectReason);
   return (
     <div className={open && row.qualifies ? "prm-card prm-panel--decide" : "prm-card"}>
       <span className="prm-card__top">
@@ -188,7 +194,7 @@ function ReferralCard({ row, manage }: { row: ReferralRow; manage: boolean }) {
           ))}
         </span>
       ) : null}
-      {row.rejectReason ? <span className="type-caption text-ink-2">{t("common.reasonWas", { reason: row.rejectReason })}</span> : null}
+      {rejected ? <span className="type-caption text-ink-2">{t("common.reasonWas", { reason: rejected })}</span> : null}
       {manage && open ? (
         <span className="prm-actions">
           {row.recordedByMe ? (

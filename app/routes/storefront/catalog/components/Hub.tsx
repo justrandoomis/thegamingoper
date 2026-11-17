@@ -11,12 +11,11 @@ import { useRouteLoaderData } from "react-router";
 
 import { Icon, type IconName } from "~/art/Icon";
 import type { UsedUnitCardData } from "~/lib/dto";
-import { useDir, useFormat, useT } from "~/i18n/react";
+import { useFormat, useT } from "~/i18n/react";
 import { MotionLink, SharedElement, useRail } from "~/motion";
 import { LAYOUT_ROUTE_ID } from "~/routes/storefront/shell/meta";
 import type { NavCategory, ShellData } from "~/routes/storefront/shell/types";
 import { Band } from "~/ui/Band";
-import { hasRtl } from "~/ui/BidiText";
 import { Breadcrumbs, type Crumb } from "~/ui/Breadcrumbs";
 import { CategoryTile } from "~/ui/CategoryTile";
 import { Chip } from "~/ui/Chip";
@@ -149,30 +148,6 @@ export function useKindIcon(): (slug: string) => IconName {
   };
   walk(nav?.categories ?? []);
   return (slug) => kindIconOf(slug, kinds.get(slug));
-}
-
-/**
- * A chip's words with its icon at the chip's start (v2.1: the before's bolder icons). The kit's chip isolates its words
- * in the direction they need (BidiLabel): a Latin label on an Arabic page is a left-to-right island, so there the icon
- * follows the words to stand at the chip's start. A chosen chip shows its check instead (catalog.css). `gel`: the
- * icon in that platform's colour (the device glyph of a platform chip).
- */
-export function ChipLabel({ icon, gel, children }: { icon?: IconName | null; gel?: Platform | null; children: string }) {
-  const dir = useDir();
-  if (!icon) return <>{children}</>;
-  const after = dir === "rtl" && !hasRtl(children);
-  const glyph = <Icon name={icon} size={18} className={cx("catalog-chip__icon", after && "catalog-chip__icon--after", gel && "catalog-chip__icon--plat")} data-gel={gel ?? undefined} />;
-  return after ? (
-    <>
-      {children}
-      {glyph}
-    </>
-  ) : (
-    <>
-      {glyph}
-      {children}
-    </>
-  );
 }
 
 // ───────────────────────────────────────────────────────────────── the platform band
@@ -329,14 +304,20 @@ export function ChipRow({ label, options, selected, allCount, hrefFor }: { label
   return (
     <nav aria-label={label} className="min-w-0" onFocus={keepInView}>
       <div className="chips chips--rail chips--bleed catalog-chips">
-        <Chip as={HrefLink} to={hrefFor(null)} selected={selected === null} count={allCount}>
-          <ChipLabel icon="squares-four">{t("hub.all")}</ChipLabel>
+        <Chip as={HrefLink} to={hrefFor(null)} selected={selected === null} count={allCount} icon="squares-four">
+          {t("hub.all")}
         </Chip>
         {options.map((option) => (
-          <Chip key={option.value} as={HrefLink} to={hrefFor(option.value)} selected={selected === option.value} count={option.count}>
-            <ChipLabel icon={option.icon ?? (option.platform ? deviceGlyph(option.platform) : null)} gel={option.platform}>
-              {option.label}
-            </ChipLabel>
+          <Chip
+            key={option.value}
+            as={HrefLink}
+            to={hrefFor(option.value)}
+            selected={selected === option.value}
+            count={option.count}
+            icon={option.icon ?? (option.platform ? deviceGlyph(option.platform) : undefined)}
+            data-gel={option.platform}
+          >
+            {option.label}
           </Chip>
         ))}
       </div>
@@ -420,8 +401,9 @@ export function DeviceRow({
   const Heading = `h${headingLevel}` as const;
   if (devices.length === 0) return null;
   return (
-    <section aria-labelledby={id} className={cx("catalog-devices", className)} id="catalog-devices" {...(reveal ? revealProps() : {})}>
-      <div className="catalog-devices__head">
+    // `reveal`: the head fades up and the tiles follow one after another (the kit's stagger, as `Rail reveal` does)
+    <section aria-labelledby={id} className={cx("catalog-devices", className)} id="catalog-devices">
+      <div className="catalog-devices__head" {...(reveal ? revealProps() : {})}>
         <div className="catalog-devices__text">
           <Heading id={id} className="catalog-devices__title">
             {title}
@@ -435,7 +417,7 @@ export function DeviceRow({
           </div>
         ) : null}
       </div>
-      <ul ref={row} role="list" className="catalog-devices__rail" onFocus={keepInView}>
+      <ul ref={row} role="list" className="catalog-devices__rail" onFocus={keepInView} {...(reveal ? revealProps({ stagger: true }) : {})}>
         {devices.map((device) => {
           const shown = names === "short" && device.short ? device.short : device.name;
           return (

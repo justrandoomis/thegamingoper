@@ -40,7 +40,7 @@ export default defineMessages({
       },
       used: {
         pill: "المستعمل",
-        title: "مستعمل ومفحوص",
+        title: "المستعمل والمفحوص",
         text: "لكل جهاز درجة حالة وتقرير فحص.",
         cta: "تصفّح المستعمل",
       },
@@ -70,7 +70,7 @@ export default defineMessages({
       newArrivals: "وصل حديثاً",
       newArrivalsReason: "أحدث ما أضفناه، والمتوفر الآن",
       platformChips: "اختر المنصّة",
-      used: "مستعمل ومفحوص",
+      used: "المستعمل والمفحوص",
       usedReason: "لكل جهاز درجة حالة وتقرير فحص",
       recent: "شاهدتها مؤخراً",
       recentReason: "محفوظة على هذا الجهاز فقط",

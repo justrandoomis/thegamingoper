@@ -149,15 +149,10 @@
   }
 
   /* ───────────────────────────── the empty cart (client note 7: the before's arrangement) ─────────────────────────────
-     The page title at the start; the soft card across the column with the mascot, the title, one line and the centred
-     key; «طلبت من قبل؟ تتبّع طلبك» under the card; then the store's picks. */
+     The page title at the start; the soft card across the column (the kit's <EmptyState panel wide>) with the mascot,
+     the title, one line and the centred key; «طلبت من قبل؟ تتبّع طلبك» under the card; then the store's picks. */
   .co-empty {
     gap: var(--s-5);
-  }
-  .co-empty > .empty--panel {
-    inline-size: 100%;
-    max-inline-size: none;
-    margin-block: 0;
   }
   .co-empty__track {
     display: flex;

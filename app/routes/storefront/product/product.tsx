@@ -51,7 +51,7 @@ import { galleryFor, type ProductDetail } from "~/server/services/catalog/produc
 import { getCompatibilityForProduct } from "~/server/services/compatibility.server";
 import { getDeviceLink } from "~/server/services/devices.server";
 import { recommendationsFor } from "~/server/services/recommendations.server";
-import { getReviewSummary } from "~/server/services/reviews.server";
+import { getReviewSummary, listVerifiedReviews } from "~/server/services/reviews.server";
 import { wishedAmong, wishlistWho } from "~/server/services/wishlist.server";
 import { redirectIfMoved } from "~/routes/storefront/content/redirect.server";
 import { sendRecommendationEvent } from "~/routes/storefront/devices/components/signals";
@@ -104,8 +104,11 @@ export async function loader({ params, context, request, url }: Route.LoaderArgs
     throw redirect(`${localePath(`/p/${product.slug}`, ctx.locale)}${v ? `?v=${encodeURIComponent(v)}` : ""}`, 301);
   }
   const customerId = session?.customer.id ?? null;
-  const [reviews, compatibility, wished, device] = await Promise.all([
+  // the reviews: the summary and the newest few themselves — approved, verified purchases only; both one index seek
+  // (reviews_product_idx), no row read while a product has none
+  const [reviews, reviewList, compatibility, wished, device] = await Promise.all([
     getReviewSummary(db, product.id),
+    listVerifiedReviews(db, product.id, { limit: 6 }),
     getCompatibilityForProduct(db, ctx.locale, product.id),
     wishedAmong(db, wishlistWho(ctx.cookie, customerId), [product.id]),
     getDeviceLink(db, ctx.locale, product.deviceModel?.slug),
@@ -113,6 +116,7 @@ export async function loader({ params, context, request, url }: Route.LoaderArgs
   return {
     product,
     reviews,
+    reviewList,
     compatibility,
     wished: wished.has(product.id),
     device,
@@ -167,7 +171,7 @@ type LayoutData = { shell?: Pick<ShellData, "publicOrigin" | "payments"> };
 export const isDigital = (product: Pick<ProductDetail, "kind" | "mediaFormat">) => product.kind === "digital" || product.mediaFormat === "digital";
 
 export default function ProductPage({ loaderData }: Route.ComponentProps) {
-  const { product, reviews, storeMode, compatibility, wished, device, recommendations } = loaderData;
+  const { product, reviews, reviewList, storeMode, compatibility, wished, device, recommendations } = loaderData;
   const t = useProductT();
   const shop = useT("ui-shop");
   const locale = useLocale();
@@ -381,7 +385,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           </div>
         </Reveal>
         <DeviceHubSlot device={device} className="max-w-[40rem]" />
-        <Reviews summary={reviews} />
+        <Reviews summary={reviews} items={reviewList} />
         <RecommendationsSlot key={product.id} result={recommendations} />
       </div>
 

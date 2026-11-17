@@ -105,6 +105,10 @@
     gap: var(--s-3);
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
   }
+  /* the wallets page carries five figures (the payouts since 2026-11-13): one row on a desktop */
+  .fin-kpis--five {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12.5rem), 1fr));
+  }
 
   /* ── account depth in the chart ── */
   .fin-depth-1 {

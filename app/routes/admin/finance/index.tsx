@@ -39,6 +39,7 @@ export default function FinanceHome({ loaderData }: Route.ComponentProps) {
   const candidates: (Card | null)[] = [
     waiting.topups !== null ? { id: "topups", count: waiting.topups, to: "/admin/finance/wallets?tab=topups", icon: "wallet" } : null,
     waiting.adjustments !== null ? { id: "adjustments", count: waiting.adjustments, to: "/admin/finance/wallets?tab=adjustments", icon: "hand-coins" } : null,
+    waiting.payouts !== null && waiting.payouts !== undefined ? { id: "payouts", count: waiting.payouts, to: "/admin/finance/wallets?tab=payouts", icon: "arrow-square-out" } : null,
     waiting.expenses !== null ? { id: "expenses", count: waiting.expenses, to: expensesHref, icon: "receipt" } : null,
     waiting.statements !== null ? { id: "statements", count: waiting.statements, to: "/admin/finance/settlements?status=unmatched", icon: "bank" } : null,
     waiting.critical !== null ? { id: "critical", count: waiting.critical, to: "/admin/finance/anomalies", icon: "warning" } : null,

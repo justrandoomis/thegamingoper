@@ -1560,7 +1560,10 @@ describe("shell data", () => {
     const sent = (pattern: RegExp, param?: string) => firstWave.some((entry) => pattern.test(entry.sql) && (param === undefined || entry.params.includes(param)));
     expect(sent(/^batch$/)).toBe(true);
     for (const pattern of [/"price_changes"/, /"shipments"/, /cod_settlements/, /purchase_orders/, /FROM receipts/, /supplier_invoices/, /wallet_topups/, /wallet_adjustment/]) expect(sent(pattern), String(pattern)).toBe(true);
-    expect(sent(/"settings"/, "returns.sla")).toBe(true);
+    // the returns module's counts: only the four the bell shows (its `only` — polish 2026-11-13), never the SLA setting
+    // that only its warranties-ending count reads (the bell used to read all eight for two numbers)
+    for (const pattern of [/"returns"/, /"return_items"/, /"repair_tickets"/]) expect(sent(pattern), String(pattern)).toBe(true);
+    expect(before.statements.some((entry) => /"settings"/.test(entry.sql) && entry.params.includes("returns.sla"))).toBe(false);
     expect(sent(/"settings"/, "finance.expense_second_approval_iqd")).toBe(true);
     // …and the later modules' (pos, customers, devices — trade-ins and used units —, security's alerts and reviews,
     // settings' requests), never one after the other

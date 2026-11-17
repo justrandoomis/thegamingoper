@@ -190,20 +190,13 @@
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
-/* a little parallax: what sits in a slide drifts against the swipe (scroll-driven, no JS; off under reduced motion) */
-@supports (animation-timeline: view()) {
-  .carousel__parallax {
-    animation: carousel-parallax linear both;
-    animation-timeline: view(inline);
-  }
-}
-@keyframes carousel-parallax {
-  from {
-    translate: calc(9% * var(--dir)) 0;
-  }
-  to {
-    translate: calc(-9% * var(--dir)) 0;
-  }
+/* a little parallax: what sits in a slide drifts against the swipe — 9% of its own width at most, toward the side its
+   slide is on. useCarousel writes --carousel-shift on each slide that holds one, once a frame while the track moves
+   (−1 … 1, physical: parallaxShift in app/ui/Carousel.tsx), so the drift is right in both directions. It was a CSS
+   view() timeline, which Chromium measures from the wrong edge in a right-to-left scroller (the slide in view read
+   −200% in Arabic; polish round 2026-11-13). Without JavaScript, under reduced motion and on the lite tier: no drift */
+.carousel__parallax {
+  translate: calc(var(--carousel-shift, 0) * 9%) 0;
 }
 /* the bar under the track: dots at the centre, the pause key and the arrows at the end */
 .carousel__bar {
@@ -309,7 +302,7 @@
     scroll-behavior: auto;
   }
   .carousel__parallax {
-    animation: none;
+    translate: none;
   }
   .carousel__dot::before,
   .carousel__dot::after {
@@ -326,7 +319,7 @@
   scroll-behavior: auto;
 }
 [data-motion="reduced"] .carousel__parallax {
-  animation: none;
+  translate: none;
 }
 [data-motion="reduced"] .carousel__dot::before,
 [data-motion="reduced"] .carousel__dot::after {

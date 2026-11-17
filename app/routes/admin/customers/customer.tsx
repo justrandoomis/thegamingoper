@@ -8,14 +8,14 @@ import { throwAsResponse } from "~/server/errors";
 import { getCustomerProfile } from "~/server/services/admin/customers/profile.server";
 import { ORDER_STATUS_TONE, type CustomerAccess, type CustomerProfile } from "~/server/services/admin/customers/types";
 import { ConfirmDialog } from "~/ui/Dialog";
-import { TextArea, TextField } from "~/ui/Field";
+import { Select, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Status } from "~/ui/Tag";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { CUSTOMER_LAYOUT_ID, customersMeta } from "./meta";
 import { openCustomers, respond } from "./customers.server";
 import { profileAction } from "./customer.server";
-import { activityLabel, FlagExplanations, Failure, Money, Num, PhoneText, PrivacyStatusBadge, Ref, Section, SegmentBadge, useCustomersT, useIntent, When } from "./ui";
+import { activityLabel, FlagExplanations, Failure, Money, newKey, Num, PhoneText, PrivacyStatusBadge, Ref, Section, SegmentBadge, useCustomersT, useIntent, When } from "./ui";
 
 /**
  * /admin/customers/:customerId — the 360° profile (07.01): what the customer bought and kept, RFM scores with the
@@ -476,18 +476,40 @@ function WalletSection({ profile }: Props) {
   const t = useCustomersT();
   const wallet = profile.wallet;
   if (!wallet) return null;
+  const payout = wallet.payout;
   return (
     <Section id="cus-wallet" title={t("profile.wallet.title")}>
       <p className="type-kpi nums">
         <Money iqd={wallet.balanceIqd} />
       </p>
       <p className="type-caption text-ink-2">{t("profile.wallet.rule")}</p>
+      {payout?.pending ? (
+        <div className="adm-card adm-card--act gap-1" role="status">
+          <p className="flex flex-wrap items-baseline justify-between gap-2">
+            <span className="type-strong">{t("payout.pendingTitle")}</span>
+            <Money iqd={payout.pending.amountIqd} className="type-strong" />
+          </p>
+          <p className="type-caption text-ink-2">
+            {t(`payout.method.${payout.pending.method}`)} · <bdi>{payout.pending.mine ? t("payout.askedByYou") : t("payout.askedBy", { name: `⁨${payout.pending.requestedBy ?? "—"}⁩` })}</bdi> · <When at={payout.pending.createdAt} />
+          </p>
+          <p className="type-caption text-ink-2">{payout.pending.mine ? t("payout.otherDecides") : t("payout.decideInFinance")}</p>
+          {wallet.financeHref && !payout.pending.mine ? (
+            <Link to={`${wallet.financeHref}#wallet-payouts`} className="adm-link type-caption">
+              {t("payout.openDecision")}
+            </Link>
+          ) : null}
+        </div>
+      ) : payout?.last ? (
+        <p className="type-caption text-ink-2">
+          {t(payout.last.status === "approved" ? "payout.lastPaid" : "payout.lastRejected")} <Money iqd={payout.last.amountIqd} /> · <When at={payout.last.decidedAt} />
+        </p>
+      ) : null}
       {wallet.entries.length ? (
         <ul className="cus-rows">
           {wallet.entries.map((entry) => (
             <li key={entry.id} className="cus-row">
               <span className="grid min-w-0">
-                <span className="type-body">{t(`walletKind.${entry.kind}`)}</span>
+                <span className="type-body">{entry.refType === "wallet_payout" ? t("walletKind.payout") : entry.refType === "wallet_transfer" ? t("walletKind.transfer") : t(`walletKind.${entry.kind}`)}</span>
                 <span className="type-caption text-ink-2">
                   <When at={entry.at} />
                   {entry.orderRef ? (
@@ -506,14 +528,87 @@ function WalletSection({ profile }: Props) {
         <p className="type-body text-ink-2">{t("profile.wallet.none")}</p>
       )}
       {wallet.pendingTopups > 0 ? <p className="type-caption">{t("profile.wallet.pending", { count: wallet.pendingTopups })}</p> : null}
-      {wallet.financeHref ? (
-        <Key as={Link} to={wallet.financeHref} size="sm" iconEnd="arrow-right">
-          {t("profile.wallet.open")}
-        </Key>
-      ) : (
-        <p className="type-caption text-ink-2">{t("profile.wallet.noFinance")}</p>
-      )}
+      <div className="flex flex-wrap gap-2">
+        {payout?.canRequest ? <PayoutButton balanceIqd={wallet.balanceIqd} /> : null}
+        {wallet.financeHref ? (
+          <Key as={Link} to={wallet.financeHref} size="sm" iconEnd="arrow-right">
+            {t("profile.wallet.open")}
+          </Key>
+        ) : null}
+      </div>
+      {wallet.financeHref ? null : <p className="type-caption text-ink-2">{t("profile.wallet.noFinance")}</p>}
     </Section>
+  );
+}
+
+/**
+ * Money OUT of the wallet (2026-11-13): this employee ASKS — with the amount, how it is paid and a reason — and a
+ * second person decides it in finance (never the one who asked). Nothing moves until then.
+ */
+function PayoutButton({ balanceIqd }: { balanceIqd: number }) {
+  const t = useCustomersT();
+  const f = useFormat();
+  const [open, setOpen] = useState(false);
+  const [key, setKey] = useState("");
+  const [amount, setAmount] = useState("");
+  const [method, setMethod] = useState<"cash" | "bank_transfer">("cash");
+  const [reference, setReference] = useState("");
+  const { fetcher, pending, message, fields } = useIntent("payout", "done.payoutRequested", () => setOpen(false));
+  const start = () => {
+    setKey(newKey());
+    setAmount("");
+    setMethod("cash");
+    setReference("");
+    setOpen(true);
+  };
+  return (
+    <>
+      <Key size="sm" icon="hand-coins" onClick={start}>
+        {t("payout.ask")}
+      </Key>
+      <ConfirmDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        tone="commit"
+        title={t("payout.askTitle")}
+        consequence={t("payout.askWhat")}
+        confirmLabel={t("payout.askKey")}
+        impact={[
+          { label: t("payout.balanceNow"), value: f.iqd(balanceIqd) },
+          { label: t("payout.decider"), value: t("payout.deciderValue") },
+        ]}
+        reason={{ label: t("dialog.reason"), hint: t("payout.reasonHint"), minLength: 10, maxLength: 500 }}
+        pending={pending}
+        error={fields.amountIqd || fields.reference || fields.method ? null : message}
+        onConfirm={({ reason }) => fetcher.submit({ intent: "payout", amountIqd: amount, method, reference: method === "bank_transfer" ? reference : "", reason, key }, { method: "post" })}
+      >
+        <TextField
+          name="amountIqd"
+          label={t("payout.amount")}
+          hint={t("payout.amountHint", { max: f.iqd(balanceIqd) })}
+          inputMode="numeric"
+          autoComplete="off"
+          required
+          value={amount}
+          onChange={(event) => setAmount(event.currentTarget.value)}
+          error={fields.amountIqd}
+          end={<span className="type-caption">{t("payout.iqd")}</span>}
+        />
+        <Select
+          name="method"
+          label={t("payout.methodLabel")}
+          value={method}
+          onChange={(event) => setMethod(event.currentTarget.value === "bank_transfer" ? "bank_transfer" : "cash")}
+          options={[
+            { value: "cash", label: t("payout.method.cash") },
+            { value: "bank_transfer", label: t("payout.method.bank_transfer") },
+          ]}
+        />
+        {method === "bank_transfer" ? (
+          <TextField name="reference" label={t("payout.reference")} hint={t("payout.referenceHint")} autoComplete="off" maxLength={100} value={reference} onChange={(event) => setReference(event.currentTarget.value)} error={fields.reference} />
+        ) : null}
+      </ConfirmDialog>
+    </>
   );
 }
 

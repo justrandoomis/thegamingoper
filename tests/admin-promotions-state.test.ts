@@ -423,6 +423,17 @@ describe("fix 2026-11-13: the blueprint rows under the table say what checkout-s
     for (const locale of LOCALES) expect(say(locale, "gift.boundary"), locale).not.toBe("");
   });
 
+  test("polish 2026-11-13: a row is «implemented» only when BOTH channels apply its section — 08.01 said so while the till takes no coupon (08.02 is partial for the same gap)", () => {
+    for (const id of ROWS) {
+      const section = ROW_SECTION[id];
+      const everywhere = SALE_CHANNELS.every((channel) => CHECKOUT_STATE[section][channel] === "applied");
+      if (!everywhere) expect(BLUEPRINT_STATUS[id].status, `${id}: ${section} is ${SALE_CHANNELS.map((channel) => `${channel} ${CHECKOUT_STATE[section][channel]}`).join(", ")}`).toBe("partial");
+    }
+    // the coupons row names the gap as the rules row does: the till takes none, and one limited to it applies nowhere
+    expect(missingPart("08.01", "en")).toMatch(/point of sale takes no coupon/);
+    expect(missingPart("08.01", "ar")).toMatch(/نقطة البيع لا تقبل الكوبونات/);
+  });
+
   test("the retired claims are gone from the rows", () => {
     const retired: Record<NoteLanguage, string[]> = {
       ar: ["نواة التجارة لا تطبّقها", "السلة لا تستخدم سعر العرض", "لا يكتب المتسوق رمز الإحالة عند التسجيل أو الدفع", "حساب التزام بطاقات في الدليل"],

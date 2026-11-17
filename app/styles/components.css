@@ -1305,6 +1305,25 @@ select.field__input {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+/* G7 (polish round 2026-11-13; the product census, wave C): on phones the card's facts are reading text — 16 / 1.75
+   («ذراع تحكم لاسلكية لـ Switch 2» was 13px at 360–390) — on up to two lines: at 16px on one line a 2-up card cut twice
+   as many first facts (measured at 390: «حصرية Nintendo Switch 2» became «حصرية …»; 14 of 20 hub cards against 5), so
+   the first fact wraps, balanced, and only past two lines ends with «…»; the next facts follow whole, as before
+   (<FactLine>). 13px on one line from 768, where three to five cards share a row */
+@media (max-width: 47.99rem) {
+  .pcard__meta {
+    --lines: 2;
+    font: var(--type-read);
+  }
+  .pcard__meta .factline__fact:first-child .factline__text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    text-wrap: balance;
+  }
+}
 .pcard__foot {
   position: relative;
   z-index: 2;
@@ -2037,6 +2056,13 @@ select.field__input {
   font: var(--type-sm);
   color: var(--ink-2);
 }
+/* G7 (polish round 2026-11-13): why a shelf is there («اختارها المتجر، وكلها تعمل مع Nintendo Switch 2») is a sentence
+   to read — 16 / 1.75 on phones (it was 14 / 1.5), 14 from 768 */
+@media (max-width: 47.99rem) {
+  .sechead__reason {
+    font: var(--type-read);
+  }
+}
 .sechead__chips {
   flex-basis: 100%;
   min-inline-size: 0; /* a chip rail scrolls inside the head instead of widening it */
@@ -2379,6 +2405,18 @@ select.field__input {
 .compat__state {
   font: var(--type-xs);
   color: var(--ink-2);
+}
+/* <CompatBadge note>: the rule's note under the state («يعمل بشرط …») — reading text on phones (G7: 16 / 1.75; polish
+   round 2026-11-13, it was 13px under the device hub's cards), 13px from 768. A class, not a type utility: the
+   utilities layer would beat this phone size */
+.compat-badge__note {
+  font: var(--type-xs);
+  color: var(--ink-2);
+}
+@media (max-width: 47.99rem) {
+  .compat-badge__note {
+    font: var(--type-read);
+  }
 }
 
 /* ───────────────────────────── layers: toast, sheet, dialog, menu (§9.13–§9.15) ─────────────────────────────

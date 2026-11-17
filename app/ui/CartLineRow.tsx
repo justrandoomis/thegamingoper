@@ -3,6 +3,7 @@ import { useLayoutEffect, useRef, type ReactNode } from "react";
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import type { CartLine, CartLineProblem } from "~/lib/dto";
+import { keepTokens } from "~/lib/keep-tokens";
 import { BidiText, isolate } from "./BidiText";
 import { cartErrorKey, MAX_ADD_QTY } from "./cart-client";
 import { cx } from "./cx";
@@ -125,7 +126,7 @@ export function CartLineRow({ line, removed = false, busy = false, error = null,
     };
     return (
       <Row ref={setRow} data-cart-line={line.id} data-removed="" aria-busy={busy || undefined} className={cx("cline cline--undo border-b border-line", className)}>
-        <p className="min-w-0 flex-1">{t("line.removed", { name: isolate(line.name) })}</p>
+        <p className="min-w-0 flex-1">{t("line.removed", { name: isolate(keepTokens(line.name)) })}</p>
         <span className="flex shrink-0 items-center gap-1">
           <Key ref={restoreKey} variant="ghost" size="sm" loading={busy} onClick={onRestore} aria-label={t("line.restoreNamed", { name: line.name })}>
             {t("line.restore")}
@@ -162,11 +163,12 @@ export function CartLineRow({ line, removed = false, busy = false, error = null,
         <ProductImage image={line.image} alt="" sizes="120px" fit="cover" />
       </Niche>
       <div className="cline__body">
-        {/* the link is a 44px band (negative margins keep the layout); the name inside wraps to two lines at most */}
+        {/* the link is a 44px band (negative margins keep the layout); the name inside wraps to two lines at most, its
+            tokens kept whole («USB‑C», «Joy‑Con 2»: ~/lib/keep-tokens) — an old snapshot or an owner-typed name too */}
         <p className="cline__name [unicode-bidi:isolate]">
           <LocaleLink to={line.href} data-line-name="" className="-my-3 block py-3 underline-offset-4 hover:underline">
             <span className="line-clamp-2">
-              <BidiText text={line.name} />
+              <BidiText text={keepTokens(line.name)} />
             </span>
           </LocaleLink>
         </p>

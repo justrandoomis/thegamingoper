@@ -17,6 +17,9 @@
  *     a device model's photo on its mega-menu link when the read layer sends one;
  *   · a focused field is moved out from under a bar; the task header's title is cut between words; the exchange
  *     rate keeps «figure, then currency» in every language; the Sorani strings spell the brand «طمطم».
+ *   · polish 2026-11-13: the chrome budget from attributes the shell sets, never a :has() over the page (one carousel
+ *     dot's aria-current restyled the whole page); a sold-out suggestion says «نفد حالياً» where the price goes;
+ *     the footer's legal lines read at 16px on phones; measures in em.
  */
 import { readFileSync } from "node:fs";
 import { createElement, type ComponentType } from "react";
@@ -27,15 +30,21 @@ import { messagesFor } from "~/i18n/i18n.server";
 import errorMessages from "~/i18n/messages/errors";
 import shellMessages from "~/i18n/messages/shell";
 import uiMessages from "~/i18n/messages/ui";
+import uiCardMessages from "~/i18n/messages/ui-card";
 import { makeT } from "~/i18n/translate";
-import { LOCALE_CODES, LOCALES, switchLocalePath } from "~/lib/locales";
+import { LOCALE_CODES, LOCALES, switchLocalePath, type Locale } from "~/lib/locales";
 import { POLICY_SLUGS } from "~/routes/storefront/content/content-model";
 import { DemoStrip } from "~/routes/storefront/shell/Banners";
+import { CheckoutBar } from "~/routes/storefront/shell/Header";
+import { ShellMessages } from "~/routes/storefront/shell/i18n";
+import { ProductSuggestion } from "~/routes/storefront/shell/SearchForm";
+import { ShellFrame } from "~/routes/storefront/shell/ShellFrame";
 import {
   backFallback,
   canonicalSearch,
   checkoutRail,
   clampWords,
+  drawsTaskBar,
   errorKind,
   focusNudge,
   FOOTER_POLICIES,
@@ -52,6 +61,7 @@ import {
   shellChrome,
   suggestionKind,
   suggestionMeta,
+  suggestionPrice,
   suggestionState,
   tabOf,
   TASK_FOOTER_LABELS,
@@ -843,5 +853,147 @@ describe("the shell's stylesheet (QA 2026-11-13)", () => {
     expect(phones).toMatch(/\.shell-cobar__steps \.step\[aria-current="step"\] \.step__label \{\s*font-weight: 600;/);
     // only English and Sorani hide the other steps' words, and only below 390
     expect(media("(max-width: 24.37rem)")).toContain('.shell-cobar__steps:not(:lang(ar)) .step:not([aria-current="step"]) .step__label');
+  });
+
+  /** The stylesheet without its comments (they may name what is no longer there). */
+  const code = css.replace(/\/\*[\s\S]*?\*\//g, "");
+
+  it("never makes the browser watch the whole page: no :root:has() / .shell:has(), no aria-current inside :has() (polish 2026-11-13)", () => {
+    // one carousel dot's aria-current restyled the whole page (88–199ms at 4× CPU): li:has(> .step[aria-current]) made
+    // every aria-current change re-check :has(), and :root:has() / .shell:has() over the page made that check reach
+    // the root and the whole shell. The budget comes from attributes the shell sets instead.
+    expect(code).not.toMatch(/:root:has\(/);
+    expect(code).not.toMatch(/\.shell(\[[^\]]*\])*:has\(/);
+    expect(code).not.toMatch(/:has\([^{]*aria-current/);
+    expect(code).not.toMatch(/\.shell-header[^{,]*:has\(/);
+    expect(code).not.toMatch(/\bli:has\(/);
+    // the one :has() left is the search field's focus ring: its anchor is the field, it watches the field's input
+    expect(code.match(/:has\(/g) ?? []).toEqual([":has("]);
+    expect(code).toContain(".shell-search__field:has(.shell-search__input:focus-visible)");
+  });
+
+  it("keys the chrome budget on the shell's attributes: .shell[data-chrome] from the server's HTML, <html data-shell-chrome> once the page runs, .shell[data-taskbar]", () => {
+    expect(code).toMatch(/:root,\s*\.shell \{[^}]*--shell-top: calc\(var\(--shell-header-h\)/);
+    expect(code).toMatch(/:root\[data-shell-chrome="checkout"\],\s*\.shell\[data-chrome="checkout"\] \{\s*--shell-header-h: var\(--h-checkout\);/);
+    // the tab bar gives way to a page's own bottom bar; the bottom budget is that bar's (72 + safe area until measured)
+    expect(code).toMatch(/\.shell\[data-taskbar\] \.shell-tabbar \{\s*display: none;/);
+    expect(code).toMatch(/\.shell\[data-taskbar\] \{\s*--shell-bottom: var\(--shell-taskbar-h, calc\(var\(--h-taskbar\) \+ var\(--safe-bottom\)\)\);/);
+    // the toaster's two tops (ShellFrame picks one by the header's scroll state)
+    expect(code).toMatch(/--shell-toast-top-full: calc\(var\(--shell-toast-top\) \+ var\(--shell-strip-h\) \+ var\(--shell-lead\)\);/);
+    // the task header hides the lockup and the search for the page's title by the header's own attribute
+    expect(code).toMatch(/\.shell-header\[data-task="title"\]\[data-scrolled\] :is\(\.shell-lockup, \.shell-pill, \.shell-searchkey\) \{\s*display: none;/);
+  });
+
+  it("sizes the checkout rail's current step and its done links by the bar's class, not by li:has()", () => {
+    expect(code).toMatch(/\.shell-cobar__steps--current-1 \.steps > li:nth-child\(1\),\s*\.shell-cobar__steps--current-2 \.steps > li:nth-child\(2\),\s*\.shell-cobar__steps--current-3 \.steps > li:nth-child\(3\)/);
+    expect(code).toMatch(/\.shell-cobar__steps--current-3 \.steps > li:nth-child\(2\) > \.step__sep/);
+  });
+
+  it("reads the footer's legal lines at the reading size on phones; the demo strip stays the slim exception (polish 2026-11-13)", () => {
+    const phones = /@media \(max-width: 47\.99rem\) \{\s*\.shell-footer__line,[^{]*\{\s*font: var\(--type-read\);/.exec(code)?.[0] ?? "";
+    expect(phones).toContain(".shell-footer__legal p");
+    expect(phones).not.toContain("demo-strip");
+  });
+
+  it("measures lines in em, never ch (ch changed 7.5% when the fonts arrived: a layout shift)", () => {
+    expect(code).not.toMatch(/\d(\.\d+)?ch\b/);
+  });
+});
+
+describe("the shell's attributes on the server's HTML (polish 2026-11-13)", () => {
+  const rootData = (locale: Locale = "ar") => ({ locale, dir: LOCALES[locale].dir, fx: null, storeMode: "demo", i18n: messagesFor(locale, "ui", "ui-shop", "ui-overlays", "ui-card") });
+  const stub = (Page: ComponentType, address: string, handle?: unknown) => {
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "*", Component: Page, handle }] }]);
+    return renderToStaticMarkup(createElement(Stub, { initialEntries: [address], hydrationData: { loaderData: { root: rootData() } } }));
+  };
+  const frame = (address: string, handle?: unknown) =>
+    stub(() => createElement(ShellFrame, { shell: null, messages: messagesFor("ar", "shell").shell, children: createElement("h1", null, "x") }), address, handle);
+
+  it("marks a page that draws its own bottom bar from the first byte, so the tab bar gives way before any script runs", () => {
+    expect(frame("/p/x", { shell: { tabBar: false } })).toContain('<div class="shell" data-chrome="store" data-taskbar="">');
+    expect(frame("/trade-in?step=device", { shell: { chrome: "task" } })).toContain('<div class="shell" data-chrome="task" data-taskbar="">');
+    expect(frame("/checkout", { shell: { chrome: "checkout" } })).toContain('<div class="shell" data-chrome="checkout" data-taskbar="">');
+    // a store page without one keeps the tab bar
+    expect(frame("/platform/playstation", undefined)).toContain('<div class="shell" data-chrome="store">');
+  });
+
+  it("guesses from the handles alone (the bars themselves correct it once the page runs: an empty cart draws none)", () => {
+    const at = (handle: unknown, path = "/x") => drawsTaskBar(shellChrome([{ id: "root" }, { id: LAYOUT_ROUTE_ID }, { id: "page", handle }], { path }));
+    expect(at({ shell: { tabBar: false } })).toBe(true);
+    expect(at({ shell: { chrome: "task" } })).toBe(true);
+    expect(at({ shell: { chrome: "checkout" } })).toBe(true);
+    expect(at(undefined, "/checkout")).toBe(true);
+    expect(at(undefined)).toBe(false);
+    expect(at({ shell: { tabBar: true } })).toBe(false);
+  });
+
+  it("knows from the root's cart count that an empty cart and an empty checkout draw no bar (review 2026-11-17: the tab bar was gone until hydration, and for good without script)", () => {
+    const at = (path: string, cartCount: number | null, handle: unknown = { shell: { tabBar: false } }) =>
+      drawsTaskBar(shellChrome([{ id: "root" }, { id: LAYOUT_ROUTE_ID }, { id: "page", handle }], { path }), { path, cartCount });
+    expect(at("/cart", 0)).toBe(false);
+    expect(at("/checkout", 0, { shell: { chrome: "checkout" } })).toBe(false);
+    expect(at("/checkout", 0, undefined)).toBe(false);
+    // a cart with lines, or a count the page does not know: the handles' answer
+    expect(at("/cart", 2)).toBe(true);
+    expect(at("/cart", null)).toBe(true);
+    // an empty cart says nothing about another page's bar (a product's buy bar)
+    expect(at("/p/x", 0)).toBe(true);
+  });
+
+  it("renders an empty cart's frame without data-taskbar (the root's cart count is 0)", () => {
+    const withCart = (address: string, count: number, handle: unknown) => {
+      const Stub = createRoutesStub([
+        {
+          id: "root",
+          path: "/",
+          children: [{ id: "page", path: "*", handle, Component: () => createElement(ShellFrame, { shell: null, messages: messagesFor("ar", "shell").shell, children: createElement("h1", null, "x") }) }],
+        },
+      ]);
+      return renderToStaticMarkup(createElement(Stub, { initialEntries: [address], hydrationData: { loaderData: { root: { ...rootData(), cart: { count } } } } }));
+    };
+    expect(withCart("/cart", 0, { shell: { tabBar: false } })).toContain('<div class="shell" data-chrome="store">');
+    expect(withCart("/cart", 1, { shell: { tabBar: false } })).toContain('<div class="shell" data-chrome="store" data-taskbar="">');
+  });
+
+  it("names the checkout rail's current step on the bar (the kit's rail marks no <li>): 1, 2, 3", () => {
+    const bar = (address: string) => stub(() => createElement(ShellMessages, { messages: messagesFor("ar", "shell").shell, children: createElement(CheckoutBar, { demo: true }) }), address);
+    expect(bar("/checkout")).toContain('class="min-w-0 shell-cobar__steps shell-cobar__steps--current-1"');
+    expect(bar("/checkout?step=payment")).toContain('class="min-w-0 shell-cobar__steps shell-cobar__steps--current-2"');
+    expect(bar("/checkout?step=review")).toContain('class="min-w-0 shell-cobar__steps shell-cobar__steps--current-3"');
+  });
+});
+
+describe("a sold-out product in the search suggestions (polish 2026-11-13)", () => {
+  /** A product row as the server would render it, in `locale`. */
+  const row = (item: Parameters<typeof ProductSuggestion>[0]["item"], locale: Locale = "ar") => {
+    const Page: ComponentType = () => createElement(ShellMessages, { messages: messagesFor(locale, "shell").shell, children: createElement(ProductSuggestion, { item }) });
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "*", Component: Page }] }]);
+    const root = { locale, dir: LOCALES[locale].dir, fx: null, storeMode: "demo", i18n: messagesFor(locale, "ui", "ui-shop", "ui-card") };
+    return renderToStaticMarkup(createElement(Stub, { initialEntries: [locale === "ar" ? "/search" : `/${locale}/search`], hydrationData: { loaderData: { root } } }));
+  };
+
+  it("what goes in the price's place: the price, «نفد حالياً» while sold out (the endpoint then leaves the price out), else nothing", () => {
+    expect(suggestionPrice({ priceIqd: 365000 })).toBe(365000);
+    expect(suggestionPrice({ soldOut: true })).toBe("soldOut");
+    expect(suggestionPrice({ soldOut: true, priceIqd: 365000 })).toBe("soldOut");
+    expect(suggestionPrice({ soldOut: false, priceIqd: 0 })).toBe(0);
+    expect(suggestionPrice({})).toBeNull();
+  });
+
+  it("says the cards' words where the price goes, in every language — and shows no price", () => {
+    const item = { label: "PlayStation 5 Pro", href: "/p/ps5-pro", soldOut: true as const, kindLabel: "جهاز PS5" };
+    for (const locale of LOCALE_CODES) {
+      const words = (uiCardMessages[locale] as { outNow: string }).outNow;
+      const html = row(item, locale);
+      expect(html, locale).toContain(`<span class="shell-suggest__sold">${words}</span>`);
+      expect(html, locale).not.toContain("price");
+      expect(makeT(shellMessages[locale], locale, "shell")("search.soldOut"), locale).toBe(words);
+    }
+  });
+
+  it("keeps the price on a product that can be bought", () => {
+    const html = row({ label: "PlayStation 5 Pro", href: "/p/ps5-pro", priceIqd: 1095000 });
+    expect(html).toContain("price");
+    expect(html).not.toContain("shell-suggest__sold");
   });
 });

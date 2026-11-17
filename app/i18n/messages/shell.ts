@@ -117,6 +117,8 @@ export default defineMessages({
       noneHint: "ابحث في كل المتجر",
       // demo mode: the list's prices are the demo catalogue's (the sheet covers the demo strip)
       demoPrices: "الأسعار تجريبية",
+      // a sold-out product's row, where the price goes — the cards' words (ui-card outNow), one term per concept
+      soldOut: "نفد حالياً",
       kind: {
         product: "منتج",
         platform: "منصة",
@@ -332,6 +334,7 @@ export default defineMessages({
       none: "No suggestions for “{q}”",
       noneHint: "Search the whole store",
       demoPrices: "Demo prices",
+      soldOut: "Sold out",
       kind: {
         product: "Product",
         platform: "Platform",
@@ -539,6 +542,7 @@ export default defineMessages({
       none: "هیچ پێشنیارێک نییە بۆ «{q}»",
       noneHint: "لە هەموو فرۆشگاکەدا بگەڕێ",
       demoPrices: "نرخەکان تاقیکارین",
+      soldOut: "ئێستا نەماوە",
       kind: {
         product: "بەرهەم",
         platform: "پلاتفۆرم",

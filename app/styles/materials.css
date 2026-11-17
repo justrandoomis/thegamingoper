@@ -133,6 +133,9 @@
   overflow: visible;
   text-overflow: clip;
   text-wrap: balance;
+  /* two lines of Arabic or Sorani marks need room between them (polish round 2026-11-13; the transaction review set it
+     under the order's not-found keys): 1.45, not the one-line label's 1.25 — a one-line key stays 48px */
+  line-height: 1.45;
 }
 /* <Key fit="compact">: a task bar's key on a 320–375 phone (two keys side by side): 44px tall, 12px sides */
 .key--compact {

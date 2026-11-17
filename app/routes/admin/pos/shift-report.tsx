@@ -104,6 +104,7 @@ export default function ShiftReportPage({ loaderData }: Route.ComponentProps) {
         {report.cash.refundsIqd ? <Row label={t("move.refund")} value={<Money iqd={report.cash.refundsIqd} signed />} /> : null}
         {report.cash.payInIqd ? <Row label={t("move.pay_in")} value={<Money iqd={report.cash.payInIqd} signed />} /> : null}
         {report.cash.payOutIqd ? <Row label={t("move.pay_out")} value={<Money iqd={report.cash.payOutIqd} signed />} /> : null}
+        {report.cash.tradeInIqd ? <Row label={t("report.ofTradeIn")} value={<Money iqd={report.cash.tradeInIqd} signed />} /> : null}
         {report.cash.dropIqd ? <Row label={t("move.drop")} value={<Money iqd={report.cash.dropIqd} signed />} /> : null}
         {report.cash.expectedIqd !== null ? <Row label={t("report.expected")} value={<Money iqd={report.cash.expectedIqd} />} strong /> : null}
         <Row label={t("report.counted")} value={<Money iqd={report.countedCashIqd} />} strong />
@@ -126,7 +127,7 @@ export default function ShiftReportPage({ loaderData }: Route.ComponentProps) {
               <div key={move.id} className="pos-print__item">
                 <div className="pos-print__row">
                   <span>
-                    {t(`move.${move.kind}`)}
+                    {move.tradeIn ? t("move.trade_in") : t(`move.${move.kind}`)}
                     {move.orderRef ? (
                       <>
                         {" · "}

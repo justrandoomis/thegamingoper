@@ -20,20 +20,30 @@ export type IndicatorOptions = {
   /** The custom properties for the start offset and the width. */
   x: "--thumb-x" | "--ind-x";
   w: "--thumb-w" | "--ind-w";
-  /** Pixels taken off both ends of the item (the tabs' underline sits inside the tab's padding). */
-  inset?: number;
+  /** Pixels taken off both ends of the item — or "padding": the item's own inline padding, read when it is measured
+   *  (the tabs' underline sits inside the tab's padding, whatever a compact row or a page sets it to). */
+  inset?: number | "padding";
 };
+
+/** What comes off the item's two ends: the same number at both, or its inline-start and inline-end paddings. */
+export type IndicatorInset = number | { start: number; end: number };
 
 /** Where an item sits along a track, from the track's inline start (pure; exported for tests). */
 export function indicatorBox(
   track: { clientWidth: number },
   item: { offsetLeft: number; offsetWidth: number },
   rtl: boolean,
-  inset = 0,
+  inset: IndicatorInset = 0,
 ): { x: number; width: number } {
-  const width = Math.max(0, item.offsetWidth - 2 * inset);
-  const start = (rtl ? track.clientWidth - item.offsetLeft - item.offsetWidth : item.offsetLeft) + inset;
+  const { start: before, end: after } = typeof inset === "number" ? { start: inset, end: inset } : inset;
+  const width = Math.max(0, item.offsetWidth - before - after);
+  const start = (rtl ? track.clientWidth - item.offsetLeft - item.offsetWidth : item.offsetLeft) + before;
   return { x: Math.round(rtl ? -start : start), width: Math.round(width) };
+}
+
+/** An item's inline paddings in pixels, from its computed style (pure; exported for tests). */
+export function paddingInset(style: { paddingInlineStart: string; paddingInlineEnd: string }): { start: number; end: number } {
+  return { start: parseFloat(style.paddingInlineStart) || 0, end: parseFloat(style.paddingInlineEnd) || 0 };
 }
 
 export function useSlidingIndicator(track: RefObject<HTMLElement | null>, key: unknown, options: IndicatorOptions): void {
@@ -48,7 +58,7 @@ export function useSlidingIndicator(track: RefObject<HTMLElement | null>, key: u
         return;
       }
       const rtl = getComputedStyle(element).direction === "rtl";
-      const box = indicatorBox(element, item, rtl, inset);
+      const box = indicatorBox(element, item, rtl, inset === "padding" ? paddingInset(getComputedStyle(item)) : inset);
       element.style.setProperty(x, `${box.x}px`);
       element.style.setProperty(w, `${box.width}px`);
       if (!element.hasAttribute(attribute)) {

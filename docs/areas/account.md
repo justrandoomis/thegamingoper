@@ -9,6 +9,32 @@ ledger are the commerce core's (CONTRACTS §1): read through it, never written h
 and gift cards are module 08's, privacy requests module 07's: the account calls their services for the customer's own
 account (2026-11-12).
 
+## Polish round (2026-11-13, finished 2026-11-17) — what changed
+
+- **Reviews of delivered lines** (admin 16's request): `app/server/services/account/reviews.server.ts`
+  (`listOrderReviewSlots`, `submitLineReview`) writes into the review hub's `reviews` table (admin 16.06's model, no
+  schema change). On `/account/orders/:ref` a delivered order shows «قيّم ما استلمته»: one row per product (new items
+  only; used units are refused), five star radios and an optional 3–500 character text, a plain post form
+  (`intent=review`) that works without script, a fetcher with it. Only the buyer, only delivered lines, once per
+  product per customer (the unique index + a guarded insert), saved `pending` and shown nowhere until staff approve it.
+  A demo order's review is saved with `is_verified_purchase = 0` (staff cannot approve it; the card and its pill say it
+  is never published). Rate limit `REVIEW_WRITES` 20/h per customer and per IP (refusals count). The buyer sees the
+  state (waiting, approved with a link to the product, not approved with the reason's code — never the staff's note).
+  Audited `customers.review.submit` (rating, never the text). Index seeks only (order ref / customer id / product id).
+  A refused send marks its form `data-refused`, so the text shows even when no star was chosen (its error link leads
+  to a field that is there). Tests: `tests/account-reviews.test.ts` (14: the review pass added a simultaneous double
+  send → one row, and a returned order → refused).
+- **«سجّل خروج الأجهزة الأخرى» asks in the page**: the key is a link (`?signout=others#sessions`) that opens an inline
+  question (a warning Note with the count, «سجّل خروجها» and «ارجع»); only the question's form posts, with `confirm=1`.
+  Any other post of `revokeOthers` signs nothing out and redirects to the question. No browser dialog.
+- **Kit adoption:** `CountUp playOnLoad` on the rewards balance; `<Band kind="wallet" gloss>` (overview head, money
+  cards; the local gloss rule is gone, only the `prefers-contrast: more` override stays until the kit covers it);
+  `<Status pill>` (`.acct-pill` deleted); `keepTokens` (`~/lib/keep-tokens`) on every printed order-line name (order
+  rows, the order page's lines and review rows, returns, warranties); `.acct-head__lead` 62ch → 37.2em.
+- **Order summary as the checkout's** (checkout's request): the discount parts are `discountParts` rows above the total
+  (`summaryDiscountParts`) and a waived delivery is the `shippingNote` (`WaiverNote`); `<Adjustments>` keeps only a
+  split payment's parts.
+
 ## Design v2.1 «Clay & Glass» (client round 1, wave B, 2026-11-13) — what changed
 
 Client note 12 (the rewards page, «the new in the store need all improvements in the arrangement and looks and add some

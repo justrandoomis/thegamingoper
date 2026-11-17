@@ -187,7 +187,14 @@ type LightRow = Omit<FactsRow, "product_id"> & {
   attributes_custom: string | null;
 };
 
-const likeOf = (q: string) => `%${q.toLowerCase().replace(/[\\%_]/g, (ch) => `\\${ch}`)}%`;
+/**
+ * The list's search pattern. A name keeps a Latin token whole with U+2011 NON-BREAKING HYPHEN («USB‑C», «Joy‑Con» —
+ * catalog/README.md) while staff type a plain "-": both hyphens (and U+2010) read as "-" on both sides — here in what
+ * was typed, and in SQL in the stored name (`dehyphenedName`) — so "USB-C", "usb-c" and «USB‑C» find «USB‑C» and a
+ * plain-hyphen name alike (tests/admin-dashboard-hyphen.test.ts; the command centre's search folds the same way).
+ */
+const likeOf = (q: string) => `%${q.replace(/[‐‑]/g, "-").toLowerCase().replace(/[\\%_]/g, (ch) => `\\${ch}`)}%`;
+const dehyphenedName = sql`replace(replace(p.name, char(8209), '-'), char(8208), '-')`;
 
 const parseL10n = (value: unknown): L10n => {
   if (typeof value === "string") {
@@ -230,7 +237,7 @@ export async function listProducts(db: Db, actor: Actor, filters: ProductFilters
   if (filters.q) {
     const like = likeOf(filters.q);
     const match = ftsMatchQuery(filters.q);
-    where.push(sql`(p.name LIKE ${like} ESCAPE '\\' OR p.slug LIKE ${like} ESCAPE '\\' OR COALESCE(p.brand, '') LIKE ${like} ESCAPE '\\'
+    where.push(sql`(${dehyphenedName} LIKE ${like} ESCAPE '\\' OR p.slug LIKE ${like} ESCAPE '\\' OR COALESCE(p.brand, '') LIKE ${like} ESCAPE '\\'
       OR EXISTS (SELECT 1 FROM variants v WHERE v.product_id = p.id AND (v.sku LIKE ${like} ESCAPE '\\' OR COALESCE(v.barcode, '') LIKE ${like} ESCAPE '\\'
         OR COALESCE(json_extract(v.options, '$.model'), '') LIKE ${like} ESCAPE '\\'))
       ${match ? sql`OR p.id IN (SELECT product_id FROM search_index WHERE search_index MATCH ${match})` : sql``})`);

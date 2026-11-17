@@ -3,22 +3,66 @@ import { useFormat, useT } from "~/i18n/react";
 import { CURRENCIES } from "~/lib/money";
 import type { DiscountLineView, FlashPriceView, ShippingWaiverView } from "~/server/services/orders/types";
 import { isolate } from "~/ui/BidiText";
+import type { SummaryDiscountPart } from "~/ui/OrderSummary";
 import { iqdText } from "~/ui/PriceTag";
 // its look (.co-adjust) travels with it: the account's order page shows it too
 import "../checkout.css";
 
 /** Each kind of discount's icon (client round 1: the discount and points rows clearly coloured and told apart). */
-const DISCOUNT_ICON: Record<DiscountLineView["kind"], IconName> = { rule: "sparkle", coupon: "ticket", member: "seal-check", points: "star" };
+export const DISCOUNT_ICON: Record<DiscountLineView["kind"], IconName> = { rule: "sparkle", coupon: "ticket", member: "seal-check", points: "star" };
+
+type Translate = (key: string, vars?: Record<string, string | number>) => string;
 
 /**
- * Every amount as charged, under the order summary's rows (the kit's OrderSummary shows the discount's TOTAL; this says
- * what it is made of): the automatic offers, the coupon, the membership discount, the redeemed points — each «−amount»
- * in the summary's tabular type, in the saving colour with its kind's icon (client round 1: "the discount and points
- * rows clearly coloured") —, the delivery a membership or an offer waived (in words, with the fee it would have been),
- * and a split payment's parts (from the wallet, the rest). Nothing is added up here: the figures are the server's
- * (CartViewData / OrderView). Shared by the cart, the checkout and the order pages (and the account's order page).
+ * The discount's parts for the kit's order summary (`discountParts`; polish round 2026-11-13 — client notes 8 and 12,
+ * "more arrangement": nothing with a minus sign after the total). One row per part in the discount's place, above the
+ * delivery and the total, in the saving colour with its kind's icon: the automatic offers, the coupon, the membership
+ * discount, the redeemed points — the server's amounts (CartViewData / OrderView), nothing added up here. The kit draws
+ * them only when they add up to the discount (else its one «الخصم» row: no amount is ever shown twice). The coupon's own
+ * words (the admin's text, in the store's language only) are never a part's words: the coupon field says them.
+ *
+ *   <OrderSummary {...cart} discountParts={summaryDiscountParts(cart.discounts, t, f)}
+ *                 shippingNote={cart.shippingWaiver ? <WaiverNote waiver={cart.shippingWaiver} /> : undefined}>
+ *     <Adjustments split={split} />
+ *   </OrderSummary>
  */
-export function Adjustments({ discounts, waiver, split, className }: { discounts: readonly DiscountLineView[]; waiver?: ShippingWaiverView | null; split?: { walletIqd: number; restIqd: number } | null; className?: string }) {
+export function summaryDiscountParts(discounts: readonly DiscountLineView[] | null | undefined, t: Translate, f: ReturnType<typeof useFormat>): SummaryDiscountPart[] {
+  return (discounts ?? []).filter((entry) => entry.amountIqd > 0).map((entry, index) => ({ key: `${entry.kind}:${index}`, icon: DISCOUNT_ICON[entry.kind], label: discountLabel(entry, t, f), amountIqd: entry.amountIqd }));
+}
+
+/**
+ * The delivery a membership or an offer did not charge, in words, under the summary's «التوصيل» (its `shippingNote`):
+ * «التوصيل مجاني لعضوية ذهبي» in the saving colour, then «بدلاً من 5,000 د.ع» — the fee it would have been. The row's
+ * own figure is what is charged. An offer worth less than the fee is never called free: «خصم 5,000 د.ع على التوصيل: …»
+ * and the fee it came off.
+ */
+export function WaiverNote({ waiver }: { waiver: ShippingWaiverView }) {
+  const t = useT("checkout");
+  const f = useFormat();
+  const words = waiverWords(waiver, t, f);
+  return (
+    <>
+      {/* the fee phrase stays on one line («لە جیاتی» / «5,000 د.ع» read as two ideas) */}
+      <span className="text-ok">{words}</span> <span className="whitespace-nowrap">{t("discounts.waiverFee", { fee: isolate(iqdText(f, waiver.feeIqd)) })}</span>
+    </>
+  );
+}
+
+/** A waived delivery's words: «free» only when the whole fee was waived, else what came off it (WaiverNote, Adjustments). */
+function waiverWords(waiver: ShippingWaiverView, t: Translate, f: ReturnType<typeof useFormat>): string {
+  return waiver.waivedIqd < waiver.feeIqd
+    ? t("discounts.waiverPart", { amount: isolate(iqdText(f, waiver.waivedIqd)), label: isolate(waiver.label) })
+    : t(waiver.by === "member" ? "discounts.waiverMember" : "discounts.waiverRule", { label: isolate(waiver.label) });
+}
+
+/**
+ * Under the order summary's total: a split payment's parts (from the wallet, the rest to pay) — the area's pages pass
+ * only `split` since the polish round (the parts and the waiver are the kit summary's own rows: summaryDiscountParts,
+ * WaiverNote). Given `discounts` or `waiver` it still lists them here as before — every amount as charged, in the saving
+ * colour with its kind's icon, the waiver in words —, for a page that has not moved them into the summary's rows yet
+ * (the account's order page). Nothing is added up here: the figures are the server's (CartViewData / OrderView).
+ */
+export function Adjustments({ discounts = [], waiver = null, split = null, className }: { discounts?: readonly DiscountLineView[]; waiver?: ShippingWaiverView | null; split?: { walletIqd: number; restIqd: number } | null; className?: string }) {
   const t = useT("checkout");
   const f = useFormat();
   const currency = CURRENCIES.IQD.symbol[f.locale];
@@ -59,7 +103,7 @@ export function Adjustments({ discounts, waiver, split, className }: { discounts
           <span className="flex min-w-0 items-start gap-1.5">
             <Icon name="truck" size={16} className="mt-0.5 shrink-0" />
             <span>
-              {t(waiver.by === "member" ? "discounts.waiverMember" : "discounts.waiverRule", { label: isolate(waiver.label) })}{" "}
+              {waiverWords(waiver, t, f)}{" "}
               <span className="text-ink-2">{t("discounts.waiverFee", { fee: isolate(iqdText(f, waiver.feeIqd)) })}</span>
             </span>
           </span>
@@ -82,9 +126,10 @@ export function Adjustments({ discounts, waiver, split, className }: { discounts
 }
 
 /**
- * The coupon the kit summary may name on its discount row: only when the discount's parts are not listed (an order from
- * before the itemised discounts). Otherwise the row is «الخصم» — the total — and <Adjustments> names every part, the
- * coupon included, in the saving colour (client round 1: the discount rows clearly coloured; the kit's row is ink).
+ * The coupon the kit summary may name on its discount row: only when the discount's parts are not known (an order from
+ * before the itemised discounts). Otherwise the summary draws the parts (summaryDiscountParts) — or, when they do not
+ * add up to the discount (an order edited after it was placed), its one «الخصم» row, never naming a coupon for money
+ * that is not all the coupon's.
  */
 export function summaryCoupon<C>(discounts: readonly DiscountLineView[] | undefined, coupon: C | null): C | null {
   return (discounts ?? []).length === 0 ? coupon : null;

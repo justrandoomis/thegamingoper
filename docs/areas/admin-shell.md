@@ -250,3 +250,28 @@ and 1440, light and dark, ar and en (`.shots/admin/`), no horizontal overflow, n
 - Recovery codes cannot be regenerated without turning two-step verification off and on (no service for it).
 - The admin offers Arabic and English only; the Sorani strings exist for the catalogue test and need a native reader.
 - Chromium only (no Safari/Firefox/real phones).
+
+## Polish round (2026-11-13, finished 2026-11-17)
+
+- **Refusals inside the frame.** The gate refuses exactly the same requests; only how a refusal is returned changed
+  (`shell/gate.server.ts`): a page the browser opens itself (GET/HEAD, `Sec-Fetch-Dest: document`) is sent with a 302
+  to `/admin/denied?module=…&from=…` (`shell/denied.tsx`, answered 403 inside the admin layout: rail, tab bar, the
+  admin's language, the page that was asked for, «ارجع إلى الرئيسية»); React Router's own data request (a client
+  navigation) gets a 403 carrying the frame's data, which the layout's ErrorBoundary renders inside the shell; any
+  other request (a form post, a script's fetch) keeps the plain 403. Error pages get a real title.
+  `tests/admin-shell-refusal.test.ts` (7): every mapped admin pattern × the request kinds × several roles is reached or
+  refused exactly as before (`gateAllows`), and a write is never redirected.
+- **The bell, audited.** Every module's count function was checked; 14 queues added (table at the top of
+  `shell/queues.server.ts`): order reviews, products in review, used-unit prices, wallet payouts (finance's
+  `walletQueue().payouts`), flagged refunds (security's `unreviewedCount`, one statement now), returns held in
+  quarantine, late repairs, campaign requests, due campaigns, reviews to moderate, webhook deliveries that gave up,
+  reorder suggestions, rules to switch on, automation notices — each only for holders of its permission who may open
+  its list, each linking to the filtered list. The returns module is asked only for the four counts the bell shows.
+  Cost, measured on the demo database (`tests/admin-shell-bell.test.ts`, "what the bell costs"): the owner's bell is
+  59 statements — the shell's own counts in 1 batch, 56 sent before the first answer came back — reading 65 rows.
+  Left out on purpose: listed in the file header. Support articles waiting for approval have no count function
+  (asked of the support owner).
+- **Search folds hyphens.** Product names keep Latin tokens with U+2011 («USB‑C», «Joy‑Con»); the command centre's
+  SKU search (`foldHyphens` / `dehyphened`, `services/admin/dashboard/search.server.ts`) and the catalogue list's
+  search (`listProducts`) read U+2010/U+2011 as "-" on both sides, so "USB-C" and "usb-c" find the battery. No new
+  statement and no new rows read (those LIKE terms already scanned the name). `tests/admin-dashboard-hyphen.test.ts`.

@@ -411,3 +411,31 @@ Each with a test written first and seen failing (`tests/checkout-flow.test.ts`, 
 Also: the status rail moved into its own component, `components/OrderStages.tsx` (`OrderStages({ stage, className?,
 aria-label? })`, `STAGE_ICON`; it imports `checkout.css`), so the account's order page draws the same rail (account,
 wave C). `OrderDetails` uses it; nothing else changed there.
+
+## Polish round (2026-11-13 → 2026-11-17; scripts `…/polish/work/checkout/`, shots `…/polish/shots/checkout/`)
+
+Tests first, seen failing (`tests/checkout-flow.test.ts`; 54 pass in the two checkout files):
+
+1. **Coupon below its minimum, from the core's figures.** The core's `min_subtotal` verdict carries `minimumIqd` and
+   `moreIqd` (C-fix-core). `couponShortfall` returns them and no longer reads the coupon a second time nor counts with a
+   copy of the demo rule (`demoCouponBase` removed). The loaders read a stored code's figures from `cart.couponIssue`
+   (`checkout-form` `couponIssueShortfall`); `CouponForm` says «أضف منتجات بقيمة …» from the 409's own figures
+   (`couponMinimumOf`) and asks `intent=coupon-minimum` only when an answer lacks them. Typed code: 2 requests → 1;
+   stored code after an edit: 1 → 0. The sentence is the same in ar/en/ckb.
+2. **The kit's OrderSummary API.** The cart, the checkout's summaries and the order page pass
+   `discountParts={summaryDiscountParts(view.discounts, t, f)}` (`DISCOUNT_ICON`, `discountLabel`; `Adjustments.tsx`)
+   and `shippingNote={<WaiverNote …/>}`. Only the split stays in the children. Every discount line sits above the total
+   once, and no minus follows the total in any of the 40 views. The fee phrase of a partial waiver stays on one line.
+   `Adjustments` (account's import) keeps its export.
+3. **The empty cart** is the kit's `EmptyState wide`, and the local `.co-empty > .empty--panel` rule is gone. **The
+   status rail stays `OrderStages`.** The kit's `ProgressSteps variant="status"` draws separate joins with gaps and has
+   no line that fills to the current stage and draws itself. The client's filled-line look is ours, so we did not
+   switch. Stage words now fit their column at 320/360/390. Sorani «پشتڕاستکرایەوە» (73–76px in a 66–72px column)
+   collided with «ئامادەکردن», so it is now «پەسەندکرا», a past-tense verb like the other Sorani stages. English carries
+   soft hyphens (Con‑firmed) for the 58px columns at 320.
+4. **Names keep their tokens**: order lines, the checkout summary lines, `StockNotice` and `DigitalCodes` render names
+   through `keepTokens` (`app/lib/keep-tokens.ts`). The area had no `ch` measures to convert.
+
+Review (2026-11-17, `…/polish/work/checkout-review/`): the shared `<Adjustments waiver>` still called a delivery waived
+in part «التوصيل مجاني» (the new `WaiverNote` did not). Both now use one wording (`waiverWords`): «free» only when the
+whole fee was waived. Test: "polish round review" in `tests/checkout-flow.test.ts`.

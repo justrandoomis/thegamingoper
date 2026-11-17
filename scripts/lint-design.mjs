@@ -21,7 +21,8 @@
  *   physical            left/right properties, physical margin/padding/border/radius, text-align:left|right, float,
  *                       physical Tailwind utilities (ml- pr- left- text-left rounded-l- border-r …), physical keys in
  *                       inline styles
- *   backdrop-filter     anywhere but app/styles/materials.css — use <Glass>
+ *   backdrop-filter     anywhere but app/styles/materials.css — use <Glass> (`none`, important or not, is allowed
+ *                       anywhere: base.css's print rule)
  *   glass-mask          mask / clip-path on a rule that has backdrop-filter
  *   glass-in-list       a live <Glass> inside a .map() callback (lists never carry live glass)
  *   filter              CSS filter (images included: no drop-shadow on products), SVG <filter>/<fe…>, Tailwind
@@ -177,6 +178,8 @@ function walkCss(text, onDecl, onBlock) {
     }
   }
 }
+/** `none`, with or without `!important` (base.css's print rule turns every glass flat with an important `none`). */
+const isNone = (value) => value.replace(/\s*!important$/i, "") === "none";
 /** The value with every var(…) (nested included) removed: what is left is literal. */
 function withoutVars(value) {
   let out = value;
@@ -218,9 +221,9 @@ function lintCss(file, raw) {
         if (b !== d) report("physical", line, `${prop}: ${value} — a 4-value shorthand sets left/right; use ${prop}-block / ${prop}-inline`);
       }
       // backdrop-filter only in the glass rule
-      if (/^(-webkit-)?backdrop-filter$/.test(prop) && value !== "none" && !isMaterials) report("backdrop-filter", line, "backdrop-filter outside materials.css — use <Glass>");
+      if (/^(-webkit-)?backdrop-filter$/.test(prop) && !isNone(value) && !isMaterials) report("backdrop-filter", line, "backdrop-filter outside materials.css — use <Glass>");
       // CSS filter (images included: no drop-shadow, no brightness on products)
-      if (prop === "filter" && value !== "none" && !inMotion) report("filter", line, `filter: ${value.slice(0, 40)} — no CSS filter in component styles or on images`);
+      if (prop === "filter" && !isNone(value) && !inMotion) report("filter", line, `filter: ${value.slice(0, 40)} — no CSS filter in component styles or on images`);
       // letter-spacing
       if (prop === "letter-spacing" && !/^(0|0px|0em|normal)$/.test(value)) report("letter-spacing", line, `letter-spacing: ${value}`);
       // motion: transform and opacity only
@@ -236,7 +239,7 @@ function lintCss(file, raw) {
         }
       }
       // view-transition-name set statically
-      if (prop === "view-transition-name" && value !== "none" && !inMotion) report("view-transition", line, "view-transition-name in a stylesheet — set it at tap time (<SharedElement>)");
+      if (prop === "view-transition-name" && !isNone(value) && !inMotion) report("view-transition", line, "view-transition-name in a stylesheet — set it at tap time (<SharedElement>)");
       // brand red: only where DESIGN.md §6.6 lets it paint
       if (RED_TOKEN.test(value) && !isTokens && !RED_PLACES.test(sel) && !(isTheme && prop === "--color-logo")) {
         report("red", line, `${prop} uses brand red in "${sel.slice(0, 60)}" — red is the primary key, the bead, the logo and the hero / wallet bands only`);
@@ -273,7 +276,7 @@ function lintCss(file, raw) {
     (block) => {
       // keyframes: only transform / opacity
       if (/^@keyframes/.test(block.prelude)) return;
-      const has = (re) => block.decls.some((d) => re.test(d.prop) && d.value !== "none");
+      const has = (re) => block.decls.some((d) => re.test(d.prop) && !isNone(d.value));
       if (has(/^(-webkit-)?backdrop-filter$/) && has(/^(-webkit-)?(mask|mask-image|clip-path)$/)) {
         report("glass-mask", lineOf(text, block.index), `mask / clip-path on a rule with backdrop-filter: ${block.prelude.slice(0, 60)}`);
       }

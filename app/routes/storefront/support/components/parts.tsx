@@ -36,20 +36,22 @@ export function Name({ children, className }: { children: string; className?: st
  * احجز صيانة · تابع طلب» (the place's one name, as the header and the document title say it), the kit's link Tabs (one ink underline slides from tab to tab; a row too long for a phone
  * scrolls sideways with the current tab kept in view). The route handles give the sideways push between them.
  * `section`: the page belongs to that tab's part of the site but is not the tab's own page (a guide, a message to
- * staff). The kit's link Tabs say `aria-current="page"` for every chosen tab; "true" for such a page waits for the kit
- * (asked of the design-system owner, round 1 wave B).
+ * staff): the chosen tab says `aria-current="true"` instead of "page" (the kit's `section`, polish round 2026-11-13).
  */
-export function SupportNav({ current, className }: { current: SupportSection; section?: boolean; className?: string }) {
+export function SupportNav({ current, section = false, className }: { current: SupportSection; section?: boolean; className?: string }) {
   const t = useT("support");
   return (
     <Tabs
       aria-label={t("nav.label")}
       value={current}
+      section={section}
       className={cx("sup-nav", className)}
       // phones: the four tabs whole on a 390 screen in every language (the place's one name «مركز الدعم» / "Support
-      // centre" is longer in English than the before's "Help centre"), Arabic from 360 — 7px a side instead of the
-      // kit's 10 (the row still scrolls, the current tab kept in view, where it cannot fit)
-      listClassName="max-[419px]:[&>li>a]:px-[7px]"
+      // centre" is longer in English than the before's "Help centre"), Arabic from 360 — the kit's `compact` row: 7px
+      // a side under 420px instead of 10, the padding and both underlines on the one --tab-px knob (the row still
+      // scrolls, the current tab kept in view, where it cannot fit). With 10px sides the row is 22px too long at 390 in
+      // English and 17px in Sorani (measured 2026-11-13)
+      compact
       items={[
         { value: "help", label: t("nav.help"), href: "/support" },
         { value: "assistant", label: t("nav.assistant"), href: "/support/assistant" },
@@ -213,8 +215,9 @@ export function DeviceTile({ name, artKey, kind, href, current = false, sizes = 
 /**
  * A safety note — the kit's calm Note (client notes 5 and 8: the before's way of writing side information): the
  * warning icon in its tinted disc, a short bold title, the words, never dismissible. The tone's word is said to screen
- * readers before the title (never colour alone). `danger` (a stop: smoke, swelling, liquid) tints the disc and the
- * title with --danger — never brand red; `action`: what to do, on its own line; `flat` inside another card (a bubble).
+ * readers before the title (never colour alone). `danger` (a stop: smoke, swelling, liquid) is the kit's danger note —
+ * its disc and title in --danger, never brand red, with the kit's danger icon (the guides' danger callouts wear the
+ * same); `action`: what to do, on its own line; `flat` inside another card (a bubble).
  */
 export function SafetyNote({
   title,
@@ -235,8 +238,7 @@ export function SafetyNote({
   const word = ui(tone === "danger" ? "blocks.danger" : "blocks.warning");
   return (
     <Note
-      tone="warning"
-      icon="warning"
+      tone={tone === "danger" ? "danger" : "warning"}
       variant={flat ? "flat" : "card"}
       title={
         <>
@@ -245,7 +247,7 @@ export function SafetyNote({
         </>
       }
       action={action}
-      className={cx("sup-safety-note", tone === "danger" && "sup-safety-note--danger", className)}
+      className={cx("sup-safety-note", className)}
     >
       {children}
     </Note>

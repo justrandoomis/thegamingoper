@@ -175,6 +175,8 @@ export default defineMessages({
         other: "{n} مراجعة من مشترين موثّقين",
       },
       stars: "{n} من 5",
+      latest: "أحدث المراجعات",
+      verified: "مشترٍ موثّق",
     },
     compat: {
       title: "يعمل مع",
@@ -352,6 +354,8 @@ export default defineMessages({
         other: "{n} reviews from verified buyers",
       },
       stars: "{n} out of 5",
+      latest: "Latest reviews",
+      verified: "Verified buyer",
     },
     compat: {
       title: "Works with",
@@ -520,6 +524,8 @@ export default defineMessages({
         other: "{n} هەڵسەنگاندن لە کڕیاری پشتڕاستکراوەوە",
       },
       stars: "{n} لە 5",
+      latest: "نوێترین هەڵسەنگاندنەکان",
+      verified: "کڕیاری پشتڕاستکراوە",
     },
     compat: {
       title: "کار دەکات لەگەڵ",

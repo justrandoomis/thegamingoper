@@ -38,7 +38,9 @@ import { useControllable } from "./roving";
  * one 600, on a 44px row with the before's 3px underline; `size="lg"` — a page's own section tabs (the support pages) —
  * 16px on a 48px row. The admin keeps its dense 12px rows (tokens.css, [data-density="admin"]).
  *
- *   <Tabs size="lg" section aria-label=… value="help" items=[…] />   a guide inside «مركز المساعدة»: aria-current="true"
+ *   <Tabs size="lg" section aria-label=… value="help" items=[…] />   a guide inside «مركز الدعم»: aria-current="true"
+ *   <Tabs compact … />   a row that must fit whole on a phone: 7px sides under 420px (10 elsewhere); the underline
+ *                        follows the tab's padding (read when it is measured — a page's own padding too)
  */
 export type TabItem = {
   value: string;
@@ -67,8 +69,11 @@ export type TabsProps = {
   /** "md" (default): 15px labels on a 44px row. "lg": a page's own section tabs — 16px on a 48px row. */
   size?: "md" | "lg";
   /** Link tabs: the page belongs to the chosen tab's part of the site but is not the tab's own page (a guide inside
-   *  «مركز المساعدة»): the chosen tab says aria-current="true" instead of "page". */
+   *  «مركز الدعم»): the chosen tab says aria-current="true" instead of "page". */
   section?: boolean;
+  /** A row that must fit its tabs whole on a phone (the four support tabs at 390, in every language): 7px sides under
+   *  420px instead of 10. The underline follows the padding. */
+  compact?: boolean;
   className?: string;
   listClassName?: string;
   panelClassName?: string;
@@ -76,16 +81,22 @@ export type TabsProps = {
 
 const LIST = "group/tabs relative flex min-w-0 gap-1 not-admin:max-md:gap-0 overflow-x-auto border-b border-line [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
 const TAB =
-  "group relative inline-flex min-w-11 shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap px-3 not-admin:px-2.5 text-ink-2 outline-offset-[-3px] hover:text-ink " +
+  // the sides are one custom property, --tab-px (12px in the admin, 10 in the storefront, 7 in a compact row on a phone):
+  // the padding, the tab's own marker and the sliding underline all follow it
+  "group relative inline-flex min-w-11 shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap [--tab-px:12px] not-admin:[--tab-px:10px] px-(--tab-px) text-ink-2 outline-offset-[-3px] hover:text-ink " +
   "data-[selected]:text-ink aria-disabled:cursor-default aria-disabled:text-ink-3 " +
   // the marker (v2 §4.6; v2.1: the before's 3px): an ink underline on the bottom edge, faded in (opacity only)
-  "after:pointer-events-none after:absolute after:inset-x-3 after:bottom-0 after:h-(--tab-ind) after:rounded-full after:bg-ink after:opacity-0 after:transition-opacity after:duration-(--t-micro) data-[selected]:after:opacity-100 " +
+  "after:pointer-events-none after:absolute after:inset-x-(--tab-px) after:bottom-0 after:h-(--tab-ind) after:rounded-full after:bg-ink after:opacity-0 after:transition-opacity after:duration-(--t-micro) data-[selected]:after:opacity-100 " +
   // v2.1: once the list's sliding underline is measured, the tab's own marker steps aside
   "group-data-[ind]/tabs:after:hidden";
 /** The label's role and the row's height per size (tokens.css --type-tab-label*: the admin keeps its dense rows). */
 const TAB_SIZE = { md: "min-h-11 [font:var(--type-tab-label)]", lg: "min-h-12 [font:var(--type-tab-label-lg)]" } as const;
-/** The sliding underline sits inside the tab's padding (10px in the storefront, 12 in the admin), like its own marker. */
-const IND = { selector: "[data-selected]", attribute: "data-ind", x: "--ind-x", w: "--ind-w", inset: 10 } as const;
+/** `compact`: 7px sides on a phone under 420px (the four support tabs whole at 390 in every language), 10 elsewhere. */
+const TAB_COMPACT = "not-admin:max-[26.25rem]:[--tab-px:7px]";
+/** The sliding underline sits inside the tab's padding, like its own marker: the selected tab's padding is read when it
+ *  is measured (polish round 2026-11-13: it was a fixed 10px, so a compact row's or a page's own 7px sides drew it 3px
+ *  short at each end). */
+const IND = { selector: "[data-selected]", attribute: "data-ind", x: "--ind-x", w: "--ind-w", inset: "padding" } as const;
 
 export function Tabs({
   items,
@@ -96,12 +107,13 @@ export function Tabs({
   keepMounted = false,
   size = "md",
   section = false,
+  compact = false,
   className,
   listClassName,
   panelClassName,
   ...aria
 }: TabsProps) {
-  const tab = cx(TAB, TAB_SIZE[size]);
+  const tab = cx(TAB, TAB_SIZE[size], compact && TAB_COMPACT);
   const firstEnabled = items.find((item) => !item.disabled)?.value ?? "";
   const [current, setCurrent] = useControllable<string>(value, defaultValue ?? firstEnabled, onChange);
   const linkTabs = items.length > 0 && items.every((item) => typeof item.href === "string");

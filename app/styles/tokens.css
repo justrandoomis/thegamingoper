@@ -228,7 +228,7 @@
   --lh-display: 1.25;
   --lh-h1: 1.35;
   --lh-h2: 1.4;
-  --lh-lead: 1.65;
+  --lh-lead: 1.7; /* G7: Arabic reading text ≥ 1.7 (it was 1.65; polish round 2026-11-13) */
   --lh-body: 1.7;
   --lh-read: 1.75; /* v2.1 G7: notes, facts, descriptions */
 }

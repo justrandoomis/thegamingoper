@@ -99,12 +99,10 @@
   .home-hero__track {
     --carousel-radius: var(--r-xl);
   }
+  /* the banners keep the kit's `scroll-snap-stop: always`: a fling on a phone stops at the next banner (with `normal`
+     a hard one skipped several — polish 2026-11-13); the kit's moves further than one banner fade and jump */
   .home-hero__slide {
     display: grid;
-    /* the kit's `always` stops every smooth programmatic move at the NEXT snap point in Chromium: a dot two banners
-       away, Home / End and autoplay's wrap from the last banner to the first moved one banner only (measured
-       2026-11-12, also on /design-system). Asked of the kit; until then the hero's banners snap normally. */
-    scroll-snap-stop: normal;
   }
   @media (max-width: 47.99rem) {
     .home-hero {
@@ -129,7 +127,11 @@
       scroll-padding-inline: var(--gutter);
     }
   }
-  /* the bar under the banner: the dots in the middle, the pause key and the round clay arrows at the end */
+  /* the bar under the banner: the pause / play key at the start (before the dots: the keyboard meets it first), the
+     dots in the middle (the kit's progress fills the current one while the banners move on by themselves), the round
+     clay arrows at the end (from 768). Six 44px dots take 264px, so below 384px a side column is narrower than the 44px
+     key: there the key and the dots are one centred row that wraps — one line at 360 (316 of 328px), the dots under
+     the key at 320. The key used to stand at the end over the last dot's cell (12px at 360, the whole dot at 320) */
   .home-hero__bar {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -137,33 +139,24 @@
     min-block-size: var(--target);
     margin-block-start: var(--s-2);
   }
+  .home-hero__play {
+    grid-column: 1;
+    justify-self: start;
+  }
   .home-hero__dots {
     grid-column: 2;
   }
-  .home-hero__tools {
+  .home-hero__arrows {
     grid-column: 3;
     justify-self: end;
-    display: flex;
-    align-items: center;
-    gap: var(--s-2);
   }
-  /* while the banners move on by themselves, the current dot fills with the time left: its pill becomes the track
-     (the dot's grey) and the red fill grows from the start edge over the autoplay interval. Held (pointer, focus, a
-     finger, a hidden tab), paused or stopped: the kit's full pill. Asked of the kit: a progress look of its own. */
-  .home-hero[data-run] .carousel__dot[aria-current="true"]::before {
-    inline-size: 22px;
-    opacity: 1;
-  }
-  .home-hero[data-run] .carousel__dot[aria-current="true"]::after {
-    transform-origin: calc(50% - 50% * var(--dir)) 50%;
-    animation: home-dot-fill var(--home-autoplay, 6500ms) linear both;
-  }
-  @keyframes home-dot-fill {
-    from {
-      scale: 0 1;
-    }
-    to {
-      scale: 1 1;
+  @media (max-width: 23.99rem) {
+    .home-hero__bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      column-gap: var(--s-2);
     }
   }
 
@@ -188,10 +181,8 @@
     border-radius: var(--r-lg);
     overflow: clip;
   }
-  /* the white key on a platform's colour says its words in that colour's deep shade (≥ 7.6:1 on the key's face) */
-  .home-slide[data-gel] {
-    --on-band-label: var(--plat-deep);
-  }
+  /* the white key on a platform's colour says its words in that colour's deep shade (≥ 7.6:1 on the key's face): the
+     kit's `:where([data-gel]) .key--on-band` */
   /* graphite (the used banner): the colour band's materials on the page's dark band colour */
   .home-slide.band[data-tone="graphite"] {
     --plat: var(--band);

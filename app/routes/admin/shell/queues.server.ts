@@ -101,11 +101,44 @@
  *   cms_policies        cms         cms.page.publish             the content module's policies (shipping, payment,
  *                                                                privacy, terms) not approved yet or with a draft waiting —
  *                                                                never one whose draft the employee saved last
+ *
+ * Added in the polish round (2026-11-13, an audit of every module's count functions — docs/areas/admin-shell.md):
+ *   order_reviews       orders      orders.risk.review           open orders flagged and not cleared, or on hold — the
+ *                                                                review page's own two lists (listReviewQueue)
+ *   catalog_review      catalog     catalog.product.publish      products submitted for review, waiting to be published
+ *                                   (+ catalog.product.read)     or sent back (the list's «review» status)
+ *   used_prices         pricing     pricing.price.approve        used-unit prices waiting for a second person, never the
+ *                                                                employee's own request (countUsedDecidable)
+ *   wallet_payouts      finance     customers.wallet.adjust      wallet payouts waiting for a second person, never the
+ *                                   (+ finance.wallet.read)      employee's own request (walletQueue().payouts)
+ *   refund_reviews      security    security.fraud.review        flagged refunds of 90 days nobody reviewed, never one the
+ *                                                                reviewer asked for or approved (unreviewedCount, one
+ *                                                                statement since the security owner's follow-up)
+ *   rma_quarantine      returns     returns.rma.inspect or       returned items held for refurbishing or the supplier,
+ *                                   returns.supplier_return      not moved on yet (queueCounts.quarantine)
+ *                                   .manage
+ *   repairs_late        returns     returns.repair.manage        open repairs past their target date (queueCounts
+ *                                                                .repairsLate) — the returns module's two other decisions
+ *   campaign_approvals  marketing   marketing.campaign.send      campaign requests to decide, never one the employee asked
+ *                                                                for or wrote (marketingQueueCounts.campaignsToDecide)
+ *   campaigns_due       marketing   marketing.campaign.send      approved campaigns whose time came, released by hand until
+ *                                                                a job does it (countDueCampaigns: the list's «due» view)
+ *   review_moderation   marketing   marketing.review.moderate    product reviews waiting for moderation
+ *                                                                (marketingQueueCounts.reviewsToModerate)
+ *   webhooks_gave_up    channels    channels.webhook.manage      webhook deliveries that gave up: retry them or fix the
+ *                                                                receiver (channelsQueueCounts.deliveriesGaveUp)
+ *   reorder_suggestions automation  automation.suggestion        open reorder suggestions (automationQueueCounts)
+ *                                   .approve (+ .read)
+ *   rules_to_activate   automation  automation.workflow.activate rules whose dry run waits to be switched on, never by the
+ *                                   (+ .workflow.read)           author of their version, whole store only (countActivatable)
+ *   automation_notices  automation  a notice's audience          notices of the last 14 days not marked seen (countNotices)
  * plus notices about the employee's own account (two-step verification off, few recovery codes left).
  *
- * Not in the bell: the security module's flagged refunds (unreviewedCount) — that count includes refunds the reviewer
- * asked for or approved, which reviewRefund refuses them, and reads every refund of 90 days to count (asked of the
- * security owner, docs/areas/admin-shell.md); a devices offer waiting for the customer's answer (nobody here decides).
+ * Not in the bell: a devices offer waiting for the customer's answer (nobody here decides); returns on their way back
+ * (they wait for the parcel); inspected returns without a refund yet (their count includes those whose refund waits
+ * for approval — the orders queue counts those); warranties ending soon, finance's anomaly report (a whole report per
+ * page), unmatched statement lines and low stock (the home's urgent tiles); support articles waiting for approval (no
+ * count function yet — asked of the support owner).
  *
  * Read-only and quick: the shell's own counts in one batched round trip, and at the same time (never one after the
  * other) each module's own count function, asked only of the employees it concerns — the modules keep their rules, so
@@ -116,12 +149,20 @@ import { and, count, eq, inArray, isNull, ne, or, sql, type SQL } from "drizzle-
 import type { EmployeeSession } from "~/server/auth/admin.server";
 import { can, canAny, type Actor } from "~/server/actor";
 import type { Db } from "~/server/db.server";
-import { approvals, cycleCounts, employees, pages, payments, refunds, stockTransfers, tradeIns } from "~/server/db/schema";
+import { approvals, cycleCounts, employees, pages, payments, products, refunds, stockTransfers, tradeIns } from "~/server/db/schema";
 import type { Permission } from "~/server/permissions";
 import { listPolicies } from "~/server/services/content.server";
+import { NOTICE_AUDIENCES } from "~/server/services/admin/automation/catalog";
+import { automationQueueCounts, QUEUE_HREFS as AUTOMATION_QUEUE_HREFS } from "~/server/services/admin/automation/overview.server";
+import { channelsQueueCounts } from "~/server/services/admin/channels/overview.server";
 import { POLICIES_HERE } from "~/server/services/admin/cms/rules";
 import { privacyCounts } from "~/server/services/admin/customers/privacy.server";
+import { countDueCampaigns } from "~/server/services/admin/marketing/campaigns.server";
+import { MARKETING_QUEUE_LINKS, marketingQueueCounts } from "~/server/services/admin/marketing/overview.server";
 import { opsQueueCounts } from "~/server/services/admin/ops/overview.server";
+import { listReviewQueue } from "~/server/services/admin/orders/risk.server";
+import { countUsedDecidable } from "~/server/services/admin/pricing/special.server";
+import { unreviewedCount } from "~/server/services/admin/security/refund-reviews.server";
 import { countDecidable as countDecidablePromotions } from "~/server/services/admin/promotions/approvals.server";
 import { DECIDE_PERMISSIONS } from "~/server/services/admin/promotions/shared.server";
 import { APPROVAL_KINDS as PROMOTION_APPROVAL_KINDS } from "~/server/services/admin/promotions/types";
@@ -181,13 +222,29 @@ export type ShellQueueId =
   | "ops_findings"
   | "ops_jobs"
   | "ops_incidents"
-  | "cms_policies";
+  | "cms_policies"
+  | "order_reviews"
+  | "catalog_review"
+  | "used_prices"
+  | "wallet_payouts"
+  | "refund_reviews"
+  | "rma_quarantine"
+  | "repairs_late"
+  | "campaign_approvals"
+  | "campaigns_due"
+  | "review_moderation"
+  | "webhooks_gave_up"
+  | "reorder_suggestions"
+  | "rules_to_activate"
+  | "automation_notices";
 /** The module a queue belongs to (its navigation row carries the bead). */
 export type ShellQueueModule =
   | "orders"
+  | "catalog"
   | "pos"
   | "customers"
   | "promotions"
+  | "marketing"
   | "shipping"
   | "returns"
   | "pricing"
@@ -200,6 +257,8 @@ export type ShellQueueModule =
   | "cms"
   | "security"
   | "settings"
+  | "channels"
+  | "automation"
   | "ops";
 export type ShellQueue = { id: ShellQueueId; module: ShellQueueModule; count: number; href: string };
 export type ShellNotice = { id: "mfa_off" | "recovery_low"; href: string; count?: number };
@@ -244,6 +303,20 @@ export const QUEUE_HREF: Record<ShellQueueId, string> = {
   ops_jobs: "/admin/ops/jobs?view=attention",
   ops_incidents: "/admin/ops/incidents?view=overdue",
   cms_policies: "/admin/cms/pages",
+  order_reviews: "/admin/orders/review",
+  catalog_review: "/admin/catalog?status=review",
+  used_prices: "/admin/pricing/special?tab=used",
+  wallet_payouts: "/admin/finance/wallets?tab=payouts",
+  refund_reviews: "/admin/security/refunds?view=unreviewed",
+  rma_quarantine: "/admin/returns/quarantine",
+  repairs_late: "/admin/returns/repairs?view=late",
+  campaign_approvals: MARKETING_QUEUE_LINKS.campaignsToDecide,
+  campaigns_due: "/admin/marketing/campaigns?view=due",
+  review_moderation: MARKETING_QUEUE_LINKS.reviewsToModerate,
+  webhooks_gave_up: "/admin/channels/monitor?status=gave_up#ch-deliveries",
+  reorder_suggestions: AUTOMATION_QUEUE_HREFS.suggestions,
+  rules_to_activate: AUTOMATION_QUEUE_HREFS.rulesToActivate,
+  automation_notices: AUTOMATION_QUEUE_HREFS.notices,
 };
 
 /**
@@ -405,6 +478,30 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
   const wantsOps = wantsOpsFindings || wantsOpsJobs || wantsOpsIncidents;
   const wantsPolicies = asks("cms.page.publish", "cms");
   const wantsStaff = wantsLeave || wantsPayroll || wantsAdvances;
+  // the polish round's queues (2026-11-13), each by the permission its own page and count function ask for
+  const wantsOrderReviews = asks("orders.risk.review", "orders");
+  // the product list needs catalog.product.read; publishing (or sending back) needs .publish
+  const wantsCatalogReview = asks("catalog.product.publish", "catalog") && can(actor, "catalog.product.read");
+  const wantsUsedPrices = asks("pricing.price.approve", "pricing");
+  const wantsRefundReviews = asks("security.fraud.review", "security");
+  const wantsQuarantine = asks("returns.rma.inspect", "returns") || asks("returns.supplier_return.manage", "returns");
+  const wantsRepairsLate = asks("returns.repair.manage", "returns");
+  const wantsCampaigns = asks("marketing.campaign.send", "marketing");
+  const wantsReviews = asks("marketing.review.moderate", "marketing");
+  const wantsMarketing = wantsCampaigns || wantsReviews;
+  const wantsWebhooks = asks("channels.webhook.manage", "channels");
+  const wantsSuggestions = asks("automation.suggestion.approve", "automation") && can(actor, "automation.suggestion.read");
+  const wantsActivation = asks("automation.workflow.activate", "automation") && can(actor, "automation.workflow.read");
+  // a rule's notice goes to the holders of one of these permissions; the module's front page shows them
+  const wantsAutomationNotices = canSeeModule(actor, "automation") && canAny(actor, NOTICE_AUDIENCES);
+  const wantsAutomation = wantsSuggestions || wantsActivation || wantsAutomationNotices;
+  // the returns module's counts this employee needs, and only those (its `only`: the other six are never read)
+  const returnsWanted = [
+    ...(wantsRmas ? (["decide"] as const) : []),
+    ...(wantsInspections ? (["inspect"] as const) : []),
+    ...(wantsQuarantine ? (["quarantine"] as const) : []),
+    ...(wantsRepairsLate ? (["repairsLate"] as const) : []),
+  ];
 
   // The two-person rule of counts (app/server/services/admin/inventory/counts.server.ts, tookPart): an employee who
   // started a count, or recorded any of its lines — now, or before a colleague re-counted them (the audit trail
@@ -415,7 +512,28 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
                AND a.action = 'inventory.count.record' AND a.actor_kind = 'employee' AND a.actor_id = ${employee.id}))`;
 
   // Everything at once: the batch and each module's own counts (a module's functions run side by side too).
-  const [[proofRows, refundRows, countRows, transferRows, accountRows], prices, shipping, rma, purchasing, finance, shifts, privacy, devices, security, settingChanges, promotions, support, staff, ops, policies] = await Promise.all([
+  const [
+    [proofRows, refundRows, countRows, transferRows, accountRows, reviewRows],
+    pricing,
+    shipping,
+    rma,
+    purchasing,
+    finance,
+    shifts,
+    privacy,
+    devices,
+    security,
+    settingChanges,
+    promotions,
+    support,
+    staff,
+    ops,
+    policies,
+    orderReviews,
+    marketing,
+    channels,
+    automation,
+  ] = await Promise.all([
     db.batch([
       db
         .select({ n: count() })
@@ -434,15 +552,25 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
         .from(stockTransfers)
         .where(wantsTransfers ? eq(stockTransfers.status, "in_transit") : eq(stockTransfers.id, "")),
       db.select({ recoveryCodes: employees.recoveryCodes }).from(employees).where(eq(employees.id, employee.id)).limit(1),
+      // the product list's «review» status (stored as is: adminStatusOf keeps it), demo products included as the list does
+      db
+        .select({ n: count() })
+        .from(products)
+        .where(wantsCatalogReview ? eq(products.status, "review") : eq(products.id, "")),
     ]),
-    wantsPrices ? moduleCounts("pricing", () => countDecidable(db, actor)) : null,
+    wantsPrices || wantsUsedPrices
+      ? moduleCounts("pricing", async () => {
+          const [prices, used] = await Promise.all([wantsPrices ? countDecidable(db, actor) : null, wantsUsedPrices ? countUsedDecidable(db, actor) : null]);
+          return { prices, used };
+        })
+      : null,
     wantsFailedDeliveries || wantsSettlements
       ? moduleCounts("shipping", async () => {
           const [failed, settlements] = await Promise.all([wantsFailedDeliveries ? countFailedDeliveries(db, actor) : null, wantsSettlements ? countSettlementsToReconcile(db, actor) : null]);
           return { failed, settlements };
         })
       : null,
-    wantsRmas || wantsInspections ? moduleCounts("returns", () => returnsQueueCounts(db, actor, now)) : null,
+    returnsWanted.length > 0 ? moduleCounts("returns", () => returnsQueueCounts(db, actor, now, { only: returnsWanted })) : null,
     wantsPoApprovals || wantsStuckReceipts || wantsMismatches ? moduleCounts("purchasing", () => purchasingQueueCounts(db, actor, now)) : null,
     wantsWallet || wantsExpenses
       ? moduleCounts("finance", async () => {
@@ -470,10 +598,14 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
           return { ...counts, toPay };
         })
       : null,
-    wantsAlerts || wantsAccessReviews
+    wantsAlerts || wantsAccessReviews || wantsRefundReviews
       ? moduleCounts("security", async () => {
-          const [alerts, reviews] = await Promise.all([wantsAlerts ? alertCount(db, actor, now) : null, wantsAccessReviews ? reviewsDue(db, now, ACCESS_REVIEW_INTERVAL_DAYS) : null]);
-          return { alerts, reviews };
+          const [alerts, reviews, refundReviews] = await Promise.all([
+            wantsAlerts ? alertCount(db, actor, now) : null,
+            wantsAccessReviews ? reviewsDue(db, now, ACCESS_REVIEW_INTERVAL_DAYS) : null,
+            wantsRefundReviews ? unreviewedCount(db, actor, now) : null,
+          ]);
+          return { alerts, reviews, refundReviews };
         })
       : null,
     wantsSettingChanges ? moduleCounts("settings", () => countDecidableSettingChanges(db, actor, now)) : null,
@@ -488,6 +620,16 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
       : null,
     wantsOps ? moduleCounts("ops", () => opsQueueCounts(db, actor, now)) : null,
     wantsPolicies ? moduleCounts("cms", () => policiesAwaiting(db, employee.id, now)) : null,
+    // the review page's own two lists (flagged and not cleared, on hold): what the link opens, row for row
+    wantsOrderReviews ? moduleCounts("orders", () => listReviewQueue(db, actor, now).then((queue) => queue.needsReview.length + queue.onHold.length)) : null,
+    wantsMarketing
+      ? moduleCounts("marketing", async () => {
+          const [queues, due] = await Promise.all([marketingQueueCounts(db, actor), wantsCampaigns ? countDueCampaigns(db, now) : null]);
+          return { ...queues, due };
+        })
+      : null,
+    wantsWebhooks ? moduleCounts("channels", () => channelsQueueCounts(db, actor)) : null,
+    wantsAutomation ? moduleCounts("automation", () => automationQueueCounts(db, actor, now)) : null,
   ]);
   const decisions = staff?.decisions ?? [];
 
@@ -496,6 +638,7 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
   const counted: Array<[ShellQueueId, ShellQueueModule, boolean, number | null | undefined]> = [
     ["proofs", "orders", wantsProofs, proofRows[0]?.n],
     ["refunds", "orders", wantsRefunds, refundRows[0]?.n],
+    ["order_reviews", "orders", wantsOrderReviews, orderReviews],
     ["pos_shifts", "pos", wantsShifts, shifts],
     ["privacy_requests", "customers", wantsPrivacy, privacy?.open],
     ["promotion_approvals", "promotions", wantsPromotions, promotions],
@@ -503,7 +646,11 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
     ["cod_settlements", "shipping", wantsSettlements, shipping?.settlements],
     ["rmas", "returns", wantsRmas, rma?.decide],
     ["inspections", "returns", wantsInspections, rma?.inspect],
-    ["prices", "pricing", wantsPrices, prices],
+    ["rma_quarantine", "returns", wantsQuarantine, rma?.quarantine],
+    ["repairs_late", "returns", wantsRepairsLate, rma?.repairsLate],
+    ["catalog_review", "catalog", wantsCatalogReview, reviewRows[0]?.n],
+    ["prices", "pricing", wantsPrices, pricing?.prices],
+    ["used_prices", "pricing", wantsUsedPrices, pricing?.used],
     ["counts", "inventory", wantsCounts, countRows[0]?.n],
     ["transfers", "inventory", wantsTransfers, transferRows[0]?.n],
     ["tradein_inspections", "devices", wantsTradeinInspections, devices?.toInspect],
@@ -519,14 +666,23 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
     ["invoice_mismatches", "purchasing", wantsMismatches, purchasing?.mismatch],
     ["topups", "finance", wantsWallet, finance?.wallet?.topups],
     ["adjustments", "finance", wantsWallet, finance?.wallet?.adjustments],
+    ["wallet_payouts", "finance", wantsWallet, finance?.wallet?.payouts],
     ["expenses", "finance", wantsExpenses, finance?.expenses],
     ["staff_leave", "staff", wantsLeave && staff !== null, decisions.filter((item) => item.kind === "leave").length],
     ["staff_payroll", "staff", wantsPayroll && staff !== null, decisions.filter((item) => item.kind === "payroll_run").length],
     ["staff_advances", "staff", wantsAdvances && staff !== null, staff?.advances],
+    ["campaign_approvals", "marketing", wantsCampaigns, marketing?.campaignsToDecide],
+    ["campaigns_due", "marketing", wantsCampaigns, marketing?.due],
+    ["review_moderation", "marketing", wantsReviews, marketing?.reviewsToModerate],
     ["cms_policies", "cms", wantsPolicies, policies],
     ["signin_alerts", "security", wantsAlerts, security?.alerts],
     ["access_reviews", "security", wantsAccessReviews, security?.reviews],
+    ["refund_reviews", "security", wantsRefundReviews, security?.refundReviews],
     ["settings_changes", "settings", wantsSettingChanges, settingChanges],
+    ["webhooks_gave_up", "channels", wantsWebhooks, channels?.deliveriesGaveUp],
+    ["reorder_suggestions", "automation", wantsSuggestions, automation?.suggestions],
+    ["rules_to_activate", "automation", wantsActivation, automation?.rulesToActivate],
+    ["automation_notices", "automation", wantsAutomationNotices, automation?.notices],
     ["ops_findings", "ops", wantsOpsFindings, ops?.criticalFindings],
     ["ops_jobs", "ops", wantsOpsJobs, ops?.failingJobs],
     ["ops_incidents", "ops", wantsOpsIncidents, ops?.overdueIncidents],

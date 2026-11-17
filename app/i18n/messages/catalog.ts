@@ -52,7 +52,7 @@ export default defineMessages({
       devicesNext: "الأجهزة التالية",
       devicesByCategory: "حسب جهازك",
       devicesByCategoryNote: "أجهزة لها منتجات في هذا القسم. افتح أيّاً منها لترى كل شيء عنه.",
-      used: "مستعمل ومفحوص",
+      used: "المستعمل والمفحوص",
       usedReason: "كل جهاز مفحوص، وله درجة حالة وتقرير فحص.",
       usedAll: "كل المستعمل",
       usedFailed: "تعذّر تحميل الأجهزة المستعملة.",
@@ -159,6 +159,8 @@ export default defineMessages({
     },
     search: {
       title: "ابحث في المتجر",
+      // the start page's own field (a search landmark beside the header's «ابحث في المتجر»: another name)
+      field: "ابحث عن جهاز أو لعبة أو إكسسوار",
       suggestions: "اقتراحات",
       byPlatform: "تسوّق حسب المنصّة",
       byCategory: "تسوّق حسب القسم",
@@ -301,7 +303,7 @@ export default defineMessages({
       devicesNext: "Next devices",
       devicesByCategory: "By your device",
       devicesByCategoryNote: "Devices with products in this department. Open one to see everything about it.",
-      used: "Used and inspected",
+      used: "Used & inspected",
       usedReason: "Every device is inspected, with a condition grade and an inspection report.",
       usedAll: "All used devices",
       usedFailed: "The used devices could not be loaded.",
@@ -399,6 +401,7 @@ export default defineMessages({
     },
     search: {
       title: "Search the store",
+      field: "Search for a console, game or accessory",
       suggestions: "Suggestions",
       byPlatform: "Shop by platform",
       byCategory: "Shop by department",
@@ -633,6 +636,7 @@ export default defineMessages({
     },
     search: {
       title: "لە فرۆشگاکە بگەڕێ",
+      field: "بۆ ئامێر، یاری یان پاشکۆیەک بگەڕێ",
       suggestions: "پێشنیارەکان",
       byPlatform: "بەپێی پلاتفۆرم بازاڕ بکە",
       byCategory: "بەپێی بەش بازاڕ بکە",

@@ -142,7 +142,7 @@ export default function Overview({ loaderData }: Route.ComponentProps) {
     <>
       {/* the profile head (the reference «حسابي»): the glossy wallet band, the initial on a white disc, the greeting,
           the number, «معنا منذ …» and the membership as a white glass chip into the rewards page */}
-      <Band kind="wallet" as="header" className="acct-money acct-me" contentClassName="acct-me__body">
+      <Band kind="wallet" gloss as="header" className="acct-money acct-me" contentClassName="acct-me__body">
         <span className="acct-me__mark" aria-hidden="true">
           {initial ?? <Icon name="user" size={30} />}
         </span>

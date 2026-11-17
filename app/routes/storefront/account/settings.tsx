@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import { data, useFetcher } from "react-router";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { data, useActionData, useFetcher, useNavigate, useSearchParams } from "react-router";
 
 import type { Route } from "./+types/settings";
 import { Icon } from "~/art/Icon";
-import { useFormat, useT } from "~/i18n/react";
+import { LocaleLink, useFormat, useLocalePath, useT } from "~/i18n/react";
 import type { MotionHandle } from "~/motion";
 import { changeCustomerPassword, listCustomerSessions, revokeAllCustomerSessions, revokeCustomerSession } from "~/server/auth/customer.server";
 import { getCtx } from "~/server/context.server";
@@ -14,16 +14,16 @@ import { enforceRateLimit, limitKey } from "~/server/ratelimit.server";
 import { CONSENT_CHANGES_PER_CUSTOMER, getPreferences, recordConsent, setNotificationChannels } from "~/server/services/account/preferences.server";
 import { MAX_RECENTLY_VIEWED } from "~/server/services/account/recently-viewed.server";
 import { NOTIFICATION_CHANNELS, type NotificationChannel } from "~/server/services/account/types";
-import { ConfirmDialog } from "~/ui/Dialog";
 import { Switch, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
+import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
 import { fillNodes } from "~/ui/PriceTag";
 import { Tag } from "~/ui/Tag";
 import { toast } from "~/ui/toast-store";
 import { saveConsent } from "../home/personal";
 import { forgetPersonalData } from "../home/personal.server";
-import { accountFailure, formFields, otpOptions, requireSignedIn, setConsentCookie } from "./account.server";
+import { accountFailure, formFields, localeRedirect, otpOptions, requireSignedIn, setConsentCookie } from "./account.server";
 import { sectionOrder } from "./components/AccountNav";
 import { describeUserAgent } from "./components/device-name";
 import { fieldError, FormFailure, Notice, OfflineNote, PasswordField, rescueFocus, SubmitKey, type ActionAnswer } from "./components/FormBits";
@@ -110,6 +110,10 @@ export async function action({ request, context }: Route.ActionArgs) {
         return ok({});
       }
       case "revokeOthers":
+        // Only once the page's own question was answered (`confirm=1`, polish round 2026-11-13): any other post of this
+        // intent — a page from before the rule, a key pressed before the page was live, a script — signs nothing out
+        // and opens the question instead.
+        if (fields.confirm !== "1") return localeRedirect("/account/settings?signout=others#sessions", ctx.locale);
         return ok({ count: await revokeAllCustomerSessions(db, customer.id, ctx.now, session.id) });
       default:
         return data({ ok: false as const, code: "invalid", intent }, { status: 400 });
@@ -350,19 +354,44 @@ function SessionsCard({ sessions, now }: { sessions: SessionRow[]; now: number }
   const t = useT("account");
   const online = useOnline();
   const f = useFormat();
+  const href = useLocalePath();
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
   /**
-   * «سجّل خروج الأجهزة الأخرى» asks first (QA 2026-11-13: one tap signed the shared demo customer out of 26 sessions,
-   * with no question and no undo): the key opens the kit's confirmation, which says how many devices it signs out and
-   * posts the intent once confirmed. Without script the key's own form posts it.
+   * «سجّل خروج الأجهزة الأخرى» asks first, IN the page (QA 2026-11-13: one tap signed the shared demo customer out of 26
+   * sessions; then the wave-C dialog still posted at once without script and before the page was live — the key's own
+   * form — and a QA agent signed every other agent out with it). The key never posts: it opens the question under the
+   * card's head — in place with script, as a link (`?signout=others#sessions`) without it. Only the question's own form
+   * posts, with `confirm=1` (the action turns any other post of the intent into this question); «إلغاء» goes back.
    */
-  const [confirming, setConfirming] = useState(false);
+  const asked = params.get("signout") === "others";
+  const [open, setOpen] = useState(false);
+  const otherCount = sessions.filter((session) => !session.current).length;
+  const hasOthers = otherCount > 0;
+  const confirming = hasOthers && (open || asked);
+  // where focus goes when the question opens (its title) or closes with «إلغاء» (the key that opened it)
+  const focusTo = useRef<string | null>(null);
+  useEffect(() => {
+    if (!focusTo.current) return;
+    const target = document.getElementById(focusTo.current);
+    if (!target) return;
+    focusTo.current = null;
+    target.focus();
+  });
+  const close = () => {
+    setOpen(false);
+    if (asked) navigate(href("/account/settings#sessions"), { replace: true, preventScrollReset: true });
+  };
   // Both keys go with what they signed out (the row, or every other row): focus lands on the card's title, not <body>.
   const others = useCardFetcher((answer) => {
     if (!answer.ok) return;
-    setConfirming(false);
+    close();
     toast.success(t("settings.signedOutOthers", { count: answer.count ?? 0 }));
     rescueFocus("sessions-title");
   });
+  // without script the confirmed post lands on this page: it says what it did
+  const page = useActionData() as Answer | undefined;
+  const doneHere = page && page.ok && page.intent === "revokeOthers" ? page : null;
   // One device at a time is signed out from here (the row is gone once the list reloads; the card is not).
   const one = useCardFetcher((answer) => {
     if (!answer.ok) return;
@@ -370,8 +399,6 @@ function SessionsCard({ sessions, now }: { sessions: SessionRow[]; now: number }
     rescueFocus("sessions-title");
   });
   const revoking = one.pending ? String(one.fetcher.formData?.get("sessionId") ?? "") : null;
-  const otherCount = sessions.filter((session) => !session.current).length;
-  const hasOthers = otherCount > 0;
   return (
     <section id="sessions" aria-labelledby="sessions-title" className="acct-card">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -381,34 +408,73 @@ function SessionsCard({ sessions, now }: { sessions: SessionRow[]; now: number }
           </h2>
           <p className="type-sm text-ink-2">{t("settings.sessionsLead")}</p>
         </div>
-        {hasOthers ? (
-          <others.fetcher.Form
-            method="post"
-            onSubmit={(event) => {
+        {hasOthers && !confirming ? (
+          <Key
+            as={LocaleLink}
+            to="/account/settings?signout=others#sessions"
+            id="signout-others-key"
+            size="sm"
+            icon="sign-out"
+            aria-expanded={false}
+            onClick={(event: MouseEvent) => {
+              // with script the question opens in place: no request, no scroll
               event.preventDefault();
-              setConfirming(true);
+              focusTo.current = "signout-others-q";
+              setOpen(true);
             }}
           >
-            <input type="hidden" name="intent" value="revokeOthers" />
-            <Key type="submit" size="sm" icon="sign-out" aria-haspopup="dialog" loading={others.pending} disabled={!online}>
-              {t("settings.signOutOthers")}
-            </Key>
-          </others.fetcher.Form>
+            {t("settings.signOutOthers")}
+          </Key>
         ) : null}
       </div>
-      <ConfirmDialog
-        open={confirming}
-        onClose={() => setConfirming(false)}
-        tone="destructive"
-        title={t("settings.signOutOthersQ")}
-        consequence={t("settings.signOutOthersWhat", { count: otherCount })}
-        confirmLabel={t("settings.signOutOthersConfirm")}
-        cancelLabel={t("common.cancel")}
-        pending={others.pending}
-        error={others.failed?.message}
-        onConfirm={() => others.fetcher.submit({ intent: "revokeOthers" }, { method: "post" })}
-      />
-      <FormFailure answer={confirming ? null : (others.failed ?? one.failed)} />
+      {confirming ? (
+        <div id="signout-others" role="group" aria-labelledby="signout-others-q">
+          <Note
+            tone="warning"
+            variant="flat"
+            icon="sign-out"
+            title={
+              <span id="signout-others-q" tabIndex={-1} className="outline-none">
+                {t("settings.signOutOthersQ")}
+              </span>
+            }
+            action={
+              <span className="flex flex-wrap items-start gap-3">
+                <others.fetcher.Form method="post" action={href("/account/settings")}>
+                  <input type="hidden" name="intent" value="revokeOthers" />
+                  <input type="hidden" name="confirm" value="1" />
+                  <SubmitKey variant="danger" size="sm" icon="sign-out" pending={others.pending}>
+                    {t("settings.signOutOthersConfirm")}
+                  </SubmitKey>
+                </others.fetcher.Form>
+                <Key
+                  as={LocaleLink}
+                  to="/account/settings#sessions"
+                  replace
+                  preventScrollReset
+                  variant="ghost"
+                  size="sm"
+                  onClick={(event: MouseEvent) => {
+                    event.preventDefault();
+                    focusTo.current = "signout-others-key";
+                    close();
+                  }}
+                >
+                  {t("common.cancel")}
+                </Key>
+              </span>
+            }
+          >
+            {t("settings.signOutOthersWhat", { count: otherCount })}
+          </Note>
+        </div>
+      ) : null}
+      {doneHere ? (
+        <Notice tone="ok" flat>
+          {t("settings.signedOutOthers", { count: doneHere.count ?? 0 })}
+        </Notice>
+      ) : null}
+      <FormFailure answer={others.failed ?? one.failed} />
       <OfflineNote />
       <ul className="grid">
         {sessions.map((session) => {

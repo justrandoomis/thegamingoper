@@ -18,7 +18,7 @@ import { readFileSync } from "node:fs";
 import { crc32 } from "node:zlib";
 import { createElement, type ComponentType } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { createRoutesStub } from "react-router";
+import { createRoutesStub, RouterContextProvider } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { messagesFor } from "~/i18n/i18n.server";
 import type { Locale } from "~/lib/locales";
@@ -35,6 +35,8 @@ import {
   attemptFor,
   cartReadiness,
   cleanOrderRef,
+  couponIssueShortfall,
+  couponMinimumOf,
   draftFromPosted,
   draftToForm,
   EMPTY_DRAFT,
@@ -55,12 +57,14 @@ import {
   withOfferedDay,
   type ValidationContext,
 } from "~/routes/storefront/checkout/checkout-form";
-import CartPage from "~/routes/storefront/checkout/cart";
-import CheckoutPage from "~/routes/storefront/checkout/checkout";
+import CartPage, { loader as cartLoader } from "~/routes/storefront/checkout/cart";
+import CheckoutPage, { loader as checkoutLoader } from "~/routes/storefront/checkout/checkout";
 import OrderPage from "~/routes/storefront/checkout/order";
 import TrackPage from "~/routes/storefront/checkout/track";
 import { cartShelves, checkoutInputFromForm, confirmationPath, couponShortfall, findOrderForShopper, loadCartFacts, loadCheckoutData, oneRail, placeCheckout, saveCheckoutAddress, trackOrder, wantsAddressSaved } from "~/routes/storefront/checkout/checkout.server";
 import { handleProofUpload, MAX_PROOF_BODY_BYTES } from "~/routes/storefront/checkout/proof.server";
+import { requestContextMiddleware } from "~/server/context.server";
+import { CART_COOKIE } from "~/server/shell.server";
 import { createTestDb, TEST_NOW, type TestDb } from "./helpers/db";
 import { fixtures, type Fixtures } from "./helpers/factories";
 
@@ -818,7 +822,8 @@ describe("client feedback round 1: QA bugs", () => {
     // a visible page title (v2 had only a hidden one)
     expect(html).toMatch(/<h1 class="type-h1 text-ink">السلة<\/h1>/);
     // the words and the key on the soft raised card, the key inside it
-    const card = /<div class="empty empty--panel">([\s\S]*?)<\/div><\/div>/.exec(html)?.[1] ?? "";
+    // (polish round 2026-11-13: the kit's wide panel — `empty--wide` — spans the column; the area no longer widens it)
+    const card = /<div class="empty empty--panel empty--wide">([\s\S]*?)<\/div><\/div>/.exec(html)?.[1] ?? "";
     expect(card).toContain("سلتك فارغة");
     expect(card).toMatch(/href="\/c\/consoles"/);
     // «طلبت من قبل؟ تتبّع طلبك» after the card, not beside the key
@@ -901,7 +906,10 @@ describe("client feedback round 1: review fixes", () => {
     // Arabic: the words once, under the applied code in the coupon field — the summary's discount rows say only the code
     const html = render(await getCartView(t.db, request, NOW), "ar");
     expect(html.split("قسيمة اختبار").length - 1).toBe(1);
-    const rows = /<div class="co-adjust">[\s\S]*?<\/ul>/.exec(html)?.[0] ?? "";
+    // (polish round 2026-11-13: the parts are the kit summary's own rows, above the total — no longer a list under it)
+    const card = summaryCards(html)[0] ?? "";
+    const rows = card.slice(card.indexOf('class="summary__rows"'), card.indexOf("summary__row--total"));
+    expect(rows).toContain('data-icon="ticket"');
     expect(rows).toContain("WORDS5");
     expect(rows).not.toContain("قسيمة اختبار");
   });
@@ -1081,5 +1089,225 @@ describe("client feedback round 1: the QA's transaction findings (wave C)", () =
     const signed = page(empty, true);
     expect(signed).not.toContain('href="/track"');
     expect(signed).toMatch(/href="\/account\/orders"[^>]*>[\s\S]*?طلبت من قبل؟ طلباتك في حسابك/);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── polish round (2026-11-13)
+
+/** Runs a page's loader the way React Router does — the request middleware first — with this cart's cookie. */
+async function runLoader<T>(path: string, loader: (args: never) => Promise<unknown>, cartToken: string): Promise<T> {
+  const request = new Request(`http://localhost:5173${path}`, { headers: { Cookie: `${CART_COOKIE}=${cartToken}`, "CF-Connecting-IP": "198.51.100.91" } });
+  const context = new RouterContextProvider();
+  const url = new URL(request.url);
+  let result: unknown;
+  await requestContextMiddleware({ request, context, url, pattern: path, params: {} } as never, async () => {
+    result = await loader({ request, context, params: {}, url, pattern: path } as never);
+    return new Response(null);
+  });
+  // data(value, init) — the value
+  return ((result as { data?: unknown } | undefined)?.data ?? result) as T;
+}
+
+/** Every order summary card of a page (`<section class="summary…">`, nested sections counted), in page order. */
+function summaryCards(html: string): string[] {
+  const cards: string[] = [];
+  const starts = /<section\b[^>]*\bclass="summary(?:\s[^"]*)?"[^>]*>/g;
+  for (let start = starts.exec(html); start; start = starts.exec(html)) {
+    const tags = /<section\b|<\/section>/g;
+    tags.lastIndex = start.index;
+    let depth = 0;
+    for (let match = tags.exec(html); match; match = tags.exec(html)) {
+      depth += match[0] === "</section>" ? -1 : 1;
+      if (depth === 0) {
+        cards.push(html.slice(start.index, match.index + match[0].length));
+        break;
+      }
+    }
+  }
+  return cards;
+}
+/** How many times `needle` is in `text`. */
+const timesIn = (text: string, needle: string) => text.split(needle).length - 1;
+
+describe("polish round (2026-11-13): the coupon minimum from the core, the summary's rows, the wide empty card", () => {
+  test("a coupon below its minimum is said from the commerce core's own figures: the loaders and the coupon field never count it again", async () => {
+    // C-fix-core: evaluateCoupon's min_subtotal refusal, the view's couponIssue and the 409 of POST /api/cart now carry
+    // the minimum and what is missing. The page read the coupon a second time and counted a demo coupon's goods with its
+    // own copy of the core's rule (demoCouponBase); the coupon field asked the page again after every refusal.
+    // 1. the figures, from a view's couponIssue or from the 409 answer (pure, client-safe)
+    const gap = { minimumIqd: 100_000, moreIqd: 27_750 };
+    expect(couponMinimumOf(" demo5000 ", { ok: false, code: "coupon_min_subtotal", status: 409, ...gap })).toEqual({ code: "DEMO5000", ...gap });
+    expect(couponMinimumOf("demo٥٠٠٠", gap)?.code).toBe("DEMO5000");
+    for (const figures of [null, undefined, "x", {}, { minimumIqd: 100_000 }, { ...gap, moreIqd: 0 }, { ...gap, moreIqd: 2.5 }, { minimumIqd: "100000", moreIqd: "27750" }, { minimumIqd: 10, moreIqd: 20 }]) {
+      expect(couponMinimumOf("DEMO5000", figures), JSON.stringify(figures)).toBeNull();
+    }
+    expect(couponMinimumOf("  ", gap)).toBeNull();
+    expect(couponIssueShortfall({ code: "DEMO5000", reason: "min_subtotal", ...gap })).toEqual({ code: "DEMO5000", ...gap });
+    // an older answer without the figures (the field then asks once), another reason, no issue
+    expect(couponIssueShortfall({ code: "DEMO5000", reason: "min_subtotal" })).toBeNull();
+    expect(couponIssueShortfall({ code: "DEMO5000", reason: "customer_limit", ...gap })).toBeNull();
+    expect(couponIssueShortfall(null)).toBeNull();
+
+    // 2. a DEMO coupon reaches its minimum with demo goods alone: the page says the core's count
+    await t.db.insert(coupons).values({ id: "cpn_polish_demo_min", code: "POLISHMIN", kind: "fixed", value: 5_000, minSubtotalIqd: 100_000, isDemo: true, isActive: true, createdAt: NOW - HOUR });
+    const demoA = await make.product({ stock: 5, priceIqd: 60_000, isDemo: true });
+    const demoB = await make.product({ stock: 5, priceIqd: 40_000, isDemo: true });
+    const real = await make.product({ stock: 5, priceIqd: 80_000 });
+    const first = await addToCart(t.db, { cartToken: null, customerId: null, locale: "ar" }, { variantId: demoA.variantId, qty: 1 }, NOW);
+    const request = { cartToken: first.cartToken, customerId: null, locale: "ar" as const };
+    await addToCart(t.db, request, { variantId: real.variantId, qty: 1 }, NOW);
+    // 140,000 in the cart, 60,000 of it demo goods: 40,000 more demo goods
+    expect(await couponShortfall(t.db, request, "polishmin", NOW)).toEqual({ code: "POLISHMIN", minimumIqd: 100_000, moreIqd: 40_000 });
+
+    // 3. a stored code that dropped under its minimum: the loaders take the figures from the cart view
+    const grown = await addToCart(t.db, request, { variantId: demoB.variantId, qty: 1 }, NOW);
+    expect((await applyCoupon(t.db, request, "POLISHMIN", NOW)).coupon?.code).toBe("POLISHMIN");
+    await removeLine(t.db, request, grown.view.lines.find((line) => line.variantId === demoB.variantId)!.id, NOW);
+    const expected = { code: "POLISHMIN", minimumIqd: 100_000, moreIqd: 40_000 };
+    for (const [path, loader] of [["/cart", cartLoader], ["/checkout", checkoutLoader]] as const) {
+      const loaded = await runLoader<{ cart: { couponIssue: unknown }; couponShortfall: unknown }>(path, loader as never, request.cartToken);
+      expect(loaded.cart.couponIssue, path).toMatchObject({ code: "POLISHMIN", reason: "min_subtotal", minimumIqd: 100_000, moreIqd: 40_000 });
+      expect(loaded.couponShortfall, path).toEqual(expected);
+    }
+    const source = (file: string) => readFileSync(new URL(`../app/routes/storefront/checkout/${file}`, import.meta.url), "utf8");
+    for (const file of ["cart.tsx", "checkout.tsx"]) expect(source(file), file).not.toMatch(/couponShortfall\(/);
+    expect(source("checkout.server.ts")).not.toMatch(/demoCouponBase|\.from\(coupons\)/);
+
+    // 4. the coupon field: the 409's figures first; the page's own read only for an answer without them
+    const form = source("components/CouponForm.tsx");
+    expect(form).toMatch(/couponMinimumOf\(value, /);
+    expect(form.indexOf("couponMinimumOf(value, ")).toBeLessThan(form.indexOf('askMinimum(value, "typed")'));
+    // a view that says how far the stored code is: the sentence without the loader's answer (an edit on the page — the
+    // cart editor's view — has nothing else), in every language
+    const facts = await loadCartFacts(t.db);
+    const words: Record<Locale, RegExp> = { ar: /أضف منتجات بقيمة/, en: /add [^<]*40,000[^<]* more to use it/, ckb: /زیاد بکە/ };
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const view = await getCartView(t.db, { ...request, locale }, NOW);
+      const html = renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: view, facts, demo: true, recommendations: null, couponShortfall: null, i18n: pageStrings(locale) }, locale });
+      expect(html, locale).toContain("100,000");
+      expect(html, locale).toContain("40,000");
+      expect(html, locale).toMatch(words[locale]);
+    }
+  });
+
+  test("every discount sits above the total, once, in the saving colour; a waived delivery is said under «التوصيل»; only a split payment follows the total", async () => {
+    // C-fix-design: the kit's summary draws the discount's parts in the discount's place (`discountParts`) and puts its
+    // children directly under the total — the area's breakdown, passed as children, read «−8,250» after «الإجمالي».
+    const cart = await cartWith({ priceIqd: 250_000 });
+    const base = await getCartView(t.db, { cartToken: cart.cartToken, customerId: null, locale: "ar" }, NOW);
+    // the server's figures: 250,000 − 25,000 (an offer) − 8,250 (a code), the delivery waived by a membership
+    const discounts = [
+      { kind: "rule" as const, ruleId: "rule_polish", label: "عرض الأسبوع", amountIqd: 25_000 },
+      { kind: "coupon" as const, code: "DEMO10", label: "DEMO10", amountIqd: 8_250 },
+    ];
+    const view = { ...base, discounts, discountIqd: 33_250, shippingIqd: 0, totalIqd: 216_750, coupon: { code: "DEMO10", label: "DEMO10" }, shippingWaiver: { by: "member" as const, label: "ذهبي", feeIqd: 5_000, waivedIqd: 5_000 } };
+    const check = (html: string, where: string, cards: number) => {
+      expect(html, where).not.toContain("co-adjust__list");
+      const found = summaryCards(html);
+      expect(found, where).toHaveLength(cards);
+      for (const card of found) {
+        const total = card.indexOf("summary__row--total");
+        expect(total, where).toBeGreaterThan(0);
+        const rows = card.slice(0, total);
+        // each part once, in its place, as a saving row with its icon
+        expect(timesIn(card, "−25,000"), where).toBe(1);
+        expect(timesIn(card, "−8,250"), where).toBe(1);
+        expect(timesIn(rows, "summary__row--saving"), where).toBe(2);
+        expect(rows, where).toContain('data-icon="sparkle"');
+        expect(rows, where).toContain('data-icon="ticket"');
+        // the waiver in words under «التوصيل», not a row of its own after the total
+        expect(rows.slice(rows.lastIndexOf("summary__row--saving")), where).toContain("التوصيل مجاني لعضوية");
+        // nothing taken off after the total
+        expect(card.slice(total), where).not.toContain("−");
+      }
+    };
+    const facts = await loadCartFacts(t.db);
+    check(renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: view, facts, demo: true, recommendations: null, couponShortfall: null, i18n: pageStrings() } }), "cart", 1);
+    const page = await loadCheckoutData(t.db, { locale: "ar", now: NOW, customerId: null });
+    const posted = draftToForm({ ...EMPTY_DRAFT, phone: "0770 123 4567", governorateId: governorateId("baghdad"), districtId: districtId("baghdad", "karrada"), areaText: "الكرادة داخل", addressText: "شارع 62", paymentMethod: "cod" }, { idempotencyKey: newAttemptKey(), expectedTotalIqd: view.totalIqd });
+    // the review: the summary bar's card, the card at the foot of the review (phones) and the side card (from 1024)
+    check(renderPage(CheckoutPage, { path: "checkout", url: "/checkout?step=review", loaderData: { cart: view, page, customer: null, savedAddress: null, attemptKey: "k".repeat(22), demo: true, couponShortfall: null, i18n: pageStrings() }, actionData: { ok: false, code: "network", status: 0, values: posted } }), "checkout", 3);
+
+    // the order page: the same rows, and a split payment's parts — the only thing under the total
+    const order = await placed("cod");
+    const found = await findOrderForShopper(t.db, { ref: order.ref, token: order.accessToken, customerId: null, locale: "ar", now: NOW });
+    expect(found).not.toBeNull();
+    const paid = found!.order;
+    const shown = { ...found!, order: { ...paid, totals: { ...paid.totals, subtotalIqd: 250_000, discountIqd: 33_250, shippingIqd: 0, totalIqd: 216_750 }, walletPaidIqd: 100_000, adjustments: { discounts, shippingWaiver: view.shippingWaiver, flash: {}, referralCode: null } } };
+    const html = renderPage(OrderPage, { path: "order/:ref", url: `/order/${order.ref}?t=${order.accessToken}`, loaderData: { found: shown, ref: order.ref, signedIn: false, recommendations: null, proofUrl: null, codesSignIn: false, i18n: pageStrings() } });
+    check(html, "order", 1);
+    const card = summaryCards(html)[0] ?? "";
+    const after = card.slice(card.indexOf("summary__row--total"));
+    expect(after).toContain("من محفظة طمطم");
+    expect(after).toContain(figure(100_000));
+    expect(after).toContain(figure(116_750));
+
+    // a delivery waived in part (an offer worth less than the fee) is never «مجاني»: what came off, and the fee
+    const part = { ...view, shippingIqd: 7_000, totalIqd: 223_750, shippingWaiver: { by: "rule" as const, label: "عرض التوصيل", feeIqd: 12_000, waivedIqd: 5_000 } };
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const partHtml = renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: part, facts, demo: true, recommendations: null, couponShortfall: null, i18n: pageStrings(locale) }, locale });
+      const partCard = summaryCards(partHtml)[0] ?? "";
+      const note = partCard.slice(partCard.lastIndexOf("summary__row--saving"), partCard.indexOf("summary__row--total"));
+      expect(note, locale).toContain(figure(5_000));
+      expect(note, locale).toContain(figure(12_000));
+      expect(note, locale).not.toMatch(/مجاني|Free delivery|بێبەرامبەر/);
+    }
+  });
+
+  test("names keep their tokens whole on the order, the summary and the stock notice — an old snapshot's plain hyphen too", async () => {
+    // C-fix-data: «Xbox Rechargeable Battery + USB-» / «C Cable» at 360–390. The catalogue now writes U+2011, but an
+    // order line keeps the name as it was sold; the shared keepTokens (~/lib/keep-tokens) keeps «USB‑C», «Joy‑Con» and
+    // «Switch 2» whole wherever the area prints a name.
+    const order = await placed("cod");
+    const found = await findOrderForShopper(t.db, { ref: order.ref, token: order.accessToken, customerId: null, locale: "ar", now: NOW });
+    expect(found).not.toBeNull();
+    const line = found!.order.lines[0]!;
+    const sold = { ...found!, order: { ...found!.order, lines: [{ ...line, name: "Xbox Rechargeable Battery + USB-C Cable — يدا Joy-Con أزرق" }] } };
+    const html = renderPage(OrderPage, { path: "order/:ref", url: `/order/${order.ref}?t=${order.accessToken}`, loaderData: { found: sold, ref: order.ref, signedIn: false, recommendations: null, proofUrl: null, codesSignIn: false, i18n: pageStrings() } });
+    const card = summaryCards(html)[0] ?? "";
+    expect(card).toContain("USB‑C Cable");
+    expect(card).toContain("Joy‑Con");
+    expect(card).not.toContain("USB-C");
+    // the checkout's summary lines (the cart's names) and the stock notice's sentences
+    const cart = await cartWith({ priceIqd: 90_000 });
+    const view = await getCartView(t.db, { cartToken: cart.cartToken, customerId: null, locale: "ar" }, NOW);
+    const named = { ...view, lines: view.lines.map((entry) => ({ ...entry, name: "Nintendo Switch 2 Joy-Con" })) };
+    const page = await loadCheckoutData(t.db, { locale: "ar", now: NOW, customerId: null });
+    const checkout = renderPage(CheckoutPage, { path: "checkout", url: "/checkout", loaderData: { cart: named, page, customer: null, savedAddress: null, attemptKey: "k".repeat(22), demo: true, couponShortfall: null, i18n: pageStrings() } });
+    const side = summaryCards(checkout).at(-1) ?? "";
+    expect(side).toContain("Switch 2 Joy‑Con");
+    const blocked = { ...named, blocked: true, lines: named.lines.map((entry) => ({ ...entry, problem: "out_of_stock" as const })) };
+    const notice = renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: blocked, facts: await loadCartFacts(t.db), demo: true, recommendations: null, couponShortfall: null, i18n: pageStrings() } });
+    const changes = /<ul class="co-changes">[\s\S]*?<\/ul>/.exec(notice)?.[0] ?? "";
+    expect(changes).toContain("Switch 2 Joy‑Con");
+  });
+
+  test("the empty cart's and the empty checkout's card is the kit's wide panel (no local widening)", async () => {
+    const empty = await getCartView(t.db, { cartToken: null, customerId: null, locale: "ar" }, NOW);
+    const cartHtml = renderPage(CartPage, { path: "cart", url: "/cart", loaderData: { cart: empty, facts: await loadCartFacts(t.db), demo: true, recommendations: { ok: true, shelves: [] }, couponShortfall: null, i18n: pageStrings() } });
+    expect(cartHtml).toContain('<div class="empty empty--panel empty--wide">');
+    const page = await loadCheckoutData(t.db, { locale: "ar", now: NOW, customerId: null });
+    const checkoutHtml = renderPage(CheckoutPage, { path: "checkout", url: "/checkout", loaderData: { cart: empty, page, customer: null, savedAddress: null, attemptKey: "k".repeat(22), demo: true, couponShortfall: null, i18n: pageStrings() } });
+    expect(checkoutHtml).toContain('<div class="empty empty--panel empty--wide">');
+    expect(checkoutCss()).not.toMatch(/\.co-empty\s*>\s*\.empty--panel/);
+  });
+});
+
+describe("polish round review (2026-11-17)", () => {
+  test("<Adjustments waiver> (the exported list a page may still pass) never calls a delivery waived in part «free»", async () => {
+    // WaiverNote says «خصم 5,000 د.ع على التوصيل: …» for an offer worth less than the fee; the shared <Adjustments>
+    // still said «التوصيل مجاني: …» for the same waiver — a delivery promise the order did not make.
+    const { Adjustments } = await import("~/routes/storefront/checkout/components/Adjustments");
+    const part = { by: "rule" as const, label: "عرض التوصيل", feeIqd: 12_000, waivedIqd: 5_000 };
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const Page = () => createElement(Adjustments, { waiver: part });
+      const html = renderPage(Page as never, { path: "x", url: "/x", loaderData: { i18n: pageStrings(locale) }, locale });
+      expect(html, locale).toContain(figure(5_000));
+      expect(html, locale).toContain(figure(12_000));
+      expect(html, locale).not.toMatch(/مجاني|Free delivery|بێبەرامبەر/);
+    }
+    // a whole waiver is still said as free
+    const Whole = () => createElement(Adjustments, { waiver: { ...part, waivedIqd: 12_000 } });
+    expect(renderPage(Whole as never, { path: "x", url: "/x", loaderData: { i18n: pageStrings("ar") } })).toContain("التوصيل مجاني");
   });
 });

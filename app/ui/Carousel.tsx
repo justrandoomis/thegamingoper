@@ -61,8 +61,10 @@ import { IconKey } from "./IconKey";
  *   track is a polite live region only while autoplay is off.
  * - The slide's shape is one custom property: `aspect` (→ --carousel-aspect). The first slide's image should be eager
  *   with fetchpriority high, the others lazy (the page decides; nothing here loads images).
- * - `.carousel__parallax` on an element inside a slide makes it drift a little against the swipe (CSS scroll-driven
- *   animation; none under reduced motion).
+ * - `.carousel__parallax` on an element inside a slide makes it drift a little against the swipe: the hook writes the
+ *   slide's place (`--carousel-shift`, `parallaxShift()` below) once a frame while the track moves — right in Arabic
+ *   too, where a CSS view() timeline measured from the wrong edge. None without JavaScript, under reduced motion or on
+ *   the lite tier.
  */
 export type CarouselOptions = {
   count: number;
@@ -149,6 +151,22 @@ export function keyDelta(key: string, rtl: boolean): -1 | 0 | 1 {
   if (key === "ArrowRight") return rtl ? -1 : 1;
   if (key === "ArrowLeft") return rtl ? 1 : -1;
   return 0;
+}
+
+type Span = { left: number; right: number };
+
+/**
+ * Where a slide is against the track, for `.carousel__parallax` (pure; exported for tests): 0 when it sits in the
+ * middle, 1 when it is just about to come in at the right edge, −1 when it has just gone out at the left — the range a
+ * CSS view() timeline covers, in physical terms, so one number draws the drift right in both directions (the content
+ * moves `shift × 9%` of its own width toward the side its slide is on). Further away it rests at ±1. Rounded to a
+ * thousandth, so a still track writes nothing new.
+ */
+export function parallaxShift(track: Span, slide: Span): number {
+  const reach = (track.right - track.left + slide.right - slide.left) / 2;
+  if (!(reach > 0)) return 0;
+  const shift = (slide.left + slide.right - track.left - track.right) / 2 / reach;
+  return Math.round(Math.max(-1, Math.min(1, shift)) * 1000) / 1000 || 0;
 }
 
 /** The shopper's side of autoplay: their choice (`playing`) and the three things that hold it while they last. */
@@ -287,6 +305,45 @@ export function useCarousel({ count, autoplay = 0, loop, onIndexChange }: Carous
       io?.disconnect();
     };
   }, []);
+
+  // the parallax (G6): each slide that holds a `.carousel__parallax` gets --carousel-shift (parallaxShift above) once a
+  // frame while the track moves or the window changes size. Script, not a CSS view() timeline: Chromium measures a
+  // right-to-left scroller's view() from the wrong edge (polish round 2026-11-13). Full motion only; a carousel with no
+  // such element (the home hero draws its own) listens to nothing.
+  useEffect(() => {
+    const element = track.current;
+    if (!element || tier !== "full") return;
+    // the slides are looked up again at each frame (review 2026-11-17): a revalidation or the page can swap the slides'
+    // nodes while their count stays the same, and the drift then stayed on the old nodes
+    const find = () => [...element.querySelectorAll<HTMLElement>("[data-carousel-slide]")].filter((slide) => slide.querySelector(".carousel__parallax"));
+    if (find().length === 0) return;
+    const written = new Map<HTMLElement, number>();
+    let frame = 0;
+    const draw = () => {
+      frame = 0;
+      const slides = find();
+      const box = element.getBoundingClientRect();
+      // every box is read before any slide is written: no layout in between
+      const shifts = slides.map((slide) => parallaxShift(box, slide.getBoundingClientRect()));
+      slides.forEach((slide, i) => {
+        if (written.get(slide) === shifts[i]) return;
+        written.set(slide, shifts[i]);
+        slide.style.setProperty("--carousel-shift", String(shifts[i]));
+      });
+    };
+    const onMove = () => {
+      if (!frame) frame = requestAnimationFrame(draw);
+    };
+    draw();
+    element.addEventListener("scroll", onMove, { passive: true });
+    window.addEventListener("resize", onMove);
+    return () => {
+      cancelAnimationFrame(frame);
+      element.removeEventListener("scroll", onMove);
+      window.removeEventListener("resize", onMove);
+      for (const slide of written.keys()) slide.style.removeProperty("--carousel-shift");
+    };
+  }, [count, tier]);
 
   // the fade of a move further than one slide (carouselMove "fade"): a later move takes over from it
   const fading = useRef<Animation | null>(null);

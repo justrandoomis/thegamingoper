@@ -24,9 +24,9 @@ import { shellMeta } from "~/routes/storefront/shell/meta";
 import { TaskBar } from "~/routes/storefront/shell/TabBar";
 import type { ShellHandle } from "~/routes/storefront/shell/types";
 import type { CartLineData } from "~/server/services/cart.server";
-import { BLOCKING_PROBLEMS, cartReadiness, COUPON_MINIMUM_INTENT, stockChanges } from "./checkout-form";
-import { answerCouponMinimum, cartShelves, cartTokenOf, couponShortfall, emptyCartShelves, loadCartFacts, NO_STORE } from "./checkout.server";
-import { Adjustments, summaryCoupon, withFlash } from "./components/Adjustments";
+import { BLOCKING_PROBLEMS, cartReadiness, COUPON_MINIMUM_INTENT, couponIssueShortfall, stockChanges } from "./checkout-form";
+import { answerCouponMinimum, cartShelves, cartTokenOf, emptyCartShelves, loadCartFacts, NO_STORE } from "./checkout.server";
+import { summaryCoupon, summaryDiscountParts, WaiverNote, withFlash } from "./components/Adjustments";
 import { withOptionValue } from "./components/CheckoutSteps";
 import { CommitKey } from "./components/CommitKey";
 import { CouponForm, type CartWithIssue } from "./components/CouponForm";
@@ -65,8 +65,9 @@ export async function loader({ context }: Route.LoaderArgs) {
   // which is on the first screen of an empty cart, down by a whole shelf — CLS 0.16–0.22 at 390 px (acceptance run
   // 2026-11-12, docs/ACCEPTANCE.md); rendered on the server they are simply there.
   const recommendations = cart.lines.length > 0 ? cartShelves(db, ctx, customerId, cart) : await emptyCartShelves(db, ctx, customerId);
-  // a stored code under its minimum says how much more is needed (client round 1, QA)
-  const shortfall = cart.couponIssue?.reason === "min_subtotal" ? await couponShortfall(db, request, cart.couponIssue.code, ctx.now, cart) : null;
+  // a stored code under its minimum says how much more is needed (client round 1, QA) — the view carries the core's
+  // figures (couponIssue: the minimum and what is missing), so nothing is evaluated again here
+  const shortfall = couponIssueShortfall(cart.couponIssue);
   return data({ cart, facts, demo: ctx.storeMode === "demo", recommendations, couponShortfall: shortfall, signedIn: session !== null, i18n: messagesFor(ctx.locale, "checkout", "errors") }, { headers: NO_STORE });
 }
 
@@ -145,6 +146,8 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
         <EmptyState
           layout="stack"
           panel
+          // the soft card across the page column (the kit's wide panel); the words keep their own measure inside it
+          wide
           headingLevel={2}
           title={t("cart.emptyTitle")}
           text={t("cart.emptyText")}
@@ -232,6 +235,10 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
           <OrderSummary
             {...view}
             coupon={summaryCoupon(view.discounts, view.coupon)}
+            // every discount as charged, a row each in the discount's place above the total; a waived delivery in words
+            // under «التوصيل» (polish round: nothing with a minus sign after the total)
+            discountParts={summaryDiscountParts(view.discounts, t, f)}
+            shippingNote={view.shippingWaiver ? <WaiverNote waiver={view.shippingWaiver} /> : undefined}
             lines={null}
             count={view.payableCount ?? view.count}
             shipping={facts.overridesEnabled ? "pending" : "flat"}
@@ -245,9 +252,7 @@ export default function CartPage({ loaderData }: Route.ComponentProps) {
               </div>
             }
             trust={<TrustStrip variant="line" cod={facts.cod} guest={!signedIn} returnsTo="/policies/returns" />}
-          >
-            <Adjustments discounts={view.discounts ?? []} waiver={view.shippingWaiver ?? null} />
-          </OrderSummary>
+          />
           {/* the side notes (G5): the delivery rule — unless this cart's delivery is waived (the summary says so and
               from what) — and the calm demo-order line */}
           {view.shippingWaiver ? null : (

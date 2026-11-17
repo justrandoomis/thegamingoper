@@ -218,7 +218,17 @@ export type SaleRequest = {
 };
 
 export type SaleOutcome =
-  | { ok: true; ref: string; receiptNumber: string | null; totalIqd: number; changeIqd: number; replayed: boolean; lateForClosedShift: boolean }
+  | {
+      ok: true;
+      ref: string;
+      receiptNumber: string | null;
+      totalIqd: number;
+      changeIqd: number;
+      replayed: boolean;
+      lateForClosedShift: boolean;
+      /** The sale's digital codes (2026-11-13): code lines, codes delivered in its batch, units still waiting — null without a code line. */
+      codes?: { lines: number; delivered: number; pending: number } | null;
+    }
   | {
       ok: false;
       code: string;
@@ -238,6 +248,8 @@ export type ShiftCash = {
   payInIqd: number | null;
   payOutIqd: number | null;
   dropIqd: number | null;
+  /** Of the pay-outs: cash trade-in payouts taken from this drawer (module 13, 2026-11-12). Optional for older callers. */
+  tradeInIqd?: number | null;
 };
 
 export type ShiftView = {
@@ -268,7 +280,7 @@ export type ShiftReport = ShiftView & {
   cash: ShiftCash;
   byMethod: { method: TillMethod; count: number; totalIqd: number }[] | null;
   discounts: { lines: number; lineIqd: number; orderIqd: number; sales: number } | null;
-  moves: { id: string; kind: string; amountIqd: number; reason: string | null; at: number; by: string; orderRef: string | null }[];
+  moves: { id: string; kind: string; amountIqd: number; reason: string | null; at: number; by: string; orderRef: string | null; /** A cash trade-in payout from this drawer. */ tradeIn?: boolean }[];
   canReview: boolean;
   reviewBlocked: "own_shift" | null;
 };

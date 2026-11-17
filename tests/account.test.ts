@@ -53,7 +53,7 @@ import * as accountLayout from "~/routes/storefront/account/layout";
 import { getOrderForCustomer } from "~/server/services/orders/manage.server";
 import type { OrderView } from "~/server/services/orders/types";
 import AddressesPage from "~/routes/storefront/account/addresses";
-import SettingsPage from "~/routes/storefront/account/settings";
+import SettingsPage, { action as settingsAction } from "~/routes/storefront/account/settings";
 import { ago } from "~/routes/storefront/account/components/text";
 import DevicesPage from "~/routes/storefront/account/devices";
 import ProfilePage from "~/routes/storefront/account/profile";
@@ -1128,7 +1128,7 @@ function renderOrderPage(order: OrderView, locale: Locale = "ar"): string {
       hydrationData: {
         loaderData: {
           root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, storeMode: "demo", i18n: messagesFor(locale, "common", "ui", "ui-card", "ui-shop", "ui-overlays") },
-          page: { order, now: NOW, i18n: messagesFor(locale, "account", "checkout", "errors") },
+          page: { order, reviews: [], now: NOW, i18n: messagesFor(locale, "account", "checkout", "errors") },
         },
       },
     }),
@@ -1271,24 +1271,107 @@ describe("client feedback round 1: the QA's account findings (wave C)", () => {
     expect(ago(t, { ...sorani, locale: "ar" }, NOW - 2 * DAY, NOW)).toBe("Intl");
   });
 
-  test("«sign out the other devices» asks first, saying how many devices it signs out", async () => {
-    // Found by QA: one tap posted intent=revokeOthers at once — the QA's probe signed the shared demo customer out of 26
-    // other sessions with no question and no undo.
+  test("«sign out the other devices» asks first, in the page: the key opens the question (a link without script), never a post", async () => {
+    // Found by QA (wave C): one tap posted intent=revokeOthers at once and signed the shared demo customer out of 26
+    // other sessions. Polish round: the wave-C dialog still posted at once without script and before the page was live
+    // (the key's own form), and a QA agent signed every other agent out with it — the question is now a step in the page.
     const { id } = await customer();
     const html = renderAccountPage(SettingsPage, "/account/settings", await settingsData(id));
-    // the key opens a dialog (with script); without script its form still posts
-    expect(html).toMatch(/<button\b[^>]*aria-haspopup="dialog"[^>]*>(?:(?!<\/button>)[\s\S])*سجّل خروج الأجهزة الأخرى/);
-    expect(html).toMatch(/name="intent" value="revokeOthers"/);
+    // the key is a link to the question — it never posts, and no dialog is involved
+    expect(html).toMatch(/<a\b(?=[^>]*href="\/account\/settings\?signout=others#sessions")(?=[^>]*aria-expanded="false")[^>]*>(?:(?!<\/a>)[\s\S])*سجّل خروج الأجهزة الأخرى/);
+    expect(html).not.toMatch(/name="intent" value="revokeOthers"/);
+    expect(html).not.toContain('aria-haspopup="dialog"');
+    expect(html).not.toContain("سجّل الخروج من كل الأجهزة الأخرى؟");
     const source = readFileSync(new URL("../app/routes/storefront/account/settings.tsx", import.meta.url), "utf8");
-    // the submit is held for the dialog, which posts the intent itself once confirmed
-    expect(source).toMatch(/onSubmit=\{\(event\) => \{\s*event\.preventDefault\(\);\s*setConfirming\(true\);/);
-    expect(source).toMatch(/<ConfirmDialog[\s\S]*?onConfirm=\{\(\) => others\.fetcher\.submit\(\{ intent: "revokeOthers" \}/);
+    expect(source).not.toMatch(/ConfirmDialog|window\.confirm|\bconfirm\(/);
+
+    // the question, in the page: how many devices, what it means, «سجّل خروجها» (a danger key that posts the confirmed
+    // intent to the page itself, without the question in the address) and «ارجع» back to the card
+    const asked = renderAccountPage(SettingsPage, "/account/settings?signout=others", await settingsData(id));
+    const group = /<div\b(?=[^>]*id="signout-others")(?=[^>]*role="group")[^>]*>([\s\S]*?)<\/form>/.exec(asked)?.[0] ?? "";
+    expect(group).toContain("سجّل الخروج من كل الأجهزة الأخرى؟");
+    expect(group).toContain("يُسجَّل خروج جهازين آخرين.");
+    expect(group).toMatch(/<form\b(?=[^>]*method="post")(?=[^>]*action="\/account\/settings")[^>]*>/);
+    expect(group).toContain('name="intent" value="revokeOthers"');
+    expect(group).toContain('name="confirm" value="1"');
+    expect(group).toMatch(/<button\b(?=[^>]*type="submit")(?=[^>]*class="[^"]*key--danger)[^>]*>(?:(?!<\/button>)[\s\S])*سجّل خروجها/);
+    expect(asked).toMatch(new RegExp(`<a\\b(?=[^>]*href="/account/settings#sessions")[^>]*>(?:(?!</a>)[\\s\\S])*${accountMessages.ar.common.cancel}`));
+    // while it asks, the key itself is gone (one way forward, one way back)
+    expect(asked).not.toMatch(/href="\/account\/settings\?signout=others#sessions"/);
+
+    // with only this device there is nothing to ask
+    const alone = { ...(await settingsData(id)), sessions: [(await settingsData(id)).sessions[0]] };
+    const lone = renderAccountPage(SettingsPage, "/account/settings?signout=others", alone);
+    expect(lone).not.toContain("سجّل الخروج من كل الأجهزة الأخرى؟");
+    expect(lone).not.toContain("سجّل خروج الأجهزة الأخرى");
+
+    // without script the post lands on the page itself: it says what it did
+    const done = renderAccountPage(SettingsPage, "/account/settings", alone, "ar", { ok: true, intent: "revokeOthers", count: 2 });
+    expect(done).toMatch(/role="status"[\s\S]*?سجّلنا خروج جهازين\./);
+
     for (const locale of ["ar", "en", "ckb"] as const) {
       const settings = accountMessages[locale].settings as Record<string, unknown>;
       expect(typeof settings.signOutOthersQ, locale).toBe("string");
       expect(settings.signOutOthersWhat, locale).toBeTruthy();
     }
     expect(plain(renderAccountPage(SettingsPage, "/account/settings", await settingsData(id), "en"))).toContain("Sign out the other devices");
+  });
+
+  test("a post that signs the other devices out without the page's confirmation signs nothing out: it opens the question", async () => {
+    const phone = "07705550303";
+    await signUpCustomer(request().ctx, t.db, { phone, password: "settings-password-1" });
+    const tokenOf = async () => {
+      const req = request();
+      await signInCustomer(req.ctx, t.db, { phone, password: "settings-password-1" });
+      const sid = req.setCookies.find((cookie) => cookie.startsWith("tt_sid="));
+      return decodeURIComponent(sid!.split(";")[0].slice("tt_sid=".length));
+    };
+    const mine = await tokenOf();
+    const other = await tokenOf();
+    const alive = async (token: string) => (await getCustomer(request({ cookies: { tt_sid: token } }).ctx, t.db)) !== null;
+
+    // a page from before this rule, a key pressed before the page was live, a script: no confirm → the question
+    const unasked = await viaRoot("/account/settings", settingsAction as never, { method: "POST", form: { intent: "revokeOthers" }, cookies: { tt_sid: mine } });
+    expect(unasked).toMatchObject({ status: 302, location: "/account/settings?signout=others#sessions" });
+    expect(await alive(other)).toBe(true);
+    const unaskedEn = await viaRoot("/en/account/settings", settingsAction as never, { method: "POST", form: { intent: "revokeOthers", confirm: "yes" }, cookies: { tt_sid: mine } });
+    expect(unaskedEn).toMatchObject({ status: 302, location: "/en/account/settings?signout=others#sessions" });
+    expect(await alive(other)).toBe(true);
+
+    // confirmed in the page: every other device is signed out (the sign-up's own session and the other one), this one stays
+    const confirmed = await viaRoot("/account/settings", settingsAction as never, { method: "POST", form: { intent: "revokeOthers", confirm: "1" }, cookies: { tt_sid: mine } });
+    expect(confirmed).toMatchObject({ status: 200, data: { ok: true, intent: "revokeOthers", count: 2 } });
+    expect(await alive(other)).toBe(false);
+    expect(await alive(mine)).toBe(true);
+  });
+
+  test("the account's order page lists each discount part in the summary's rows, above the total, and the waived delivery under «التوصيل» — nothing with a minus after the total", async () => {
+    // polish round (checkout's request, client notes 8 and 12): the account's order page shows the parts as the checkout does
+    const { id } = await customer();
+    const item = await make.product({ stock: 20 });
+    const placed = await make.order([{ ...item, qty: 1 }], { customerId: id, status: "confirmed", placedAt: NOW });
+    const base = (await getOrderForCustomer(t.db, id, placed.ref, "ar", NOW)) as OrderView;
+    const subtotal = base.totals.subtotalIqd;
+    const order: OrderView = {
+      ...base,
+      totals: { ...base.totals, discountIqd: 3000, shippingIqd: 0, totalIqd: subtotal - 3000 },
+      adjustments: {
+        discounts: [
+          { kind: "member", label: "عضوية ذهبي", bps: 100, amountIqd: 2000 },
+          { kind: "points", points: 100, amountIqd: 1000 },
+        ],
+        shippingWaiver: { by: "member", label: "ذهبي", feeIqd: 5000, waivedIqd: 5000 },
+        flash: {},
+        referralCode: null,
+      },
+    };
+    const html = renderOrderPage(order);
+    const rows = html.slice(html.indexOf('<dl class="summary__rows">'), html.indexOf("</dl>", html.indexOf('<dl class="summary__rows">')));
+    expect(rows).toContain("عضوية ذهبي");
+    expect(rows).toMatch(/data-icon="seal-check"/);
+    expect(rows).toMatch(/data-icon="star"/);
+    expect(rows).toContain("5,000");
+    expect(html).not.toContain("co-adjust__list");
   });
 
   test("the account's order page draws the order page's status rail: the stage icons in their discs and the line that fills", async () => {
@@ -1320,7 +1403,9 @@ describe("client feedback round 1: the QA's account findings (wave C)", () => {
     const listed = await listOwnOrders(t.db, id, "ar", {});
     const latin = { ...listed, items: listed.items.map((row) => ({ ...row, firstItemName: "Xbox Rechargeable Battery + USB-C Cable", itemCount: 2 })) };
     const html = plain(renderAccountPage(OrdersPage, "/account/orders", { orders: latin }));
-    expect(html).toMatch(/<span class="acct-order__what"><span dir="ltr" class="acct-order__name text-end"><bdi[^>]*>Xbox Rechargeable Battery \+ USB-C Cable<\/bdi><\/span><span class="acct-order__count">· قطعتان<\/span><\/span>/);
+    expect(html).toMatch(/<span class="acct-order__what"><span dir="ltr" class="acct-order__name text-end"><bdi[^>]*>Xbox Rechargeable Battery \+ USB‑C Cable<\/bdi><\/span><span class="acct-order__count">· قطعتان<\/span><\/span>/u);
+    // the snapshot keeps its token whole (keepTokens, polish round): never «USB-» at a line's end
+    expect(html).not.toContain("USB-C");
     // an Arabic name keeps the page's direction
     const arabic = plain(renderAccountPage(OrdersPage, "/account/orders", { orders: listed }));
     expect(arabic).toMatch(/<span class="acct-order__what"><span class="acct-order__name">جهاز للاختبار<\/span><span class="acct-order__count">· قطعتان<\/span><\/span>/);

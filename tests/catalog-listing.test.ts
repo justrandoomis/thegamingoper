@@ -14,7 +14,8 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { messagesFor } from "~/i18n/i18n.server";
 import type { ProductCardData } from "~/lib/dto";
 import { LOCALE_CODES, LOCALES, localePath, type Locale } from "~/lib/locales";
-import { HubBand } from "~/routes/storefront/catalog/components/Hub";
+import { ChipRow, HubBand } from "~/routes/storefront/catalog/components/Hub";
+import { SearchStart } from "~/routes/storefront/catalog/components/SearchParts";
 import {
   FILTER_GROUPS,
   NO_FILTERS,
@@ -804,5 +805,70 @@ describe("compare: how many are compared, and which are in view on a phone (fix-
     const two = await render("ar", three.slice(0, 2));
     expect(two).toContain("تقارن منتجين من أجهزة الألعاب");
     expect(two).not.toContain("catalog-compare__nav");
+  });
+});
+
+describe("the glossary's used title, the kit's chip icons and the search start's own field (polish 2026-11-13)", () => {
+  const renderIn = (locale: Locale, Component: () => ReturnType<typeof createElement>, path: string) => {
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "*", Component }] }]);
+    return renderToStaticMarkup(
+      createElement(Stub, {
+        initialEntries: [localePath(path, locale)],
+        hydrationData: { loaderData: { root: { locale, dir: LOCALES[locale].dir, fx: null, i18n: messagesFor(locale, "ui", "ui-shop", "shell") }, page: { i18n: messagesFor(locale, "catalog") } } },
+      }),
+    );
+  };
+
+  // the platform hubs' used shelf said «مستعمل ومفحوص» while the glossary (docs/DESIGN.md §11), /used and the menus
+  // write the title «المستعمل والمفحوص» — one term, one form
+  it("the used shelf of a platform hub is titled as the glossary writes it, in every language", () => {
+    const glossary = { ar: "المستعمل والمفحوص", en: "Used & inspected", ckb: "بەکارهاتوو و پشکنراو" } as const;
+    for (const locale of LOCALE_CODES) {
+      const strings = messagesFor(locale, "catalog").catalog as unknown as { hub: { used: string } };
+      expect(strings.hub.used, locale).toBe(glossary[locale]);
+    }
+    expect(JSON.stringify(messagesFor("ar", "catalog"))).not.toContain("مستعمل ومفحوص");
+  });
+
+  // the catalog drew each chip's icon inside its words (ChipLabel); the kit's Chip has an `icon` slot now (the check
+  // takes its place when the chip is chosen)
+  it("every chip carries its icon in the kit's slot, none drawn inside its words; a platform's chip names its platform", () => {
+    for (const locale of LOCALE_CODES) {
+      const options = [
+        { value: "games", label: "Games", count: 4, icon: "kind-game" as const },
+        { value: "playstation", label: "PlayStation", count: 2, platform: "playstation" as const },
+      ];
+      const html = renderIn(locale, () => createElement(ChipRow, { label: "chips", options, selected: null, allCount: 6, hrefFor: (value: string | null) => (value ? `?c=${value}` : "?") }), "/c/games");
+      const chips = html.match(/<a\b[^>]*class="key key--chip[^"]*"[^>]*>[\s\S]*?<\/a>/g) ?? [];
+      expect(chips, locale).toHaveLength(3);
+      for (const chip of chips) {
+        expect(chip.match(/class="key__icon"/g), chip).toHaveLength(1);
+        // the icon sits before the words, outside them
+        const label = chip.search(/class="[^"]*\bkey__label\b/);
+        expect(label, chip).toBeGreaterThan(chip.indexOf('class="key__icon"'));
+        expect(chip.slice(label)).not.toMatch(/data-(glyph|icon)=/);
+      }
+      expect(html).not.toContain("catalog-chip__icon");
+      // a sprite icon (data-icon) or a drawn glyph (data-glyph)
+      expect(chips[0]).toMatch(/data-icon="[^"]*squares-four"/);
+      expect(chips[1]).toContain('data-glyph="kind-game"');
+      expect(chips[2]).toMatch(/^<a\b[^>]*data-gel="playstation"/);
+      expect(chips[2]).toContain('data-glyph="device-playstation"');
+    }
+    const css = readFileSync(new URL("../app/routes/storefront/catalog/catalog.css", import.meta.url), "utf8");
+    expect(css).not.toContain(".catalog-chip__icon");
+    expect(css).toMatch(/:is\(\.key--chip\[data-gel\], \[data-gel\] > \.key--chip\) > \.key__cap > \.key__icon,\s*\.catalog-opt__icon\[data-gel\] \{\s*color: var\(--dot\);/);
+  });
+
+  // the start page's field was a search landmark with no name beside the header's «ابحث في المتجر» (shell review)
+  it("the search start's own field is a search landmark with its own name, never the header's", () => {
+    for (const locale of LOCALE_CODES) {
+      const html = renderIn(locale, () => createElement(SearchStart, { browse: null }), "/search");
+      const field = /<form\b[^>]*role="search"[^>]*>/.exec(html)?.[0] ?? "";
+      const t = messagesFor(locale, "catalog", "shell") as unknown as { catalog: { search: { field: string } }; shell: { search: { label: string } } };
+      const name = /aria-label="([^"]*)"/.exec(field)?.[1];
+      expect(name, locale).toBe(t.catalog.search.field.replaceAll("&", "&amp;"));
+      expect(name, locale).not.toBe(t.shell.search.label);
+    }
   });
 });

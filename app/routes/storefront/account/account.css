@@ -15,8 +15,8 @@
  *   .acct-activity       a history: an icon disc tinted by kind, the words, the signed amount (+ green, − red)
  *   .acct-meta           facts of one line that wrap whole (a date, the order): never a dot left at a line's end
  *   .acct-rules          how points work: an icon strip of the programme's real rules
- *   .acct-pill           a state in a tinted pill (dot + words, never colour alone)
  *   .acct-order          one order as a soft card: its picture, number, state, what was bought, date and total
+ *   .acct-review         a delivered order's product to review: five star radios and a text, or the sent review
  *   .acct-me             the overview's profile head (the wallet band: the initial disc, the greeting, the membership)
  *   .acct-duo            the overview's first steps and latest order (side by side from 1280)
  *   .acct-tiles          the overview's shortcuts with their facts (2 × 2 on phones, 4-up from 768)
@@ -76,7 +76,8 @@
     gap: var(--s-3) var(--s-4);
   }
   .acct-head__lead {
-    max-inline-size: 62ch;
+    /* ~62 characters of Plex (1ch = 0.6em): an em measure does not move when the web font arrives (CLS, polish round) */
+    max-inline-size: 37.2em;
     font: var(--type-read);
     color: var(--ink-2);
   }
@@ -333,21 +334,15 @@
   }
 
   /* ───────────────────────────── the money card (the reference «محفظتي») ─────────────────────────────
-   * The kit's wallet band (crimson in light, deep crimson glass in dark), made glossy like the reference's card: a
-   * specular line on the top edge (above the words), a soft light at the inline end behind the icon disc — never
-   * behind the words, as with a tile's sheen — a deepening toward the bottom, the white rim and a red cast under it.
-   * The words sit on the crimson or deeper (measured ≥ 4.5:1 at their lightest pixel, white 14px included); showcase
-   * lights go under `prefers-contrast: more`. */
-  .band--wallet.acct-money {
+   * The kit's glossy wallet band (`<Band kind="wallet" gloss>`: crimson in light, deep crimson glass in dark, the
+   * specular top line, the light at the inline end behind the icon disc — never behind the words —, the rim and the
+   * red cast; the account drew it here until the polish round). This file only pads it and lays out its pieces.
+   * The words sit on the crimson or deeper (measured ≥ 4.5:1 at their lightest pixel, white 14px included). */
+  .acct-money {
     padding: var(--s-5);
-    background-image:
-      var(--tile-specular),
-      radial-gradient(42% 90% at calc(50% + 50% * var(--dir)) 30%, var(--tile-sheen), transparent 72%),
-      linear-gradient(to bottom, transparent 42%, color-mix(in oklab, var(--red-deep) 42%, transparent) 100%);
-    box-shadow: var(--tile-rim), var(--band-rim), var(--key-red-cast);
   }
   @media (min-width: 64rem) {
-    .band--wallet.acct-money {
+    .acct-money {
       padding: var(--s-6);
     }
   }
@@ -428,8 +423,9 @@
       block-size: 72px;
     }
   }
+  /* showcase lights go under more contrast — the kit hides the band's light layer but not yet the gloss (asked) */
   @media (prefers-contrast: more) {
-    .band--wallet.acct-money {
+    .band.band--gloss.acct-money {
       background-image: none;
     }
   }
@@ -725,34 +721,6 @@
     }
   }
 
-  /* ───────────────────────────── pills ───────────────────────────── */
-  /* a state in a tinted pill: the kit's dot and words on the tone's tint */
-  .acct-pill {
-    display: inline-flex;
-    flex: none;
-    align-items: center;
-    min-block-size: 26px;
-    padding-inline: var(--s-3);
-    border-radius: var(--r-full);
-    background: var(--niche);
-  }
-  .acct-pill--ok {
-    background: var(--ok-tint);
-  }
-  .acct-pill--warn {
-    background: var(--warn-tint);
-  }
-  .acct-pill--info {
-    background: var(--info-tint);
-  }
-  .acct-pill--bad {
-    background: var(--danger-tint);
-  }
-  .acct-pill--lg {
-    min-block-size: 32px;
-    padding-inline: var(--s-4);
-  }
-
   /* ───────────────────────────── orders (the reference «طلباتي») ───────────────────────────── */
   .acct-orders {
     display: grid;
@@ -854,6 +822,152 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s-2) var(--s-3);
+  }
+
+  /* ───────────────────────────── «قيّم ما استلمته»: a delivered order's products, reviewed once ─────────────────────────────
+   * One row per product (its picture in the well, its name, then the form or the sent review), divided by hairlines.
+   * The stars are radios under star faces: the chosen star and every star before it fill — in the reading direction,
+   * with no script — and a fine pointer previews the same under the pointer. The text and the send key arrive with the
+   * first star (fading in 4px; instant under reduced motion) wherever `:has` exists; elsewhere they are always there. */
+  .acct-reviews {
+    display: grid;
+  }
+  .acct-review {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: var(--s-3) var(--s-4);
+    padding-block: var(--s-4);
+    border-block-start: 1px solid var(--line);
+  }
+  .acct-review:first-child {
+    padding-block-start: var(--s-2);
+    border-block-start: 0;
+  }
+  .acct-review:last-child {
+    padding-block-end: 0;
+  }
+  .acct-review > .niche {
+    inline-size: 64px;
+  }
+  .acct-review__body {
+    display: grid;
+    gap: var(--s-3);
+    min-inline-size: 0;
+  }
+  .acct-review__name {
+    font: var(--type-card);
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .acct-review__option {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .acct-review__form {
+    display: grid;
+    gap: var(--s-3);
+    /* a comfortable measure for the text on wide screens (one card width, as the account's forms) */
+    max-inline-size: 40rem;
+  }
+  .acct-stars {
+    display: inline-flex;
+    /* the first star's face lines up with the words above it (its 44px target reaches 8px past them) */
+    margin-inline-start: -8px;
+  }
+  .acct-star {
+    position: relative;
+    display: grid;
+    place-items: center;
+    inline-size: 44px;
+    block-size: 44px;
+    border-radius: var(--r-full);
+    color: var(--ink-2);
+    cursor: pointer;
+  }
+  .acct-star > svg {
+    grid-area: 1 / 1;
+  }
+  /* the native radio stays (keyboard, arrows, screen readers), invisible over the whole 44px face */
+  .acct-star__input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .acct-star__on {
+    visibility: hidden;
+    color: var(--ink);
+  }
+  .acct-star:has(.acct-star__input:checked) .acct-star__on,
+  .acct-star:has(~ .acct-star .acct-star__input:checked) .acct-star__on {
+    visibility: visible;
+  }
+  .acct-star:has(.acct-star__input:focus-visible) {
+    outline: var(--focus-w) solid var(--focus);
+    outline-offset: -2px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .acct-stars:hover .acct-star__on {
+      visibility: hidden;
+    }
+    .acct-stars:hover .acct-star:hover .acct-star__on,
+    .acct-stars:hover .acct-star:has(~ .acct-star:hover) .acct-star__on {
+      visibility: visible;
+    }
+  }
+  .acct-review__more {
+    display: grid;
+    gap: var(--s-3);
+    transition:
+      opacity var(--t-reveal) var(--ease-settle),
+      translate var(--t-reveal) var(--ease-settle);
+  }
+  @supports selector(:has(*)) {
+    .acct-review__form:not([data-refused]):not(:has(.acct-star__input:checked)) .acct-review__more {
+      display: none;
+    }
+    @starting-style {
+      .acct-review__form:has(.acct-star__input:checked) .acct-review__more {
+        opacity: 0;
+        translate: 0 -4px;
+      }
+    }
+  }
+  /* a sent review: its stars and state, its words, one note on what it means */
+  .acct-review__sent {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .acct-review__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+  }
+  .acct-review__stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--ink);
+  }
+  .acct-review__text {
+    font: var(--type-read);
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+  }
+  .acct-review__notes {
+    display: grid;
+    gap: var(--s-1);
+    font: var(--type-read);
+    color: var(--ink-2);
+  }
+  @media (min-width: 48rem) {
+    .acct-review > .niche {
+      inline-size: 72px;
+    }
   }
 
   /* ───────────────────────────── overview: the profile head (the reference «حسابي») ───────────────────────────── */
@@ -1175,14 +1289,15 @@
     .acct-settle {
       animation: none;
     }
-    .acct-order__go {
+    .acct-order__go,
+    .acct-review__more {
       transition: none;
     }
   }
   [data-motion="reduced"] .acct-settle {
     animation: none;
   }
-  [data-motion="reduced"] .acct-order__go {
+  [data-motion="reduced"] :is(.acct-order__go, .acct-review__more) {
     transition: none;
   }
 }

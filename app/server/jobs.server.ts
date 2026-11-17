@@ -16,6 +16,11 @@
  *                                      (publishDueProducts, admin module 02 — 50 per run, guarded by version).
  *       support.tickets.route          support tickets waiting for a person are routed by the support module's rules
  *                                      (admin 14.03, routeWaitingTickets as systemActor("support.route"), 50 per run)
+ *       automation.run                 every active automation rule; the stock-out scan once an hour (admin 19,
+ *                                      runAutomation; the suggestions page's "last checked" reads this job's succeeded runs)
+ *       marketing.campaigns.release    approved message campaigns whose time has come, released as the system
+ *                                      (admin 16.01, releaseDueCampaigns) — messages HELD in the outbox, never sent
+ *                                      — needs `env.PUBLIC_ORIGIN` for the links: skipped without it
  *       outbox.deliver                 sends queued messages — only when message providers are passed in
  *                                      `env.providers`. None is configured, so it is recorded as skipped.
  *   "30 0 * * *"     DAILY — 00:30 UTC = 03:30 Asia/Baghdad
@@ -49,6 +54,12 @@
  *                                      syncCommissionsJob)
  *       ops.telemetry.purge            error reports and slow-request rollups older than 90 days, an incident's
  *                                      evidence kept (admin 23.01/23.02, purgeOpsTelemetry)
+ *       marketing.cart_reminders.prepare  one held reminder per abandoned cart of a known, consenting customer
+ *                                      (admin 16.02, prepareCartReminders; real carts only, the rules checked in the write).
+ *                                      DAILY, not every five minutes, for its D1 reads (see prepareReminders); needs
+ *                                      `env.PUBLIC_ORIGIN`: skipped without it
+ *       automation.forecasts.store     next month's demand forecast of every SKU that has one → `demand_forecasts`
+ *                                      (admin 19.05, storeDemandForecasts; upserted, a second run replaces its figures)
  *       consistency.daily              stock vs movements, stock vs reservations, wallet ledger vs journal,
  *                                      journal balance, order totals vs lines / payments / refunds, money
  *                                      vs postings, delivered orders vs their cost-of-goods posting →
@@ -104,9 +115,14 @@ import { isAppError, toAppError } from "./errors";
 import { deliverOutbox, type MessageProviders } from "./outbox.server";
 import { cleanupRateLimits } from "./ratelimit.server";
 import { purgeUnusedTopupProofs } from "./services/account/topups.server";
+import { storeDemandForecasts } from "./services/admin/automation/forecast.server";
+import { runAutomation } from "./services/admin/automation/runner.server";
 import { publishDueProducts } from "./services/admin/catalog/workflow.server";
 import { recomputeSegments } from "./services/admin/customers/rfm.server";
 import { expireTradeInOffers } from "./services/admin/devices/tradeins.server";
+import { dueCampaigns, releaseDueCampaigns } from "./services/admin/marketing/campaigns.server";
+import { prepareCartReminders } from "./services/admin/marketing/carts.server";
+import { CART_RECOVERY } from "./services/admin/marketing/types";
 import { purgeOpsTelemetry } from "./services/admin/ops/telemetry.server";
 import { expireGiftCards } from "./services/admin/promotions/giftcards.server";
 import { postExpiry, syncOrderPoints } from "./services/admin/promotions/loyalty.server";
@@ -130,6 +146,8 @@ export const JOB_NAMES = [
   "inventory.reservations.expire",
   "catalog.publish_due",
   "support.tickets.route",
+  "automation.run",
+  "marketing.campaigns.release",
   "outbox.deliver",
   "audit.seal",
   "ratelimits.cleanup",
@@ -144,13 +162,26 @@ export const JOB_NAMES = [
   "promotions.gift_cards.expire",
   "staff.commissions.sync",
   "ops.telemetry.purge",
+  "marketing.cart_reminders.prepare",
+  "automation.forecasts.store",
   "consistency.daily",
 ] as const;
 export type JobName = (typeof JOB_NAMES)[number];
 
-/** Which jobs each cron expression runs, in order (the consistency checks last: they look at what the others left). */
+/**
+ * Which jobs each cron expression runs, in order: every five minutes the outbox last (it would send what the campaigns
+ * just held, once a provider exists); at night the consistency checks last (they look at what the others left).
+ */
 export const SCHEDULES: Record<string, readonly JobName[]> = {
-  [CRON_FREQUENT]: ["orders.expire_unpaid", "inventory.reservations.expire", "catalog.publish_due", "support.tickets.route", "outbox.deliver"],
+  [CRON_FREQUENT]: [
+    "orders.expire_unpaid",
+    "inventory.reservations.expire",
+    "catalog.publish_due",
+    "support.tickets.route",
+    "automation.run",
+    "marketing.campaigns.release",
+    "outbox.deliver",
+  ],
   [CRON_DAILY]: [
     "audit.seal",
     "ratelimits.cleanup",
@@ -166,6 +197,8 @@ export const SCHEDULES: Record<string, readonly JobName[]> = {
     "promotions.gift_cards.expire",
     "staff.commissions.sync",
     "ops.telemetry.purge",
+    "marketing.cart_reminders.prepare",
+    "automation.forecasts.store",
     "consistency.daily",
   ],
 };
@@ -180,7 +213,7 @@ export const RETENTION_DAYS = {
   authEvents: 180,
   /** Outgoing messages that were sent, failed for good, or held for lack of a provider. */
   outbox: 90,
-  /** Scheduled-job history (`job_runs`, about 1,454 rows a day: 5 every 5 minutes, 14 at night). The latest run of each job is kept, however old. */
+  /** Scheduled-job history (`job_runs`, about 2,032 rows a day: 7 every 5 minutes, 16 at night). The latest run of each job is kept, however old. */
   jobRuns: 90,
   /** Staff password-set links (`employee_password_links`): after they were used, revoked or ran out. */
   passwordLinks: 30,
@@ -195,6 +228,11 @@ export type ScheduledJobsEnv = {
   providers?: MessageProviders;
   /** The KV namespace behind the file store (uploads): used to delete abandoned trade-in draft photos. */
   KV?: KVNamespace;
+  /**
+   * The store's public origin (wrangler var, "https://tamtamgames.com"): the links inside the held campaign messages and
+   * cart reminders. Without it (or not a URL) the two marketing jobs are skipped — never written with a wrong link.
+   */
+  PUBLIC_ORIGIN?: string;
 };
 
 export type JobStatus = "succeeded" | "failed" | "skipped";
@@ -212,7 +250,7 @@ const MINUTE_MS = 60 * 1000;
 const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 
-type JobContext = { now: number; runId: string; env: ScheduledJobsEnv | undefined };
+type JobContext = { now: number; runId: string; env: ScheduledJobsEnv | undefined; origin: JobRunOrigin };
 type JobResult = { status?: JobStatus; stats: Record<string, unknown>; error?: string | null };
 
 // ───────────────────────────────────────────────────────────────── frequent jobs
@@ -577,6 +615,121 @@ async function purgeTelemetry(db: Db, { now }: JobContext): Promise<JobResult> {
   return { stats: await purgeOpsTelemetry(db, now) };
 }
 
+// ───────────────────────────────────────────────────────────────── modules 16 and 19 (polish round, 2026-11-13)
+//
+// Built by the modules and run only by hand until now. The convention of every job above: a run with nothing to do
+// SUCCEEDED (with its zero counters); "skipped" is kept for what the job needs and does not have (the ops page says so).
+
+/**
+ * The stock-out scan and every active automation rule (admin 19, runAutomation as systemActor("automation.run")). A rule
+ * that fails makes the run "failed" with its id in the error; the other rules still run, and the next run continues
+ * where each one stopped (runs are keyed per rule and event, so two runs at once act once). runAutomation calls a run
+ * with no active rule and nothing new "skipped" although its scan ran: that is a check made, recorded as succeeded —
+ * the suggestions page's "last checked" reads this job's succeeded runs.
+ *
+ * D1 READ COST: the stock-out scan reads every stock level and the sales behind them (≈ 5,600 rows on the demo
+ * catalogue — 1.6 million a day every five minutes, a third of the free plan's daily reads). So the scheduler scans once
+ * an hour (the run whose time falls in the hour's first five minutes, AUTOMATION_SCAN_EVERY_MS) and runs the rules —
+ * cheap, keyed by events — every five minutes; a run started by a person (origin "manual") always scans.
+ * `stats.scanned` says whether this run scanned.
+ */
+async function runAutomationRules(db: Db, { now, origin }: JobContext): Promise<JobResult> {
+  const scan = origin !== "cron" || automationScanDue(now);
+  const result = await runAutomation(db, now, { scan });
+  // A run that neither scanned nor had a rule to run checked nothing: "skipped", so it is not the page's "last checked".
+  if (result.status === "skipped" && !scan) return { status: "skipped", stats: { ...result.stats, reason: "no_scan_this_run" } };
+  return { status: result.status === "failed" ? "failed" : "succeeded", stats: result.stats, error: result.error };
+}
+
+/** The scheduler's stock-out scan runs once per this period (see runAutomationRules). */
+export const AUTOMATION_SCAN_EVERY_MS = 60 * 60 * 1000;
+
+/** True for the scheduled run that falls in the first five minutes of the scan period (cron times are exact). */
+export function automationScanDue(now: number): boolean {
+  return now % AUTOMATION_SCAN_EVERY_MS < 5 * 60 * 1000;
+}
+
+/** The store's public origin from the Worker's vars, or null when it is missing or not an http(s) URL. */
+function publicOrigin(env: ScheduledJobsEnv | undefined): string | null {
+  const configured = typeof env?.PUBLIC_ORIGIN === "string" ? env.PUBLIC_ORIGIN.trim() : "";
+  if (!configured) return null;
+  try {
+    const url = new URL(configured);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.origin : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Approved message campaigns whose time has come, released as the system (admin 16.01, releaseDueCampaigns): the
+ * audience resolved again and every rule checked inside the write, one HELD outbox message per person — no provider
+ * exists, nothing is sent. Idempotent (a campaign released meanwhile, by a person or a second run, answers its first
+ * result); a demo campaign reaches demo people only (the module's rule). releaseDueCampaigns counts a failure without its
+ * reason, so the error names the campaigns still due for the ops page; a person releases one by hand to see why.
+ */
+async function releaseCampaigns(db: Db, { now, env }: JobContext): Promise<JobResult> {
+  const origin = publicOrigin(env);
+  if (!origin) return { status: "skipped", stats: { reason: "no_public_origin" } };
+  const { released, failed } = await releaseDueCampaigns(db, systemActor("marketing.campaigns.release"), now, origin);
+  if (failed === 0) return { stats: { released, failed } };
+  const stuck = (await dueCampaigns(db, now)).map((campaign) => campaign.id);
+  return { stats: { released, failed }, error: `${failed} due campaign(s) not released: ${stuck.join(", ") || "—"}. Release one by hand from its page to see why.` };
+}
+
+/**
+ * One held reminder for each abandoned cart of a known, consenting customer (admin 16.02, prepareCartReminders as the
+ * system, at most 100 a run): idle 2 hours, younger than 7 days, the consent and the limits checked again inside the
+ * write, one reminder per cart ever — a second run adds nothing. REAL carts only: demo customers' carts are left to the
+ * module's own button. Held, never sent (no provider). No cart due a reminder is a run with nothing to do.
+ *
+ * D1 READ COST: prepareCartReminders' cart list scans `cart_items` once per cart and per figure (its cart_id indexes
+ * are partial, so a plain `cart_id = c.id` cannot use them): ≈ 264,000 rows a run on the demo data — 76 million a day
+ * every five minutes. So it runs DAILY (requested of its owner: the list rewritten to read each line once, after which
+ * it can return to the five-minute schedule), and only when the cheap check below finds a cart it could remind: an
+ * index range over `carts.updated_at` (the 7-day window up to 2 hours ago), each such cart's customer by key, its
+ * reminder by the (cart_id, step) unique index and its lines by the partial indexes (the predicates name them).
+ */
+async function prepareReminders(db: Db, { now, runId, env }: JobContext): Promise<JobResult> {
+  const origin = publicOrigin(env);
+  if (!origin) return { status: "skipped", stats: { reason: "no_public_origin" } };
+  if (!(await anyCartToRemind(db, now))) return { stats: { prepared: 0, skipped: 0, candidates: 0 } };
+  try {
+    const { prepared, skipped } = await prepareCartReminders(db, systemActor("marketing.cart_reminders.prepare"), { idempotencyKey: runId, includeDemo: false }, now, origin);
+    return { stats: { prepared, skipped } };
+  } catch (error) {
+    if (isAppError(error, "nothing_to_prepare")) return { stats: { prepared: 0, skipped: 0 } };
+    throw error;
+  }
+}
+
+/**
+ * True when some cart could get a reminder: not an order yet, untouched for CART_RECOVERY.idleHours but younger than
+ * maxAgeDays, of a real (not demo) customer, never reminded, with at least one line. A superset of what
+ * prepareCartReminders reminds (consent and the per-person limit are its own) — only a gate, index seeks only.
+ */
+async function anyCartToRemind(db: Db, now: number): Promise<boolean> {
+  const idle = now - CART_RECOVERY.idleHours * 3_600_000;
+  const oldest = now - CART_RECOVERY.maxAgeDays * 86_400_000;
+  const rows = await db.all<{ id: string }>(sql`
+    SELECT c.id FROM carts c JOIN customers cu ON cu.id = c.customer_id
+    WHERE c.updated_at >= ${oldest} AND c.updated_at <= ${idle} AND c.converted_order_id IS NULL AND cu.is_demo = 0
+      AND NOT EXISTS (SELECT 1 FROM cart_reminders cr WHERE cr.cart_id = c.id)
+      AND (EXISTS (SELECT 1 FROM cart_items ci WHERE ci.cart_id = c.id AND ci.used_unit_id IS NULL)
+        OR EXISTS (SELECT 1 FROM cart_items ci WHERE ci.cart_id = c.id AND ci.used_unit_id IS NOT NULL))
+    LIMIT 1`);
+  return rows.length > 0;
+}
+
+/**
+ * Next month's demand forecast of every SKU that has one, kept in `demand_forecasts` (admin 19.05, storeDemandForecasts —
+ * upserted: a second run replaces its figures). No SKU with enough history is a run that stored nothing (counters 0).
+ */
+async function storeForecasts(db: Db, { now }: JobContext): Promise<JobResult> {
+  const result = await storeDemandForecasts(db, now);
+  return { stats: result.stats, error: result.error };
+}
+
 // ───────────────────────────────────────────────────────────────── consistency checks (23.06)
 
 /** At most this many findings per check per run; a check that hits it does not close older findings. */
@@ -909,6 +1062,9 @@ const JOBS: Record<JobName, (db: Db, ctx: JobContext) => Promise<JobResult>> = {
   "inventory.reservations.expire": expireStockReservations,
   "catalog.publish_due": publishDue,
   "support.tickets.route": routeTickets,
+  "automation.run": runAutomationRules,
+  "marketing.campaigns.release": releaseCampaigns,
+  "marketing.cart_reminders.prepare": prepareReminders,
   "outbox.deliver": deliverMessages,
   "audit.seal": sealAuditChain,
   "ratelimits.cleanup": cleanupLimits,
@@ -923,6 +1079,7 @@ const JOBS: Record<JobName, (db: Db, ctx: JobContext) => Promise<JobResult>> = {
   "promotions.gift_cards.expire": expireCards,
   "staff.commissions.sync": syncCommissionLedger,
   "ops.telemetry.purge": purgeTelemetry,
+  "automation.forecasts.store": storeForecasts,
   "consistency.daily": runConsistencyChecks,
 };
 
@@ -943,7 +1100,7 @@ export async function runJob(db: Db, job: JobName, now: number, options: { origi
   let stats: Record<string, unknown> = {};
   let error: string | null = null;
   try {
-    const result = await JOBS[job](db, { now, runId, env: options.env });
+    const result = await JOBS[job](db, { now, runId, env: options.env, origin: options.origin ?? "cron" });
     stats = result.stats;
     error = result.error ?? null;
     status = result.status ?? (error ? "failed" : "succeeded");

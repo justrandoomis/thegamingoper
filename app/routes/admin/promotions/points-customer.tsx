@@ -7,13 +7,14 @@ import { throwAsResponse } from "~/server/errors";
 import { adjustPoints, customerPoints, decideAdjustment, withdrawAdjustment } from "~/server/services/admin/promotions/loyalty.server";
 import { SECTION_READ } from "~/server/services/admin/promotions/shared.server";
 import { LOYALTY_KIND_TONE, parseWhole, type LedgerRow } from "~/server/services/admin/promotions/types";
+import type { LoyaltyReason } from "~/server/services/orders/loyalty-reasons";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { ConfirmDialog } from "~/ui/Dialog";
 import { TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { promotionsMeta } from "./meta";
-import { openPromotions, respond, runIntent, text } from "./promotions.server";
-import { ConfirmAction, Failure, Kpis, newKey, Notice, Num, PhoneText, Section, ToneStatus, useChangeText, useIntent, usePromotionsT, When, useProgram } from "./ui";
+import { openPromotions, respond, runIntent, text, withSaid } from "./promotions.server";
+import { ConfirmAction, Failure, Kpis, newKey, Notice, Num, PhoneText, Section, ToneStatus, useChangeText, useIntent, usePromotionsT, useReasonText, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/points/:customerId — 08.04 for one customer: the balance (and what it is worth), points expiring in
@@ -23,7 +24,9 @@ import { ConfirmAction, Failure, Kpis, newKey, Notice, Num, PhoneText, Section, 
 export async function loader({ params, context }: Route.LoaderArgs) {
   const { db, actor, now } = await openPromotions(context, SECTION_READ.points);
   try {
-    return { points: await customerPoints(db, actor, params.customerId, now) };
+    const points = await customerPoints(db, actor, params.customerId, now);
+    // each row with its reason read back (`said`): the store's own reasons in the admin's language
+    return { points: { ...points, entries: withSaid(points.entries) } };
   } catch (error) {
     throwAsResponse(error);
   }
@@ -55,11 +58,31 @@ export default function CustomerPointsPage({ loaderData }: Route.ComponentProps)
   const f = useFormat();
   const change = useChangeText();
   const { points } = loaderData;
-  const columns: DataColumn<LedgerRow>[] = [
+  const reasonText = useReasonText();
+  const columns: DataColumn<LedgerRow & { said: LoyaltyReason | null }>[] = [
     { key: "at", header: t("points.col.at"), cell: (row) => <When at={row.at} /> },
     { key: "kind", header: t("points.col.kind"), cell: (row) => <ToneStatus tone={LOYALTY_KIND_TONE[row.kind]}>{t(`points.kind.${row.kind}`)}</ToneStatus> },
     { key: "points", header: t("points.col.points"), numeric: true, negative: (row) => row.points < 0, cell: (row) => <Num value={row.points} /> },
-    { key: "ref", header: t("points.col.ref"), cell: (row) => <span className="grid">{row.refLabel ? <bdi dir="ltr" className="nums">{row.refLabel}</bdi> : t(`points.ref.${row.refType ?? "none"}`)}{row.reason ? <span className="type-caption text-ink-2">{row.reason}</span> : null}</span> },
+    {
+      key: "ref",
+      header: t("points.col.ref"),
+      cell: (row) => {
+        // the store's own reasons in the admin's language; a person's words as typed; never the reference twice
+        const caption = reasonText(row.said, row.reason, row.refLabel);
+        return (
+          <span className="grid">
+            {row.refLabel ? (
+              <bdi dir="ltr" className="nums">
+                {row.refLabel}
+              </bdi>
+            ) : (
+              t(`points.ref.${row.refType ?? "none"}`)
+            )}
+            {caption ? <span className="type-caption text-ink-2">{caption}</span> : null}
+          </span>
+        );
+      },
+    },
     { key: "expires", header: t("points.col.expires"), cell: (row) => (row.expiresAt ? <When at={row.expiresAt} style="date" /> : "—") },
     { key: "actor", header: t("points.col.actor"), cell: (row) => (row.actor === "system" ? t("common.system") : (row.actor ?? "—")) },
   ];

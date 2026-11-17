@@ -6,6 +6,7 @@ import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
 import type { CartView } from "~/lib/dto";
 import { randomToken } from "~/lib/ids";
+import { keepTokens } from "~/lib/keep-tokens";
 import { localePath } from "~/lib/locales";
 import type { MotionHandle } from "~/motion";
 import { getCustomer } from "~/server/auth/customer.server";
@@ -32,6 +33,7 @@ import {
   BLOCKING_PROBLEMS,
   cartReadiness,
   COUPON_MINIMUM_INTENT,
+  couponIssueShortfall,
   draftFromPosted,
   draftToForm,
   EMPTY_DRAFT,
@@ -62,7 +64,6 @@ import {
   answerCouponMinimum,
   cartTokenOf,
   confirmationPath,
-  couponShortfall,
   loadCheckoutData,
   nationalPhone,
   NO_STORE,
@@ -74,7 +75,7 @@ import {
   type SavedAddressPrefill,
 } from "./checkout.server";
 import type { FlashPriceView } from "~/server/services/orders/types";
-import { Adjustments, summaryCoupon, withFlash } from "./components/Adjustments";
+import { Adjustments, summaryCoupon, summaryDiscountParts, WaiverNote, withFlash } from "./components/Adjustments";
 import { AddressStep, fieldId, NOJS_GOVERNORATE_ID, PaymentStep, ReviewStep, withOptionValue } from "./components/CheckoutSteps";
 import { CommitKey } from "./components/CommitKey";
 import { CouponForm, couponIssueText, type CartWithIssue } from "./components/CouponForm";
@@ -128,8 +129,9 @@ export async function loader({ context }: Route.LoaderArgs) {
     // the account area's address book: a signed-in customer starts from their default address (never forced)
     customerId ? getDefaultAddress(db, customerId, ctx.locale) : Promise.resolve(null),
   ]);
-  // a stored code under its minimum says how much more is needed (client round 1, QA)
-  const shortfall = cart.couponIssue?.reason === "min_subtotal" ? await couponShortfall(db, request, cart.couponIssue.code, ctx.now, cart) : null;
+  // a stored code under its minimum says how much more is needed (client round 1, QA) — the view carries the core's
+  // figures (couponIssue: the minimum and what is missing), so nothing is evaluated again here
+  const shortfall = couponIssueShortfall(cart.couponIssue);
   return data(
     {
       cart,
@@ -629,7 +631,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
             }
           />
         ) : (
-          <EmptyState layout="stack" panel headingLevel={2} title={t("empty.title")} text={t("empty.text")} action={browse} />
+          <EmptyState layout="stack" panel wide headingLevel={2} title={t("empty.title")} text={t("empty.text")} action={browse} />
         )}
       </div>
     );
@@ -711,8 +713,9 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
         {/* one block: the sentence may be several nodes (an amount inside it) */}
         <p>{noticeText(shownNotice.code, cart, t, errorsT, f)}</p>
         {couponIssue ? (
-          // Why the discount went: e.g. the code was already used with this phone number (checked at checkout).
-          <p>{couponIssueText(couponIssue, t, errorsT)}</p>
+          // Why the discount went: e.g. the code was already used with this phone number (checked at checkout); below
+          // its minimum, how much more (the view's own figures)
+          <p>{couponIssueText(couponIssue, t, errorsT, null, f)}</p>
         ) : null}
       </Note>
     </div>
@@ -765,11 +768,20 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
       {shopT("demo.orderLine")}
     </Note>
   ) : null;
-  const summaryLines = cart.lines.map((line) => withFlash(withOptionValue({ id: line.id, name: line.name, optionsLabel: line.optionsLabel, lineTotalIqd: line.lineTotalIqd, image: line.image }), (line as { flash?: FlashPriceView | null }).flash, t, f));
+  // the summary's item lines: the option value only, a flash price's facts, and the name's tokens kept whole («USB‑C»,
+  // «Switch 2»: ~/lib/keep-tokens — the kit's summary prints the name as given)
+  const summaryLines = cart.lines.map((line) => {
+    const shown = withOptionValue({ id: line.id, name: line.name, optionsLabel: line.optionsLabel, lineTotalIqd: line.lineTotalIqd, image: line.image });
+    return withFlash({ ...shown, name: keepTokens(shown.name), optionsLabel: shown.optionsLabel ? keepTokens(shown.optionsLabel) : shown.optionsLabel }, (line as { flash?: FlashPriceView | null }).flash, t, f);
+  });
   const shipping = governorateChosen ? (cart.shippingIqd === null ? "unserved" : "governorate") : page.shipping.overridesEnabled ? "pending" : undefined;
   const count = cart.payableCount ?? cart.count;
-  // every discount as charged, the waived delivery, a split payment's parts — under each summary's rows
-  const adjustments = <Adjustments discounts={cart.discounts ?? []} waiver={cart.shippingWaiver ?? null} split={split} />;
+  // every discount as charged — a row each in the discount's place, above the total — and a waived delivery in words
+  // under «التوصيل» (polish round: nothing with a minus sign after the total); under the total only a split payment's
+  // parts (from the wallet, the rest)
+  const discountParts = summaryDiscountParts(cart.discounts, t, f);
+  const shippingNote = cart.shippingWaiver ? <WaiverNote waiver={cart.shippingWaiver} /> : undefined;
+  const adjustments = <Adjustments split={split} />;
   const coupon = (
     <CouponForm
       cart={cart}
@@ -784,7 +796,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
   return (
     <>
       <SummaryBar cart={{ count, totalIqd: cart.totalIqd }} className="lg:hidden">
-        <OrderSummary {...cart} coupon={summaryCoupon(cart.discounts, cart.coupon)} count={count} title={null} lines={summaryLines} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} couponField={coupon} approx="off">
+        <OrderSummary {...cart} coupon={summaryCoupon(cart.discounts, cart.coupon)} discountParts={discountParts} shippingNote={shippingNote} count={count} title={null} lines={summaryLines} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} couponField={coupon} approx="off">
           {adjustments}
         </OrderSummary>
       </SummaryBar>
@@ -849,7 +861,7 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
                         // below 1024 the totals sit here too (the summary bar is folded away), then the terms (without
                         // script the terms are said once, by the plain-post key at the end of the form)
                         <div className="grid gap-3 lg:hidden">
-                          <OrderSummary {...cart} coupon={summaryCoupon(cart.discounts, cart.coupon)} lines={null} count={count} title={null} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} approx="off">
+                          <OrderSummary {...cart} coupon={summaryCoupon(cart.discounts, cart.coupon)} discountParts={discountParts} shippingNote={shippingNote} lines={null} count={count} title={null} shipping={shipping} pending={pricing === "pending" || editor.pending || busy} approx="off">
                             {adjustments}
                           </OrderSummary>
                           <div className="co-js">{terms}</div>
@@ -882,6 +894,8 @@ export default function CheckoutPage({ loaderData, actionData }: Route.Component
           <OrderSummary
             {...cart}
             coupon={summaryCoupon(cart.discounts, cart.coupon)}
+            discountParts={discountParts}
+            shippingNote={shippingNote}
             count={count}
             lines={summaryLines}
             shipping={shipping}

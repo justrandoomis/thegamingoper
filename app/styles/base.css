@@ -136,6 +136,21 @@ svg[data-icon][data-weight="regular"] {
   color: inherit;
 }
 
+/* ── print: glass on paper (polish round 2026-11-13; the shell's print review) ──
+   On paper there is nothing behind a glass face to frost: every backdrop filter goes, wherever it was set — the kit's
+   .glass / .glass--panel / .surface--glass and any page class with "glass" in its name. Important, because the glass
+   itself is set in the later `components` layer: an important declaration of an earlier layer wins over it. The
+   floor's ambient light (dark theme) is not printed either. */
+@media print {
+  [class*="glass"] {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  body::before {
+    display: none;
+  }
+}
+
 /* ── scroll ── */
 /* (No smooth scroll-behavior on the root: it would also smooth React Router's scroll restoration.) */
 /* inner scrollers (sheets, tables, rails that show a bar) */

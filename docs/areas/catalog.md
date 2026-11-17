@@ -236,3 +236,9 @@ Tests (written failing first where they guard behaviour): `tests/search.test.ts`
 spelling), a sold-out row carries `soldOut: true`; `tests/catalog-listing.test.ts` — the corrected search's `corrected`
 in three languages, compare's head and navigator in the server's markup (ar, en, ckb; none for two products), and the
 stylesheet's contracts (the compact row and band from 1024, the phone notes, the panel chips, compare's columns).
+
+## Polish (2026-11-17)
+- Chips use the kit's `Chip icon` slot (ChipLabel and the hand-drawn `.catalog-chip__icon` rules removed); a platform chip carries `data-gel` (on the chip, or a `contents` wrapper round an input chip) and its glyph takes the platform's colour; a filter row's platform glyph too.
+- Reveal: the search start's headings fade up and their tiles stagger (the kit's `revealProps({ stagger: true })`), the category hubs' device row the same.
+- The /search start page's field is a search landmark with its own name (`catalog.search.field`), not the header's.
+- Copy: the platform hubs' used shelf says «المستعمل والمفحوص» (en «Used & inspected»).

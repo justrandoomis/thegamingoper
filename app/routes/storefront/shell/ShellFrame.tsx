@@ -12,8 +12,11 @@
  *   CHECKOUT   ONE bar (56 / 64: back · mascot · step rail · demo tag · help), no strip, no search, no menus, no tab
  *              bar, the one-line footer — handle `chrome: "checkout"` (and `/checkout` by default)
  *
- * The chrome's heights are published on :root as --shell-top / --shell-bottom (shell.css), which base.css turns into
- * the global scroll padding: a focused control is never under a bar (WCAG 2.4.11).
+ * The chrome's heights are published as --shell-top / --shell-bottom (shell.css "the chrome budget"), on .shell and on
+ * :root, which base.css turns into the global scroll padding: a focused control is never under a bar (WCAG 2.4.11).
+ * They follow attributes the shell sets — `.shell[data-chrome]` and `.shell[data-taskbar]` (in the server's HTML) and
+ * `<html data-shell-chrome>` (once the page runs) — never a :has() over the page: that made every aria-current change
+ * on the page (a carousel dot) restyle all of it (88–199ms at 4× CPU, polish 2026-11-13).
  *
  * PAGES: render your content without your own <main> (the shell's is the one landmark; it is the skip link's target)
  * and start it with your <h1>. Pages with a bottom buy / task bar: see ./TabBar (handle + <TaskBar>); below 1024px
@@ -21,7 +24,7 @@
  * `data-motion-persist` (header, nav, bar) so page transitions leave it in place; <MotionRoot/> (press feedback,
  * tiers) is mounted here once.
  */
-import { useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState, type ReactNode } from "react";
 import { useLocation, useMatches, useRouteLoaderData } from "react-router";
 
 import type { MessageTree } from "~/i18n/translate";
@@ -31,14 +34,14 @@ import { useOnline } from "~/ui/OfflineBanner";
 import { Toaster } from "~/ui/Toast";
 import { DemoStrip, ShellOffline } from "./Banners";
 import { CategoriesSheet } from "./CategoriesSheet";
-import { backFallback, focusNudge, searchMode, shellChrome, type FocusEdges } from "./chrome";
+import { backFallback, drawsTaskBar, focusNudge, searchMode, shellChrome, type FocusEdges } from "./chrome";
 import { Footer, TaskFooter } from "./Footer";
-import { CheckoutBar, Header } from "./Header";
+import { CheckoutBar, Header, useHeaderScrolled } from "./Header";
 import { ShellMessages, useShellT } from "./i18n";
 import { MegaHostContext } from "./MegaMenu";
 import { SearchSheet } from "./SearchForm";
-import { TabBar } from "./TabBar";
-import type { ShellData } from "./types";
+import { TabBar, TaskBarCount } from "./TabBar";
+import type { ShellChromeKind, ShellData } from "./types";
 
 import "./shell.css";
 
@@ -58,7 +61,7 @@ export type ShellFrameProps = {
   children: ReactNode;
 };
 
-type RootShellData = { storeMode?: "demo" | "live" };
+type RootShellData = { storeMode?: "demo" | "live"; cart?: { count?: unknown } | null };
 
 export function ShellFrame({ shell, messages, errored = false, notFound = false, searchQuery, children }: ShellFrameProps) {
   return (
@@ -78,6 +81,10 @@ function Frame({ shell, errored, notFound, searchQuery, children }: { shell: She
   const location = useLocation();
   const path = splitLocale(location.pathname).path;
   const { chrome, tabBar, task, back, offline } = shellChrome(matches, { errored, path, search: location.search });
+  // the root's cart count (the shell loader's; null when unknown): an empty cart or checkout draws no bar
+  const cartCount = typeof root?.cart?.count === "number" ? root.cart.count : null;
+  const taskBars = useTaskBars(drawsTaskBar({ chrome, task }, { path, cartCount }));
+  useHtmlChrome(chrome);
   const online = useOnline();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -93,7 +100,7 @@ function Frame({ shell, errored, notFound, searchQuery, children }: { shell: She
   useErrorPanelInView(errored, `${location.pathname}${location.search}`);
 
   return (
-    <div className="shell" data-chrome={chrome} data-offline={online ? undefined : ""}>
+    <div className="shell" data-chrome={chrome} data-taskbar={taskBars.drawn ? "" : undefined} data-offline={online ? undefined : ""}>
       <MotionRoot />
       <a href="#main" className="shell-skip">
         {t("skip")}
@@ -119,16 +126,58 @@ function Frame({ shell, errored, notFound, searchQuery, children }: { shell: She
         </>
       )}
       <ShellOffline words={offline} />
-      <main id="main" tabIndex={-1} className="shell-main">
-        {children}
-      </main>
+      <TaskBarCount value={taskBars.count}>
+        <main id="main" tabIndex={-1} className="shell-main">
+          {children}
+        </main>
+      </TaskBarCount>
       {chrome === "store" ? <Footer shell={shell} demo={demo} /> : <TaskFooter shell={shell} demo={demo} />}
       {tabBar ? <TabBar sheetOpen={sheetOpen} onCategories={() => setSheetOpen(true)} /> : null}
       {tabBar ? <CategoriesSheet open={sheetOpen} onClose={() => setSheetOpen(false)} shell={shell} /> : null}
       {chrome !== "checkout" ? <SearchSheet open={searchOpen} onClose={() => setSearchOpen(false)} platforms={shell?.nav.platforms ?? []} query={searchQuery} /> : null}
-      <Toaster offset="var(--shell-toast-top)" />
+      <ShellToaster />
     </div>
   );
+}
+
+/**
+ * Whether a <TaskBar> is on the page (`.shell[data-taskbar]`: the tab bar gives way to it, the bottom budget is its).
+ * Until the page has mounted, what its handles say (./chrome drawsTaskBar) — the server's HTML and the first client
+ * render agree; from then on the bars themselves, each counting itself in and out (TaskBarCount), so a page whose bar
+ * is conditional (an empty cart draws none) gets the tab bar back.
+ */
+function useTaskBars(guess: boolean): { drawn: boolean; count: (delta: 1 | -1) => void } {
+  const [bars, setBars] = useState<number | null>(null);
+  const count = useCallback((delta: 1 | -1) => setBars((n) => Math.max(0, (n ?? 0) + delta)), []);
+  // after the first commit (the bars' own layout effects run before this one): only the bars count from now on
+  useLayoutEffect(() => setBars((n) => n ?? 0), []);
+  return { drawn: bars === null ? guess : bars > 0, count };
+}
+
+/**
+ * The page's shell on <html> (`data-shell-chrome`), where html's scroll padding (base.css), the pages' own :root scroll
+ * paddings and the portals (toasts, dialogs) read the chrome budget (shell.css). <html> is the root route's, so the
+ * server's HTML cannot carry it: until the page runs, :root holds the store's budget (never smaller than a checkout
+ * or task page's — nothing hides under a bar meanwhile). On a store page setting it changes no value.
+ */
+function useHtmlChrome(chrome: ShellChromeKind) {
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    root.dataset.shellChrome = chrome;
+    return () => {
+      delete root.dataset.shellChrome;
+    };
+  }, [chrome]);
+}
+
+/**
+ * Desktop toasts start under the header (the Toaster's `offset`): under ALL of it at the very top of the page, where
+ * the utility strip and the lead still are, and under its sticky part once they have scrolled away. Both tops are
+ * shell.css's; the header's scroll state picks one — re-rendering this alone, never the frame.
+ */
+function ShellToaster() {
+  const scrolled = useHeaderScrolled();
+  return <Toaster offset={scrolled ? "var(--shell-toast-top)" : "var(--shell-toast-top-full)"} />;
 }
 
 /** What sticks at the top (the header or the checkout bar, the offline banner under it) and what is fixed at the bottom. */

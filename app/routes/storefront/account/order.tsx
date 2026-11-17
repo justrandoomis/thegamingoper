@@ -4,9 +4,12 @@ import type { Route } from "./+types/order";
 import { Icon } from "~/art/Icon";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
+import { keepTokens } from "~/lib/keep-tokens";
 import type { MotionHandle } from "~/motion";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
+import { listOrderReviewSlots, submitLineReview } from "~/server/services/account/reviews.server";
+import { REVIEW_LIMITS } from "~/server/services/account/types";
 import { getOrderForCustomer, normalizeOrderRef } from "~/server/services/orders/manage.server";
 import type { OrderLineView, OrderView } from "~/server/services/orders/types";
 import { DemoNote } from "~/ui/DemoNote";
@@ -18,12 +21,13 @@ import { fillNodes, iqdText } from "~/ui/PriceTag";
 import { Status } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { revealCodeForShopper } from "../checkout/checkout.server";
-import { Adjustments, summaryCoupon, withFlash } from "../checkout/components/Adjustments";
+import { Adjustments, summaryCoupon, summaryDiscountParts, WaiverNote, withFlash } from "../checkout/components/Adjustments";
 import { DigitalCodes } from "../checkout/components/DigitalCodes";
 import { OrderStages } from "../checkout/components/OrderStages";
-import { requireSignedIn } from "./account.server";
+import { accountFailure, formFields, requireSignedIn } from "./account.server";
 import { CopyKey, Notice } from "./components/FormBits";
 import { OrderStatusLine, PaymentStatusLine, railIndex, splitOption } from "./components/OrderBits";
+import { OrderReviews } from "./components/OrderReviews";
 import { PageHead } from "./components/PageHead";
 import { accountMeta } from "./components/meta";
 import { amount, grouped, HANDOFF } from "./components/text";
@@ -44,16 +48,34 @@ export async function loader({ request, context, params }: Route.LoaderArgs) {
   const ref = normalizeOrderRef(params.ref);
   const order = ref ? await getOrderForCustomer(db, customer.id, ref, ctx.locale, ctx.now) : null;
   if (!order) throw data({ error: "not_found" }, { status: 404 });
+  // a delivered order's products, each open for its buyer's review or showing it (account/reviews.server)
+  const reviews = order.status === "delivered" ? await listOrderReviewSlots(db, customer.id, order.ref) : [];
   // the discount lines and the digital codes are the checkout area's components (their words: "checkout", "errors")
-  return { order, now: ctx.now, i18n: messagesFor(ctx.locale, "checkout", "errors") };
+  return { order, reviews, now: ctx.now, i18n: messagesFor(ctx.locale, "checkout", "errors") };
 }
 
-/** «اعرض الرمز»: one digital code of this order, for its signed-in owner (the commerce core checks it all; audited). */
+/**
+ * «اعرض الرمز»: one digital code of this order, for its signed-in owner (the commerce core checks it all; audited).
+ * «أرسل المراجعة» (intent=review): the buyer's review of one delivered line of THIS order, saved pending
+ * (account/reviews.server) — a failure comes back with the line, the stars and the text, so a page without script
+ * refills its form.
+ */
 export async function action({ request, context, params }: Route.ActionArgs) {
   const ctx = getCtx(context);
   const db = getDb();
-  const { customer } = await requireSignedIn(request, ctx, db);
+  const { customer, actor } = await requireSignedIn(request, ctx, db);
   const form = await request.formData();
+  if (form.get("intent") === "review") {
+    const fields = formFields(form);
+    try {
+      const saved = await submitLineReview(db, actor, { orderItemId: fields.orderItemId, orderRef: normalizeOrderRef(params.ref) ?? "", rating: fields.rating, body: fields.body }, { now: ctx.now, locale: ctx.locale });
+      return data({ ok: true as const, intent: "review" as const, orderItemId: fields.orderItemId, verified: saved.verified });
+    } catch (error) {
+      const failure = accountFailure(error, ctx.locale);
+      const echo = { intent: "review" as const, orderItemId: fields.orderItemId ?? null, rating: fields.rating ?? null, body: (fields.body ?? "").slice(0, REVIEW_LIMITS.body * 2) };
+      return data({ ...failure, ...echo }, { status: failure.status });
+    }
+  }
   if (form.get("intent") !== "reveal") return data({ ok: false as const, code: "invalid" }, { status: 400 });
   const codeId = form.get("codeId");
   const result = await revealCodeForShopper(db, ctx, { ref: params.ref ?? "", token: null, customerId: customer.id, codeId: typeof codeId === "string" ? codeId : "" });
@@ -76,7 +98,7 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
   const stage = railIndex(order.status);
   const lines: SummaryLine[] = order.lines.map((line) => {
     const { name, option } = splitOption(line.name);
-    return withFlash({ id: line.id, name, optionsLabel: lineFacts(line, option), lineTotalIqd: line.lineTotalIqd, image: line.image }, order.adjustments?.flash[line.id], checkoutT, f);
+    return withFlash({ id: line.id, name: keepTokens(name), optionsLabel: lineFacts(line, option), lineTotalIqd: line.lineTotalIqd, image: line.image }, order.adjustments?.flash[line.id], checkoutT, f);
   });
 
   /** The option value only, then the pieces in words, the unit price, the warranty as sold and what was refunded. */
@@ -128,6 +150,9 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
 
       {order.digital && order.digital.length > 0 ? <DigitalCodes lines={order.digital} mode="owner" token={null} closed={order.status === "cancelled" || order.status === "returned"} headingLevel={2} /> : null}
 
+      {/* delivered: «قيّم ما استلمته» — each product once, pending until staff approve it */}
+      <OrderReviews lines={order.lines} slots={loaderData.reviews} demo={order.isDemo} />
+
       <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_20rem] 2xl:items-start">
         <div className="grid min-w-0 content-start gap-6">
           <OrderSummary
@@ -140,11 +165,13 @@ export default function OrderPage({ loaderData }: Route.ComponentProps) {
             lines={lines}
             approx="off"
             demo={order.isDemo}
+            // every discount as charged, a row each in the discount's place above the total, and a waived delivery in words
+            // under «التوصيل» — as the checkout shows them (polish round: nothing with a minus sign after the total)
+            discountParts={summaryDiscountParts(order.adjustments?.discounts, checkoutT, f)}
+            shippingNote={order.adjustments?.shippingWaiver ? <WaiverNote waiver={order.adjustments.shippingWaiver} /> : undefined}
           >
-            {/* every discount as charged, the waived delivery, a split payment's wallet part (the checkout area's piece) */}
+            {/* under the total only a split payment's parts: from the wallet, the rest (the checkout area's piece) */}
             <Adjustments
-              discounts={order.adjustments?.discounts ?? []}
-              waiver={order.adjustments?.shippingWaiver ?? null}
               split={(order.walletPaidIqd ?? 0) > 0 ? { walletIqd: order.walletPaidIqd ?? 0, restIqd: order.totals.totalIqd - (order.walletPaidIqd ?? 0) } : null}
             />
           </OrderSummary>

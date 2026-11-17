@@ -16,12 +16,15 @@ import { CustomerName } from "../shell/CustomerName";
 import { customerProfileId } from "../shell/access.server";
 import { amount, failed, financeT, ok, openFinance, orRespond, text } from "./finance.server";
 import { financeMeta } from "./meta";
+import { entryKindLabel, PayoutList } from "./payout-ui";
+import { payoutAction, PAYOUT_INTENT } from "./payouts.server";
 import { Code, DemoTag, FormDialog, Kpi, Money, Note, PageHead, Pair, ResponsiveTable, Section, StateTag, useFinT, When } from "./ui";
 
 /**
  * /admin/finance/wallets/:customerId — one customer's wallet (10.07): the balance (the sum of the ledger — there is no
- * balance to edit), every movement with its reference, actor and reason, their top-up requests and adjustment
- * requests. An adjustment is only ever REQUESTED here: another person approves it (creditWallet, kind "adjustment").
+ * balance to edit), every movement with its reference, actor and reason, their top-up requests, adjustment requests
+ * and payout requests. An adjustment is only ever REQUESTED here: another person approves it (creditWallet, kind
+ * "adjustment"). A payout (money out, asked in module 07) is DECIDED here by a second person (2026-11-13).
  */
 export async function loader({ context, params, request }: Route.LoaderArgs) {
   const { db, actor } = await openFinance(context, "finance.wallet.read");
@@ -33,6 +36,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 export async function action({ request, context, params }: Route.ActionArgs) {
   const req = await openFinance(context, "customers.wallet.adjust");
   const form = await request.formData();
+  if (text(form, "intent") === PAYOUT_INTENT) return payoutAction(req, form);
   try {
     const { replayed } = await requestWalletAdjustment(req.db, req.actor, { customerId: params.customerId, amountIqd: amount(form, "amountIqd") as number, reason: text(form, "reason"), idempotencyKey: text(form, "key") }, req.now);
     return ok({ intent: "request", message: financeT(req.locale)(replayed ? "adjust.requestedAgain" : "adjust.requested") });
@@ -52,7 +56,7 @@ export default function CustomerWalletPage({ loaderData }: Route.ComponentProps)
 
   const columns: DataColumn<WalletEntryRow>[] = [
     { key: "at", header: t("walletLedger.col.at"), cell: (row) => <When at={row.at} /> },
-    { key: "kind", header: t("walletLedger.col.kind"), cell: (row) => t(`walletKind.${row.kind}`) },
+    { key: "kind", header: t("walletLedger.col.kind"), cell: (row) => entryKindLabel(t, row) },
     { key: "amount", header: t("walletLedger.col.amount"), numeric: true, cell: (row) => <Money iqd={row.amountIqd} plain signed /> },
     { key: "ref", header: t("walletLedger.col.ref"), cell: (row) => (row.refHref ? <Link to={row.refHref} className="adm-link"><Code>{row.refLabel ?? "—"}</Code></Link> : "—") },
     { key: "reason", header: t("walletLedger.col.reason"), cell: (row) => <span className="line-clamp-2">{row.reason ?? "—"}</span> },
@@ -89,6 +93,12 @@ export default function CustomerWalletPage({ loaderData }: Route.ComponentProps)
         <Kpi icon="hourglass" label={t("wallet.pending")} value={<Money iqd={pendingTopups.reduce((total, row) => total + (row.declaredAmountIqd ?? row.amountIqd), 0)} />} hint={t("common.countOf", { count: pendingTopups.length })} />
       </div>
 
+      {wallet.payouts.length ? (
+        <Section id="wallet-payouts" title={t("wallet.payouts")}>
+          <PayoutList rows={wallet.payouts} canDecide={wallet.canDecide} showCustomer={false} />
+        </Section>
+      ) : null}
+
       <Section id="wallet-entries" title={t("wallet.entries")} aside={<span className="type-caption text-ink-2">{t("walletLedger.count", { count: wallet.total })}</span>}>
         <ResponsiveTable
           caption={t("wallet.entries")}
@@ -100,7 +110,7 @@ export default function CustomerWalletPage({ loaderData }: Route.ComponentProps)
           card={(row) => (
             <>
               <span className="flex items-baseline justify-between gap-2">
-                <span>{t(`walletKind.${row.kind}`)}</span>
+                <span>{entryKindLabel(t, row)}</span>
                 <Money iqd={row.amountIqd} signed className="type-strong" />
               </span>
               <Pair label={t("walletLedger.col.at")}>

@@ -156,10 +156,12 @@ before, "but add the logo and the four stations". One view, `components/NotFound
    right; it rises once (60ms after the circle);
 3. the h1 (`type-h1`) and one line (16px, balanced over two lines on phones);
 4. the search field: inside the shell the shell's own form (`SearchForm variant="panel"`: suggestions and recent
-   searches), focused from 1024 — only where nothing then opens over the page (`focusesNotFoundField` in
-   `ShellError.tsx`): not on a phone (the keyboard), not for a missing product (its words' suggestions), not while the
-   device keeps recent searches (that list would cover the home key and «مركز الدعم»); a missing product's words start
-   it. Every address is a new view (keyed by the path), so a client navigation from one 404 to another starts the
+   searches; the page's one search landmark, named «ابحث في المتجر» — `aria-label={t("search.label")}`), focused from
+   1024 for a plain 404 (`focusesNotFoundField` in `ShellError.tsx`; not on a phone — the keyboard —, not for a missing
+   product). The focus it is given opens nothing over the page (`openOnFocus={false}` until the field first loses
+   focus; then a click or tap opens the recent searches as everywhere — polish round 2026-11-13/17); a missing
+   product's words start it. The line's measure is 26.4em (44ch of Plex; an em measure does not move when the web font
+   arrives). Every address is a new view (keyed by the path), so a client navigation from one 404 to another starts the
    field over with the new words;
 5. the clay «العودة إلى الرئيسية» with «مركز الدعم» beside it (under it when the row is too narrow: English, Sorani);
 6. «أو ابدأ من منصّتك» (an h2) and the four compact platform tiles — 2 × 2 on phones, four in a row from 768, with the

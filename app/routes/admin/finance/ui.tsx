@@ -26,7 +26,7 @@ import { FINANCE_LAYOUT_ID } from "./meta";
 /** The finance layout's data (every page below can read it). */
 export type FinanceLayoutData = {
   access: FinanceAccess;
-  counts: { topups: number | null; adjustments: number | null; expenses: number | null; statements: number | null };
+  counts: { topups: number | null; adjustments: number | null; payouts?: number | null; expenses: number | null; statements: number | null };
   storeMode: "demo" | "live";
 };
 

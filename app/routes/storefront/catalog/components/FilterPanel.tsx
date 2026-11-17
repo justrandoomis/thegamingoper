@@ -36,7 +36,7 @@ import { isPlatform } from "~/ui/PlatformLed";
 import { iqdText } from "~/ui/PriceTag";
 import { Render } from "~/ui/Stage";
 import { parsePriceInput, type FilterGroup, type ListingFacets, type ListingQuery, type ListingSort } from "../listing-model";
-import { ChipLabel, deviceGlyph, useKindIcon } from "./Hub";
+import { deviceGlyph, useKindIcon } from "./Hub";
 
 export type FilterPanelProps = {
   query: ListingQuery;
@@ -112,11 +112,11 @@ function Legend({ icon, children }: { icon: IconName; children: ReactNode }) {
   );
 }
 
-/** A row's words after its icon (a department's kind icon, a platform's glyph in its colour). */
+/** A row's words after its icon (a department's kind icon, a platform's glyph in its colour: catalog.css). */
 function IconText({ icon, gel, children }: { icon: IconName; gel?: string; children: ReactNode }) {
   return (
     <span className="catalog-opt__with">
-      <Icon name={icon} size={18} className={cx("catalog-opt__icon", gel && "catalog-chip__icon--plat")} data-gel={gel} />
+      <Icon name={icon} size={18} className="catalog-opt__icon" data-gel={gel} />
       <span className="min-w-0">{children}</span>
     </span>
   );
@@ -207,12 +207,14 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
             {facets.platforms.map((option) => {
               const on = query.platforms.includes(option.value);
               const known = isPlatform(option.value) ? option.value : null;
+              // the kit's chip icon; the platform names itself on a box-less wrapper (the chip's input form takes no
+              // data attribute), so the device glyph takes the platform's colour (catalog.css)
               return (
-                <Chip key={option.value} input="checkbox" name="platform" value={option.value} checked={on} disabled={disabled} onChange={() => toggle(option.value, on)} count={option.count}>
-                  <ChipLabel icon={known ? deviceGlyph(known) : null} gel={known}>
+                <span key={option.value} className="contents" data-gel={known ?? undefined}>
+                  <Chip input="checkbox" name="platform" value={option.value} checked={on} disabled={disabled} onChange={() => toggle(option.value, on)} count={option.count} icon={known ? deviceGlyph(known) : undefined}>
                     {nameOf(option)}
-                  </ChipLabel>
-                </Chip>
+                  </Chip>
+                </span>
               );
             })}
           </div>
@@ -242,12 +244,12 @@ export function FilterPanel({ query, facets, scope, elsewhere = [], onChange, so
       <FieldGroup key="category" legend={<Legend icon="squares-four">{t("filter.category")}</Legend>} className="catalog-facet">
         {chipsFit(facets.categories.map((option) => option.label)) ? (
           <div className="chips">
-            <Chip input="radio" name="cat" value="" checked={query.category === null} disabled={disabled} onChange={() => change({ category: null })} count={facets.without.category}>
-              <ChipLabel icon="squares-four">{t("filter.any")}</ChipLabel>
+            <Chip input="radio" name="cat" value="" checked={query.category === null} disabled={disabled} onChange={() => change({ category: null })} count={facets.without.category} icon="squares-four">
+              {t("filter.any")}
             </Chip>
             {facets.categories.map((option) => (
-              <Chip key={option.value} input="radio" name="cat" value={option.value} checked={query.category === option.value} disabled={disabled} onChange={() => change({ category: option.value })} count={option.count}>
-                <ChipLabel icon={kindIcon(option.value)}>{option.label}</ChipLabel>
+              <Chip key={option.value} input="radio" name="cat" value={option.value} checked={query.category === option.value} disabled={disabled} onChange={() => change({ category: option.value })} count={option.count} icon={kindIcon(option.value)}>
+                {option.label}
               </Chip>
             ))}
           </div>

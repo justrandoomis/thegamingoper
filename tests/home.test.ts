@@ -670,7 +670,8 @@ describe("client rules", () => {
       "العب على": 4.523,
       "یاری بکە لەسەر": 7.737,
       "استبدل جهازك": 7.053,
-      "مستعمل ومفحوص": 8.983,
+      // the glossary's title (polish 2026-11-13; «مستعمل ومفحوص» measured 8.983 before)
+      "المستعمل والمفحوص": 10.331,
       "ئامێرەکەت بگۆڕەوە": 10.634,
       "بەکارهاتوو و پشکنراو": 11.341,
       "العب على Nintendo Switch 2": 13.963,
@@ -679,7 +680,7 @@ describe("client rules", () => {
       "Nintendo Switch 2 گەیشت": 13.789,
       "Play on Steam Deck OLED": 12.821,
     };
-    const plex: Record<string, number> = { "Nintendo Switch 2": 8.511, "Steam Deck OLED": 8.298, "Nintendo Switch 2 یاری بکە": 11.878, "یاری بکە": 3.131, "مستعمل ومفحوص": 7.599 };
+    const plex: Record<string, number> = { "Nintendo Switch 2": 8.511, "Steam Deck OLED": 8.298, "Nintendo Switch 2 یاری بکە": 11.878, "یاری بکە": 3.131, "المستعمل والمفحوص": 8.789 };
     for (const [face, measured] of [["kufam", kufam], ["plex", plex]] as const) {
       for (const [text, em] of Object.entries(measured)) {
         expect(headlineEm(text, face), `${face}: ${text}`).toBeGreaterThanOrEqual(em);
@@ -736,9 +737,11 @@ describe("client rules", () => {
     const pin = "عرض خاص على PlayStation 5";
     expect(heroTitleSizes([pin], "kufam", { wrap: true }).xl).toBeGreaterThan(heroTitleSizes([pin]).xl);
     // the service banners' two-word titles: the display size from 768 in every language
-    for (const title of ["استبدل جهازك", "مستعمل ومفحوص", "Trade in your device", "Used & inspected", "ئامێرەکەت بگۆڕەوە", "بەکارهاتوو و پشکنراو"]) {
+    for (const title of ["استبدل جهازك", "المستعمل والمفحوص", "Trade in your device", "Used & inspected", "ئامێرەکەت بگۆڕەوە", "بەکارهاتوو و پشکنراو"]) {
       expect(heroTitleSizes([title], "kufam", { wrap: true, phone: title }).xl, title).toBe(56);
     }
+    // the glossary's longer title keeps the phone banner's size too: «المستعمل» / «والمفحوص» on two lines at 22px
+    expect(heroTitleSizes(["المستعمل والمفحوص"], "kufam", { wrap: true, phone: "المستعمل والمفحوص" })).toEqual({ sm: 22, md: 40, lg: 48, xl: 56 });
     const all = [switch2, long, heroTitleSizes(["وصل", "Xbox Series X|S – Galaxy Black Edition"]), heroTitleSizes([pin], "kufam", { wrap: true, phone: pin })];
     for (const sizes of all) for (const range of Object.keys(scale) as HeroBreakpoint[]) expect(scale[range], `${range} ${sizes[range]}px`).toContain(sizes[range]);
   });
@@ -986,6 +989,18 @@ describe("the hero carousel in the server's markup (client note 1; brief §5: CL
     expect(html.replaceAll("‍", "")).toContain(strings.hero.tradeIn.text);
   });
 
+  // polish 2026-11-13: the used banner and the used shelf said «مستعمل ومفحوص» while the glossary (docs/DESIGN.md §11),
+  // /used, the menus and /about write the title «المستعمل والمفحوص» — one term, one form
+  it("titles the used banner and the used shelf as the glossary does, in every language", () => {
+    const glossary = { ar: "المستعمل والمفحوص", en: "Used & inspected", ckb: "بەکارهاتوو و پشکنراو" } as const;
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const strings = messagesFor(locale, "home").home as unknown as { hero: { used: { title: string } }; shelf: { used: string } };
+      expect(strings.hero.used.title, locale).toBe(glossary[locale]);
+      expect(strings.shelf.used, locale).toBe(glossary[locale]);
+    }
+    expect(JSON.stringify(messagesFor("ar", "home"))).not.toContain("مستعمل ومفحوص");
+  });
+
   it("loads only the first banner's photo with the page (eager, high priority); every other photo stays lazy in the markup", async () => {
     for (const locale of ["ar", "en"] as const) {
       const { html } = await render(locale === "ar" ? home : homeEn, locale);
@@ -1058,6 +1073,41 @@ describe("the home page's stylesheet: laptops' first screen, dark glass, the pho
     expect(y + ry * 0.72, "and above its foot").toBeLessThanOrEqual(100);
     // the strip paints over the light (the hero is a stacking context of its own)
     expect(block("", ".home-strip")).toMatch(/position:\s*relative/);
+  });
+
+  // polish 2026-11-13 (the kit's carousel requests, done): the hero's local `scroll-snap-stop: normal` let a hard fling on
+  // a phone skip several banners; the kit keeps `always` (a fling stops at the next banner) and fades its own far moves.
+  // The dots' progress and the on-band key's label are the kit's now (`<CarouselDots progress>`, `api.running`;
+  // `:where([data-gel]) .key--on-band`), not a mirror of the hook's hold state and a local fill.
+  it("the banners keep the kit's snap stop; no local dot fill and no local on-band label", () => {
+    const rules = css.replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(rules).not.toMatch(/scroll-snap-stop/);
+    expect(rules).not.toMatch(/home-dot-fill|\[data-run\]|--home-autoplay/);
+    expect(rules).not.toMatch(/--on-band-label/);
+    const hero = readFileSync(new URL("../app/routes/storefront/home/Hero.tsx", import.meta.url), "utf8");
+    const code = hero.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:"'])\/\/.*$/gm, "$1");
+    expect(code).not.toMatch(/carouselHold|autoplayWaits|useReducer/);
+    expect(code).toMatch(/<CarouselDots api=\{api\} progress /);
+  });
+
+  // the 44px pause key stood at the bar's end over the last dot's cell (six 44px dots take 264px): 12px of it at 360,
+  // the whole dot at 320
+  it("the bar: the pause key first, at the start (the keyboard meets it before the dots); below 384px one centred row that wraps", () => {
+    const hero = readFileSync(new URL("../app/routes/storefront/home/Hero.tsx", import.meta.url), "utf8");
+    const bar = hero.slice(hero.indexOf('className="home-hero__bar"'));
+    expect(bar.indexOf("<CarouselPlay")).toBeGreaterThan(-1);
+    expect(bar.indexOf("<CarouselPlay")).toBeLessThan(bar.indexOf("<CarouselDots"));
+    expect(bar.indexOf("<CarouselDots")).toBeLessThan(bar.indexOf("<CarouselArrows"));
+    expect(block("", ".home-hero__bar")).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\) auto minmax\(0, 1fr\)/);
+    expect(block("", ".home-hero__play")).toMatch(/grid-column:\s*1;[\s\S]*justify-self:\s*start/);
+    expect(block("", ".home-hero__dots")).toMatch(/grid-column:\s*2/);
+    expect(block("", ".home-hero__arrows")).toMatch(/grid-column:\s*3;[\s\S]*justify-self:\s*end/);
+    // a side column is (width − 2 × 16px gutter − 264px) / 2: ≥ 44px from 384px; below, the key and the dots share one
+    // centred row (316px: one line at 360) and wrap at 320
+    const narrow = block("@media (max-width: 23.99rem)", ".home-hero__bar");
+    expect(narrow).toMatch(/display:\s*flex/);
+    expect(narrow).toMatch(/flex-wrap:\s*wrap/);
+    expect(narrow).toMatch(/justify-content:\s*center/);
   });
 
   // the service banners' picture sat 70px wide in the top corner, the lower 40% of the banner empty

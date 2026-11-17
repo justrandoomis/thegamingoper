@@ -83,7 +83,8 @@ export function About({ text, level = 2, className }: { text: string | null; lev
   if (!text) return null;
   return (
     <Section title={t("about")} level={level} className={className}>
-      <p className="max-w-[65ch] type-read text-ink">
+      {/* the reading measure in em (Plex's `ch` is the Latin zero, ≈ 0.6em: 65ch ≈ 39em) — the same line in every script */}
+      <p className="max-w-[39em] type-read text-ink">
         <MixedText text={text} />
       </p>
     </Section>
@@ -156,7 +157,8 @@ export function GameFacts({ game, ageRating, level = 2, className }: { game: Gam
   return (
     <Section title={t("game.title")} level={level} className={className}>
       {game.format === "game-key-card" || game.format === "code-in-box" ? (
-        <Note tone="info" icon={game.format === "game-key-card" ? "key" : "download-simple"}>
+        // a quiet line over the rows (the kit's line is 16px: no card needed to be read — polish 2026-11-17)
+        <Note variant="line" tone="info" icon={game.format === "game-key-card" ? "key" : "download-simple"}>
           {t(game.format === "game-key-card" ? "game.keyCard" : "game.codeInBox")}
         </Note>
       ) : null}

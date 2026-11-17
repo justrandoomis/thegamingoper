@@ -46,7 +46,8 @@ import { getAvailability } from "~/server/services/inventory/stock.server";
 import { getReviewSummary, listVerifiedReviews } from "~/server/services/reviews.server";
 import productMessages from "~/i18n/messages/product";
 import { BuyStrip, stripState } from "~/routes/storefront/product/components/BuyStrip";
-import { BeforeYouOrder, Highlights, InTheBox, sourceLine, Specs } from "~/routes/storefront/product/components/Details";
+import { About, BeforeYouOrder, Highlights, InTheBox, sourceLine, Specs } from "~/routes/storefront/product/components/Details";
+import { Reviews } from "~/routes/storefront/product/components/Reviews";
 import { FOCUS_TARGET, focusHandoff } from "~/routes/storefront/product/handoff";
 import { methodsList, offersTransfer, paymentMethods, sentenceStart, SideNotes } from "~/routes/storefront/product/components/Facts";
 import { MixedText, splitMixed } from "~/routes/storefront/product/components/MixedText";
@@ -788,7 +789,10 @@ describe("product page v2.1 review (client note 5)", () => {
     // key said the same thing three times, and the key was described by both sentences.
     const now = { id: "a", sku: "NS2-STD", label: "النسخة الدولية", title: "النسخة الدولية", priceIqd: 667_750, compareAtIqd: null, orderable: true, stock: "in_stock", releaseAt: null, images: [], options: {}, modelNumber: null, bundle: null } as unknown as VariantDetail;
     const block = renderOnPage(createElement(PriceBlock, { variant: now, variants: [now], delivery: { flatFeeIqd: 5_000, overridesEnabled: false }, lifecycle: null, isDemo: false, reasonId: "why", offline: true, offlineId: "off" }));
-    expect(block).toMatch(/<p id="off"[^>]*data-offline-line=""/);
+    // the sentence is the kit's quiet line (Note variant="line", 16px, polish 2026-11-17) in the warning tone — the icon
+    // tinted, the words ink — never a bold warning-coloured paragraph (G5, G7)
+    expect(block).toMatch(/<div id="off" data-offline-line=""><div class="note note--warning note--line">/);
+    expect(block).not.toMatch(/font-semibold text-warn/);
     expect(block).toContain("لا يوجد اتصال");
     // the page hides that sentence from 1024 (in the utilities layer: the sentence carries `flex`) …
     const css = area("product.css");
@@ -1197,5 +1201,50 @@ describe("reviews", () => {
     const keys = keysOf(list);
     for (const key of ["customerId", "customer_id", "name", "phone", "phoneE164", "orderItemId"]) expect(keys.has(key)).toBe(false);
     expect(await listVerifiedReviews(t.db, W.reviewed.id, { limit: 1 })).toHaveLength(1);
+  });
+
+  // polish 2026-11-17: the slot shows the approved, verified-purchase reviews themselves (listVerifiedReviews) under the
+  // summary — each with its stars in words, the verified-buyer mark and its date; never who wrote it. With none, nothing.
+  it("the slot lists the real reviews — verified mark, date, words in their own language — and stays empty without them", () => {
+    const summary = { count: 2, average: 4.5, distribution: [0, 0, 0, 1, 1] as [number, number, number, number, number] };
+    const items = [
+      { id: "r2", rating: 5, title: "ممتاز", body: "وصل سليماً ويعمل.", createdAt: Date.UTC(2026, 9, 20, 9), locale: "ar" },
+      { id: "r1", rating: 4, title: null, body: "Works well.", createdAt: Date.UTC(2026, 9, 2, 9), locale: "en" },
+    ];
+    for (const locale of LOCALE_CODES) {
+      const t = (messagesFor(locale, "product") as unknown as { product: { reviews: { verified: string; latest: string } } }).product.reviews;
+      const html = renderOnPage(createElement(Reviews, { summary, items }), locale);
+      const list = html.slice(html.indexOf("pp-reviews__list"));
+      expect(list.match(/<li\b/g), locale).toHaveLength(2);
+      expect(list.split(t.verified).length - 1, locale).toBe(2);
+      expect(html).toContain(t.latest);
+      expect(list).toContain("<time");
+      expect(list).toMatch(/datetime="2026-10-20"/i);
+      expect(list).toContain("ممتاز");
+      // a review keeps its own language and direction on any page
+      expect(list).toMatch(/lang="en" dir="ltr"[^>]*>Works well\./);
+    }
+    // without real reviews: no section, no stars, no list
+    expect(renderOnPage(createElement(Reviews, { summary: { count: 0, average: null, distribution: [0, 0, 0, 0, 0] }, items: [] }))).not.toContain("<section");
+    // the loader reads them with the summary (one index seek: reviews_product_idx)
+    expect(readFileSync(new URL("../app/routes/storefront/product/product.tsx", import.meta.url), "utf8")).toMatch(/listVerifiedReviews\(db, product\.id, \{ limit: \d+ \}\)/);
+  });
+});
+
+describe("product page polish (2026-11-17)", () => {
+  const css = readFileSync(new URL("../app/routes/storefront/product/product.css", import.meta.url), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  it("phone crumbs are the kit's: the local nowrap patch is kept for the wide trail only", () => {
+    expect(css).not.toMatch(/\.pp-crumbs \.crumbs__list > li \{\s*white-space: nowrap/);
+    expect(css).toMatch(/\.pp-crumbs:not\(\.crumbs--phone\) \.crumbs__list > li \{\s*white-space: nowrap/);
+  });
+  it("the reading measure is in em, not ch (Plex's ch is the Latin zero)", () => {
+    const html = renderOnPage(createElement(About, { text: "نص" }));
+    expect(html).toContain("max-w-[39em]");
+    expect(html).not.toMatch(/\d+ch\]/);
+  });
+  it("on paper the screen-only keys go: the stage's keys and thumbnails, favourite / compare, the buy bar", () => {
+    const print = css.slice(css.indexOf("@media print"));
+    expect(css.indexOf("@media print")).toBeGreaterThan(css.indexOf("@layer utilities"));
+    for (const part of [".pp-stage__keys", ".thumbs", "[data-pdp-actions]", ".pp-buybar"]) expect(print).toContain(part);
   });
 });

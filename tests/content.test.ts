@@ -802,13 +802,31 @@ describe("the 404 (v2.1, client note 11: the before's page with v2's mascot and 
     expect(css).toMatch(/\.cnf__head\s*>\s*\*\s*\{[^}]*min-inline-size:\s*0\s*;/);
   });
 
-  // content review: with remembered searches the focused field opened that list over the home key and «مركز الدعم»
-  it("the field is focused on arrival only where nothing then opens over the page: desktop, a plain 404, no recent searches kept", () => {
-    expect(focusesNotFoundField({ product: null, desktop: true, keepsRecent: false })).toBe(true);
-    expect(focusesNotFoundField({ product: null, desktop: false, keepsRecent: false }), "a phone: the keyboard would cover the page").toBe(false);
-    expect(focusesNotFoundField({ product: "zelda", desktop: true, keepsRecent: false }), "a missing product: its suggestions").toBe(false);
-    expect(focusesNotFoundField({ product: "", desktop: true, keepsRecent: false }), "a missing product without words").toBe(false);
-    expect(focusesNotFoundField({ product: null, desktop: true, keepsRecent: true }), "recent searches: their list").toBe(false);
+  // content review: with remembered searches the focused field opened that list over the home key and «مركز الدعم».
+  // (Changed on purpose in the polish round, 2026-11-13: the field focused for the shopper is now the shell's
+  // `openOnFocus={false}` field — it opens no list by itself, so remembered searches no longer keep the focus away.)
+  it("the field is focused on arrival on desktop for a plain 404 (it opens no list by itself)", () => {
+    expect(focusesNotFoundField({ product: null, desktop: true })).toBe(true);
+    expect(focusesNotFoundField({ product: null, desktop: false }), "a phone: the keyboard would cover the page").toBe(false);
+    expect(focusesNotFoundField({ product: "zelda", desktop: true }), "a missing product: its words, the title first").toBe(false);
+    expect(focusesNotFoundField({ product: "", desktop: true }), "a missing product without words").toBe(false);
+    expect(focusesNotFoundField({ product: null, desktop: true, keepsRecent: true }), "recent searches: the field opens nothing by itself").toBe(true);
+  });
+
+  // polish round 2026-11-13 (the shell's request): the header shows only the round key on a 404, so the view's field is
+  // the page's one search landmark — named, as the header's field is
+  it("the 404's field is the page's one search landmark, named «ابحث في المتجر» in every language", () => {
+    for (const locale of LOCALE_CODES) {
+      const html = inShell(notFound(), locale);
+      const label = escaped(shellOf(locale).search.label);
+      expect(html.match(/role="search"/g), locale).toHaveLength(1);
+      expect(html, locale).toMatch(new RegExp(`<form[^>]*role="search"[^>]*aria-label="${label}"|<form[^>]*aria-label="${label}"[^>]*role="search"`));
+    }
+  });
+
+  it("the 404's line keeps an em measure, never ch (a ch measure moved when the web font replaced the fallback)", () => {
+    const css = readFileSync(new URL("../app/routes/storefront/content/components/not-found.css", import.meta.url), "utf8");
+    expect(css).not.toMatch(/(?:inline-size|width)\s*:\s*\d+(?:\.\d+)?ch\b/);
   });
 });
 

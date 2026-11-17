@@ -31,7 +31,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   return {
     i18n: financeI18n(locale),
     access,
-    counts: { topups: wallet?.topups ?? null, adjustments: wallet?.adjustments ?? null, expenses, statements: statements ? Number(statements[0]?.n ?? 0) : null },
+    counts: { topups: wallet?.topups ?? null, adjustments: wallet?.adjustments ?? null, payouts: wallet?.payouts ?? null, expenses, statements: statements ? Number(statements[0]?.n ?? 0) : null },
     storeMode: ctx.storeMode,
     now,
   };
@@ -40,7 +40,7 @@ export async function loader({ context }: Route.LoaderArgs) {
 export default function FinanceLayout({ loaderData }: Route.ComponentProps) {
   const t = useFinT();
   const { access, counts } = loaderData;
-  const walletCount = (counts.topups ?? 0) + (counts.adjustments ?? 0);
+  const walletCount = (counts.topups ?? 0) + (counts.adjustments ?? 0) + (counts.payouts ?? 0);
   return (
     <>
       <FinanceNav

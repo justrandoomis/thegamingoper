@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "re
 
 import { Icon, type IconName } from "~/art/Icon";
 import { useFormat, useT, type Formatters } from "~/i18n/react";
+import { keepTokens } from "~/lib/keep-tokens";
 import type { OrderLineView, OrderView } from "~/server/services/orders/types";
 import { cx } from "~/ui/cx";
 import { Disclosure } from "~/ui/Disclosure";
@@ -11,7 +12,7 @@ import { fillNodes, iqdText } from "~/ui/PriceTag";
 import { Status, type StatusTone } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { orderStage, splitLineName } from "../checkout-form";
-import { Adjustments, summaryCoupon, withFlash } from "./Adjustments";
+import { Adjustments, summaryCoupon, summaryDiscountParts, WaiverNote, withFlash } from "./Adjustments";
 import { Fact, Typed } from "./Fact";
 import { DigitalCodes } from "./DigitalCodes";
 import { OrderStages } from "./OrderStages";
@@ -199,7 +200,8 @@ export function OrderDetails({ order, mode, access, proofUrl = null, codesSignIn
           const { name, option } = splitLineName(line.name);
           const facts = lineFacts(line, t, f);
           // (not isolated: the page's direction orders «Nintendo Switch 2 Edition (نسخة فيزيائية)» as the cart line does)
-          return withFlash({ id: line.id, name, optionsLabel: option ? `${option} · ${facts}` : facts, lineTotalIqd: line.lineTotalIqd, image: line.image }, order.adjustments?.flash[line.id], t, f);
+          // its tokens kept whole — the name as sold may predate the catalogue's non-breaking hyphens («USB-C», «Joy-Con»)
+          return withFlash({ id: line.id, name: keepTokens(name), optionsLabel: option ? `${keepTokens(option)} · ${facts}` : facts, lineTotalIqd: line.lineTotalIqd, image: line.image }, order.adjustments?.flash[line.id], t, f);
         })}
         subtotalIqd={order.totals.subtotalIqd}
         discountIqd={order.totals.discountIqd}
@@ -207,15 +209,14 @@ export function OrderDetails({ order, mode, access, proofUrl = null, codesSignIn
         totalIqd={order.totals.totalIqd}
         count={order.itemCount}
         coupon={summaryCoupon(order.adjustments?.discounts, order.coupon ? { code: order.coupon.code, label: "" } : null)}
+        // every discount as charged, a row each above the total; a waived delivery in words under «التوصيل»
+        discountParts={summaryDiscountParts(order.adjustments?.discounts, t, f)}
+        shippingNote={order.adjustments?.shippingWaiver ? <WaiverNote waiver={order.adjustments.shippingWaiver} /> : undefined}
         shipping="governorate"
         approx="off"
       >
-        {/* every discount as charged, the waived delivery, a split payment's wallet part */}
-        <Adjustments
-          discounts={order.adjustments?.discounts ?? []}
-          waiver={order.adjustments?.shippingWaiver ?? null}
-          split={(order.walletPaidIqd ?? 0) > 0 ? { walletIqd: order.walletPaidIqd ?? 0, restIqd: order.totals.totalIqd - (order.walletPaidIqd ?? 0) } : null}
-        />
+        {/* under the total: a split payment's parts (from the wallet, the rest), then the payment and the delivery */}
+        <Adjustments split={(order.walletPaidIqd ?? 0) > 0 ? { walletIqd: order.walletPaidIqd ?? 0, restIqd: order.totals.totalIqd - (order.walletPaidIqd ?? 0) } : null} />
         <div className="co-pair">
           <section aria-labelledby={`${order.ref}-payment`} className="grid content-start gap-3">
             <Sub id={`${order.ref}-payment`} className="type-sm-strong text-ink">

@@ -355,11 +355,13 @@
   }
 }
 
-/* The utilities layer, because the kit's compatibility note carries a type utility (CompatBadge: `type-xs`): under a
-   card or in a folded row, the rule's note («يعمل بشرط …») is reading text — 16 / 1.75 on phones and tablets (G7). */
+/* Under a card or in a folded row, the rule's note («يعمل بشرط …») is reading text — 16 / 1.75 on phones and tablets
+   (G7). Phones are the kit's now (.compat-badge__note reads at 16 / 1.75 below 768 — polish 2026-11-17); the hub keeps
+   its tablets (768–1023), where the rest of its reading runs are 16 too and the kit's note is 13. The kit's note is a
+   class in the components layer (no type utility any more): the utilities layer still wins over it. */
 @layer utilities {
-  @media (max-width: 63.99rem) {
-    .devhub-note [data-compat] > span + span {
+  @media (min-width: 48rem) and (max-width: 63.99rem) {
+    .devhub-note .compat-badge__note {
       font: var(--type-read);
     }
   }

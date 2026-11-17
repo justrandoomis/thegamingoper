@@ -19,8 +19,17 @@
  * requireEmployee(ctx, db, "<permission>") and every service assertCan(…).
  *
  * Note on rendering: an error thrown by middleware before the loaders run is rendered by the ROOT error boundary
- * (React Router picks the first matched route with a loader), so the 403 of a built module that the employee cannot
- * see is the root's plain page, not the admin shell. That is the price of refusing before any module code runs.
+ * (React Router picks the first matched route with a loader — node_modules/react-router/docs/how-to/middleware.md,
+ * "next() and Error Handling"), which has no admin frame. So the refusal is RETURNED in two ways, refusing exactly the
+ * same requests either way (polish 2026-11-13, tests/admin-shell-refusal.test.ts):
+ *   · a page the browser itself opens (typed, bookmarked, a link from a message or another tab: a GET or HEAD with
+ *     `Sec-Fetch-Dest: document`) is sent to the shell's own refusal page, `/admin/denied?module=…&from=…`
+ *     (shell/denied.tsx), which says it inside the admin frame — the employee's navigation and language — with the
+ *     page they asked for and a way to try again; its own answer is the 403
+ *   · everything else — a client navigation's data request (the admin layout's error boundary shows it inside the
+ *     frame, with the frame's data already on the page), a form, a script, a browser without fetch metadata — keeps
+ *     the plain 403 thrown here
+ * Nothing below the gate runs for either.
  *
  * Three narrow exceptions, each by exact route pattern (2026-11-12):
  *   · PUBLIC_PATTERNS — the password-set page of a one-time link (/admin/welcome): nobody is signed in there yet, the
@@ -30,15 +39,17 @@
  *   · a session that still owes two-step enrolment (a role requires it — session.restriction) opens My security only:
  *     everything else is a document redirect to its two-step section (MFA_ENROLMENT_PATH)
  */
-import { createContext, data, redirectDocument, type MiddlewareFunction, type RouterContextProvider } from "react-router";
+import { createContext, data, redirect, redirectDocument, type MiddlewareFunction, type RouterContextProvider } from "react-router";
+import { messagesFor, type I18nPayload } from "~/i18n/i18n.server";
 import { canAny, type Actor } from "~/server/actor";
 import { MFA_ENROLMENT_PATH, requireEmployee, type EmployeeSession } from "~/server/auth/admin.server";
-import { getCtx } from "~/server/context.server";
+import { getCtx, type RequestCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import type { Permission } from "~/server/permissions";
 import { canSeeModule } from "./access.server";
 import { isAdminModuleSlug, type AdminModuleSlug } from "./modules";
 import { ADMIN_HOME, adminNextPath } from "./next.server";
+import { loadAdminShell, type AdminShellData } from "./shell.server";
 
 const sessionContext = createContext<EmployeeSession | null>(null);
 
@@ -65,8 +76,42 @@ export function moduleOfPattern(pattern: string): AdminModuleSlug | null {
   return first && isAdminModuleSlug(first) ? first : null;
 }
 
-/** The shell's own route patterns: the home, My security, the blueprint, the landing fallback and the not-found splat. */
-const SHELL_PATTERNS: ReadonlySet<string> = new Set(["admin", "admin/me", "admin/blueprint", "admin/:module", "admin/*"]);
+/**
+ * The shell's own route patterns: the home, My security, the blueprint, the refusal page, the landing fallback and the
+ * not-found splat.
+ */
+const SHELL_PATTERNS: ReadonlySet<string> = new Set(["admin", "admin/me", "admin/blueprint", "admin/denied", "admin/:module", "admin/*"]);
+
+/** The shell's page that says a refusal inside the admin frame (shell/denied.tsx). */
+export const DENIED_PATH = "/admin/denied";
+
+/**
+ * A page the browser opens itself — typed, bookmarked, followed from another site or tab — never a client navigation's
+ * data request (React Router fetches those: `Sec-Fetch-Dest: empty`), a form post or a script. Fetch metadata is sent
+ * by every current browser; without it the request keeps the plain 403.
+ */
+export function isDocumentNavigation(request: Request): boolean {
+  const method = request.method.toUpperCase();
+  return (method === "GET" || method === "HEAD") && request.headers.get("Sec-Fetch-Dest")?.toLowerCase() === "document";
+}
+
+/**
+ * A page's data fetched by a script — React Router's own data request for a client navigation (`Sec-Fetch-Dest:
+ * empty`), the only refusal rendered by the layout's error boundary that needs the frame's data with it.
+ */
+export function isDataFetch(request: Request): boolean {
+  const method = request.method.toUpperCase();
+  return (method === "GET" || method === "HEAD") && request.headers.get("Sec-Fetch-Dest")?.toLowerCase() === "empty";
+}
+
+/** The refusal page for a module (or none: a route outside every module) and the page that was asked for. */
+export function deniedPath(module: AdminModuleSlug | null, from: string | null): string {
+  const params = new URLSearchParams();
+  if (module) params.set("module", module);
+  if (from) params.set("from", from);
+  const query = params.toString();
+  return query ? `${DENIED_PATH}?${query}` : DENIED_PATH;
+}
 
 /**
  * Pages of a module that a permission of ANOTHER group opens too, by exact matched route pattern — each because the
@@ -143,6 +188,20 @@ function returnPath(url: URL): string | null {
   return target && target !== ADMIN_HOME ? target : null;
 }
 
+/**
+ * The admin frame of a refusal that renders in the layout's error boundary (a data request): the shell's data and
+ * the "admin" words, as the layout's own loader would give them. Never the reason a refusal fails: without them the
+ * boundary shows the frame without navigation, as before.
+ */
+async function refusalFrame(ctx: RequestCtx, session: EmployeeSession): Promise<{ shell?: AdminShellData; i18n?: I18nPayload }> {
+  try {
+    return { shell: await loadAdminShell(ctx, getDb(), session), i18n: messagesFor(ctx.locale, "admin") };
+  } catch (error) {
+    console.error("[admin] the refusal's frame data failed; the refusal stands without it", error);
+    return {};
+  }
+}
+
 /** Every admin response: never cached, never indexed. */
 function sealed(response: Response): Response {
   response.headers.set("Cache-Control", "no-store");
@@ -161,14 +220,23 @@ export const adminGate: MiddlewareFunction<Response> = async ({ request, context
   // A role requires two-step verification the employee has not turned on: My security only, until it is on.
   if (session.restriction === "mfa_enrolment" && normalized(pattern) !== "admin/me") throw redirectDocument(MFA_ENROLMENT_PATH);
 
-  // The refusal renders in the root ErrorBoundary, which has no loader data: it carries the admin language with it.
+  // How a refusal is returned (the file header): a page the browser opened itself goes to the shell's refusal page,
+  // which says it inside the admin frame; anything else is the 403 itself — rendered in the root ErrorBoundary for a
+  // document (no loader data there: it carries the admin language with it), in the layout's for a data request.
+  // Either way nothing below the gate runs; WHO is refused is decided above and nowhere else.
   const locale = ctx.locale === "en" ? "en" : "ar";
-  if (rule.kind === "module" && !gateAllows(session.actor, rule)) {
-    throw data({ error: "forbidden", module: rule.module, locale }, { status: 403, headers: { "Cache-Control": "no-store" } });
-  }
+  const refusal = async (module: AdminModuleSlug | null) => {
+    if (isDocumentNavigation(request)) return redirect(deniedPath(module, returnPath(url)), { headers: { "Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow" } });
+    // A client navigation's 403 renders in the layout's error boundary, which gets no loader data of the layout (its
+    // loader never ran, and React Router keeps none of the page before): the frame's data and words travel with it,
+    // so the refusal shows the employee's navigation and language (seen 2026-11-13: raw keys, no navigation).
+    const frame = isDataFetch(request) ? await refusalFrame(ctx, session) : {};
+    return data({ error: "forbidden", ...(module ? { module } : {}), locale, ...frame }, { status: 403, headers: { "Cache-Control": "no-store" } });
+  };
+  if (rule.kind === "module" && !gateAllows(session.actor, rule)) throw await refusal(rule.module);
   if (rule.kind === "unmapped") {
     console.error(`[admin] refused: the route pattern "${pattern}" is neither under /admin/<module>/ nor one of the shell's pages (docs/areas/admin-shell.md, "For module owners")`);
-    throw data({ error: "forbidden", locale }, { status: 403, headers: { "Cache-Control": "no-store" } });
+    throw await refusal(null);
   }
 
   return sealed(await next());

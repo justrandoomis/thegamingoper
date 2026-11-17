@@ -7,6 +7,7 @@ import { flyToCart, MotionLink, type FlyHandle } from "~/motion";
 import { addToCart, announce, cartErrorKey, itemKey, MAX_ADD_QTY, showShopToast, undoAdd, useCartCount, type AddItem, type AddOutcome } from "./cart-client";
 import { cx } from "./cx";
 import { FactLine } from "./FactLine";
+import { useFocusHandoff } from "./focus-handoff";
 import { Glass } from "./Glass";
 import { IconKey } from "./IconKey";
 import { Key, type KeySize } from "./Key";
@@ -382,7 +383,8 @@ export type BuyBarProps = BuyControlsProps & {
  * becomes «عرض السلة (2)» (to the cart); another variant restores «أضف إلى السلة». Sold out: «نفد حالياً» + «شاهد بدائل».
  * Coming soon: «يصدر 19 تشرين الثاني 2026 · الطلب يفتح عند وصوله», no button. No stepper (quantity lives in the cart).
  * A failed add says why on the variant's line (red-ink; the error toast carries the retry), so the bar never grows;
- * offline the key goes flat and that line says «لا يوجد اتصال».
+ * offline the key goes flat and that line says «لا يوجد اتصال». Focus survives the swap (./focus-handoff): when the add
+ * came from the focused key, «عرض السلة (n)» takes the focus, without scrolling — never from a shopper who moved on.
  */
 export function BuyBar({
   fixed = true,
@@ -404,6 +406,9 @@ export function BuyBar({
   const [addedKey, setAddedKey] = useState<string | null>(null);
   const [said, setSaid] = useState<{ text: string; tone: "error" | "warn" } | null>(null);
   const added = addedKey === key;
+  // «عرض السلة (n)» takes the focus the swapped «أضف إلى السلة» had (./focus-handoff; polish round 2026-11-13 — it fell
+  // to <body> on the used-unit page): armed on the confirmed add, landed in the layout phase of the swap
+  const handoff = useFocusHandoff(added);
   const soldOut = controls.stock === "out_of_stock";
   const soon = controls.stock === "preorder";
   // the caller who asked for no message renders its own (P3's page did); otherwise the bar's line says it
@@ -421,7 +426,7 @@ export function BuyBar({
     ) : null;
   } else if (added) {
     end = (
-      <Key as={LocaleLink} to="/cart" variant="primary" iconEnd="arrow-right">
+      <Key as={LocaleLink} to="/cart" variant="primary" iconEnd="arrow-right" data-focus-target="">
         {t("add.viewCartCount", { n: f.number(count) })}
       </Key>
     );
@@ -438,6 +443,7 @@ export function BuyBar({
           controls.onMessage?.(text, tone);
         }}
         onAdded={(cart, units) => {
+          handoff.arm();
           setAddedKey(key);
           onAdded?.(cart, units);
         }}
@@ -446,7 +452,7 @@ export function BuyBar({
   }
 
   const content = (
-    <div className={cx("buybar mx-auto max-w-[40rem]", bare && "min-h-0 p-0", bare && className)}>
+    <div ref={handoff.area} className={cx("buybar mx-auto max-w-[40rem]", bare && "min-h-0 p-0", bare && className)}>
       <div className="buybar__info">
         {added ? (
           <span className="buybar__added flex items-center gap-1">

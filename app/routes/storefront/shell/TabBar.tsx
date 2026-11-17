@@ -12,8 +12,11 @@
  * (#shell-categories), so it still leads somewhere without script.
  *
  * It is drawn on store pages only (not in checkout or task flows) and gives way BY ITSELF to a page's own bottom bar:
- * while a <TaskBar> is in the page (product buy bar, a cart with items) the tab bar is hidden (CSS), so an empty cart —
- * which draws no task bar — keeps the tab bar. Never two bars at one edge.
+ * while a <TaskBar> is in the page (product buy bar, a cart with items) the tab bar is hidden, so an empty cart — which
+ * draws no task bar — keeps the tab bar. Never two bars at one edge. How: `.shell[data-taskbar]` (shell.css), which the
+ * server renders from the page's handle (./chrome drawsTaskBar) and ShellFrame keeps true while a <TaskBar> is mounted
+ * (each bar counts itself through TaskBarCount) — an attribute the shell sets, never a :has() over the page (that made
+ * every aria-current change on the page restyle it all, polish 2026-11-13).
  *
  * PAGES WITH THEIR OWN BOTTOM BAR declare it in the route module, so the server already renders the right header, and
  * render the bar with <TaskBar>:
@@ -29,7 +32,7 @@
  * sit at `inset-block-end: var(--shell-bottom)`. Below 1024 the header becomes the task header once the page scrolls
  * (back · the page's <h1> · the cart with its bead — ./Header), so the cart stays one tap away.
  */
-import { useLayoutEffect, useRef, type CSSProperties, type MouseEvent, type ReactNode } from "react";
+import { createContext, useContext, useLayoutEffect, useRef, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import { useLocation } from "react-router";
 
 import { Icon, type IconName } from "~/art/Icon";
@@ -142,9 +145,21 @@ export type TaskBarProps = {
   "aria-label"?: string;
 };
 
+/**
+ * How the shell counts the task bars on the page (ShellFrame provides it): each <TaskBar> adds itself when it mounts and
+ * takes itself away when it goes, so `.shell[data-taskbar]` says whether the page has one right now.
+ */
+export const TaskBarCount = createContext<((delta: 1 | -1) => void) | null>(null);
+
 /** A page's own bottom bar in place of the tab bar (see the file header). */
 export function TaskBar({ children, className, "aria-label": label }: TaskBarProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const count = useContext(TaskBarCount);
+  useLayoutEffect(() => {
+    if (!count) return;
+    count(1);
+    return () => count(-1);
+  }, [count]);
   useLayoutEffect(() => {
     const element = ref.current;
     if (!element) return;

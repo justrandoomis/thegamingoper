@@ -323,3 +323,10 @@ inside the column — at 1280 83 long names cut at their end (at least 107px of 
   set 775 → 742, DualSense 771 → 759).
 - Checks: `npx vitest run tests/product.test.ts` (55 pass) · `node scripts/lint-design.mjs --strict` on the area (0) ·
   every product at 390 in ar/ckb/en · screenshots and probes in `…/scratchpad/ux/after/Q-fix-pages-product/`.
+
+## Polish (2026-11-17)
+- Crumbs: the phone patch is gone (the kit's `.crumbs--phone` keeps each crumb on one line); the wide trail keeps `white-space: nowrap` on its items (`.pp-crumbs:not(.crumbs--phone)`) — without it «ألعاب Nintendo Switch» broke onto two lines at 1440 (asked of the kit).
+- The kit's quiet line (`Note variant="line"`, 16px): the game's Game-Key Card / code-in-box note over the facts rows, the offline sentence under the price (was a bold warning paragraph), the quick look's «gone» line. The four side notes stay cards (G5).
+- About: the measure is `max-w-[39em]` (was 65ch; Plex 1ch ≈ 0.6em).
+- Print: the stage's keys and tools, the thumbnails, favourite / compare / share and the buy bar are hidden on paper (utilities layer).
+- Reviews: the slot lists the newest six approved, verified-purchase reviews (`listVerifiedReviews`, one seek on `reviews_product_idx`) under the summary — stars in words, «مشترٍ موثّق», the date (`<time>`, Iraq day), each in its own language and direction; never the author. With none the section stays absent (no stars, no count). The demo catalogue has no reviews, so the list is proven by a render test only.

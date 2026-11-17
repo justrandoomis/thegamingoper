@@ -125,14 +125,7 @@
     background: var(--niche);
   }
 
-  /* a danger stop (smoke, swelling, liquid): the kit's note with its disc and title in --danger (never brand red) */
-  .sup-safety-note--danger {
-    --note-tint: var(--danger-tint);
-    --note-ink: var(--danger);
-  }
-  .sup-safety-note--danger .note__title {
-    color: var(--danger);
-  }
+  /* (a danger stop — smoke, swelling, liquid — is the kit's <Note tone="danger">: its disc and title in --danger) */
 
   /* a whole-form failure (network, rate limit, nothing found): words and an icon, never colour alone, never brand red */
   .sup-alert {
@@ -242,8 +235,10 @@
     gap: var(--s-2);
     max-inline-size: 760px;
   }
+  /* measures in em, not ch: the ch of the fallback font is not Plex's, so a ch measure moved when the web font arrived
+     (layout shift); Plex's 1ch = 0.6em — 65ch → 39em */
   .sup-help__lede {
-    max-inline-size: 65ch;
+    max-inline-size: 39em;
     font: var(--type-lead);
     color: var(--ink-2);
   }
@@ -1050,8 +1045,9 @@
     gap: var(--s-5);
     min-inline-size: 0;
   }
+  /* 70ch of Plex (1ch = 0.6em) as an em measure: it does not move when the web font replaces the fallback */
   .sup-article__body {
-    max-inline-size: 70ch;
+    max-inline-size: 42em;
   }
 
   /* ───────────────────────────── motion: everything instant under reduced motion (the OS's and the store's switch) */

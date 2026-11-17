@@ -3,6 +3,8 @@
  *
  *   shellChrome(matches, { errored, path, search })  which shell a page gets (store · checkout · task), its bars and
  *                                             the offline banner's words (a handle's `chrome` may depend on the URL)
+ *   drawsTaskBar(chrome, { path, cartCount }) whether the page draws its own bottom <TaskBar>, as its handles say (the
+ *                                             server's answer for .shell[data-taskbar]; the bars correct it once live)
  *   backFallback(path)                        where the task header's back key leads when there is no page to go back to
  *   canonicalSearch(search)                   a query string exactly as the server renders it (hydration-safe hrefs)
  *   tabOf(path)                               which tab of the tab bar a page belongs to
@@ -12,6 +14,8 @@
  *   megaWords(t, slug, name)                  the menu's «كل أجهزة …» / «… المستعملة» words, one string per platform
  *   suggestionKind(href)                      what a search suggestion points at (its row's icon and words)
  *   suggestionMeta(item)                      a product suggestion's meta line: its qualifier, then its kind
+ *   suggestionPrice(item)                     what a product suggestion shows in the price's place (the price, or
+ *                                             «نفد حالياً» while it is sold out)
  *   suggestionState(answer, typed)            what the suggestion list shows for typed words (rows, a count, «لا
  *                                             اقتراحات لـ …», or nothing yet)
  *   sheetCategories(categories)               the departments of the categories sheet, in order
@@ -84,6 +88,7 @@ export type ShellChrome = {
 };
 
 const CHECKOUT_PATH = /^\/checkout(\/|$)/;
+const CART_PATH = /^\/cart(\/|$)/;
 const ACCOUNT_PATH = /^\/account(\/|$)/;
 /** A path on this site: "/x", never "//host" (protocol-relative) or a full URL. */
 const SITE_PATH = /^\/(?!\/)/;
@@ -112,6 +117,19 @@ export function shellChrome(matches: readonly ShellMatch[], options: { errored?:
   const chrome: ShellChromeKind = declared ?? (!options.errored && options.path !== undefined && CHECKOUT_PATH.test(options.path) ? "checkout" : "store");
   const forms = chrome !== "store" || (!options.errored && options.path !== undefined && ACCOUNT_PATH.test(options.path));
   return { chrome, tabBar: chrome === "store", task: chrome === "task" || (chrome === "store" && ownBar), back, offline: offline ?? (forms ? "form" : "store") };
+}
+
+/**
+ * Whether the page draws its own bottom bar (a <TaskBar>), as far as its handles say: a page that declares
+ * `tabBar: false`, a task flow, checkout. The server renders `.shell[data-taskbar]` from this, so the tab bar gives way
+ * to the page's bar in the very first paint; once the page runs, the bars themselves are counted (ShellFrame) — a page
+ * whose bar is conditional gets the tab bar back then. The cart and checkout draw theirs only for a cart with lines:
+ * with the root's cart count (`cartCount`, null when unknown) at 0 they draw none, so the server already keeps the
+ * tab bar on an empty cart (before hydration, and without script) — review 2026-11-17.
+ */
+export function drawsTaskBar({ chrome, task }: Pick<ShellChrome, "chrome" | "task">, cart: { path?: string; cartCount?: number | null } = {}): boolean {
+  if (cart.cartCount === 0 && cart.path !== undefined && (CART_PATH.test(cart.path) || CHECKOUT_PATH.test(cart.path))) return false;
+  return task || chrome === "checkout";
 }
 
 /** A handle's `chrome` as a shell kind: the word itself, or what its function answers for this address (else none). */
@@ -442,6 +460,16 @@ export function suggestionKind(href: string): SuggestionKind {
 export function suggestionMeta(item: { qualifier?: string; kindLabel?: string; hint?: string }): string {
   const kind = item.kindLabel?.trim() || item.hint?.trim() || "";
   return [item.qualifier?.trim() ?? "", kind].filter((part) => part !== "").join(" · ");
+}
+
+/**
+ * What a product suggestion shows in the price's place: its price (integer IQD) — or "soldOut" while the product cannot
+ * be bought (the endpoint then leaves the price out and says `soldOut: true`), so the row says «نفد حالياً» as the
+ * cards do instead of an empty end — or null when it has neither.
+ */
+export function suggestionPrice(item: { priceIqd?: number; soldOut?: boolean }): number | "soldOut" | null {
+  if (item.soldOut === true) return "soldOut";
+  return item.priceIqd ?? null;
 }
 
 /**

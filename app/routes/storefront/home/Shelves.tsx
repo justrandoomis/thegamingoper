@@ -11,7 +11,7 @@
  *   NewArrivals        «وصل حديثاً»: platform dot chips that filter the shelf in place (`?platform=`, no request) and
  *                      a rail of cards (5-up whole cards from 1280); never a «جديد» badge inside this shelf
  *   Releases           the release band «قريباً» (only with ≥ 2 dated items): no countdown, no pre-order key
- *   UsedShelf          «مستعمل ومفحوص»: used units (a rail on phones), «كل المستعمل»
+ *   UsedShelf          «المستعمل والمفحوص»: used units (a rail on phones), «كل المستعمل»
  *   ServiceEntries     two entry cards: trade-in and support
  *   Departments        «تسوّق حسب القسم»: category tiles with their photos and counts (3 → 6 columns)
  *   RecentlyViewed     the shopper's ONE list (./personal.ts), only with consent and ≥ 3 items
@@ -213,7 +213,7 @@ export function Releases({ items, now }: { items: readonly ComingSoonItem[]; now
 // ───────────────────────────────────────────────────────────────── used and inspected
 
 /**
- * «مستعمل ومفحوص»: the kit's shelf (head, honest reason line, rail) with the clay «عرض الكل» → /used — the short words
+ * «المستعمل والمفحوص»: the kit's shelf (head, honest reason line, rail) with the clay «عرض الكل» → /used — the short words
  * every head uses, so the key stays on the heading's line on a 360px phone. Hidden under 3 units.
  */
 export function UsedShelf({ units }: { units: readonly UsedUnitCardData[] }) {

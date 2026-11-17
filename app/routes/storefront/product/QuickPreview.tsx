@@ -33,6 +33,7 @@ import { BidiText } from "~/ui/BidiText";
 import { useCartCount } from "~/ui/cart-client";
 import { ErrorState } from "~/ui/ErrorState";
 import { Key } from "~/ui/Key";
+import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
 import { ProductImage } from "~/ui/ProductCard";
 import { PriceTag, SafePrice } from "~/ui/PriceTag";
@@ -220,11 +221,13 @@ function Gone() {
   const overlays = useT("ui-overlays");
   const title = t("preview.gone");
   return (
-    <p className="flex items-start gap-2 py-2 type-body text-ink" role="status">
-      <Icon name="info" size={20} className="mt-0.5 shrink-0 text-info" />
-      {/* the strings came with the 404 answer; without them (an odd answer) the generic failure sentence is said */}
-      <span>{title === "preview.gone" ? overlays("error.title") : title}</span>
-    </p>
+    <div className="py-2" role="status">
+      {/* the strings came with the 404 answer; without them (an odd answer) the generic failure sentence is said — the
+          kit's quiet line (polish 2026-11-17) */}
+      <Note variant="line" tone="info">
+        {title === "preview.gone" ? overlays("error.title") : title}
+      </Note>
+    </div>
   );
 }
 

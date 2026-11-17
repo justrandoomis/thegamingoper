@@ -5,7 +5,7 @@
  * (.glass, .key, .bead, .led, .demo-*, .ptile, .entry, .cats, .steps, .empty, .menu …): this file only places them
  * and draws the shell's own pieces.
  *
- * The chrome budget, published on :root so portals, pages and base.css read it (v2 §5.1, §2.7):
+ * The chrome budget (v2 §5.1, §2.7), on .shell for the page and on :root for html's scroll padding and the portals:
  *   --shell-header-h   the sticky top bar: 56 below 1024; 108 (64 + 44) from 1024 once the utility strip and the lead
  *                      have scrolled away (the header sticks at minus their height); checkout 56 / 64
  *   --shell-strip-h    the desktop utility strip (36 from 1024 on store and task pages; 0 elsewhere)
@@ -15,47 +15,62 @@
  *   --shell-bottom     what is fixed at the bottom: the floating tab bar (64 + 10 + safe area), a page's <TaskBar>
  *                      (its measured height, --shell-taskbar-h), or 0. Sticky page elements sit at
  *                      `inset-block-end: var(--shell-bottom)`; the footer pads by it.
- *   --shell-toast-top  where desktop toasts start: under the header
+ *   --shell-toast-top  where desktop toasts start: under the sticky header; --shell-toast-top-full under all of it, at
+ *                      the very top of the page (the strip and the lead included) — ShellFrame's toaster picks one by
+ *                      the header's scroll state
  * base.css turns --shell-top / --shell-bottom into the global scroll padding, so a focused control is never under a bar
  * (WCAG 2.4.11).
  */
 @layer components {
-  /* ───────────────────────────── the chrome budget ───────────────────────────── */
-  :root:has(.shell) {
+  /* ───────────────────────────── the chrome budget ─────────────────────────────
+   * From attributes the shell sets — never a :has() over the page. :root:has(…) and .shell:has(…) made Chromium tie
+   * the root and the whole shell to every element in it: one carousel dot's aria-current restyled the whole page
+   * (88–199ms at 4× CPU), and so did the header's data-scrolled flip at 24px of scroll (polish 2026-11-13).
+   *   .shell[data-chrome]       the page's shell (store · task · checkout), in the server's HTML: exact from the first
+   *                             paint for everything inside the shell (the bars, sticky page rows, the footer)
+   *   .shell[data-taskbar]      a page's <TaskBar> is on screen — the handles say so on the server (./chrome
+   *                             drawsTaskBar), the bars themselves once the page runs (ShellFrame counts them)
+   *   :root[data-shell-chrome]  the same shell on <html>, once the page runs (ShellFrame): html's scroll padding
+   *                             (base.css), the pages' own :root scroll paddings and the portals (toasts, dialogs) read
+   *                             it there. Before that :root holds the store's budget — most pages' own; a task flow's
+   *                             header is the same and checkout's is never larger, so nothing hides under a bar
+   *   --shell-taskbar-h         a task bar's measured height, published on <html> by <TaskBar>: --shell-bottom follows
+   *                             it wherever a task bar is on the page
+   * (This stylesheet is the storefront layout's: React Router takes it away on the admin's pages.) */
+  :root,
+  .shell {
     --shell-header-h: var(--h-header);
     --shell-strip-h: 0px;
     --shell-lead: 0px;
     --shell-tabbar-h: calc(var(--h-tabbar) + 10px + var(--safe-bottom));
     --shell-top: calc(var(--shell-header-h) + var(--safe-top) + var(--shell-offline-h, 0px));
-    --shell-bottom: 0px;
+    --shell-bottom: var(--shell-taskbar-h, 0px);
     --shell-toast-top: calc(var(--shell-top) + var(--s-2));
+    --shell-toast-top-full: calc(var(--shell-toast-top) + var(--shell-strip-h) + var(--shell-lead));
   }
-  @media (max-width: 63.99rem) {
-    :root:has(.shell[data-chrome="store"]) {
-      --shell-bottom: var(--shell-tabbar-h);
+  /* screens only: on paper nothing is fixed at the bottom (print, at the end) */
+  @media screen and (max-width: 63.99rem) {
+    /* store pages: the floating tab bar — or a page's task bar in its place */
+    :root:not([data-shell-chrome="task"], [data-shell-chrome="checkout"]),
+    .shell[data-chrome="store"] {
+      --shell-bottom: var(--shell-taskbar-h, var(--shell-tabbar-h));
+    }
+    /* a page's own bottom bar (its height, measured; 72 + safe area until it is measured) */
+    .shell[data-taskbar] {
+      --shell-bottom: var(--shell-taskbar-h, calc(var(--h-taskbar) + var(--safe-bottom)));
     }
   }
-  /* a page's own bottom bar replaces the tab bar (its height, measured; 72 + safe area until it is measured) */
-  :root:has(.shell[data-chrome] .shell-taskbar) {
-    --shell-bottom: var(--shell-taskbar-h, calc(var(--h-taskbar) + var(--safe-bottom)));
-  }
   @media (min-width: 64rem) {
-    :root:has(.shell[data-chrome="store"]),
-    :root:has(.shell[data-chrome="task"]) {
+    /* store and task pages: the utility strip and the lead over the 64 + 44 header (they scroll away) */
+    :root:not([data-shell-chrome="checkout"]),
+    .shell:not([data-chrome="checkout"]) {
       --shell-header-h: calc(var(--h-header) + var(--h-nav));
       --shell-strip-h: 36px;
       --shell-lead: 12px;
     }
-    /* at the very top the whole header (strip and lead included) is on screen: toasts start under all of it */
-    :root:has(.shell[data-chrome="store"] .shell-header:not([data-scrolled])),
-    :root:has(.shell[data-chrome="task"] .shell-header:not([data-scrolled])) {
-      --shell-toast-top: calc(var(--shell-top) + var(--shell-strip-h) + var(--shell-lead) + var(--s-2));
-    }
-    :root:has(.shell[data-chrome="checkout"]) {
+    :root[data-shell-chrome="checkout"],
+    .shell[data-chrome="checkout"] {
       --shell-header-h: var(--h-checkout);
-    }
-    :root:has(.shell[data-chrome] .shell-taskbar) {
-      --shell-bottom: var(--shell-taskbar-h, 0px);
     }
   }
 
@@ -733,6 +748,12 @@
   .shell-suggest__end {
     color: var(--ink-2);
   }
+  /* a sold-out product: «نفد حالياً» where the price goes, muted as on the cards (.pcard[data-state="out"]) */
+  .shell-suggest__sold {
+    color: var(--ink-2);
+    font: var(--type-sm-strong);
+    white-space: nowrap;
+  }
   .shell-suggest__all {
     display: flex;
     align-items: center;
@@ -1238,7 +1259,8 @@
       flex: none;
       align-items: center;
     }
-    .shell-header[data-task][data-scrolled]:has(.shell-task--title) :is(.shell-lockup, .shell-pill, .shell-searchkey) {
+    /* the page's title in the lockup's place: the header says so itself (data-task="title", ./Header) */
+    .shell-header[data-task="title"][data-scrolled] :is(.shell-lockup, .shell-pill, .shell-searchkey) {
       display: none;
     }
     .shell-header[data-task][data-scrolled] .shell-task--title {
@@ -1446,8 +1468,9 @@
     padding-inline: 4px;
     border-radius: var(--r-xl);
   }
-  /* a page's own task bar takes the bottom edge (an empty cart has none, so the tab bar stays) */
-  .shell:has(.shell-taskbar) .shell-tabbar {
+  /* a page's own task bar takes the bottom edge (an empty cart has none, so the tab bar stays): the shell's attribute,
+     from the server's HTML on (the chrome budget, above) */
+  .shell[data-taskbar] .shell-tabbar {
     display: none;
   }
   @media (min-width: 64rem) {
@@ -1631,8 +1654,10 @@
   .shell-footer__brand .shell-lockup__word {
     block-size: 24px;
   }
+  /* line measures in em, never ch: ch is the width of the font's "0", which changed 7.5% when the fonts arrived (a
+     layout shift); Plex's 1ch = 0.6em, so 42ch = 25.2em */
   .shell-footer__line {
-    max-inline-size: 42ch;
+    max-inline-size: 25.2em;
     color: var(--ink-2);
     font: var(--type-sm);
   }
@@ -1770,7 +1795,7 @@
     font: var(--type-xs-strong);
   }
   .shell-pref__note {
-    max-inline-size: 44ch;
+    max-inline-size: 26.4em;
     color: var(--ink-2);
     font: var(--type-xs);
   }
@@ -1785,15 +1810,17 @@
     font: var(--type-xs);
   }
   .shell-footer__demo {
-    flex: 1 1 32ch;
+    flex: 1 1 19.2em;
   }
   /* phones: the footer's sentences are reading text (v2.1 G7, 16px / 1.75) — the brand line, the payment and currency
-     notes and the demo statement were 13–14px / 1.5 (QA 2026-11-13); the categories sheet's currency notes too. The
-     links, the © and the photo credit stay small. */
+     notes and the demo statement were 13–14px / 1.5 (QA 2026-11-13); the categories sheet's currency notes too; the
+     legal row's © and photo credit (13 / 1.5 Arabic runs, polish 2026-11-13). The links stay small, and so does the
+     demo strip at the top: the chrome budget's slim strip (DESIGN.md §8.1), one link to the full statement here. */
   @media (max-width: 47.99rem) {
     .shell-footer__line,
     .shell-footer__note,
     .shell-pref__note,
+    .shell-footer__legal p,
     :is(.shell-footer__demo, .shell-tfoot) .demo-line {
       font: var(--type-read);
     }
@@ -1977,40 +2004,10 @@
   .shell-error .empty {
     padding-block: 0;
   }
-  .shell-error__mark {
-    block-size: 64px;
-    inline-size: auto;
-  }
-  .shell-error__search {
-    inline-size: min(100%, 480px);
-    margin-block: var(--s-2);
-    text-align: start;
-  }
+  /* (the 404 is content's NotFoundView with its own styles: its mark, field and tiles are not drawn here) */
   .shell-error__ref {
     direction: ltr;
     unicode-bidi: isolate;
-  }
-  .shell-error__browse {
-    display: grid;
-    gap: var(--s-3);
-    inline-size: min(100%, 720px);
-    margin-block-start: var(--s-8);
-    margin-inline: auto;
-  }
-  .shell-error__browse-title {
-    color: var(--ink-2);
-    font: var(--type-sm-strong);
-    text-align: center;
-  }
-  .shell-error__tiles {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--s-3);
-  }
-  @media (min-width: 48rem) {
-    .shell-error__tiles {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
   }
   .shell-error__stack {
     max-inline-size: min(100%, 60rem);
@@ -2124,7 +2121,8 @@
    * checkout bar's back and help keys, the one-line footer's links. The header and the checkout bar flow with the page
    * (sticky repeated them), without glass. An order receipt printed on 3 sheets, a product on 6. */
   @media print {
-    :root:has(.shell) {
+    :root,
+    .shell {
       --shell-bottom: 0px;
     }
     .shell-skip,
@@ -2179,6 +2177,9 @@
  *     letters (§4.22: numbers plus the current label), never under the tag. The whole label stays readable for
  *     assistive technology. Below 430 the mascot has already given way (above), so the words fit whole at 360 in
  *     Arabic and English.
+ * The current step's item is named by the bar (`.shell-cobar__steps--current-<n>`, 1-based; ./Header CheckoutBar):
+ * the kit's rail marks no <li>, and li:has(> .step[aria-current]) made every aria-current change anywhere on the page
+ * (a carousel dot) re-check the whole document (polish 2026-11-13). Five steps are written out; checkout has three.
  */
 @layer utilities {
   .shell-cobar__steps .steps > li {
@@ -2187,7 +2188,11 @@
   .shell-cobar__steps .steps > li + li {
     flex: 1 0 auto;
   }
-  .shell-cobar__steps .steps > li:has(> .step[aria-current="step"]) {
+  .shell-cobar__steps--current-1 .steps > li:nth-child(1),
+  .shell-cobar__steps--current-2 .steps > li:nth-child(2),
+  .shell-cobar__steps--current-3 .steps > li:nth-child(3),
+  .shell-cobar__steps--current-4 .steps > li:nth-child(4),
+  .shell-cobar__steps--current-5 .steps > li:nth-child(5) {
     flex-shrink: 1;
     min-inline-size: 0;
   }
@@ -2215,7 +2220,11 @@
     .shell-cobar__steps .step__sep {
       min-inline-size: 4px;
     }
-    .shell-cobar__steps .steps > li:has(> a.step) + li:has(> a.step) > .step__sep {
+    /* the join between two done steps — both links back (./chrome checkoutRail): every item from the second up to the
+       one before the current step */
+    .shell-cobar__steps--current-3 .steps > li:nth-child(2) > .step__sep,
+    .shell-cobar__steps--current-4 .steps > li:nth-child(n + 2):nth-child(-n + 3) > .step__sep,
+    .shell-cobar__steps--current-5 .steps > li:nth-child(n + 2):nth-child(-n + 4) > .step__sep {
       min-inline-size: 12px;
     }
     .shell-cobar__steps a.step {

@@ -5,7 +5,8 @@
  *
  *   404      the store's 404 view (~/routes/storefront/content/components/NotFoundView — the same view the root boundary
  *            draws): the mascot in a circle · a big «404» · «لم نجد هذه الصفحة» · one line · the search field (the
- *            shell's own form with its suggestions, focused on desktop — `focusesNotFoundField`) · the clay «العودة
+ *            shell's own form with its suggestions, the page's one search landmark «ابحث في المتجر»; focused on
+ *            desktop — `focusesNotFoundField` — and then opening no list by itself) · the clay «العودة
  *            إلى الرئيسية» with «مركز الدعم» beside it · «أو ابدأ من منصّتك» · the four platforms as compact tiles
  *            (their product counts and hardware photos from the navigation). Each address is a new view: a client
  *            navigation from one 404 to another starts the field over with the new address's words.
@@ -26,13 +27,12 @@
  * re-runs the page's loaders instead (a reload would show the browser's own offline page). One red key at most: the
  * retry. The 404 has none — its search field is the way on.
  */
-import { useEffect, useRef, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { useLocation, useRevalidator } from "react-router";
 
 import { Icon } from "~/art/Icon";
 import { LocaleLink } from "~/i18n/react";
 import { splitLocale } from "~/lib/locales";
-import { useRecentSearches } from "~/routes/storefront/catalog/components/recent-searches";
 import { NotFoundView, type NotFoundPlatform } from "~/routes/storefront/content/components/NotFoundView";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
@@ -127,13 +127,14 @@ export function ShellError({ error, platforms }: { error: unknown; platforms: Na
 }
 
 /**
- * Whether the 404 focuses its search field on arrival (v2 §6.16: the field is the way on) — only where nothing then
- * opens over the page: on desktop (on a phone the keyboard would rise over it), for a plain 404 (a missing product's
- * words would open their suggestions over the panel), and while this device keeps no recent searches (focus opens
- * that list right over the home key and «مركز الدعم»).
+ * Whether the 404 focuses its search field on arrival (v2 §6.16: the field is the way on): on desktop (on a phone the
+ * keyboard would rise over the page) and for a plain 404 (a missing product's field starts with its address's words —
+ * the title says what happened first). The field focused this way opens no list by itself (<NotFound>), so the
+ * device's recent searches no longer keep the focus away (polish round 2026-11-13; `keepsRecent` is accepted and
+ * ignored, for the callers that still pass it).
  */
-export function focusesNotFoundField({ product, desktop, keepsRecent }: { product: string | null; desktop: boolean; keepsRecent: boolean }): boolean {
-  return desktop && product === null && !keepsRecent;
+export function focusesNotFoundField({ product, desktop }: { product: string | null; desktop: boolean; keepsRecent?: boolean }): boolean {
+  return desktop && product === null;
 }
 
 /**
@@ -145,21 +146,29 @@ function NotFound({ product, platforms }: { product: string | null; platforms: N
   const t = useShellT();
   const nameOf = usePlatformName();
   const field = useRef<HTMLInputElement | null>(null);
-  // the same list the field opens on focus (catalog's recent searches: this device only, with consent)
-  const recent = useRecentSearches();
-  const keepsRecent = useRef(false);
-  useEffect(() => {
-    keepsRecent.current = recent.items.length > 0;
-  });
+  // The field focused FOR the shopper (`focusesNotFoundField`) is the shell's `openOnFocus={false}` field: it opens no
+  // list over the home key and «مركز الدعم» by itself — not the recent searches, not suggestions — until the shopper
+  // types or presses ↓. Once it loses focus it is an ordinary field again: a click or a phone's tap opens the recent
+  // searches, as every search field does.
+  const [focusedForThem, setFocusedForThem] = useState(false);
 
   useEffect(() => {
-    // one frame later: on a first load the device's recent searches are read only after hydration (the server render
-    // has none), so the decision waits for them
+    // one frame after hydration, where the window's width is known
     const frame = requestAnimationFrame(() => {
-      if (focusesNotFoundField({ product, desktop: window.matchMedia(DESKTOP).matches, keepsRecent: keepsRecent.current })) field.current?.focus({ preventScroll: true });
+      if (focusesNotFoundField({ product, desktop: window.matchMedia(DESKTOP).matches })) setFocusedForThem(true);
     });
     return () => cancelAnimationFrame(frame);
   }, [product]);
+
+  useEffect(() => {
+    const input = field.current;
+    if (!focusedForThem || !input) return;
+    const release = () => setFocusedForThem(false);
+    input.addEventListener("blur", release, { once: true });
+    // the form already renders openOnFocus={false} (this effect runs after that render): the focus opens nothing
+    input.focus({ preventScroll: true });
+    return () => input.removeEventListener("blur", release);
+  }, [focusedForThem]);
 
   // a platform without one of the four colours is left out (no invented surface)
   const tiles: NotFoundPlatform[] = platforms.flatMap((platform) =>
@@ -175,7 +184,8 @@ function NotFound({ product, platforms }: { product: string | null; platforms: N
         help: t("error.help"),
         browse: t("error.browse"),
       }}
-      search={<SearchForm variant="panel" query={product || undefined} inputRef={field} />}
+      // the page's one search landmark (the header shows only the round key here), named like the header's field
+      search={<SearchForm variant="panel" query={product || undefined} inputRef={field} openOnFocus={!focusedForThem} aria-label={t("search.label")} />}
       platforms={tiles}
       after={
         // «…أو تصفّح الأجهزة الجديدة والمستعملة»: the tiles are the new devices, this is the used ones

@@ -329,6 +329,39 @@
     display: none;
   }
 
+  /* ── digital codes of a till sale (2026-11-13): a row per code, one shown large for the customer, its own slip ── */
+  .pos-code {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2);
+    padding-block: var(--s-2);
+    border-block-start: 1px solid var(--line);
+  }
+  .pos-code-shown {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-4);
+    border-radius: var(--r-sm);
+    background: var(--paper-2, var(--paper));
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+  .pos-code-shown__value,
+  .pos-slip__code {
+    font: var(--type-sub);
+    font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+    overflow-wrap: anywhere;
+    user-select: all;
+    text-align: center;
+  }
+  .pos-code-shown__value {
+    font-size: 1.375rem;
+  }
+  .pos-slip__code {
+    padding-block: var(--s-2);
+  }
+
   @media print {
     .pos-print-only {
       display: block;
@@ -361,6 +394,13 @@
       border-radius: 0;
       box-shadow: none;
       font-size: 9pt;
+    }
+    /* a code slip prints alone: the receipt on the same page stays off the paper (codes-ui.tsx) */
+    body:has([data-slip-printing]) .pos-print:not(.pos-slip) {
+      display: none !important;
+    }
+    .pos-slip__code {
+      font-size: 13pt;
     }
   }
 }

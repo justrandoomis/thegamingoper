@@ -3,6 +3,7 @@ import { useFetcher } from "react-router";
 
 import { Icon } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
+import { keepTokens } from "~/lib/keep-tokens";
 import type { OrderDigitalLineView } from "~/server/services/orders/types";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
@@ -83,7 +84,8 @@ export function DigitalCodes({
       ) : null}
       {lines.map((line) => (
         <div key={line.orderItemId} className="co-card grid gap-2">
-          <p className="type-sm-strong text-ink">{line.name}</p>
+          {/* the name as sold, its tokens kept whole (~/lib/keep-tokens: «Switch 2», an old snapshot's «Game-Key») */}
+          <p className="type-sm-strong text-ink">{keepTokens(line.name)}</p>
           <ul className="co-codes">
             {line.codes.map((code, index) => {
               const text = shown[code.id];

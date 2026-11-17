@@ -29,6 +29,15 @@ export const ACCOUNT_ERROR_KEYS = [
   "gift_card_not_active",
   "gift_card_demo_mismatch",
   "privacy_open_exists",
+  // a review of a delivered order line (account/reviews.server, polish round 2026-11-13): the refusals, then the
+  // field sentences of the form
+  "review_line_unknown",
+  "review_not_delivered",
+  "review_used_unit",
+  "review_exists",
+  "review_rating_required",
+  "review_too_short",
+  "review_too_long",
 ] as const;
 export type AccountErrorKey = (typeof ACCOUNT_ERROR_KEYS)[number];
 
@@ -159,6 +168,32 @@ export type ReturnRequestView = {
 
 /** A delivered order still inside the store's general return window. */
 export type ReturnableOrder = { ref: string; deliveredAt: number; windowEndsAt: number; firstItemName: string; itemCount: number };
+
+/** A review's text, in characters after cleaning and trimming (the service's schema and the page's field share them). */
+export const REVIEW_LIMITS = { bodyMin: 3, body: 500 } as const;
+
+/** Why staff did not publish a review, as the customer may read it (the review hub's codes, admin 16.06; "other" and
+ *  the staff's own note are never shown). */
+export const OWN_REJECT_CODES = ["abusive", "personal_data", "off_topic", "spam", "not_about_product"] as const;
+export type OwnRejectCode = (typeof OWN_REJECT_CODES)[number];
+
+/** A review the customer wrote, as they see it on their order (account/reviews.server). Only its author sees it here. */
+export type OwnReview = {
+  id: string;
+  rating: number;
+  body: string | null;
+  /** pending until staff decide in /admin/marketing/reviews; only an approved one is ever shown in the store. */
+  status: "pending" | "approved" | "rejected";
+  /** From a real purchase. A demo order's review is kept for the staff queue but is not a verified purchase: never published. */
+  verified: boolean;
+  createdAt: number;
+  rejectCode: OwnRejectCode | null;
+  /** Written from this order line (false: from another order of the same product — one review per product). */
+  here: boolean;
+};
+
+/** A product of a delivered order its buyer may review: still open (`review` null) or their review. One per product. */
+export type ReviewSlot = { orderItemId: string; productId: string; review: OwnReview | null };
 
 /** Numbers for the account overview and the section list. */
 export type AccountCounts = {

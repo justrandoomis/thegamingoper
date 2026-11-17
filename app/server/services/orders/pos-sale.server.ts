@@ -27,9 +27,10 @@
  *   debit, its overdraft trigger aborts everything) · the drawer's 'sale' cash movement (+ the cash applied; the
  *   change never enters the drawer) · warranties (one per serial, otherwise one per line; months for new goods,
  *   days for used devices) · the receipt (invoices kind "receipt", gap-free counter "pos_receipt" → RC-000001,
- *   frozen content, never cost data) · the books: each payment received (postPaymentReceived / postWalletPayment),
- *   revenue recognised (postSale — the goods were handed over) and the cost of goods (postCogs, FIFO) · order
- *   event · audit event.
+ *   frozen content, never cost data — never a digital code either) · the books: each payment received
+ *   (postPaymentReceived / postWalletPayment), revenue recognised (postSale — the goods were handed over) and the cost
+ *   of goods (postCogs, FIFO) · digital codes, one per unit of a code line, exactly like the web checkout
+ *   (assignDigitalCodesStatements, 2026-11-13) · order event · audit event.
  *
  * WHO: pos.sale.create; the shift must be the actor's own (or the actor holds pos.shift.review — a supervisor
  * recording a sale a device queued). allowOversell needs inventory.oversell.authorize. PRICES are the caller's: the
@@ -99,6 +100,7 @@ import { mapPostingError, postCogs, postPaymentReceived, postSale, postWalletPay
 import { takeFifo, type CostLayerState } from "../inventory/fifo";
 import { assignSerialsStatements, reserveUsedUnitStatements } from "../inventory/stock.server";
 import { walletDebitStatement } from "../wallet.server";
+import { assignDigitalCodesStatements } from "./digital.server";
 import { addMonthsBaghdad } from "./manage.server";
 import { lineName } from "./place.server";
 
@@ -910,6 +912,21 @@ async function placeOnce(db: Db, actor: Actor, input: ParsedSale, keyHash: strin
     );
     paymentRows.push({ id: paymentId, method: payment.method, amountIqd: payment.amountIqd, reference: payment.method === "pos_card" ? payment.reference : null });
   }
+
+  // Digital codes (2026-11-13): exactly like the web checkout (orders/digital.server.ts) — a code line takes one code per
+  // unit in THIS batch, the one that makes the sale paid; soonest expiry first; a demo sale demo codes only; fewer codes
+  // than units leave the rest pending for module 13's queue (the sale never fails for it); audited
+  // ("orders.digital_code.deliver"). The receipt never carries a code — it is reprinted and kept as plain data: the till
+  // shows one on request (admin/pos/codes.server.ts → revealOrderCode, audited) and a refund revokes it.
+  statements.push(
+    ...(await assignDigitalCodesStatements(db, {
+      orderId,
+      lines: lines.filter((plan) => !plan.usedUnitId).map((plan) => ({ orderItemId: plan.itemId, variantId: plan.variantId, qty: plan.input.qty })),
+      isDemo,
+      actor,
+      now,
+    })),
+  );
 
   // Warranties start at the counter: one per serial, otherwise one per line.
   const warrantyRows: NewWarranty[] = [];

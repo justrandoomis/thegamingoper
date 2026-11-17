@@ -5,6 +5,7 @@
  * Fixtures are chosen by their properties (an approved troubleshooting tree, a device with its own guides, a device
  * with only platform-wide guides), not by hard-coded slugs, wherever the seed allows it.
  */
+import { readFileSync } from "node:fs";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { and, eq } from "drizzle-orm";
 import { createElement } from "react";
@@ -40,8 +41,9 @@ import { findArticlesMentioning, getArticle, getHelpIndex, getSupportDirectory, 
 import { aliasWords, describesProblem, findErrorCode, findErrorCodes, hasDangerSign, interpretText, matchDevice, normalizeForMatch } from "~/server/services/support/matcher";
 import { COMMON_PROBLEMS, commonProblemsFor, highlightParts, matchPolicies, suggestHelp } from "~/server/services/support/helpsearch";
 import HelpCenter, { handle as helpCenterHandle } from "~/routes/storefront/support/help-center";
+import ArticlePage from "~/routes/storefront/support/article";
 import { handle as assistantHandle } from "~/routes/storefront/support/assistant";
-import { handle as repairHandle } from "~/routes/storefront/support/repair";
+import RepairPage, { handle as repairHandle } from "~/routes/storefront/support/repair";
 import { handle as ticketHandle } from "~/routes/storefront/support/ticket";
 import { shellChrome } from "~/routes/storefront/shell/chrome";
 import { KEEP_FOCUS, keepsFocus } from "~/routes/storefront/support/components/HelpSearch";
@@ -1198,5 +1200,96 @@ describe("repair requests", () => {
     expect(view).toMatchObject({ status: "awaiting_approval", quoteIqd: 45_000, quoteApproved: false });
     expect(JSON.stringify(view)).not.toContain("rude");
     expect(JSON.stringify(view)).not.toContain("secret");
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── polish round (2026-11-13): the kit's own pieces
+
+describe("the support pages on the kit's own pieces (polish round 2026-11-13)", () => {
+  const render = (Component: unknown, path: string, entry: string, page: unknown) => {
+    const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path, Component: Component as never }] }]);
+    return renderToStaticMarkup(
+      createElement(Stub, {
+        initialEntries: [entry],
+        hydrationData: { loaderData: { root: { locale: "ar", dir: "rtl", fx: null, storeMode: "demo", i18n: messagesFor("ar", "common", "ui", "ui-card", "ui-shop", "ui-overlays") }, page: page as never } },
+      }),
+    );
+  };
+  /** The support tabs' own <nav> (the kit's link Tabs, `.sup-nav`). */
+  const tabsOf = (html: string) => {
+    const start = html.indexOf("sup-nav");
+    return html.slice(start, html.indexOf("</nav>", start));
+  };
+
+  // The kit's Tabs got `section` (round 1 asked for it): a guide is part of the support centre, not its page.
+  test("a guide sits in the support centre's section: its tab says aria-current=\"true\", not \"page\"; its trail shows on phones too", async () => {
+    const guides = await listHelpArticles(t.db, "ar");
+    const summary = guides.find((entry) => entry.device) ?? guides[0];
+    const article = (await getArticle(t.db, "ar", summary.slug))!;
+    const related = await listRelatedArticles(t.db, "ar", article, 4);
+    const html = render(ArticlePage, ":locale?/support/article/:slug", `/support/article/${article.slug}`, { article, related, i18n: messagesFor("ar", "support") });
+    const tabs = tabsOf(html);
+    expect(tabs.match(/aria-current="[^"]*"/g)).toEqual(['aria-current="true"']);
+    expect(tabs).toMatch(/aria-current="true"[^>]*>(?:(?!<\/a>)[\s\S])*مركز الدعم/);
+    // the kit's phone trail (one line that scrolls sideways): the way back is drawn on every width, not from 768 only
+    expect(html).toContain('class="crumbs crumbs--phone"');
+  });
+
+  // Review 2026-11-17: the page's own 7px sides (`[&>li>a]:px-[7px]` on the list) left the tab's own underline — the
+  // one drawn before the script measures, and without script — at the kit's 10px inset, 3px short of the label at each
+  // end on a phone. The kit's `compact` moves the one --tab-px knob, so the padding and both underlines agree.
+  test("the four tabs fit a phone through the kit's `compact` knob (--tab-px), not a page padding override", async () => {
+    const guides = await listHelpArticles(t.db, "ar");
+    const article = (await getArticle(t.db, "ar", guides[0].slug))!;
+    const html = render(ArticlePage, ":locale?/support/article/:slug", `/support/article/${article.slug}`, { article, related: [], i18n: messagesFor("ar", "support") });
+    const tabs = tabsOf(html);
+    expect(tabs).toContain("[--tab-px:7px]");
+    expect(tabs).not.toMatch(/px-\[7px\]/);
+  });
+
+  test("a danger sign is the kit's danger note (its disc and title in --danger), no local tint", async () => {
+    const index = await getHelpIndex(t.db);
+    const search = await searchHelp(t.db, "ar", "يطلع دخان من الجهاز");
+    expect(search?.kind).toBe("danger");
+    const page = {
+      directory: await getSupportDirectory(t.db, "ar"),
+      guides: await listHelpArticles(t.db, "ar"),
+      allGuides: false,
+      search,
+      platform: null,
+      index,
+      policies: POLICIES,
+      policyHits: [],
+      common: commonProblemsFor(index),
+      device: null,
+      deviceGuides: [],
+      i18n: messagesFor("ar", "support"),
+    };
+    const html = render(HelpCenter, ":locale?/support", `/support?q=${encodeURIComponent("يطلع دخان من الجهاز")}`, page);
+    expect(html).toContain('class="note note--danger sup-safety-note"');
+    expect(html).not.toContain("sup-safety-note--danger");
+    // the tone in words before the title (never colour alone)
+    expect(html).toMatch(/note--danger[\s\S]*?class="note__title"><span class="sr-only">[\s\S]*?: <\/span>/);
+  });
+
+  // Round 1 drew two rails: numbers and the current step's words below 768 (its done discs not links), the words beside
+  // the numbers from 768. The kit's labelled rail holds every step's words on every width, and 44px links back.
+  test("the repair rail is the kit's labelled rail on every width: every step's words under its disc, a done step a link back", async () => {
+    const directory = await getSupportDirectory(t.db, "ar");
+    const device = directory[0].devices[0].slug;
+    const page = { directory, device, summary: "", fromAssistant: false, contact: null, formKey: "test-form-key", i18n: messagesFor("ar", "support", "errors") };
+    const html = render(RepairPage, ":locale?/support/repair", `/support/repair?device=${device}&step=photos`, page);
+    expect(html.match(/class="steps-under"/g)?.length).toBe(1);
+    expect(html).not.toContain("steps--compact");
+    const start = html.indexOf('class="steps-under"');
+    const rail = html.slice(start, html.indexOf("</ol>", start));
+    for (const label of [tAr("repair.steps.device"), tAr("repair.steps.photos"), tAr("repair.steps.contact")]) expect(rail).toContain(label);
+    expect(rail).toMatch(new RegExp(`<a(?=[^>]*data-state="done")(?=[^>]*href="/support/repair\\?device=${device}")[^>]*>`));
+    expect(rail).toMatch(/aria-current="step"[^>]*>(?:(?!<\/li>)[\s\S])*الصور/);
+  });
+
+  test("reading measures are in em, never ch (a ch measure moved when the web font replaced the fallback)", () => {
+    const css = readFileSync(new URL("../app/routes/storefront/support/support.css", import.meta.url), "utf8");
+    expect(css).not.toMatch(/(?:inline-size|width)\s*:\s*\d+(?:\.\d+)?ch\b/);
   });
 });

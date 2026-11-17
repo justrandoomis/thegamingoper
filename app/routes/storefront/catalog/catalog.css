@@ -277,24 +277,15 @@
 
   /* ───────────────────────────── the chip row ─────────────────────────────
      One row that scrolls sideways on phones (the kit's .chips--rail .chips--bleed); chips never shrink. v2.1: each chip
-     carries its kind icon at its start (ChipLabel; a platform chip its device glyph in the platform's colour); a chosen
-     chip shows the kit's check in its place. */
+     carries its kind icon at its start (the kit's `Chip icon`; a chosen chip shows the kit's check in its place). A
+     platform's chip names its platform (data-gel on the chip, or on a box-less wrapper round a chip that holds an input)
+     and its device glyph takes the platform's colour; so does a platform's glyph in a filter row. */
   .catalog-chips > * {
     flex: none;
   }
-  .catalog-chip__icon {
-    display: inline-block;
-    margin-inline-end: 6px;
-    vertical-align: -4px;
-  }
-  .catalog-chip__icon--after {
-    margin-inline: 6px 0;
-  }
-  .catalog-chip__icon--plat {
+  :is(.key--chip[data-gel], [data-gel] > .key--chip) > .key__cap > .key__icon,
+  .catalog-opt__icon[data-gel] {
     color: var(--dot);
-  }
-  .key:is([aria-current="true"], [aria-pressed="true"], [data-held], :has(> input:checked)) .catalog-chip__icon {
-    display: none;
   }
 
   /* ───────────────────────────── the list: sidebar + results (§6.3) ───────────────────────────── */

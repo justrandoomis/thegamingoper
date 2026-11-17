@@ -29,9 +29,12 @@
  *
  * The cart key is the fly-to-cart target (`data-cart-target`, drawn at every count) and its bead `data-cart-badge`.
  * Scrolling is observed with an IntersectionObserver on a sentinel at the top of the document (24px; from 1024 the
- * strip + the lead, so "scrolled" is the compact header) — no scroll listener.
+ * strip + the lead, so "scrolled" is the compact header) — no scroll listener. The answer is shared
+ * (`useHeaderScrolled`): the header and the shell's toaster read it, and a crossing re-renders those two only.
+ * State for CSS is on the header itself — `data-scrolled`, `data-task` ("title" while the task header shows the page's
+ * title) — never a :has() (polish 2026-11-13: a :has() over the header re-checked all of it on every change inside).
  */
-import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 import { Icon } from "~/art/Icon";
@@ -72,17 +75,49 @@ export type HeaderProps = {
   search?: SearchMode;
 };
 
-/** True once the page has scrolled past the sentinel at the top of the document (its height is set in shell.css). */
+/**
+ * Whether the page has scrolled past the header's sentinel — one answer for the whole document (there is one header),
+ * kept outside React so that only its readers re-render when it changes. Never true on the server or in the first client
+ * render (hydration-safe).
+ */
+const scrolledState = (() => {
+  let value = false;
+  const listeners = new Set<() => void>();
+  return {
+    get: () => value,
+    set(next: boolean) {
+      if (next === value) return;
+      value = next;
+      for (const listener of listeners) listener();
+    },
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+  };
+})();
+
+/** True once the page has scrolled past the header's sentinel (the compact header; false where there is no header). */
+export function useHeaderScrolled(): boolean {
+  return useSyncExternalStore(scrolledState.subscribe, scrolledState.get, () => false);
+}
+
+/** Watches the sentinel at the top of the document (its height is set in shell.css) for `useHeaderScrolled`. */
 function useScrolled(sentinel: React.RefObject<HTMLElement | null>): boolean {
-  const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const element = sentinel.current;
     if (!element || typeof IntersectionObserver === "undefined") return;
-    const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting && entry.boundingClientRect.top < 0), { threshold: 0 });
+    const observer = new IntersectionObserver(([entry]) => scrolledState.set(!entry.isIntersecting && entry.boundingClientRect.top < 0), { threshold: 0 });
     observer.observe(element);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      // no header, nothing scrolled under it (the checkout bar has no sentinel)
+      scrolledState.set(false);
+    };
   }, [sentinel]);
-  return scrolled;
+  return useHeaderScrolled();
 }
 
 /**
@@ -266,7 +301,9 @@ export function Header({ shell, task = null, demo, onSearch, searchQuery, search
       <header
         className="shell-header"
         data-scrolled={scrolled ? "" : undefined}
-        data-task={task ? "" : undefined}
+        // "title" while the task header shows the page's title in the lockup's place (shell.css hides the lockup and
+        // the search for it by this attribute)
+        data-task={task ? (title ? "title" : "") : undefined}
         data-search={search}
         data-motion-persist="header"
       >
@@ -405,7 +442,9 @@ export function CheckoutBar({ demo }: { demo: boolean }) {
           <Logo variant="wordmark" className="shell-lockup__word" />
         </LocaleLink>
         <ProgressSteps
-          className="shell-cobar__steps"
+          // the current step's place (1-based), for the bar's sizes in shell.css: the kit's rail does not mark its <li>,
+          // and li:has(> .step[aria-current]) made every aria-current change on the page re-check the whole document
+          className={`shell-cobar__steps shell-cobar__steps--current-${rail.current + 1}`}
           aria-label={t("checkout.steps.label")}
           current={rail.current}
           steps={rail.steps.map((step) => ({ label: t(`checkout.steps.${step.id}`), href: step.href ?? undefined }))}

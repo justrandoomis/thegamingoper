@@ -9,8 +9,9 @@
  * RULES
  *   · One open shift per register (database: UNIQUE partial index) and per employee. The drawer belongs to whoever
  *     opened it: only they sell, move cash and close it — or a supervisor (pos.shift.review) who takes it over.
- *   · Expected cash = opening float + Σ cash_movements (append-only): cash sales, refunds paid out, pay-ins,
- *     pay-outs, drops. Computed inside the closing UPDATE itself, so a sale racing the close is either in the
+ *   · Expected cash = opening float + Σ cash_movements (append-only): cash sales, refunds paid out (a cash refund paid
+ *     at the till — refunds.server.ts, in the core's refund batch, 2026-11-13), pay-ins, pay-outs (a cash trade-in
+ *     payout from this drawer among them — module 13), drops. Computed inside the closing UPDATE itself, so a sale racing the close is either in the
  *     count or refused (the sale's batch requires the shift open, or — counted, unreviewed — moves its figures).
  *   · BLIND COUNT: the drawer's owner never receives the expected cash, the cash sales total, the sales by method or
  *     the variance — not while the shift is open, not after (page data, JSON, print) — and that holds for a
@@ -546,7 +547,7 @@ export async function shiftReport(db: Db, actor: Actor, shiftId: string, _locale
   if (!reviewer && !(actor.kind === "employee" && row.shift.openedBy === actor.id)) throw notFound("pos_shift");
   const [moves, methodRows, discountRow, sales] = await Promise.all([
     db
-      .select({ id: cashMovements.id, kind: cashMovements.kind, amountIqd: cashMovements.amountIqd, reason: cashMovements.reason, at: cashMovements.at, actorId: cashMovements.actorId, orderRef: orders.ref })
+      .select({ id: cashMovements.id, kind: cashMovements.kind, amountIqd: cashMovements.amountIqd, reason: cashMovements.reason, at: cashMovements.at, actorId: cashMovements.actorId, orderRef: orders.ref, key: cashMovements.idempotencyKey })
       .from(cashMovements)
       .leftJoin(orders, eq(orders.id, cashMovements.orderId))
       .where(eq(cashMovements.shiftId, shiftId))
@@ -567,6 +568,9 @@ export async function shiftReport(db: Db, actor: Actor, shiftId: string, _locale
   const names = await employeeNames(db, [row.shift.openedBy, row.shift.closedBy, row.shift.approvedBy, ...moves.map((move) => move.actorId)]);
   const view = viewOf(row, names, sales.get(shiftId), actor);
   const sum = (kind: string) => moves.filter((move) => move.kind === kind).reduce((total, move) => total + move.amountIqd, 0);
+  // a cash trade-in payout taken from this drawer (module 13 payOut({ shiftId }), key "tradein:<id>:drawer") is a pay-out of its own kind
+  const isTradeIn = (move: { kind: string; key: string | null }) => move.kind === "pay_out" && (move.key ?? "").startsWith("tradein:");
+  const tradeInIqd = moves.filter(isTradeIn).reduce((total, move) => total + move.amountIqd, 0);
   const expected = row.shift.openingFloatIqd + moves.reduce((total, move) => total + move.amountIqd, 0);
   const discount = discountRow[0];
   const self = actor.kind === "employee" ? actor.id : "";
@@ -575,14 +579,14 @@ export async function shiftReport(db: Db, actor: Actor, shiftId: string, _locale
   return {
     ...view,
     cash: figures
-      ? { expectedIqd: row.shift.status === "open" ? expected : row.shift.expectedCashIqd, salesIqd: sum("sale"), refundsIqd: sum("refund"), payInIqd: sum("pay_in"), payOutIqd: sum("pay_out"), dropIqd: sum("drop") }
-      : { expectedIqd: null, salesIqd: null, refundsIqd: null, payInIqd: null, payOutIqd: null, dropIqd: null },
+      ? { expectedIqd: row.shift.status === "open" ? expected : row.shift.expectedCashIqd, salesIqd: sum("sale"), refundsIqd: sum("refund"), payInIqd: sum("pay_in"), payOutIqd: sum("pay_out"), dropIqd: sum("drop"), tradeInIqd }
+      : { expectedIqd: null, salesIqd: null, refundsIqd: null, payInIqd: null, payOutIqd: null, dropIqd: null, tradeInIqd: null },
     byMethod: figures ? methodRows.map((entry) => ({ method: entry.method as TillMethod, count: Number(entry.count), totalIqd: Number(entry.total) })) : null,
     discounts: figures && discount ? { lines: Number(discount.lines), lineIqd: Number(discount.lineIqd), orderIqd: Number(discount.orderIqd), sales: Number(discount.sales) } : null,
     // The drawer's owner sees what they moved by hand, never the sales' cash (blind count).
     moves: moves
       .filter((move) => figures || move.kind !== "sale")
-      .map((move) => ({ id: move.id, kind: move.kind, amountIqd: move.amountIqd, reason: move.reason, at: move.at, by: names.get(move.actorId ?? "") ?? move.actorId ?? "", orderRef: move.orderRef })),
+      .map((move) => ({ id: move.id, kind: move.kind, amountIqd: move.amountIqd, reason: move.reason, at: move.at, by: names.get(move.actorId ?? "") ?? move.actorId ?? "", orderRef: move.orderRef, tradeIn: isTradeIn(move) })),
     canReview: reviewer && view.state === "review" && row.shift.openedBy !== self && row.shift.closedBy !== self,
     reviewBlocked: reviewer && view.state === "review" && (row.shift.openedBy === self || row.shift.closedBy === self) ? "own_shift" : null,
   };

@@ -136,7 +136,8 @@ describe("admin 06 pos — adversarial review", () => {
     await createSale(t.db, as("manager"), sale(shiftId, [line(item.variantId, 30_000)], cash(30_000)), ctx, NOW);
 
     const own = await shiftReport(t.db, as("manager"), shiftId, "ar");
-    expect(own.cash).toEqual({ expectedIqd: null, salesIqd: null, refundsIqd: null, payInIqd: null, payOutIqd: null, dropIqd: null });
+    // 2026-11-13: the trade-in subtotal (tradeInIqd) is a money figure too — hidden from the drawer's owner like the rest
+    expect(own.cash).toEqual({ expectedIqd: null, salesIqd: null, refundsIqd: null, payInIqd: null, payOutIqd: null, dropIqd: null, tradeInIqd: null });
     expect(own.byMethod).toBeNull();
     expect(own.sales.totalIqd).toBeNull();
     expect(own.moves.some((move) => move.kind === "sale")).toBe(false);

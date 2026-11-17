@@ -10,18 +10,20 @@
  *                      white clay key and «تفاصيل الجهاز» as the second way in, the product on a glossy floor with a
  *                      little parallax as the banners move
  *   trade-in           brand crimson: «استبدل جهازك» — an estimate now, the final price after the inspection — → /trade-in
- *   used               graphite: «مستعمل ومفحوص» → /used (only while used units are listed)
+ *   used               graphite: «المستعمل والمفحوص» (the glossary's title) → /used (only while used units are listed)
  *
  * Phones (< 768): a compact WIDE banner (`--hero-phone-ratio`, ONE custom property in home.css — about 220px tall at
  * 390) with the next banner peeking at the end: the name and the price at the start, the product at the end, the key
- * along the bottom; the dots under it. From 768: the copy at the inline start, the product at the inline end; the dots,
- * the pause key and the round clay arrows in the bar under the banner. The delivery fee is not repeated here (the
- * header's strip says it from 1024; the trust strip under the platform tiles on phones).
+ * along the bottom; the pause key and the dots under it. From 768: the copy at the inline start, the product at the
+ * inline end; the pause key, the dots and the round clay arrows in the bar under the banner. The delivery fee is not
+ * repeated here (the header's strip says it from 1024; the trust strip under the platform tiles on phones).
  *
  * Behaviour (the kit's hook): autoplay every 6.5 s, held while the pointer is over the hero, while focus is inside it,
  * while a finger is on it, while the tab is hidden and while it is off screen; stopped for good by a swipe, an arrow, a
- * dot or a key; ← → (in the reading direction), Home, End; the pause / play key. Reduced motion: no autoplay, instant
- * moves, no parallax. The current dot fills with the time left while autoplay runs (`data-run`, below). Only the
+ * dot or a key; ← → (in the reading direction), Home, End; the pause / play key. A fling stops at the next banner (the
+ * kit's `scroll-snap-stop: always`); a move further than one banner fades and jumps. Reduced motion: no autoplay,
+ * instant moves, no parallax. The current dot fills with the time left while the banners move on by themselves (the
+ * kit's `api.running` and `<CarouselDots progress>`). Only the
  * banner in view is interactive (`inert` on the others once the page is live: one banner's keys in the tab order, and
  * screen readers meet the banner that is shown — a region «عرض شرائح» named «أبرز ما في المتجر», each banner a group
  * «1 من 6»; the track is a polite live region only once the shopper has taken over). Every banner is server-rendered;
@@ -34,7 +36,7 @@
  * on-band add key. The photo links into the product page with the card → page zoom (<SharedElement
  * name="product-image:<id>" slot="hero">). A photo that fails leaves its box empty; the banner keeps its size.
  */
-import { lazy, memo, Suspense, useCallback, useEffect, useId, useReducer, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode, type WheelEvent } from "react";
+import { lazy, memo, Suspense, useCallback, useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode } from "react";
 
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useLocale, useT } from "~/i18n/react";
@@ -44,7 +46,7 @@ import { getMotionTier, MotionLink, SharedElement } from "~/motion";
 import { AddToCartKey } from "~/ui/AddToCartKey";
 import { Band } from "~/ui/Band";
 import { BidiText } from "~/ui/BidiText";
-import { autoplayWaits, carouselHold, CarouselArrows, CarouselDots, CarouselPlay, useCarousel, type CarouselApi, type CarouselHold } from "~/ui/Carousel";
+import { CarouselArrows, CarouselDots, CarouselPlay, useCarousel } from "~/ui/Carousel";
 import { DemoNote } from "~/ui/DemoNote";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
@@ -96,8 +98,8 @@ export type HeroSlide = ProductHeroSlide | ServiceHeroSlide;
 /** A banner's words: they fade with its move (HeroCarousel). */
 const BANNER_WORDS = ".home-slide__pill, .home-slide__title, .home-slide__facts, .home-slide__price, .home-slide__buy";
 
-/** The shopper's side of autoplay, mirrored from the same events the kit's hook reads (./Carousel carouselHold). */
-const STILL: CarouselHold = { playing: true, hovered: false, focused: false, touching: false };
+/** The keys the kit's hook moves the banners with (in the reading direction; ~/ui/Carousel). */
+const MOVE_KEYS = new Set(["ArrowLeft", "ArrowRight", "Home", "End"]);
 
 const isTouch = (event: PointerEvent) => event.pointerType === "touch" || event.pointerType === "pen";
 
@@ -112,13 +114,10 @@ const saveData = () => (navigator as Navigator & { connection?: { saveData?: boo
  */
 export const HeroCarousel = memo(function HeroCarousel({ slides }: { slides: readonly HeroSlide[] }) {
   const t = useT("home");
+  // the kit's hook: what holds autoplay (pointer, focus, a finger, a hidden tab, off screen) and whether the banners move
+  // on by themselves right now (`api.running` — the dots' progress follows it: <CarouselDots progress>)
   const api = useCarousel({ count: slides.length, autoplay: HERO_AUTOPLAY_MS });
-  // what holds autoplay, mirrored from the same events (the kit's hook keeps its own copy and does not expose it): the
-  // current dot fills only while the banners really move on (asked of the kit: CarouselApi.running)
-  const [hold, mirror] = useReducer(carouselHold, STILL);
-  const [hidden, setHidden] = useState(false);
-  const [offscreen, setOffscreen] = useState(false);
-  // the page is live: before that, every banner stays usable (no inert), and nothing pretends to count down
+  // the page is live: before that, every banner stays usable (no inert)
   const [live, setLive] = useState(false);
   // the banner that arrived by a move (its product settles once): once the banners have moved, the one in view — none on
   // the first paint. Derived in the same render (React's adjust-state-while-rendering pattern, once per page): an
@@ -132,18 +131,6 @@ export const HeroCarousel = memo(function HeroCarousel({ slides }: { slides: rea
   const fingerDown = useRef(false);
 
   useEffect(() => setLive(true), []);
-  useEffect(() => {
-    const onVisibility = () => setHidden(document.visibilityState === "hidden");
-    onVisibility();
-    document.addEventListener("visibilitychange", onVisibility);
-    const element = api.rootProps.ref.current;
-    const io = element && typeof IntersectionObserver === "function" ? new IntersectionObserver((entries) => setOffscreen(!entries.some((entry) => entry.isIntersecting)), { threshold: 0.25 }) : null;
-    if (element) io?.observe(element);
-    return () => {
-      document.removeEventListener("visibilitychange", onVisibility);
-      io?.disconnect();
-    };
-  }, [api.rootProps.ref]);
   // the next banner's photo is fetched while this one is shown, once the page has loaded (./view photoToWarm): the
   // markup keeps it lazy, and a lazy photo in the sideways track would wait until it scrolls in — the banner would
   // arrive as a blurred miniature. React leaves the attribute alone: its prop never changes.
@@ -266,36 +253,14 @@ export const HeroCarousel = memo(function HeroCarousel({ slides }: { slides: rea
     };
   }, [trackRef, slides.length]);
 
-  const running = live && !autoplayWaits({ ...hold, playing: api.playing, canPlay: api.canPlay, hidden, offscreen });
-
   const root = api.rootProps;
   const rootProps = {
     ...root,
-    onPointerEnter: (event: PointerEvent<HTMLElement>) => {
-      root.onPointerEnter(event);
-      if (event.pointerType === "mouse") mirror({ type: "hover", on: true });
-    },
-    onPointerLeave: (event: PointerEvent<HTMLElement>) => {
-      root.onPointerLeave(event);
-      if (event.pointerType === "mouse") mirror({ type: "hover", on: false });
-    },
-    onFocus: (event: FocusEvent<HTMLElement>) => {
-      root.onFocus(event);
-      mirror({ type: "focus", on: true });
-    },
-    onBlur: (event: FocusEvent<HTMLElement>) => {
-      root.onBlur(event);
-      if (!event.currentTarget.contains(event.relatedTarget as Node | null)) mirror({ type: "focus", on: false });
-    },
     onKeyDown: (event: KeyboardEvent<HTMLElement>) => {
-      // a key pressed in the quick look is the dialog's: React bubbles a portal's events through this section, so ← → Home
-      // End on its close or add key moved the banners behind it, and closing it dropped the focus to <body> (its opener
-      // had turned inert — review 2026-11-13). Only keys pressed inside the hero's own markup move the banners.
-      if (!event.currentTarget.contains(event.target as Node)) return;
+      // the hook moves the banners with ← → Home End — never for a key pressed in the quick look, a portal whose events
+      // React bubbles through this section (the kit's guard)
       root.onKeyDown(event);
-      if (!event.defaultPrevented) return;
-      // the hook moved the banners (← → Home End): the shopper took over
-      mirror({ type: "stop" });
+      if (!MOVE_KEYS.has(event.key) || !event.defaultPrevented || !event.currentTarget.contains(event.target as Node)) return;
       // a key pressed on a link inside the banner that is leaving: that banner turns inert and would drop the focus to
       // <body> — the focus goes to the track instead (the banners' own stop), where the next arrow keeps working
       const banner = (event.target as HTMLElement).closest(".home-hero__slide");
@@ -307,63 +272,30 @@ export const HeroCarousel = memo(function HeroCarousel({ slides }: { slides: rea
     ...track,
     onPointerDown: (event: PointerEvent<HTMLDivElement>) => {
       track.onPointerDown(event);
-      if (isTouch(event)) {
-        fingerDown.current = true;
-        mirror({ type: "touch", on: true });
-      }
+      if (isTouch(event)) fingerDown.current = true;
     },
     onPointerUp: (event: PointerEvent<HTMLDivElement>) => {
       track.onPointerUp(event);
-      if (isTouch(event)) {
-        fingerDown.current = false;
-        mirror({ type: "touch", on: false });
-      }
+      if (isTouch(event)) fingerDown.current = false;
     },
     onTouchEnd: () => {
       track.onTouchEnd();
       fingerDown.current = false;
-      mirror({ type: "touch", on: false });
     },
     onTouchCancel: () => {
       track.onTouchCancel();
       fingerDown.current = false;
-      mirror({ type: "touch", on: false });
     },
-    // a scroll is a take-over only under a finger (./Carousel carouselHold): the kit's hook and the mirror hear it only
-    // then — on every scroll event of a move they each re-rendered the hero, ~30 renders a move (profiled at 4× CPU)
+    // a scroll is a take-over only under a finger (the kit's carouselHold): the hook hears it only then — on every
+    // scroll event of a move it re-rendered the hero, ~30 renders a move (profiled at 4× CPU)
     onScroll: () => {
-      if (!fingerDown.current) return;
-      track.onScroll();
-      mirror({ type: "swipe" });
-    },
-    onWheel: (event: WheelEvent<HTMLDivElement>) => {
-      track.onWheel(event);
-      mirror({ type: "wheel", deltaX: event.deltaX, deltaY: event.deltaY });
-    },
-  };
-  // the kit's dots, arrows and pause key, with the mirror told what they did
-  const controls: CarouselApi = {
-    ...api,
-    stop: () => {
-      api.stop();
-      mirror({ type: "stop" });
-    },
-    toggle: () => {
-      api.toggle();
-      mirror({ type: "toggle" });
+      if (fingerDown.current) track.onScroll();
     },
   };
 
   if (slides.length === 0) return null;
   return (
-    <section
-      {...rootProps}
-      aria-label={t("hero.label")}
-      className="carousel home-hero"
-      data-live={live ? "" : undefined}
-      data-run={running ? "" : undefined}
-      style={{ "--home-autoplay": `${HERO_AUTOPLAY_MS}ms` } as CSSProperties}
-    >
+    <section {...rootProps} aria-label={t("hero.label")} className="carousel home-hero" data-live={live ? "" : undefined}>
       {/* the ambient light on the floor behind the banner, in the colour of the banner in view (crossfades); in the dark
           theme a wider, lower light spills under the icon strip below, so its glass tiles have that colour to show
           (client note 3: on the plain dark floor they read as flat grey cards) */}
@@ -390,12 +322,13 @@ export const HeroCarousel = memo(function HeroCarousel({ slides }: { slides: rea
         ))}
       </div>
       {slides.length > 1 ? (
+        // the pause / play key first (the keyboard meets it before the dots, WCAG 2.2.2; home.css keeps it off the dots
+        // at every width), the dots with the kit's progress (the current one fills while the banners move on by
+        // themselves), the round clay arrows from 768
         <div className="home-hero__bar">
-          <CarouselDots api={controls} className="home-hero__dots" />
-          <div className="home-hero__tools">
-            <CarouselPlay api={controls} />
-            <CarouselArrows api={controls} className="max-md:hidden" />
-          </div>
+          <CarouselPlay api={api} className="home-hero__play" />
+          <CarouselDots api={api} progress className="home-hero__dots" />
+          <CarouselArrows api={api} className="home-hero__arrows max-md:hidden" />
         </div>
       ) : null}
       {preview ? (

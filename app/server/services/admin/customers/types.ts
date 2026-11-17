@@ -407,7 +407,21 @@ export type ProfileWarranty = { id: string; itemName: string; sku: string | null
 export type ProfileRepair = { id: string; ref: string; status: string; createdAt: number; issue: string };
 export type ProfileNote = { id: string; text: string; by: string | null; at: number; fromAccount: string | null };
 export type ConsentState = { kind: ConsentKindKey; granted: boolean | null; at: number | null; source: string | null };
-export type WalletSummary = { balanceIqd: number; entries: { id: string; kind: string; amountIqd: number; at: number; orderRef: string | null }[]; pendingTopups: number; financeHref: string | null };
+/** A payout request as the profile shows it (2026-11-13; services/admin/customers/wallet.server.ts PayoutState). */
+export type WalletPayoutState = {
+  pending: { id: string; amountIqd: number; method: "cash" | "bank_transfer"; requestedBy: string | null; mine: boolean; createdAt: number; reason: string | null } | null;
+  last: { id: string; amountIqd: number; method: "cash" | "bank_transfer"; status: "approved" | "rejected"; decidedAt: number | null } | null;
+  canRequest: boolean;
+  blockedBy: "pending" | "empty" | "closed" | null;
+};
+export type WalletSummary = {
+  balanceIqd: number;
+  /** `refType` (2026-11-13): "wallet_payout" / "wallet_transfer" rows read as a payout / a transfer, not a bare adjustment. */
+  entries: { id: string; kind: string; amountIqd: number; at: number; orderRef: string | null; refType?: string | null }[];
+  pendingTopups: number;
+  financeHref: string | null;
+  payout?: WalletPayoutState;
+};
 export type ActivityRow = { id: string; action: string; by: string | null; actorKind: string; at: number; reason: string | null };
 
 export type CustomerProfile = {

@@ -19,6 +19,7 @@ import { getDb } from "~/server/db.server";
 import { actionError, forbidden } from "~/server/errors";
 import type { Permission } from "~/server/permissions";
 import { PROMOTIONS_NS } from "~/server/services/admin/promotions/types";
+import { readLoyaltyReason, type LoyaltyReason } from "~/server/services/orders/loyalty-reasons";
 
 export type PromotionsRequest = { ctx: RequestCtx; db: ReturnType<typeof getDb>; session: EmployeeSession; actor: EmployeeSession["actor"]; locale: Locale; now: number };
 
@@ -75,6 +76,20 @@ export async function runIntent<T extends string>(ctx: Ctx, session: EmployeeSes
   } catch (error) {
     return failure(error, ctx.locale, intent);
   }
+}
+
+/**
+ * Ledger rows with their reason read back (the core's ~/server/services/orders/loyalty-reasons): `said` is a code the
+ * store wrote itself («TT-… · cancelled», «expired by …», «referral …»), which the page says in the admin's language
+ * (`points.reason.<code>`), or null for a person's own words, shown as typed. Nothing stored changes.
+ */
+export function withSaid<R extends { reason: string | null }>(rows: readonly R[]): (R & { said: LoyaltyReason | null })[] {
+  return rows.map((row) => ({ ...row, said: readLoyaltyReason(row.reason) }));
+}
+
+/** The same for a referral closed by the store (the core writes «TT-… · cancelled» when its order is cancelled). */
+export function withRejectSaid<R extends { rejectReason: string | null }>(rows: readonly R[]): (R & { rejectSaid: LoyaltyReason | null })[] {
+  return rows.map((row) => ({ ...row, rejectSaid: readLoyaltyReason(row.rejectReason) }));
 }
 
 export function text(form: FormData, name: string): string {

@@ -28,6 +28,8 @@ export type FinanceOverview = {
   waiting: {
     topups: number | null;
     adjustments: number | null;
+    /** Wallet payouts waiting for this employee's decision (2026-11-13). */
+    payouts?: number | null;
     expenses: number | null;
     statements: number | null;
     critical: number | null;
@@ -82,6 +84,7 @@ export async function financeOverview(db: Db, actor: Actor, now: number): Promis
     waiting: {
       topups: queue?.topups ?? null,
       adjustments: queue?.adjustments ?? null,
+      payouts: queue?.payouts ?? null,
       expenses,
       statements: statements ? num(statements[0]?.n) : null,
       critical,

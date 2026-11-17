@@ -159,7 +159,20 @@ export function createCoalescer<M, R>(options: {
 
 /* ═══════════════════════════════ pure: reading answers ═══════════════════════════════ */
 
-export type CartFailure = { ok: false; code: string; status: number; retryAfterSec?: number; fields?: Record<string, string> };
+export type CartFailure = {
+  ok: false;
+  code: string;
+  status: number;
+  retryAfterSec?: number;
+  fields?: Record<string, string>;
+  /**
+   * A coupon below its minimum (409 `coupon_min_subtotal`, the commerce core since round 1 wave C): the minimum, and
+   * how much more the cart needs before the code applies — whole dinars, as the core counts them (a demo coupon: its
+   * demo goods only). Both or neither: «أضف منتجات بقيمة {more} د.ع لتستخدم الرمز» without a second request.
+   */
+  minimumIqd?: number;
+  moreIqd?: number;
+};
 export type CartSuccess = { ok: true; cart: CartView; added?: number; status: number };
 export type CartAnswer = CartSuccess | CartFailure;
 
@@ -182,12 +195,17 @@ export function readCartAnswer(status: number, body: unknown): CartAnswer {
   return readFailure(status, json);
 }
 
-/** The failure half, shared with endpoints that do not return a cart (wishlist). */
+/** The failure half, shared with endpoints that do not return a cart (wishlist). A coupon below its minimum also
+ *  carries `minimumIqd` and `moreIqd` (both whole dinars, or neither). */
 export function readFailure(status: number, json: Record<string, unknown> | null): CartFailure {
   const retry = json?.retryAfterSec;
   const retryAfterSec = typeof retry === "number" && Number.isFinite(retry) && retry > 0 ? Math.ceil(retry) : undefined;
   const fields = json?.fields && typeof json.fields === "object" ? (json.fields as Record<string, string>) : undefined;
-  const base = { ok: false as const, status, ...(retryAfterSec === undefined ? null : { retryAfterSec }), ...(fields ? { fields } : null) };
+  // the coupon minimum's figures travel as a pair of whole dinars, or not at all
+  const minimumIqd = json?.minimumIqd;
+  const moreIqd = json?.moreIqd;
+  const gap = isCount(minimumIqd) && isCount(moreIqd) ? { minimumIqd, moreIqd } : null;
+  const base = { ok: false as const, status, ...(retryAfterSec === undefined ? null : { retryAfterSec }), ...(fields ? { fields } : null), ...gap };
   if (json?.ok === false && typeof json.code === "string" && json.code) return { ...base, code: json.code };
   if (status === 429) return { ...base, code: "rate_limited" };
   if (!json && (status === 404 || status === 405 || status === 501)) return { ...base, code: "endpoint_missing" };

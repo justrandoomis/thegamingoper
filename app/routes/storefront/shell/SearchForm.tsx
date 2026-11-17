@@ -4,17 +4,19 @@
  *
  *   <SearchForm variant="header" />   the desktop header's 44px pill (from 1024): 320 wide, 560 from 1280 with the "/"
  *                                     shortcut chip ("/" anywhere outside a field focuses it); suggestions 420 wide under it.
- *                                     It is also the 404's one search field (./ShellError focuses it on desktop).
  *   <SearchSheet open onClose />      phones and tablets: the header's pill opens this full-screen sheet with the field at
  *                                     the top (focused) and the suggestions as a full-width list; the platforms under it
- *   <SearchForm variant="panel" />    a page's own field (the catalog's /search start page)
+ *   <SearchForm variant="panel" />    a page's own field: the catalog's /search start page; the not-found view's field
+ *                                     (./ShellError hands it to content's NotFoundView, focused for the shopper on
+ *                                     desktop with `openOnFocus={false}` — the header shows only the round key there)
  *
  * `query`: the words the field starts with off the search page (a missing product's slug words on its 404); on /search
  * the field follows `?q=`.
  *
  * Suggestions — rows by what they point at (the href says it): products with a 44px thumbnail on the product ground,
  * the name (two lines at most, isolated), ONE meta line under it — the qualifier the Latin title leaves out («نسخة
- * الأقراص»), then the kind label («جهاز PS5»), else the department (./chrome suggestionMeta) — and the price; typed rows
+ * الأقراص»), then the kind label («جهاز PS5»), else the department (./chrome suggestionMeta) — and the price, or
+ * «نفد حالياً» in its place while the product is sold out (the cards' words; ./chrome suggestionPrice); typed rows
  * with icons for a platform (its dot), a department, «كل شيء عن الجهاز» and the used list; «هل تقصد …؟» for a typo;
  * the last row «اعرض كل النتائج». Words the store has nothing for (the endpoint answers `total: 0`): one row «لا
  * اقتراحات لـ «…»» · «ابحث في كل المتجر», which searches anyway — the list never just stays shut. In demo mode a list
@@ -26,11 +28,11 @@
  *
  * SUGGESTIONS CONTRACT (catalog area, CONTRACTS.md §2 `GET /api/search/suggest`):
  *   GET /api/search/suggest?q=<text>&locale=<ar|en|ckb>
- *   200 { suggestions: { label, href, hint?, image?, priceIqd?, kindLabel?, qualifier? }[], total? }   href locale-less
- *   `image` (an art key "<slug>--<n>"), `priceIqd` (integer IQD; left out while the product is sold out), `kindLabel`
- *   («جهاز PS5»), `qualifier` («نسخة الأقراص» — the catalogue's words the Latin title leaves out; printed on the meta
- *   line, never inside the name) and `total` (the result count for «اعرض كل النتائج (42)») are optional: rows show them
- *   when they come.
+ *   200 { suggestions: { label, href, hint?, image?, priceIqd?, soldOut?, kindLabel?, qualifier? }[], total? }   href
+ *   locale-less. `image` (an art key "<slug>--<n>"), `priceIqd` (integer IQD; left out while the product is sold out),
+ *   `soldOut` (true then — the row says «نفد حالياً» where the price goes), `kindLabel` («جهاز PS5»), `qualifier`
+ *   («نسخة الأقراص» — the catalogue's words the Latin title leaves out; printed on the meta line, never inside the
+ *   name) and `total` (the result count for «اعرض كل النتائج (42)») are optional: rows show them when they come.
  *   The first 404 switches suggestions off for the rest of the visit (nothing is invented, nothing retried). Typing is
  *   debounced (160 ms) and a newer request aborts the older one.
  */
@@ -48,7 +50,7 @@ import { Glass } from "~/ui/Glass";
 import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
 import { Price } from "~/ui/Price";
 import { Sheet } from "~/ui/Sheet";
-import { suggestionKind, suggestionMeta, suggestionState, type SuggestionKind } from "./chrome";
+import { suggestionKind, suggestionMeta, suggestionPrice, suggestionState, type SuggestionKind } from "./chrome";
 import { useShellT } from "./i18n";
 import { DeviceGlyph, usePlatformName } from "./MegaMenu";
 import type { NavPlatform } from "./types";
@@ -59,8 +61,10 @@ export type SearchSuggestion = {
   hint?: string;
   /** Optional: an art key ("<slug>--<n>") for the product's thumbnail. */
   image?: string;
-  /** Optional: the product's price, integer IQD. */
+  /** Optional: the product's price, integer IQD (left out while it is sold out). */
   priceIqd?: number;
+  /** Optional: true while the product is sold out — the row says «نفد حالياً» where the price goes. */
+  soldOut?: boolean;
   /** Optional: the product's kind («جهاز PS5»), shown in place of the department hint. */
   kindLabel?: string;
   /** Optional: the words the product's Latin title leaves out («نسخة الأقراص»), first on the meta line. */
@@ -86,6 +90,7 @@ function isSuggestion(value: unknown): value is SearchSuggestion {
     (item.image === undefined || typeof item.image === "string") &&
     (item.kindLabel === undefined || typeof item.kindLabel === "string") &&
     (item.qualifier === undefined || typeof item.qualifier === "string") &&
+    (item.soldOut === undefined || typeof item.soldOut === "boolean") &&
     (item.priceIqd === undefined || (Number.isSafeInteger(item.priceIqd) && item.priceIqd >= 0))
   );
 }
@@ -478,25 +483,7 @@ function OptionBody({ option, total, query }: { option: Option; total: number | 
   }
   const { item } = option;
   const kind = suggestionKind(item.href);
-  if (kind === "product") {
-    // one meta line (v2 §5.5): the qualifier, then the kind («جهاز PS5», which says more than the department; the
-    // department when it is missing) — never inside the Latin name
-    const hint = suggestionMeta(item);
-    return (
-      <>
-        <span className="shell-suggest__thumb" aria-hidden="true">
-          {item.image ? <Art name={item.image} alt="" sizes="44px" /> : <Icon name="package" size={20} />}
-        </span>
-        <span className="shell-suggest__text">
-          <span className="shell-suggest__name">
-            <span className="shell-suggest__label">{item.label}</span>
-          </span>
-          {hint ? <span className="shell-suggest__hint">{hint}</span> : null}
-        </span>
-        {item.priceIqd !== undefined ? <Price amountIqd={item.priceIqd} size="sm" approx="off" as="span" /> : <span />}
-      </>
-    );
-  }
+  if (kind === "product") return <ProductSuggestion item={item} />;
   const platformSlug = kind === "platform" ? item.href.slice("/platform/".length).split(/[/?#]/)[0] : "";
   return (
     <>
@@ -514,6 +501,37 @@ function OptionBody({ option, total, query }: { option: Option; total: number | 
         {kind !== "correction" ? <span className="shell-suggest__hint">{item.hint ?? t(`search.kind.${kind}`)}</span> : null}
       </span>
       <Icon name="arrow-right" size={16} className="shell-suggest__end" />
+    </>
+  );
+}
+
+/**
+ * A product row's body: the 44px thumbnail, the name with its one meta line (v2 §5.5: the qualifier, then the kind
+ * «جهاز PS5», which says more than the department; the department when it is missing — never inside the Latin name),
+ * and at the end the price — or «نفد حالياً» in its place while the product is sold out, the words the cards use.
+ */
+export function ProductSuggestion({ item }: { item: SearchSuggestion }) {
+  const t = useShellT();
+  const hint = suggestionMeta(item);
+  const price = suggestionPrice(item);
+  return (
+    <>
+      <span className="shell-suggest__thumb" aria-hidden="true">
+        {item.image ? <Art name={item.image} alt="" sizes="44px" /> : <Icon name="package" size={20} />}
+      </span>
+      <span className="shell-suggest__text">
+        <span className="shell-suggest__name">
+          <span className="shell-suggest__label">{item.label}</span>
+        </span>
+        {hint ? <span className="shell-suggest__hint">{hint}</span> : null}
+      </span>
+      {price === "soldOut" ? (
+        <span className="shell-suggest__sold">{t("search.soldOut")}</span>
+      ) : price !== null ? (
+        <Price amountIqd={price} size="sm" approx="off" as="span" />
+      ) : (
+        <span />
+      )}
     </>
   );
 }

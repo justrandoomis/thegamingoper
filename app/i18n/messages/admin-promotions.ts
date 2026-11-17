@@ -684,6 +684,21 @@ export default defineMessages({
       kind: { earn: "كسب", redeem: "استبدال", expire: "انتهاء", adjust: "تسوية", reversal: "استرجاع" },
       /** What a ledger row refers to; "redeem" = points a redemption gives back (the checkout: a cancel or a refund). */
       ref: { order: "طلب", redeem: "نقاط استُبدلت في طلب", referral: "إحالة", manual: "يدوي", approval: "بموافقة", expiry: "انتهاء الصلاحية", none: "—" },
+      /**
+       * A reason the store wrote itself (~/server/services/orders/loyalty-reasons: a code, never a sentence), said in the
+       * admin's language: {ref} an order reference (isolated left-to-right), {date} a formatted day, {referralCode}.
+       * A person's own words (a manual adjustment) are shown as typed.
+       */
+      reason: {
+        order: "الطلب {ref}",
+        cancelled: "أُلغي الطلب {ref}",
+        returned: "عاد الطلب {ref} دون تسليم",
+        refund: "استرداد على الطلب {ref}",
+        expired: "انتهت صلاحيتها في {date}",
+        referral: "مكافأة الإحالة {referralCode}",
+        /** The same under the row's own order reference (shown just above it): what happened, without the reference again. */
+        here: { cancelled: "أُلغي هذا الطلب", returned: "عاد هذا الطلب دون تسليم", refund: "استرداد على هذا الطلب" },
+      },
       customerStatus: { active: "نشط", blocked: "محظور", merged: "مدموج", deleted: "محذوف البيانات" },
       empty: "لا حركات بعد",
       emptyHint: "يرحّل النظام النقاط المستحقة كل ليلة، ويمكنك ترحيلها الآن من الجانب.",
@@ -1862,6 +1877,15 @@ export default defineMessages({
       col: { at: "Time", customer: "Customer", kind: "Movement", points: "Points", ref: "Reference", expires: "Expires", actor: "By" },
       kind: { earn: "Earned", redeem: "Redeemed", expire: "Expired", adjust: "Adjustment", reversal: "Reversed" },
       ref: { order: "Order", redeem: "Redeemed on an order", referral: "Referral", manual: "By hand", approval: "Approved", expiry: "Expiry", none: "—" },
+      reason: {
+        order: "Order {ref}",
+        cancelled: "Order {ref} cancelled",
+        returned: "Order {ref} returned undelivered",
+        refund: "Refund on order {ref}",
+        expired: "Expired on {date}",
+        referral: "Referral reward {referralCode}",
+        here: { cancelled: "This order was cancelled", returned: "This order came back undelivered", refund: "Refund on this order" },
+      },
       customerStatus: { active: "Active", blocked: "Blocked", merged: "Merged", deleted: "Erased" },
       empty: "No movements yet",
       emptyHint: "The system posts the points due every night; you can post them now from the side panel.",
@@ -3023,6 +3047,15 @@ export default defineMessages({
       col: { at: "کات", customer: "کڕیار", kind: "جووڵە", points: "خاڵ", ref: "سەرچاوە", expires: "بەسەردەچێت", actor: "لەلایەن" },
       kind: { earn: "بەدەستهاتوو", redeem: "گۆڕدراوە", expire: "بەسەرچوو", adjust: "ڕێکخستن", reversal: "گەڕێنراوە" },
       ref: { order: "داواکاری", redeem: "خاڵی گۆڕدراو لە داواکارییەکدا", referral: "ناساندن", manual: "بە دەست", approval: "پەسەندکراو", expiry: "بەسەرچوون", none: "—" },
+      reason: {
+        order: "داواکاری {ref}",
+        cancelled: "داواکاری {ref} هەڵوەشێنرایەوە",
+        returned: "داواکاری {ref} بەبێ گەیاندن گەڕایەوە",
+        refund: "گەڕاندنەوەی پارە لەسەر داواکاری {ref}",
+        expired: "لە {date} بەسەرچوو",
+        referral: "پاداشتی ناساندن {referralCode}",
+        here: { cancelled: "ئەم داواکارییە هەڵوەشێنرایەوە", returned: "ئەم داواکارییە بەبێ گەیاندن گەڕایەوە", refund: "گەڕاندنەوەی پارە لەسەر ئەم داواکارییە" },
+      },
       customerStatus: { active: "چالاک", blocked: "بلۆککراو", merged: "تێکەڵکراو", deleted: "سڕاوە" },
       empty: "هێشتا هیچ جووڵەیەک نییە",
       emptyHint: "سیستەم هەموو شەوێک خاڵە شیاوەکان تۆمار دەکات؛ دەتوانیت ئێستا لە پانێڵی لاوە تۆماریان بکەیت.",

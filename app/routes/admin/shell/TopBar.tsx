@@ -60,6 +60,20 @@ const QUEUE_ICON: Record<ShellQueueId, IconName> = {
   ops_jobs: "pulse",
   ops_incidents: "fire",
   cms_policies: "file-text",
+  order_reviews: "flag",
+  catalog_review: "seal-check",
+  used_prices: "tag",
+  wallet_payouts: "arrow-square-out",
+  refund_reviews: "eye",
+  rma_quarantine: "package",
+  repairs_late: "wrench",
+  campaign_approvals: "paper-plane-tilt",
+  campaigns_due: "calendar",
+  review_moderation: "chat-circle",
+  webhooks_gave_up: "plugs-connected",
+  reorder_suggestions: "lightning",
+  rules_to_activate: "check-circle",
+  automation_notices: "robot",
 };
 import type { AdminShellData } from "./shell.server";
 

@@ -103,7 +103,7 @@ below, the tab bar all round, task bars above).
 | Header (both widths), utility strip, search key, task header, cart key, lockup, checkout bar | `Header.tsx` | one `<header data-motion-persist="header" data-search data-scrolled>` with a `<Glass>` layer that fades in once scrolled; the cart (a round clay key) carries `data-cart-target`, its bead `data-cart-badge`. Task header title (`TaskTitle`): the `<h1>` on one line, cut between words with «…» at its logical end (`chrome.ts clampWords`, measured by a hidden probe; never inside a bracket or on a joiner). Checkout bar: the keys and the whole «طلب تجريبي» tag never shrink (no short form); the step rail shows all labels beside their discs from 600; below 600 every label UNDER its disc (13px; steps 46px tall) from 390 in every language and from 360 in Arabic, only the current step's label at 360–389 in English and Sorani, the numbers alone below 360; the mascot gives way first below 430 (480 in Sorani, whose tag and labels are longer); done steps keep a 44px hit area. The header's and the bar's controls carry a `scroll-margin-block` that keeps focus in them from scrolling the page. The strip is `inert` while scrolled away |
 | Nav-row platforms + mega menus | `MegaMenu.tsx` | one 44px menu button per platform (device glyph `DeviceGlyph` = the kit's `<Icon name="device-…">` in its colour light, name, chevron) and the sliding indicator; the glass panel and its scrim render through a portal into the host after the header. Columns: at most five short model names (`NavLink.short`, the full name as the tooltip; the model's photo when the link has `artKey`) with the read layer's counts (`NavLink.count`) as pills, a link's `qualifier` on its own meta line; «كل … » / «… المستعملة» one string per platform (`chrome.ts megaWords`). Featured card (`megaFeature`): the read layer's `NavPlatform.featured` — photo (else the product's first catalogue photo; the glyph only when it has none), name, `qualifier`, Price md + «سعر تجريبي» on a demo row, «نفد حالياً» / «قريباً», the clay key |
 | Search field, suggestions, search sheet | `SearchForm.tsx` | header well (from 1024, "/" focuses it without scrolling; its focus never moves the page) · phone search sheet (also what the search key opens, at every width) · a page's own field (`variant="panel"`: the catalog's /search, the 404) · `query` prefills it (a missing product's words) · `openOnFocus` (default true; false: the recent searches wait for typing or ↓) · `aria-label` (the search landmark's name; «ابحث في المتجر» by default for the header and the sheet, none for a panel unless given) · no match → one row that searches anyway · «الأسعار تجريبية» on a priced list's head in demo mode |
-| Tab bar and `<TaskBar>` | `TabBar.tsx` | floating glass pill with the sliding active pill; hidden while a `.shell-taskbar` is in the page (CSS) |
+| Tab bar and `<TaskBar>` | `TabBar.tsx` | floating glass pill with the sliding active pill; hidden while a `<TaskBar>` is in the page: `.shell[data-taskbar]`, rendered by the server from the handles (`chrome.ts drawsTaskBar`) and kept by the bars themselves once live (each counts itself through `TaskBarCount`) — never a `:has()` over the page; with the root's cart count at 0, `/cart` and `/checkout` are rendered without it (an empty cart keeps its tab bar before hydration and without script) |
 | Categories sheet, compact platform tiles, icon tiles | `CategoriesSheet.tsx` | platform tiles · «الأقسام» and «خدمات» as glass icon tiles (`IconTile`, kind icons) · language / theme / currency; `ShellRow` stays for the 404 page |
 | Footers | `Footer.tsx` | full footer (accordions below 768) and the one-line `TaskFooter` |
 | Language / theme / currency | `Preferences.tsx` | `LanguageBank` (segmented LINKS — work without script), `LanguageLinks` (the same links as words: the utility strip), `LanguageMenu` (globe), `ThemeSwitch` (the strip's light / dark toggle, `aria-pressed`), `ThemeBank`, `CurrencyPanel` (the rate «1 USD = 1,310 د.ع»: only «1 USD» isolated, the dinar figure first — `chrome.ts rateText`) |
@@ -159,15 +159,21 @@ below, the tab bar all round, task bars above).
 ## Contracts with other areas
 
 - **Search suggestions** (catalog area): `GET /api/search/suggest?q=<text>&locale=<ar|en|ckb>` →
-  `{ suggestions: { label, href, hint?, image?, priceIqd?, kindLabel?, qualifier? }[], total? }` (`href` locale-less;
+  `{ suggestions: { label, href, hint?, image?, priceIqd?, soldOut?, kindLabel?, qualifier? }[], total? }` (`href` locale-less;
   CONTRACTS.md §2). The row's kind comes from the href (`/p/` product, `/platform/`, `/c/`, `/device/`, `/used`,
   `/search?q=` correction). A product row: the thumbnail (`image`, an art key; a package glyph without one), the name,
   ONE meta line — `qualifier` («نسخة الأقراص», the words the Latin title leaves out), then `kindLabel` («جهاز PS5»),
   else the department `hint` (`chrome.ts suggestionMeta`) — and the price (`priceIqd`, integer IQD; the endpoint leaves
-  it out while the product is sold out). `total` is the count in «اعرض كل النتائج (42)». A 404 switches suggestions
-  off for the visit. Recent searches come from the catalog's `recent-searches` (this device, consent only).
-  **Open (asked of the catalog area, 2026-11-12):** the endpoint does not send `qualifier` yet — the search service
-  has it (`SearchSuggestionItem.qualifier`); the shell prints it as soon as it comes.
+  it out while the product is sold out and sends `soldOut: true`: the row then says «نفد حالياً» / "Sold out" /
+  «ئێستا نەماوە» in the price's place — `chrome.ts suggestionPrice`, `ProductSuggestion`). `total` is the count in
+  «اعرض كل النتائج (42)». A 404 switches suggestions off for the visit. Recent searches come from the catalog's
+  `recent-searches` (this device, consent only).
+
+- **Chrome state for CSS** (polish 2026-11-13): `.shell[data-chrome]`, `.shell[data-taskbar]` (server HTML),
+  `<html data-shell-chrome>` (set by ShellFrame once live), the header's `data-scrolled` / `data-task="title"` and the
+  checkout rail's `.shell-cobar__steps--current-<n>`. shell.css never uses `:root:has()` / `.shell:has()` /
+  `li:has(> .step[aria-current])`: they made one carousel dot's aria-current change restyle the whole page (135–194 ms
+  at 4× CPU; 4–5 ms after).
 - **Navigation data** (catalog read layer, `NavTaxonomy`): the mega menu's columns are `devices` (5 models + the
   consoles category), `games` (minus the cross-platform category; "all" = `/c/games?platform=<slug>`), `accessories`
   (minus gift cards and subscriptions, which go to "cards and services" with the used units). The menu shows the

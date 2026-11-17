@@ -10,10 +10,13 @@
  * Nothing request-specific may live in module scope (Workers reuse isolates across requests).
  */
 import { env } from "cloudflare:workers";
+import * as workers from "cloudflare:workers";
 import { createContext, data, redirect, type MiddlewareFunction, type RouterContextProvider } from "react-router";
 import { DEFAULT_LOCALE, LOCALES, splitLocale, type Dir, type Locale } from "~/lib/locales";
 import { parsePrefs, PREFS_COOKIE, readCookie, type Prefs } from "~/lib/prefs";
+import { campaignVisit, recordCampaignVisit } from "./attribution.server";
 import { declaredTooLarge } from "./body.server";
+import { getDb } from "./db.server";
 import { applySecurityHeaders, isSameOriginMutation, pagePathname } from "./security.server";
 
 export { pagePathname };
@@ -149,6 +152,25 @@ export const requestContextMiddleware: MiddlewareFunction<Response> = async ({ r
 
   const response = await next();
   for (const cookie of queued) response.headers.append("Set-Cookie", cookie);
+  noteCampaign(request, url, ctx, queued, response.status);
   applySecurityHeaders(response, ctx, url);
   return response;
 };
+
+/**
+ * Campaign links (admin 16.04, ~/server/attribution.server): a visit through a tracked link counts the link's click, and
+ * its campaign is kept with the shopper's cart on the server — no cookie, nothing stored on the device. After the
+ * response (waitUntil), never awaited, never a reason for a request to fail. Nearly every request stops at the first
+ * line: no campaign parameters in its URL, no new cart.
+ */
+function noteCampaign(request: Request, url: URL, ctx: RequestCtx, queued: readonly string[], status: number): void {
+  try {
+    const visit = campaignVisit(request, url, ctx, queued, status);
+    if (!visit) return;
+    const task = recordCampaignVisit(getDb(), (env as { KV?: KVNamespace }).KV, visit).catch((error: unknown) => console.error("[attribution] not recorded", error));
+    const waitUntil = (workers as { waitUntil?: (promise: Promise<unknown>) => void }).waitUntil;
+    if (typeof waitUntil === "function") waitUntil(task);
+  } catch (error) {
+    console.error("[attribution] skipped", error);
+  }
+}

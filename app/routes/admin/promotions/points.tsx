@@ -5,15 +5,16 @@ import { useFormat } from "~/i18n/react";
 import { throwAsResponse } from "~/server/errors";
 import { findCustomerId, listLedger, loyaltyOverview, postExpiry, syncOrderPoints } from "~/server/services/admin/promotions/loyalty.server";
 import { SECTION_READ, type PromotionsAccess } from "~/server/services/admin/promotions/shared.server";
-import { LOYALTY_KINDS, LOYALTY_KIND_TONE, ledgerSearch, parseLedgerFilters, type LedgerRow } from "~/server/services/admin/promotions/types";
+import { LOYALTY_KINDS, LOYALTY_KIND_TONE, ledgerSearch, parseLedgerFilters, type LedgerFilters, type LedgerRow } from "~/server/services/admin/promotions/types";
+import type { LoyaltyReason } from "~/server/services/orders/loyalty-reasons";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { EmptyState } from "~/ui/EmptyState";
 import { Select, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { PROMOTIONS_LAYOUT_ID, promotionsMeta } from "./meta";
-import { openPromotions, respond, runIntent } from "./promotions.server";
-import { ConfirmAction, Facts, Kpis, Money, Num, PhoneText, SectionState, Section, ToneStatus, usePromotionsT, When, useProgram } from "./ui";
+import { openPromotions, respond, runIntent, withSaid } from "./promotions.server";
+import { ConfirmAction, Facts, Kpis, Money, Num, PhoneText, SectionState, Section, ToneStatus, usePromotionsT, useReasonText, When, useProgram } from "./ui";
 
 /**
  * /admin/promotions/points — 08.04: where points are redeemed and earned today (the note: online checkout, till), the
@@ -25,14 +26,19 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const { db, actor, now } = await openPromotions(context, SECTION_READ.points);
   const url = new URL(request.url);
   const phone = url.searchParams.get("phone");
+  // each row with its reason read back (`said`): the page says the store's own reasons in the admin's language
+  const ledger = async (filters: LedgerFilters) => {
+    const page = await listLedger(db, actor, filters);
+    return { ...page, rows: withSaid(page.rows) };
+  };
   try {
     if (phone !== null) {
       const customerId = await findCustomerId(db, actor, { phone });
       if (customerId) throw redirect(`/admin/promotions/points/${customerId}`);
-      return { overview: await loyaltyOverview(db, actor, now), page: await listLedger(db, actor, parseLedgerFilters(url.searchParams)), filters: parseLedgerFilters(url.searchParams), notFound: phone };
+      return { overview: await loyaltyOverview(db, actor, now), page: await ledger(parseLedgerFilters(url.searchParams)), filters: parseLedgerFilters(url.searchParams), notFound: phone };
     }
     const filters = parseLedgerFilters(url.searchParams);
-    const [overview, page] = await Promise.all([loyaltyOverview(db, actor, now), listLedger(db, actor, filters)]);
+    const [overview, page] = await Promise.all([loyaltyOverview(db, actor, now), ledger(filters)]);
     return { overview, page, filters, notFound: null as string | null };
   } catch (error) {
     throwAsResponse(error);
@@ -59,7 +65,8 @@ export default function PointsPage({ loaderData }: Route.ComponentProps) {
   const layout = useRouteLoaderData(PROMOTIONS_LAYOUT_ID) as { access: PromotionsAccess } | undefined;
   const manage = layout?.access.points_manage ?? false;
   const { overview, page, filters, notFound } = loaderData;
-  const columns: DataColumn<LedgerRow>[] = [
+  const reasonText = useReasonText();
+  const columns: DataColumn<LedgerRow & { said: LoyaltyReason | null }>[] = [
     { key: "at", header: t("points.col.at"), cell: (row) => <When at={row.at} /> },
     {
       key: "customer",
@@ -75,7 +82,26 @@ export default function PointsPage({ loaderData }: Route.ComponentProps) {
     },
     { key: "kind", header: t("points.col.kind"), cell: (row) => <ToneStatus tone={LOYALTY_KIND_TONE[row.kind]}>{t(`points.kind.${row.kind}`)}</ToneStatus> },
     { key: "points", header: t("points.col.points"), numeric: true, negative: (row) => row.points < 0, cell: (row) => <Num value={row.points} /> },
-    { key: "ref", header: t("points.col.ref"), cell: (row) => <span className="grid">{row.refLabel ? <bdi dir="ltr" className="nums">{row.refLabel}</bdi> : t(`points.ref.${row.refType ?? "none"}`)}{row.reason ? <span className="type-caption text-ink-2 line-clamp-1">{row.reason}</span> : null}</span> },
+    {
+      key: "ref",
+      header: t("points.col.ref"),
+      cell: (row) => {
+        // the store's own reasons in the admin's language; a person's words as typed; never the reference twice
+        const caption = reasonText(row.said, row.reason, row.refLabel);
+        return (
+          <span className="grid">
+            {row.refLabel ? (
+              <bdi dir="ltr" className="nums">
+                {row.refLabel}
+              </bdi>
+            ) : (
+              t(`points.ref.${row.refType ?? "none"}`)
+            )}
+            {caption ? <span className="type-caption text-ink-2 line-clamp-1">{caption}</span> : null}
+          </span>
+        );
+      },
+    },
     { key: "expires", header: t("points.col.expires"), cell: (row) => (row.expiresAt ? <When at={row.expiresAt} style="date" /> : "—") },
     { key: "actor", header: t("points.col.actor"), cell: (row) => row.actor === "system" ? t("common.system") : (row.actor ?? "—") },
   ];

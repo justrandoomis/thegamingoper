@@ -388,3 +388,9 @@ Requests from this round:
 - kit (pieces.css `.carousel__parallax`): `animation-timeline: view(inline)` is wrong in a right-to-left track in
   Chromium (the slide in view at -200%): in Arabic every parallax element sits at its `from` keyframe. The hero no
   longer uses the class; drive it from the track's scroll (as the hero does) or only in `[dir="ltr"]`.
+
+## Polish (2026-11-17)
+- Hero: the local `.home-hero__slide { scroll-snap-stop: normal }` is gone (the kit keeps `always`; its moves further than one banner fade and jump); the `carouselHold` mirror, the visibility / intersection copies and the local dot fill are replaced by the kit's `api.running` and `<CarouselDots api progress>`; the local `--on-band-label` is gone (the kit's `:where([data-gel]) .key--on-band`).
+- The bar: the pause / play key first (start), the dots in the middle, the arrows at the end from 768; below 384px one centred row that wraps (one line at 360, the dots under the key at 320) — no overlap at any width.
+- Copy: the used banner and the used shelf say «المستعمل والمفحوص» (the glossary's title; en «Used & inspected», ckb «بەکارهاتوو و پشکنراو»); the measured word widths updated.
+- Proof (puppeteer, 390, mobile emulation): autoplay with the kit's progress (6500ms), pause stops it 8 s, play resumes, a dot two away fades straight there, reduced motion: no autoplay / no pause key / instant dot. Swipes: no swipe ever moved more than one banner beyond where the finger let go; headless touch input is noisy (some short drags stay), see the browse report.

@@ -1,13 +1,16 @@
 /**
  * /trade-in — «استبدل جهازك», the trade-in wizard (Design System v2 §6.14): الجهاز → الحالة → الصور → التقدير → الفحص.
  *
- * The task-flow shell (`chrome: "task"`): the store header, no tab bar — the step's keys in a <TaskBar> below 1024
- * (secondary «رجوع» | primary «تابع», which grows) and at the end of the column from 1024 — and the one-line footer.
- * One centred 720px column; from 1280 a 340px sticky aside beside it (steps: the device, the answers so far, the
- * estimate, what happens next, how to reach a person · the start: the track card).
+ * The start page is a store page (the store's chrome with the tab bar — it is where the shopper browses the devices
+ * the store buys); the steps (`?step=…`) are the task-flow shell (`chrome: "task"`): the store header, no tab bar — the
+ * step's keys in a <TaskBar> below 1024 (secondary «رجوع» | primary «تابع», which grows; the kit's compact keys) and
+ * at the end of the column from 1024 — and the one-line footer. Offline, the banner says what was typed stays (the
+ * track card, the questions, the contact form). One centred 720px column; from 1280 a 340px sticky aside beside it
+ * (steps: the device, the answers so far, the estimate, what happens next, how to reach a person · the start: the
+ * track card).
  *
  * The rail is the before's labelled rail (client note 10, v2.1): five numbered discs, each step's word under its disc
- * on every width (`.used-rail`, used.css — see docs/areas/used.md "Requests").
+ * on every width (the kit's <ProgressSteps labels="under">).
  *
  * Every step is a URL (./trade-in.server.ts): Back, reload and a shared link work, the question forms are GET forms that
  * submit without script, and steps push sideways in reading order (handle below). Step 1 is the start page in the
@@ -79,8 +82,15 @@ import { loadWizard, type WizardView } from "./trade-in.server";
 import { answeredQuestionSearch, filterGroups, TRADE_IN_PATH, tradeInRefFromInput, WIZARD_STEPS, wizardOrder } from "./wizard";
 import "./used.css";
 
-// The task-flow shell; steps push sideways in their own sibling group (other areas' ordered routes never push against them).
-export const handle = { shell: { chrome: "task" }, nav: "push", group: "trade-in", order: ({ search }) => wizardOrder(search) } satisfies ShellHandle & MotionHandle;
+// The start page in the store's chrome (the tab bar), the steps in the task-flow shell — decided from the address on the
+// server too, so the first render needs no correction; offline the banner keeps the form's words on both. Steps push
+// sideways in their own sibling group (other areas' ordered routes never push against them).
+export const handle = {
+  shell: { chrome: ({ search }) => (new URLSearchParams(search).has("step") ? "task" : "store"), offline: "form" },
+  nav: "push",
+  group: "trade-in",
+  order: ({ search }) => wizardOrder(search),
+} satisfies ShellHandle & MotionHandle;
 
 /** The one "talk to a person" destination of the store (v2 §6.13). */
 const HANDOFF = "/support/assistant?handoff=1#handoff";
@@ -181,8 +191,8 @@ export default function TradeIn({ loaderData }: Route.ComponentProps) {
     shown.current = location.search;
     main.current?.querySelector<HTMLElement>("[data-step-heading]")?.focus({ preventScroll: true });
   }, [location.search]);
-  // the before's labelled rail: every step's word under its disc (used.css `.used-rail`)
-  const railNode = <ProgressSteps steps={steps} current={stepIndex} aria-label={t("tradein.steps.label")} className="used-rail" />;
+  // the before's labelled rail: every step's word under its disc, on every width
+  const railNode = <ProgressSteps steps={steps} current={stepIndex} aria-label={t("tradein.steps.label")} labels="under" />;
   const aside = view.step !== "device" || view.groups.length > 0;
   return (
     <div className="page pt-4 pb-6 lg:pt-8">
@@ -274,9 +284,12 @@ function StepKeys({ keys, compact = false, className }: { keys: Keys; compact?: 
   const next = keys.next;
   const target: Record<string, unknown> = next === null ? {} : "href" in next ? { as: LocaleLink, to: next.href } : { type: "submit", form: next.form };
   const offline = { disabled: !online, "aria-describedby": online ? undefined : reasonId };
+  // the task bar's two keys side by side: the kit's compact keys (44px, 12px sides) keep both whole on a 320 phone in
+  // Sorani, the primary's arrow included (polish round 2026-11-13)
+  const fit = compact ? "compact" : undefined;
   return (
     // the column is the bar's width, never the keys' (an auto grid track grew to the keys' widths and pushed the primary
-    // 7px off a 320 screen in Sorani — review 2026-11-13; `.used-keys` in used.css tightens them there)
+    // 7px off a 320 screen in Sorani — review 2026-11-13)
     <div className={cx("grid grid-cols-[minmax(0,1fr)] gap-2", className)}>
       {online ? null : (
         <p id={reasonId} className="flex items-start gap-1.5 type-xs text-ink-2" role="status">
@@ -284,14 +297,14 @@ function StepKeys({ keys, compact = false, className }: { keys: Keys; compact?: 
           {t("tradein.offline")}
         </p>
       )}
-      <div className="used-keys flex items-center gap-2 min-[22.5rem]:gap-3">
+      <div className="flex items-center gap-2 min-[22.5rem]:gap-3">
         {keys.back ? (
-          <Key as={LocaleLink} to={keys.back} className="shrink-0" {...offline}>
+          <Key as={LocaleLink} to={keys.back} fit={fit} className="shrink-0" {...offline}>
             {t("tradein.back")}
           </Key>
         ) : null}
         {next ? (
-          <Key variant="primary" iconEnd={keys.label === "submit" ? "paper-plane-tilt" : "arrow-right"} loading={pending} className="min-w-0 flex-1" {...target} {...offline}>
+          <Key variant="primary" iconEnd={keys.label === "submit" ? "paper-plane-tilt" : "arrow-right"} loading={pending} fit={fit} className="min-w-0 flex-1" {...target} {...offline}>
             {t((compact ? SHORT : LABEL)[keys.label])}
           </Key>
         ) : null}
@@ -369,7 +382,8 @@ function DeviceStep({ view, rail, validDays }: { view: ViewOf<"device">; rail: R
     <div className="used-start">
       <header className="grid gap-2">
         {title}
-        <p className="used-lead max-w-[62ch] text-ink-2">{t("tradein.intro")}</p>
+        {/* the reading measure in em (62ch of Plex — 1ch = 0.6em): a ch measure moved when the web font arrived */}
+        <p className="used-lead max-w-[37.2em] text-ink-2">{t("tradein.intro")}</p>
         <p className="type-sm text-ink-2">
           {t("tradein.start.trackAsk")}{" "}
           <TextLink as="a" href={`#${TRACK_ID}`} inline>
@@ -513,7 +527,7 @@ function PriceFactors() {
         <h2 id="ti-price" className="type-h2 text-ink">
           {t("tradein.start.price.title")}
         </h2>
-        <p className="used-read max-w-[62ch] text-ink-2">{t("tradein.start.price.text")}</p>
+        <p className="used-read max-w-[37.2em] text-ink-2">{t("tradein.start.price.text")}</p>
       </div>
       <FactList
         className="used-factors"
@@ -540,7 +554,7 @@ function TradeInFaq({ validDays }: { validDays: number | null }) {
   const items = FAQ.filter((key) => key !== "estimate" || days !== null).map((key) => ({
     id: key,
     summary: t(`tradein.start.faq.${key}.q`),
-    content: <p className="used-read max-w-[62ch] text-ink-2">{t(`tradein.start.faq.${key}.a`, { days: days ?? "" })}</p>,
+    content: <p className="used-read max-w-[37.2em] text-ink-2">{t(`tradein.start.faq.${key}.a`, { days: days ?? "" })}</p>,
   }));
   return (
     <section aria-labelledby="ti-faq" className="grid gap-3" {...revealProps()}>
@@ -641,9 +655,9 @@ function ConditionStep({ view }: { view: ViewOf<"condition"> }) {
           <FieldGroup legend={legend}>
             <input type="hidden" name="inc" value="1" />
             {view.options.map((key) => (
-              // a card like the other questions' option cards (the plain rows looked like a different form — review
-              // 2026-11-13; the kit's checkbox has no option-row form, see docs/areas/used.md "Requests")
-              <Checkbox key={key} className="surface used-check" name="included" value={key} label={accessory(key)} defaultChecked={view.answers.included?.includes(key) ?? false} />
+              // the kit's checkbox row, a card like the other questions' option cards (the plain rows looked like a
+              // different form — review 2026-11-13); `.used-clay` gives it their clay face (used.css)
+              <Checkbox key={key} row className="used-clay" name="included" value={key} label={accessory(key)} defaultChecked={view.answers.included?.includes(key) ?? false} />
             ))}
           </FieldGroup>
         ) : (
@@ -651,8 +665,8 @@ function ConditionStep({ view }: { view: ViewOf<"condition"> }) {
             {view.options.map((option) => (
               <OptionCard
                 key={option}
-                // the soft raised card (v2.1; until the kit's option card is clay itself — docs/areas/used.md "Requests")
-                className="surface"
+                // the before's option cards: the kit's clay face (the soft raised card, no hairline)
+                clay
                 name={question}
                 value={option}
                 label={t(`tradein.q.${question}.options.${option}.label`)}

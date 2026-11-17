@@ -12,6 +12,10 @@
  *                                every later one a recorded copy (pos.receipt.reprint) — the till prints it in place
  *   POST discard                 { key, reason, sale } → a queued sale dropped for good (pos.shift.review; the trail
  *                                keeps what the device held)
+ *   GET  codes?ref=              a sale's digital code lines — states only, never a code (2026-11-13)
+ *   POST code                    { ref, codeId } → { ok, codeId, code }: one code shown to the customer at the counter
+ *                                (its cashier while the shift is open, or a supervisor; audited by the core, limited
+ *                                per order — codes.server.ts)
  *
  * Failures the till can act on come back as `{ ok: false, code, message, fields, prices?, resolvable? }` with their
  * HTTP status (a body that is not a JSON object is a 400); anything unexpected is a 500 the till treats like a lost
@@ -23,14 +27,20 @@ import type { Route } from "./+types/till-api";
 import { can } from "~/server/actor";
 import { readBodyBytes } from "~/server/body.server";
 import { forbidden, toAppError } from "~/server/errors";
+import { revealSaleCode, saleCodes } from "~/server/services/admin/pos/codes.server";
 import { catalogSnapshot, createSale, discardQueuedSale, findCustomer, lookupItem, printReceipt, saleFailure, searchItems, syncSales } from "~/server/services/admin/pos/sale.server";
+import { posDataKey } from "./env.server";
 import { openPos, posT } from "./pos.server";
+
+/** The code endpoints open for the receipt's readers too (a supervisor who does not sell); the service decides who sees a code. */
+const CODE_READERS = ["pos.sale.create", "pos.receipt.reprint", "pos.shift.review"] as const;
+const CODE_REVEALERS = ["pos.sale.create", "pos.shift.review"] as const;
 
 const HEADERS = { "Cache-Control": "private, no-store", "Content-Type": "application/json; charset=utf-8" };
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: HEADERS });
 
 export async function loader({ request, params, context }: Route.LoaderArgs) {
-  const { db, actor, locale, now } = await openPos(context, "pos.sale.create");
+  const { db, actor, locale, now } = await openPos(context, params.op === "codes" ? CODE_READERS : "pos.sale.create");
   const url = new URL(request.url);
   const shiftId = url.searchParams.get("shift") ?? "";
   try {
@@ -43,6 +53,8 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
         return json(await catalogSnapshot(db, actor, { shiftId }, locale, now));
       case "customer":
         return json({ customer: await findCustomer(db, actor, { phone: url.searchParams.get("phone") ?? "" }) });
+      case "codes":
+        return json(await saleCodes(db, actor, url.searchParams.get("ref") ?? "", locale));
       default:
         return json({ ok: false, code: "not_found" }, 404);
     }
@@ -54,7 +66,7 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
 }
 
 export async function action({ request, params, context }: Route.ActionArgs) {
-  const { db, actor, locale, now, ctx } = await openPos(context, "pos.sale.create");
+  const { db, actor, locale, now, ctx } = await openPos(context, params.op === "code" ? CODE_REVEALERS : "pos.sale.create");
   if (request.method !== "POST") return data({ ok: false, code: "method_not_allowed" }, { status: 405 });
   const t = posT(locale);
   // The permission before the input: dropping a queued sale is a supervisor's (the service checks it again).
@@ -78,6 +90,8 @@ export async function action({ request, params, context }: Route.ActionArgs) {
         return json({ ok: true, ...(await printReceipt(db, actor, typeof body.ref === "string" ? body.ref : "", now, locale)) });
       case "discard":
         return json({ ok: true, ...(await discardQueuedSale(db, actor, body as never, now)) });
+      case "code":
+        return json({ ok: true, ...(await revealSaleCode(db, posDataKey(), actor, { ref: typeof body.ref === "string" ? body.ref : "", codeId: typeof body.codeId === "string" ? body.codeId : "" }, now)) });
       default:
         return json({ ok: false, code: "not_found" }, 404);
     }

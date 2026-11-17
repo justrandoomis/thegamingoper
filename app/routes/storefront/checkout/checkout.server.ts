@@ -9,13 +9,11 @@
  * core), and the signed-in customer's default address as the checkout's starting draft (account area).
  */
 import { env } from "cloudflare:workers";
-import { eq, inArray, sql } from "drizzle-orm";
 import { sha256Hex } from "~/lib/ids";
 import type { Locale } from "~/lib/locales";
 import { normalizeIraqPhone, toLatinDigits } from "~/lib/phone";
 import { serializeCookie, type RequestCtx } from "~/server/context.server";
 import type { Db } from "~/server/db/drizzle.server";
-import { categories, coupons, products, variants, type CouponConditions } from "~/server/db/schema";
 import { AppError, toAppError } from "~/server/errors";
 import { enforceRateLimit, limitKey, type RateLimitRule } from "~/server/ratelimit.server";
 import { getSetting } from "~/server/settings.server";
@@ -43,7 +41,7 @@ import { getPaymentInstructions, latestProofFileId } from "~/server/services/pay
 import { shopperFilePath } from "~/server/storage.server";
 import { getShippingFee, getShippingPolicy, listDistricts, listGovernorates, type DistrictOption } from "~/server/services/shipping/fees.server";
 import { getWalletBalance } from "~/server/services/wallet.server";
-import { BLOCKING_PROBLEMS, OTHER_DISTRICT } from "./checkout-form";
+import { BLOCKING_PROBLEMS, OTHER_DISTRICT, type CouponShortfall } from "./checkout-form";
 
 export const NO_STORE = { "Cache-Control": "no-store" } as const;
 
@@ -280,16 +278,17 @@ export async function trackOrder(db: Db, form: FormData, ctx: { ip: string | nul
 // ───────────────────────────────────────────────────────────────── a coupon's minimum (client round 1, QA)
 
 /** How far a cart is from a coupon's minimum: its code, the minimum and what is still missing (whole dinars). */
-export type CouponShortfall = { code: string; minimumIqd: number; moreIqd: number };
+export type { CouponShortfall };
 
 /**
  * How much more a cart needs for a coupon's minimum (client round 1, QA: a code below its minimum said only «مجموع سلتك
- * أقل من الحد الأدنى لهذا الرمز.», not how much more). READS ONLY and decides nothing: the commerce core's own verdict
- * comes first (evaluateCoupon on the lines that can be bought, as the cart prices them) and only its `min_subtotal`
- * refusal is explained; what reaches the minimum is counted as the core counts it — the cart's subtotal of what can be
- * bought, or, for a DEMO coupon, only the demo goods its conditions cover (a demo coupon's minimum is reached with demo
- * goods alone; the same filters as coupons.server's eligible lines). Null for a code that is unknown, off, refused for
- * another reason or already reached. `cart` saves a read when the caller has the view already (same request).
+ * أقل من الحد الأدنى لهذا الرمز.», not how much more). READS ONLY and decides nothing: the commerce core's verdict
+ * (evaluateCoupon on the lines that can be bought, as the cart prices them) says it — its `min_subtotal` refusal carries
+ * the minimum and what is still missing, counted by the core's own rule (a DEMO coupon: its demo goods alone; C-fix-core,
+ * 2026-11-13 — the page no longer reads the coupon a second time nor counts with a copy of that rule). Null for a code
+ * that is unknown, off, refused for another reason or already reached. `cart` saves a read when the caller has the view
+ * already (same request). The pages need it only for the fallback read (`intent=coupon-minimum`): a stored code's
+ * figures are in the cart view's `couponIssue`, a typed code's in POST /api/cart's 409 (checkout-form couponMinimumOf).
  */
 export async function couponShortfall(db: Db, request: CartRequest, code: string, now: number, cart?: CartViewData): Promise<CouponShortfall | null> {
   const wanted = normalizeCouponCode(code);
@@ -299,54 +298,7 @@ export async function couponShortfall(db: Db, request: CartRequest, code: string
   const lines = buyable.map((line) => ({ variantId: line.variantId as string, qty: line.qty, unitPriceIqd: line.unitPriceIqd }));
   const verdict = await evaluateCoupon(db, { code: wanted, subtotalIqd: view.subtotalIqd, lines, customerId: request.customerId }, now);
   if (verdict.ok || verdict.reason !== "min_subtotal") return null;
-  const coupon = await db
-    .select({ code: coupons.code, minimum: coupons.minSubtotalIqd, isDemo: coupons.isDemo, conditions: coupons.conditions })
-    .from(coupons)
-    .where(sql`upper(${coupons.code}) = ${wanted}`)
-    .get();
-  if (!coupon || coupon.minimum === null) return null;
-  const counted = coupon.isDemo ? await demoCouponBase(db, coupon.conditions ?? {}, lines) : view.subtotalIqd;
-  const more = coupon.minimum - counted;
-  return more > 0 ? { code: coupon.code.toUpperCase(), minimumIqd: coupon.minimum, moreIqd: more } : null;
-}
-
-const hasAny = (list: readonly string[] | undefined): list is readonly string[] => Array.isArray(list) && list.length > 0;
-
-/** What a DEMO coupon counts toward its minimum: the demo goods among the lines that its product conditions cover. */
-async function demoCouponBase(db: Db, conditions: CouponConditions, lines: readonly { variantId: string; qty: number; unitPriceIqd: number }[]): Promise<number> {
-  const ids = [...new Set(lines.map((line) => line.variantId))];
-  if (ids.length === 0) return 0;
-  const rows = await db
-    .select({ variantId: variants.id, productId: products.id, platformId: products.platformId, categoryId: products.categoryId, kind: products.kind, isDemo: products.isDemo })
-    .from(variants)
-    .innerJoin(products, eq(products.id, variants.productId))
-    .where(inArray(variants.id, ids));
-  const byVariant = new Map(rows.map((row) => [row.variantId, row]));
-  // a coupon for a category also covers its sub-categories
-  let chainOf = (categoryId: string | null): Set<string> => new Set(categoryId ? [categoryId] : []);
-  if (hasAny(conditions.categoryIds)) {
-    const tree = await db.select({ id: categories.id, parentId: categories.parentId }).from(categories);
-    const parent = new Map(tree.map((row) => [row.id, row.parentId]));
-    chainOf = (categoryId) => {
-      const seen = new Set<string>();
-      for (let current = categoryId; current && !seen.has(current); current = parent.get(current) ?? null) seen.add(current);
-      return seen;
-    };
-  }
-  let base = 0;
-  for (const line of lines) {
-    const product = byVariant.get(line.variantId);
-    if (!product?.isDemo) continue;
-    if (hasAny(conditions.productIds) && !conditions.productIds.includes(product.productId)) continue;
-    if (hasAny(conditions.productKinds) && !conditions.productKinds.includes(product.kind)) continue;
-    if (hasAny(conditions.platformIds) && (!product.platformId || !conditions.platformIds.includes(product.platformId))) continue;
-    if (hasAny(conditions.categoryIds)) {
-      const chain = chainOf(product.categoryId);
-      if (!conditions.categoryIds.some((id) => chain.has(id))) continue;
-    }
-    base += line.unitPriceIqd * line.qty;
-  }
-  return base;
+  return { code: wanted, minimumIqd: verdict.minimumIqd, moreIqd: verdict.moreIqd };
 }
 
 /** Reads per address: a person asks once per refusal; codes are not to be guessed through it. */

@@ -12,13 +12,13 @@
  *   - the reference (type-code), the status in words, «طلب تجريبي»; just after sending, «استلمنا طلبك» with the mark
  *     that draws itself and the copy-link key (no SMS provider: said plainly)
  *   - the FINAL OFFER on the wallet band (the reference's red card): «العرض النهائي», the amount counting up once
- *     (<CountUp>: a server-rendered first screen shows it final — no flash), the employee sentence, what the first
- *     estimate was, the validity date as a pill
+ *     (<Price countUp="load">: rendered final on the server, then counted from 70% on arrival — also when opened
+ *     straight from the link), the employee sentence, what the first estimate was, the validity date as a pill
  *   - WHAT THE INSPECTION FOUND, before the shopper answers (the latest `offered` event admin module 13 writes): the grade
  *     with its legend and hint, the result in one line, the checklist with an icon per line (problems first) arriving
  *     one after another (<Reveal stagger>), what was handed over
  *   - the ANSWER while the offer is open and the page was opened with the link or by its account: the payout choice as
- *     raised option cards with their icons (wallet · cash) and «اقبل العرض» (the view's one red primary) / «ارفض العرض»
+ *     the kit's clay option cards with their icons (wallet · cash) and «اقبل العرض» (the view's one red primary) / «ارفض العرض»
  *     (confirmed first) — in the task bar below 1024 (the thumb's place; the tab bar gives way), under the cards from
  *     1024. Then «قبلت العرض» with the drawn check, or the declined / expired / "answer with your link" notes
  *   - without an offer: the estimate (a range, «بانتظار الفحص», its expiry) or "priced after the inspection"
@@ -39,8 +39,6 @@ import { Icon, type IconName } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
 import type { TFunction } from "~/i18n/translate";
-import { CURRENCIES } from "~/lib/money";
-import { CountUp } from "~/motion";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { TaskBar } from "~/routes/storefront/shell/TabBar";
 import type { ShellHandle } from "~/routes/storefront/shell/types";
@@ -60,6 +58,7 @@ import { GradeBadge, gradeKey } from "~/ui/GradeBadge";
 import { Key } from "~/ui/Key";
 import { Note } from "~/ui/Note";
 import { useOnline } from "~/ui/OfflineBanner";
+import { Price } from "~/ui/Price";
 import { iqdText } from "~/ui/PriceTag";
 import { revealProps } from "~/ui/reveal";
 import { SuccessMark } from "~/ui/SuccessMark";
@@ -293,7 +292,6 @@ function Created({ phoneMasked }: { phoneMasked: string }) {
  */
 function Offer({ view, viaLink }: { view: StatusView; viaLink: boolean }) {
   const t = useUsedT();
-  const ui = useT("ui");
   const f = useFormat();
   const answer = useActionData() as ActionAnswer | undefined;
   const navigation = useNavigation();
@@ -305,7 +303,6 @@ function Offer({ view, viaLink }: { view: StatusView; viaLink: boolean }) {
   useEffect(() => {
     if (answered && navigation.state === "idle") heading.current?.focus();
   }, [answered, navigation.state]);
-  const figure = f.number(offer.amountIqd);
   const showDate = offer.expiresAt !== null && (view.status === "offered" || view.status === "expired");
 
   return (
@@ -316,16 +313,9 @@ function Offer({ view, viaLink }: { view: StatusView; viaLink: boolean }) {
             <h2 id="ti-offer" ref={heading} tabIndex={-1} className="wallet__label outline-none">
               {t("track.offer.title")}
             </h2>
-            {/* the price's own classes around a figure that counts up once (Price has no count: see Requests) */}
-            <p className="price price--xl">
-              <span className="price__amount" aria-hidden="true">
-                <span className="price__num">
-                  <CountUp value={offer.amountIqd} format={f.number} />
-                </span>
-                <span className="price__cur">{CURRENCIES.IQD.symbol[f.locale]}</span>
-              </span>
-              <VisuallyHidden>{ui("price.aria", { amount: figure })}</VisuallyHidden>
-            </p>
+            {/* the page's news: the amount counts up once — also when the page is opened straight from the link (the
+                kit's "load": from 70%, never from zero; instant under reduced motion); the server renders it final */}
+            <Price amountIqd={offer.amountIqd} size="xl" tone="onColor" approx="off" countUp="load" />
           </div>
           <span className="clay-disc used-disc used-disc--lg" aria-hidden="true">
             <Icon name="hand-coins" size={28} />
@@ -394,7 +384,8 @@ function answering(view: StatusView, viaLink: boolean): boolean {
 }
 
 /**
- * The answer: how to be paid (raised option cards, each with its icon) and «اقبل العرض» / «ارفض العرض». The keys are
+ * The answer: how to be paid (the kit's clay option cards, each with its icon in a clay disc after the radio; the one
+ * that cannot be chosen goes quiet, its icon too — used.css `.used-payout`) and «اقبل العرض» / «ارفض العرض». The keys are
  * ONE component drawn in two places — under the cards from 1024, in the task bar below it — never both on screen. From
  * 1024 the card heads the request's column, beside the offer band; on phones it follows what the inspection found.
  */
@@ -433,17 +424,17 @@ function OfferAnswer({ view, className }: { view: StatusView; className?: string
     <>
       <Form id={ANSWER_FORM} ref={form} method="post" className={cx("panel grid gap-5 p-5 lg:p-6", className)} onSubmit={onSubmit} onChange={() => setMissing(false)}>
         <input type="hidden" name="intent" value="respond" />
-        <FieldGroup legend={t("track.offer.payout")} required error={payoutError}>
+        <FieldGroup legend={t("track.offer.payout")} required error={payoutError} className="used-payout">
           <OptionCard
-            className="surface"
+            clay
+            icon="wallet"
             name="payout"
             value="store_credit"
             label={t("track.offer.credit")}
             hint={view.canChooseCredit ? t("track.offer.creditHint") : t("track.offer.creditNeedsAccount")}
             disabled={!view.canChooseCredit}
-            end={<PayIcon icon="wallet" />}
           />
-          <OptionCard className="surface" name="payout" value="cash" label={t("track.offer.cash")} hint={t("track.offer.cashHint")} defaultChecked={!view.canChooseCredit} end={<PayIcon icon="money" />} />
+          <OptionCard clay icon="money" name="payout" value="cash" label={t("track.offer.cash")} hint={t("track.offer.cashHint")} defaultChecked={!view.canChooseCredit} />
         </FieldGroup>
         {failed && !failed.fields ? (
           <div className="callout callout--danger" role="alert">
@@ -473,14 +464,6 @@ function OfferAnswer({ view, className }: { view: StatusView; className?: string
   );
 }
 
-function PayIcon({ icon }: { icon: IconName }) {
-  return (
-    <span className="clay-disc used-pay__icon" aria-hidden="true">
-      <Icon name={icon} size={20} />
-    </span>
-  );
-}
-
 /** «اقبل العرض» (the view's one primary, submits the answer's form from wherever it is) and «ارفض العرض». */
 function OfferKeys({ compact, accepting, onDecline }: { compact: boolean; accepting: boolean; onDecline: () => void }) {
   const t = useUsedT();
@@ -488,19 +471,22 @@ function OfferKeys({ compact, accepting, onDecline }: { compact: boolean; accept
   const reasonId = useId();
   // Offline the answer cannot leave the device (it would end on the error page): both keys go flat, with the reason.
   const offline = { disabled: !online, "aria-describedby": online ? undefined : reasonId };
+  // the task bar's two keys side by side: the kit's compact keys (44px, 12px sides) keep both whole on a 320 phone in
+  // Sorani, the check included (polish round 2026-11-13)
+  const fit = compact ? "compact" : undefined;
   const decline = (
-    <Key type="button" onClick={onDecline} className={compact ? "shrink-0" : "w-full"} {...offline}>
+    <Key type="button" onClick={onDecline} fit={fit} className={compact ? "shrink-0" : "w-full"} {...offline}>
       {t(compact ? "track.offer.declineShort" : "track.offer.decline")}
     </Key>
   );
   const accept = (
-    <Key type="submit" form={ANSWER_FORM} name="decision" value="accept" variant="primary" iconEnd="check" loading={accepting} className={compact ? "min-w-0 flex-1" : "w-full"} {...offline}>
+    <Key type="submit" form={ANSWER_FORM} name="decision" value="accept" variant="primary" iconEnd="check" loading={accepting} fit={fit} className={compact ? "min-w-0 flex-1" : "w-full"} {...offline}>
       {t(compact ? "track.offer.acceptShort" : "track.offer.accept")}
     </Key>
   );
   return (
     // the column is the bar's width, never the keys' (at 320 in Sorani the accept key ran 43px off the screen — review
-    // 2026-11-13; `.used-keys` in used.css tightens the keys there)
+    // 2026-11-13)
     <div className="grid grid-cols-[minmax(0,1fr)] gap-2">
       {online ? null : (
         <p id={reasonId} className="flex items-start gap-1.5 type-xs text-ink-2" role="status">
@@ -509,7 +495,7 @@ function OfferKeys({ compact, accepting, onDecline }: { compact: boolean; accept
         </p>
       )}
       {compact ? (
-        <div className="used-keys flex items-center gap-2 min-[22.5rem]:gap-3">
+        <div className="flex items-center gap-2 min-[22.5rem]:gap-3">
           {decline}
           {accept}
         </div>

@@ -44,7 +44,8 @@ export function CompatBadge({ status, device, note, className }: CompatBadgeProp
         <Icon name={look.icon} size={20} filled={status !== "unverified"} />
         <span>{words}</span>
       </span>
-      {note ? <span className="ps-7 type-xs text-ink-2">{note}</span> : null}
+      {/* the rule's note: 16 / 1.75 on phones, 13 from 768 (components.css .compat-badge__note) */}
+      {note ? <span className="compat-badge__note ps-7">{note}</span> : null}
     </span>
   );
 }

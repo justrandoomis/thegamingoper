@@ -1,7 +1,7 @@
 /**
  * /support/article/:slug — one approved public guide (services/support/kb.server getArticle; anything else is a 404 in
- * the shell's own panel). Design v2.1: the support pages' tabs, then the reading column — breadcrumbs (from 768),
- * what the guide is and for
+ * the shell's own panel). Design v2.1: the support pages' tabs, then the reading column — breadcrumbs (on phones too:
+ * the kit's one-line trail, its crumbs never wrapping, the current one kept in view), what the guide is and for
  * which device, the h1, its summary, when it was updated and whether a store technician reviewed it — rendered with
  * <Blocks> (safety callouts included); a guide that is not translated yet is shown in Arabic and says so. Seeded guides
  * say they are demo content.
@@ -73,9 +73,9 @@ export default function Article({ loaderData }: Route.ComponentProps) {
       <div className="sup-article">
         <div className="sup-article__main">
           <article className="sup-article__text">
-            {/* from 768 (on phones the tabs above are the way back; the kit's `phone` trail still wraps its crumbs —
-                asked of the design-system owner) */}
-            <Breadcrumbs items={crumbs} jsonLd={layout?.shell?.publicOrigin ? { origin: layout.shell.publicOrigin } : undefined} />
+            {/* on every width: the way back to the guide's device and the support centre (the kit's phone trail keeps
+                each crumb on one line and scrolls sideways — polish round 2026-11-13) */}
+            <Breadcrumbs phone items={crumbs} jsonLd={layout?.shell?.publicOrigin ? { origin: layout.shell.publicOrigin } : undefined} />
             <header className="grid gap-3">
               <p className="flex flex-wrap items-center gap-x-2 gap-y-1 type-xs text-ink-2">
                 <span className="type-xs-strong text-ink">{t(`kind.${article.kind}`)}</span>

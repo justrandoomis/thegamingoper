@@ -34,6 +34,7 @@ import { Status } from "~/ui/Tag";
 import { toast } from "~/ui/toast-store";
 import { posMeta } from "./meta";
 import { openPos } from "./pos.server";
+import { SaleCodes } from "./codes-ui";
 import { PrintArea, ReceiptPaper } from "./receipt-paper";
 import { enqueue, findInCatalog, QUEUE_EVENT, readCart, readCatalog, readQueue, removeQueued, updateQueued, writeCart, writeCatalog, type CartLine, type QueuedSale, type StoredCart } from "./till-store";
 import { Failure, Money, newKey, Notice, Ref, usePosT, When } from "./ui";
@@ -66,7 +67,7 @@ export const meta: Route.MetaFunction = (args) => posMeta(args, "sell.title");
 
 type Data = Route.ComponentProps["loaderData"];
 type Customer = NonNullable<StoredCart["customer"]>;
-type LastSale = { kind: "online"; ref: string; number: string | null; totalIqd: number; changeIqd: number; replayed: boolean } | { kind: "queued"; key: string; totalIqd: number; changeIqd: number };
+type LastSale = { kind: "online"; ref: string; number: string | null; totalIqd: number; changeIqd: number; replayed: boolean; codes?: { lines: number; delivered: number; pending: number } | null } | { kind: "queued"; key: string; totalIqd: number; changeIqd: number };
 
 const EMPTY_CART: StoredCart = { key: null, lines: [], orderDiscountIqd: 0, customer: null, discountReason: "" };
 
@@ -360,7 +361,7 @@ function Till({ data, shift }: { data: Data; shift: NonNullable<Data["shift"]> }
         return;
       }
       if (outcome.ok) {
-        setLast({ kind: "online", ref: outcome.ref, number: outcome.receiptNumber, totalIqd: outcome.totalIqd, changeIqd: outcome.changeIqd, replayed: outcome.replayed });
+        setLast({ kind: "online", ref: outcome.ref, number: outcome.receiptNumber, totalIqd: outcome.totalIqd, changeIqd: outcome.changeIqd, replayed: outcome.replayed, codes: outcome.codes ?? null });
         toast.success(t(outcome.replayed ? "sell.doneReplayed" : "sell.done", { ref: outcome.ref }));
         resetSale();
         return;
@@ -435,7 +436,7 @@ function Till({ data, shift }: { data: Data; shift: NonNullable<Data["shift"]> }
         online={online}
         shiftId={shift.id}
         access={access}
-        onSynced={(key, outcome) => setLast((now) => (now?.kind === "queued" && now.key === key ? { kind: "online", ref: outcome.ref, number: outcome.receiptNumber, totalIqd: outcome.totalIqd, changeIqd: outcome.changeIqd, replayed: outcome.replayed } : now))}
+        onSynced={(key, outcome) => setLast((now) => (now?.kind === "queued" && now.key === key ? { kind: "online", ref: outcome.ref, number: outcome.receiptNumber, totalIqd: outcome.totalIqd, changeIqd: outcome.changeIqd, replayed: outcome.replayed, codes: outcome.codes ?? null } : now))}
       />
 
       <div className="pos-till pos-noprint">
@@ -557,6 +558,7 @@ function Till({ data, shift }: { data: Data; shift: NonNullable<Data["shift"]> }
             </Key>
           </section>
           <LastSalePanel last={last} onPrint={(ref) => void printReceipt(ref)} canPrint={access.reprint || access.review} printing={printState.busy} printError={printState.error} />
+          {last?.kind === "online" && last.codes ? <SaleCodes key={last.ref} saleRef={last.ref} /> : null}
         </aside>
       </div>
 
@@ -946,6 +948,12 @@ function LastSalePanel({ last, onPrint, canPrint, printing, printError }: { last
         <p className="type-caption text-ink-2">{t("sell.noReceiptRight")}</p>
       )}
       <Failure message={printError} />
+      {last.codes ? (
+        <>
+          <p className="type-strong">{t("codes.inSale", { count: last.codes.delivered })}</p>
+          {last.codes.pending > 0 ? <p className="type-caption text-ink-2">{t("codes.pendingShort", { count: last.codes.pending })}</p> : null}
+        </>
+      ) : null}
     </section>
   );
 }

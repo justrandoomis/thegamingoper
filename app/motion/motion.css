@@ -49,6 +49,7 @@
   --motion-travel-menu: 8px;
   --motion-travel-rise: 48px;
   --motion-travel-fade: 8px;
+  --motion-travel-fadeX: 12px;
   --motion-spring-press: cubic-bezier(0.34, 1.56, 0.64, 1);
   --motion-spring-press-duration: 180ms;
   --motion-spring-squish: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -280,6 +281,51 @@ html[data-nav="fade"]::view-transition-new(root) {
 @keyframes tt-settle-up {
   from {
     transform: translateY(var(--motion-travel-fade));
+  }
+}
+/* …and at the full tier a short sideways slide that follows the reading direction (DESIGN.md §7.4 "Pages"): forward,
+ * the new page comes 12px from the inline END and the old one drifts 6px toward the start; Back mirrors it. `translate`,
+ * not `transform`, so it composes with the settle above; --motion-dir turns it round in RTL. */
+html[data-motion="full"][data-nav="fade"]::view-transition-old(root) {
+  animation:
+    tt-fade-out var(--motion-duration-exit) var(--motion-ease-exit) both,
+    tt-fade-slide-out var(--motion-duration-exit) var(--motion-ease-exit) both;
+}
+html[data-motion="full"][data-nav="fade"]::view-transition-new(root) {
+  animation:
+    tt-fade-in var(--motion-duration-base) var(--motion-ease-settle) 60ms both,
+    tt-settle-up var(--motion-spring-settle-duration) var(--motion-spring-settle) both,
+    tt-fade-slide-in var(--motion-spring-settle-duration) var(--motion-spring-settle) both;
+}
+html[data-motion="full"][data-nav="fade"][data-nav-dir="back"]::view-transition-old(root) {
+  animation:
+    tt-fade-out var(--motion-duration-exit) var(--motion-ease-exit) both,
+    tt-fade-slide-out-back var(--motion-duration-exit) var(--motion-ease-exit) both;
+}
+html[data-motion="full"][data-nav="fade"][data-nav-dir="back"]::view-transition-new(root) {
+  animation:
+    tt-fade-in var(--motion-duration-base) var(--motion-ease-settle) 60ms both,
+    tt-settle-up var(--motion-spring-settle-duration) var(--motion-spring-settle) both,
+    tt-fade-slide-in-back var(--motion-spring-settle-duration) var(--motion-spring-settle) both;
+}
+@keyframes tt-fade-slide-in {
+  from {
+    translate: calc(var(--motion-dir) * var(--motion-travel-fadeX)) 0;
+  }
+}
+@keyframes tt-fade-slide-out {
+  to {
+    translate: calc(var(--motion-dir) * -0.5 * var(--motion-travel-fadeX)) 0;
+  }
+}
+@keyframes tt-fade-slide-in-back {
+  from {
+    translate: calc(var(--motion-dir) * -1 * var(--motion-travel-fadeX)) 0;
+  }
+}
+@keyframes tt-fade-slide-out-back {
+  to {
+    translate: calc(var(--motion-dir) * 0.5 * var(--motion-travel-fadeX)) 0;
   }
 }
 
@@ -623,10 +669,12 @@ html[data-motion="reduced"]::view-transition-group(*) {
 }
 html[data-motion="reduced"][data-nav]::view-transition-old(root) {
   transform: none;
+  translate: none;
   animation: tt-fade-out 120ms linear both !important;
 }
 html[data-motion="reduced"][data-nav]::view-transition-new(root) {
   transform: none;
+  translate: none;
   animation: tt-fade-in 120ms linear both !important;
 }
 @media (prefers-reduced-motion: reduce) {

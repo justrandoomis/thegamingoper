@@ -137,6 +137,8 @@ export const travel = {
   rise: 48,
   /** The default page fade settles in from this far below. */
   fade: 8,
+  /** …and, at the full tier, from this far toward the reading direction's end (Back: its start) — DESIGN.md §7.4. */
+  fadeX: 12,
 } as const;
 
 /**

@@ -55,6 +55,21 @@ export function clearNavIntent(): void {
   intent = null;
 }
 
+let optOutAt = -Infinity;
+/**
+ * The next navigation plays no page transition (a link marked `data-nav="none"`, read by <MotionRoot>: a download, a
+ * link inside a dialog that already animates, anything whose author wants the page to swap at once). Expires like an
+ * intent. The drawn moments' DESIGN.md §7.4 "Pages" opt-out.
+ */
+export function optOutNextNav(): void {
+  if (typeof window === "undefined") return;
+  optOutAt = performance.now();
+  intent = null;
+}
+function optedOut(): boolean {
+  return performance.now() - optOutAt <= INTENT_TTL;
+}
+
 function liveIntent(): NavIntent | null {
   if (!intent) return null;
   return performance.now() - intent.at <= INTENT_TTL ? intent : null;
@@ -80,6 +95,7 @@ export function getCommittedKey(): string | null {
  */
 export function planNavigation(from: NavDescriptor, to: NavDescriptor, type: "PUSH" | "POP" | "REPLACE", tier: MotionTier): NavPlan | null {
   if (typeof window === "undefined") return null;
+  if (optedOut()) return null;
   const index = historyIndex();
   const records = loadMemory();
   const plan = resolveNav({
@@ -119,6 +135,7 @@ export function commitNavigation(plan: NavPlan | null, from: NavDescriptor, to: 
     if (record) records.set(to.key, record);
     saveMemory();
     intent = null;
+    optOutAt = -Infinity;
   }
   return true;
 }

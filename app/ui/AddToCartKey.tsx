@@ -256,6 +256,8 @@ export function AddToCartKey(props: AddToCartKeyProps) {
           aria-describedby={props["aria-describedby"]}
           data-state={added ? "added" : "ready"}
           onClick={press}
+          // its own moment plays on the server-confirmed add (sakuga.added), not a press
+          data-fx="none"
           className={cx("cadd", className)}
         />
       );
@@ -283,6 +285,7 @@ export function AddToCartKey(props: AddToCartKeyProps) {
         icon="bag-plus"
         data-state={added ? "added" : "ready"}
         onClick={press}
+        data-fx="none"
         className={className}
       >
         {label ?? t("add.label")}

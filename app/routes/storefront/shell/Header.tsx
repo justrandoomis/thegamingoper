@@ -44,6 +44,7 @@ import { splitLocale } from "~/lib/locales";
 import { formatMoney } from "~/lib/money";
 import { cx } from "~/ui/cx";
 import { useCartCount } from "~/ui/cart-client";
+import { useBounce } from "~/ui/sakuga/press";
 import { DemoNote } from "~/ui/DemoNote";
 import { Glass } from "~/ui/Glass";
 import { IconKey } from "~/ui/IconKey";
@@ -152,6 +153,9 @@ export function CartButton({ className }: { className?: string }) {
   const t = useShellT();
   const f = useFormat();
   const { count } = useCartCount();
+  // the bead bounces when the count changes (not while a bead flies in: the landing squishes it) — DESIGN.md §7.4
+  const bead = useRef<HTMLElement | null>(null);
+  useBounce(bead, count);
   return (
     <LocaleLink
       to="/cart"
@@ -165,7 +169,7 @@ export function CartButton({ className }: { className?: string }) {
         <Icon name="shopping-bag" size={22} />
       </span>
       {count > 0 ? (
-        <b className="bead" data-cart-badge="" aria-hidden="true">
+        <b ref={bead} className="bead" data-cart-badge="" aria-hidden="true">
           {f.number(count)}
         </b>
       ) : null}

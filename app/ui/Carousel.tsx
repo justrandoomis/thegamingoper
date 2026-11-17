@@ -545,6 +545,7 @@ export function CarouselDots({ api, progress = false, className }: { api: Carous
           key={i}
           type="button"
           className="carousel__dot"
+          data-fx="pop"
           aria-label={t("carousel.goTo", { index: fmt.number(i + 1), count: fmt.number(api.count) })}
           aria-current={i === api.index ? "true" : undefined}
           onClick={() => {

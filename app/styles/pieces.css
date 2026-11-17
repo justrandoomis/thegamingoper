@@ -599,3 +599,108 @@
     display: none !important;
   }
 }
+
+/* ───────────────────────────── drawn presses: the CSS half of "Every control" (DESIGN.md §7.4) ─────────────────────────────
+ * The canvas half is app/ui/sakuga (press.ts delegates, fx.ts draws). These are the springs on the controls themselves:
+ * transform-family properties only (`scale`, `transform`; never a box property, so nothing around them moves — CLS 0),
+ * the full motion tier only (the head tier script writes html[data-motion] before the first paint), never in the admin,
+ * and nothing at all under prefers-reduced-motion. `[data-fx-spring]` is set by sakuga.spring() (removed and set again a
+ * frame later, so a second change replays it).
+ *   key cap        squashes (wider, shorter) as it travels onto its wall; stretches past rest as it springs back
+ *   indicator      the segmented thumb and the tabs' underline stretch along the slide and settle
+ *   radio dot      springs in; stepper number ticks up; cart bead bounces; empty-state art pops in
+ *   product card   tilts toward a fine pointer (≤ 4°) with a glare; keyboard focus lifts it like the hover */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion="full"] .key:not([data-density="admin"] *)[data-pressed] > .key__cap {
+    animation: fx-squash-in var(--t-press) ease-out forwards;
+  }
+  html[data-motion="full"] .key:not([data-density="admin"] *)[data-released] > .key__cap {
+    /* the engine's own release length: data-released is removed when the key's tt-press-out ends, which would cut a
+       longer overshoot off mid-stretch (a visible snap) */
+    animation: fx-squash-out var(--motion-spring-press-duration) ease-out;
+  }
+  html[data-motion="full"] :is(.seg__thumb, .tabs__ind):not([data-density="admin"] *)[data-fx-spring] {
+    animation: fx-stretch var(--spring-settle-t) ease-out;
+  }
+  html[data-motion="full"] .choice__box:not([data-density="admin"] *)[data-fx-spring] {
+    animation: fx-dot var(--spring-squish-t) var(--spring-squish);
+  }
+  html[data-motion="full"] .stepper__value:not([data-density="admin"] *)[data-fx-spring] {
+    animation: fx-tick var(--spring-press-t) ease-out;
+  }
+  html[data-motion="full"] .bead:not([data-density="admin"] *)[data-fx-spring] {
+    animation: fx-bounce var(--spring-squish-t) ease-out;
+  }
+  html[data-motion="full"] .empty__art:not([data-density="admin"] *)[data-fx-spring] {
+    animation: fx-enter var(--spring-inflate-t) var(--spring-inflate);
+  }
+  html[data-motion="full"] .pcard:not([data-density="admin"] *) {
+    transition:
+      translate var(--t-reveal) var(--ease-settle),
+      transform var(--t-micro) ease-out;
+  }
+  html[data-motion="full"] .pcard:not([data-density="admin"] *):has(.pcard__link:focus-visible) {
+    translate: 0 -3px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  html[data-motion="full"] .pcard:not([data-density="admin"] *)[data-fx-tilting] {
+    transform: perspective(900px) rotateX(var(--fx-rx, 0deg)) rotateY(var(--fx-ry, 0deg));
+  }
+  html[data-motion="full"] .pcard:not([data-density="admin"] *)[data-fx-tilting] > .pcard__glare {
+    opacity: 1;
+  }
+}
+@keyframes fx-squash-in {
+  to {
+    scale: 1.025 0.94;
+  }
+}
+@keyframes fx-squash-out {
+  0% {
+    scale: 1.025 0.94;
+  }
+  45% {
+    scale: 0.985 1.035;
+  }
+  100% {
+    scale: 1;
+  }
+}
+@keyframes fx-stretch {
+  35% {
+    scale: 1.14 0.86;
+  }
+  70% {
+    scale: 0.97 1.04;
+  }
+}
+@keyframes fx-dot {
+  from {
+    scale: 0.78;
+  }
+}
+@keyframes fx-tick {
+  40% {
+    scale: 1.16;
+    translate: 0 -3px;
+  }
+}
+@keyframes fx-bounce {
+  30% {
+    scale: 1.3 0.78;
+  }
+  60% {
+    scale: 0.9 1.12;
+  }
+}
+@keyframes fx-enter {
+  from {
+    scale: 0.9;
+  }
+}
+@media print {
+  .pcard__glare {
+    display: none !important;
+  }
+}

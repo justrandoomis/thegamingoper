@@ -114,6 +114,7 @@ export function KeyBank({
               className={cx("key", kind === "thumb" ? "key--thumb" : "key--plat")}
               data-gel={item.gel}
               data-press="soft"
+              data-fx="fan"
               disabled={item.disabled}
               aria-label={item.ariaLabel}
               onPointerDown={chosen || !onIntent ? undefined : () => onIntent(item.value)}

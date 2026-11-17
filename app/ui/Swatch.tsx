@@ -80,6 +80,7 @@ export function Swatches({ label, options, value, defaultValue = null, onChange,
             data-unavailable={option.unavailable ? "" : undefined}
             aria-label={swatchName(option, t)}
             data-press="soft"
+            data-fx="pop"
             {...itemProps(index)}
           >
             {option.thumb ? <span className="render-slot absolute inset-[8%]">{option.thumb}</span> : null}

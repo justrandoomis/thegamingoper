@@ -178,3 +178,90 @@ export function planComplete(b: Box, rtl: boolean): Plan {
   plan.push({ fx: "kira", x: c.x + s * R * 0.8, y: c.y - R * 0.8, o: { r: 8, life: 0.28 }, at: 280 });
   return word(plan, "don", c.x, c.y - R - 26, 80);
 }
+
+/* ───────────────────────── every control (the owner's 2026-11-17 "effects on almost every button") ─────────────────────────
+ * Smaller than the six moments above: a press is not a confirmation. Each one stays OFF the control's label — at its
+ * end corner, round its edge, or above it — because the canvas is drawn over the page. */
+
+/** The drawn part of a press, by kind: `burst` (the primary and on-band keys), `fan` (secondary and quiet keys, chips,
+ *  text-link buttons), `pop` (icon keys, carousel arrows and dots, thumbnails, menu rows, swatches). */
+export type PressKind = "burst" | "fan" | "pop";
+
+export function planPress(kind: PressKind, b: Box, rtl: boolean): Plan {
+  const s = endward(rtl);
+  const top = b.y - b.h / 2;
+  const corner = b.x + s * (b.w / 2 - Math.min(10, b.w / 4));
+  if (kind === "pop") {
+    return [
+      { fx: "ring", x: b.x, y: b.y, o: { rx: b.w / 2 + 5, ry: b.h / 2 + 5, w: 2.5, life: 0.26 } },
+      { fx: "ticks", x: b.x, y: top - 2, o: { dir: UP, n: 3, r: 3, len: 7, fan: 0.55, life: 0.26 }, at: 40 },
+    ];
+  }
+  const fan: Step = { fx: "ticks", x: corner + s * 4, y: top - 2, o: { dir: mirror(-0.95, rtl), n: 3, r: 4, len: 10, fan: 0.42, life: 0.32 } };
+  if (kind === "fan") return [fan];
+  const bottom = b.y + b.h / 2;
+  return [
+    { fx: "burst", x: corner + s * 6, y: top, o: { r: clamp(b.h * 0.42, 14, 22), spikes: 9, life: 0.28 } },
+    { fx: "shards", x: corner + s * 6, y: top, o: { n: 4, speed: 120, size: 3.2, dir: UP + s * 0.6, arc: 1.6, grav: 300, life: 0.42 } },
+    { fx: "puff", x: b.x - b.w / 2 + 8, y: bottom + 2, o: { size: 4.5, n: 3, vx: -16, vy: -5, life: 0.4 }, at: 60 },
+    { fx: "puff", x: b.x + b.w / 2 - 8, y: bottom + 2, o: { size: 4.5, n: 3, vx: 16, vy: -5, life: 0.4 }, at: 60 },
+    { ...fan, x: b.x - s * (b.w / 2 - 12), o: { ...fan.o, dir: mirror(-2.2, rtl) }, at: 40 },
+  ];
+}
+
+/** The wishlist heart turned on: red chips all round, two glints, a thin ring — shapes, never hearts. Off: one puff. */
+export function planWish(b: Box, on: boolean, rtl: boolean): Plan {
+  if (!on) return [{ fx: "puff", x: b.x, y: b.y + b.h / 2, o: { size: 4, n: 2, life: 0.3 } }];
+  const s = endward(rtl);
+  return [
+    { fx: "ring", x: b.x, y: b.y, o: { rx: b.w / 2 + 4, ry: b.h / 2 + 4, w: 3, life: 0.3 } },
+    { fx: "shards", x: b.x, y: b.y, o: { n: 6, speed: 130, size: 3, arc: TAU, grav: 200, life: 0.42 } },
+    { fx: "kira", x: b.x + s * (b.w / 2 + 2), y: b.y - b.h / 2 - 2, o: { r: 6, life: 0.3, col: "accent" }, at: 80 },
+    { fx: "kira", x: b.x - s * (b.w / 2 + 4), y: b.y + 2, o: { r: 4.5, life: 0.26, col: "accent" }, at: 160 },
+  ];
+}
+
+/** A tab or segment indicator landing under `b` after sliding in physical direction `dir` (+1 right, −1 left): speed
+ *  lines behind it as it goes, wedges off its leading edge as it lands. Physical, so RTL needs no mirror. */
+export function planLand(b: Box, dir: 1 | -1): Plan {
+  const lead = b.x + dir * (b.w / 2);
+  return [
+    { fx: "lines", x: b.x - dir * (b.w / 2), y: b.y, o: { n: 3, dir: dir > 0 ? Math.PI : 0, len: 14, spread: 4, life: 0.22 } },
+    { fx: "ticks", x: lead + dir * 2, y: b.y - 2, o: { dir: dir > 0 ? -0.35 : Math.PI + 0.35, n: 3, r: 4, len: 9, fan: 0.5, life: 0.3 }, at: 170 },
+  ];
+}
+
+/** A radio dot springing in: a fan of wedges over it, a late glint at its end. */
+export function planDot(b: Box, rtl: boolean): Plan {
+  const s = endward(rtl);
+  return [
+    { fx: "ticks", x: b.x, y: b.y - 1, o: { dir: UP, n: 5, r: b.w / 2 + 3, len: 6, fan: 0.55, life: 0.3 } },
+    { fx: "kira", x: b.x + s * (b.w / 2 + 4), y: b.y - b.h / 2 - 3, o: { r: 4, life: 0.24 }, at: 120 },
+  ];
+}
+
+/** A key typed into a text or search field: one tiny puff of dust at the caret. */
+export function planDust(p: { x: number; y: number }): Plan {
+  return [{ fx: "puff", x: p.x, y: p.y, o: { size: 2.8, n: 2, vx: 0, vy: -10, life: 0.3 } }];
+}
+
+/** The quantity changed: wedges over the number, a puff at its foot. */
+export function planTick(b: Box, rtl: boolean): Plan {
+  const s = endward(rtl);
+  return [
+    { fx: "ticks", x: b.x, y: b.y - b.h / 2, o: { dir: UP, n: 3, r: 3, len: 7, fan: 0.5, life: 0.28 } },
+    { fx: "puff", x: b.x + s * 4, y: b.y + b.h / 2 - 2, o: { size: 3.6, n: 2, life: 0.32 } },
+  ];
+}
+
+/** An empty state arriving: puffs at the art's feet, wedges over it, a glint at its end. */
+export function planEnter(b: Box, rtl: boolean): Plan {
+  const s = endward(rtl);
+  const bottom = b.y + b.h / 2;
+  return [
+    { fx: "puff", x: b.x - b.w / 2 + 10, y: bottom, o: { size: 6, n: 3, vx: -20, vy: -4, life: 0.44 }, at: 80 },
+    { fx: "puff", x: b.x + b.w / 2 - 10, y: bottom, o: { size: 6, n: 3, vx: 20, vy: -4, life: 0.44 }, at: 80 },
+    { fx: "ticks", x: b.x, y: b.y - b.h / 2 - 4, o: { dir: UP, n: 3, r: 5, len: 11, fan: 0.5, life: 0.32 }, at: 120 },
+    { fx: "kira", x: b.x + s * (b.w / 2 - 6), y: b.y - b.h / 2 + 4, o: { r: 7, life: 0.28 }, at: 260 },
+  ];
+}

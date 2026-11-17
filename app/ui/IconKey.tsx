@@ -77,6 +77,8 @@ export function IconKey<C extends ElementType = "button">({ icon, label, size = 
     "aria-label": label,
     title: (rest as { title?: string }).title ?? label,
     "data-press": "icon",
+    // a tiny pop round it (DESIGN.md §7.4 "Every control"); the wishlist heart and the add button pass their own
+    "data-fx": (rest as { "data-fx"?: string })["data-fx"] ?? "pop",
   } as unknown as KeyProps<C>;
   return <Key {...keyProps} />;
 }

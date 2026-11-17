@@ -1,5 +1,5 @@
 import { getMotionTier } from "~/motion/env";
-import type { Box, FxName, Plan, Step } from "./plans";
+import type { Box, FxName, Plan, PressKind, Step } from "./plans";
 
 /**
  * Drawn moments — sakuga-style reactions at six key moments (docs/DESIGN.md §7.4; the owner's decision 2026-11-17,
@@ -75,10 +75,9 @@ export function canDraw(anchor?: Element | null): boolean {
   if (typeof window === "undefined" || typeof document === "undefined") return false;
   if (typeof window.matchMedia !== "function") return false;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
-  if (getMotionTier() !== "full") return false;
-  if (document.visibilityState === "hidden") return false;
   if (anchor && anchor.closest(OFF)) return false;
-  return true;
+  if (document.visibilityState === "hidden") return false;
+  return getMotionTier() === "full";
 }
 
 let loading: Promise<Loaded | null> | null = null;
@@ -112,18 +111,19 @@ function draw(api: SakugaApi, lettering: boolean, step: Step): void {
     if (lettering && step.word) api.sfx(step.word, step.x, step.y, step.o);
     return;
   }
-  api[step.fx](step.x, step.y, step.o);
+  // a glint "in the accent" (the wishlist's red glints): the core takes a colour, the plan names the token
+  api[step.fx](step.x, step.y, step.o.col === "accent" ? { ...step.o, col: api.P.accent } : step.o);
 }
 
 /**
  * Plays a moment around `anchor`. Measures now (the control's box, its direction and its theme's tokens), then plans and
  * draws once the code is here — or drops it when the code is later than LATE_MS.
  */
-function play(anchor: Element | null | undefined, build: (plans: Plans, box: Box, rtl: boolean) => Plan): void {
+function play(anchor: Element | null | undefined, build: (plans: Plans, box: Box, rtl: boolean) => Plan, again = false): void {
   if (!anchor || !canDraw(anchor)) return;
   const now = performance.now();
   const before = lastAt.get(anchor);
-  if (before !== undefined && now - before < AGAIN_MS) return;
+  if (!again && before !== undefined && now - before < AGAIN_MS) return;
   lastAt.set(anchor, now);
   const box = boxOf(anchor);
   if (!box) return;
@@ -170,5 +170,44 @@ export const sakuga = {
   },
   complete(element: Element | null | undefined): void {
     play(element, (p, b, rtl) => p.planComplete(b, rtl));
+  },
+
+  /* every control (§7.4 "Every control"; ./press.ts delegates the presses, the kit calls the rest) */
+  /** A control activated (pointer or keyboard: its click): `burst`, `fan` or `pop` round it. */
+  press(control: Element | null | undefined, kind: PressKind): void {
+    play(control, (p, b, rtl) => p.planPress(kind, b, rtl));
+  },
+  /** The wishlist heart: chips and glints when it turns on, a puff when it turns off. */
+  wish(heart: Element | null | undefined, on: boolean): void {
+    play(heart, (p, b, rtl) => p.planWish(b, on, rtl));
+  },
+  /** A tab or segment indicator landing under `item`, having slid in physical direction `dir` (+1 right, −1 left). */
+  land(item: Element | null | undefined, dir: 1 | -1): void {
+    play(item, (p, b) => p.planLand(b, dir));
+  },
+  /** A radio's dot: a fan of wedges. */
+  dot(box: Element | null | undefined): void {
+    play(box, (p, b, rtl) => p.planDot(b, rtl));
+  },
+  /** Typing: a speck of dust at `at` (page coordinates) — the field is the anchor for the guards and the palette. */
+  dust(field: Element | null | undefined, at: { x: number; y: number }): void {
+    play(field, (p) => p.planDust(at), true);
+  },
+  /** A quantity changed: wedges over the number, a puff at its foot. */
+  tick(value: Element | null | undefined): void {
+    play(value, (p, b, rtl) => p.planTick(b, rtl));
+  },
+  /** An empty state arriving round its art. */
+  enter(art: Element | null | undefined): void {
+    play(art, (p, b, rtl) => p.planEnter(b, rtl));
+  },
+  /**
+   * The CSS half: restarts the element's `[data-fx-spring]` animation (pieces.css: a radio dot, the stepper's number,
+   * the cart bead, an empty state's art). Removed now, set again next frame, so a second change replays it.
+   */
+  spring(element: Element | null | undefined): void {
+    if (!element || !canDraw(element)) return;
+    element.removeAttribute("data-fx-spring");
+    requestAnimationFrame(() => element.setAttribute("data-fx-spring", ""));
   },
 };

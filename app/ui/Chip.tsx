@@ -81,7 +81,7 @@ export function Chip<C extends ElementType = "button">(props: ChipProps<C>) {
   if (props.input) {
     const { input, name, value, checked, defaultChecked, onChange, disabled, children, count, platform, icon, className, style, "aria-label": ariaLabel } = props;
     return (
-      <label className={cx("key key--chip", className)} style={style} data-press="soft">
+      <label className={cx("key key--chip", className)} style={style} data-press="soft" data-fx="fan">
         <input
           className="key__native"
           type={input}
@@ -115,6 +115,7 @@ export function Chip<C extends ElementType = "button">(props: ChipProps<C>) {
       {...state}
       className={cx("key key--chip", className)}
       data-press="soft"
+      data-fx="fan"
       data-held={removable ? "" : (state["data-held"] as string | undefined)}
       aria-label={removable ? t("chip.remove", { label: textOf(children) }) : (own["aria-label"] as string | undefined)}
       onClick={(event: MouseEvent<HTMLElement>) => {
@@ -182,7 +183,7 @@ export function ChipGroup({ options, value, defaultValue = null, onChange, "aria
       onFocus={rail ? revealFocusedItem : undefined}
     >
       {options.map((option, index) => (
-        <button key={option.value} type="button" className="key key--chip" data-press="soft" disabled={option.disabled} {...itemProps(index)}>
+        <button key={option.value} type="button" className="key key--chip" data-press="soft" data-fx="fan" disabled={option.disabled} {...itemProps(index)}>
           <ChipBody count={option.count} platform={option.platform} icon={option.icon} lead={<ChipMark />}>
             {option.label}
           </ChipBody>

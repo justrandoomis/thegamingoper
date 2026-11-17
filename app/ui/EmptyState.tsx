@@ -1,8 +1,9 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import { Icon, type IconName } from "~/art/Icon";
 import { Logo } from "~/art/Logo";
 import { cx } from "./cx";
+import { sakuga } from "./sakuga/fx";
 import { Render } from "./Stage";
 
 /**
@@ -52,12 +53,24 @@ export type EmptyStateProps = {
 };
 
 export function EmptyState({ title, text, action, recovery, icon, art, shelf, layout = "row", panel = false, wide = false, headingLevel, className }: EmptyStateProps) {
+  // the stacked empty state arrives with a moment: its art pops in (CSS spring) with puffs and a glint round it —
+  // after hydration, once per mount, never under reduced motion or the lite tier (DESIGN.md §7.4 "Every control")
+  const artRef = useRef<HTMLSpanElement | null>(null);
+  // only an empty state that ARRIVES (a client navigation, the last line removed): one server-rendered with the page is
+  // already painted, and popping it after hydration reads as a glitch. The engine marks <html data-motion-ready> once it
+  // has mounted, so during the hydration render it is still absent. Read at render, never rendered: no mismatch.
+  const arrived = useRef(typeof document !== "undefined" && document.documentElement.hasAttribute("data-motion-ready"));
+  useEffect(() => {
+    if (!arrived.current) return;
+    sakuga.spring(artRef.current);
+    sakuga.enter(artRef.current);
+  }, []);
   if (layout === "stack") {
     const Title = `h${headingLevel ?? 2}` as const;
     const well = typeof art === "string";
     const column = (
       <div className={cx("empty", panel && "empty--panel", panel && wide && "empty--wide", !shelf && className)}>
-        <span className={cx("empty__art", well && "empty__art--well")} aria-hidden="true">
+        <span ref={artRef} className={cx("empty__art", well && "empty__art--well")} aria-hidden="true">
           {well ? (
             <span className="render-slot relative size-full p-[12%]">
               <Render name={art} alt="" sizes="132px" />

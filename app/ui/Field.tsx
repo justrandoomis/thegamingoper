@@ -341,7 +341,8 @@ export type RadioProps = ChoiceProps & {
 export function Radio({ label, hint, error, className, id, row = false, end, icon, ...input }: RadioProps) {
   const ids = useFieldIds(id, hint, error);
   return (
-    <label className={cx("choice choice--radio", row && "choice--row", className)} data-invalid={error ? "" : undefined}>
+    // data-fx="dot": the dot springs and fans when it is chosen (./sakuga/press.ts, on its change: pointer, Space, arrows)
+    <label className={cx("choice choice--radio", row && "choice--row", className)} data-invalid={error ? "" : undefined} data-fx="dot">
       <input
         {...input}
         id={ids.id}

@@ -40,6 +40,7 @@ import { LocaleLink, useFormat } from "~/i18n/react";
 import { splitLocale } from "~/lib/locales";
 import { cx } from "~/ui/cx";
 import { useCartCount } from "~/ui/cart-client";
+import { useBounce } from "~/ui/sakuga/press";
 import { Glass } from "~/ui/Glass";
 import { tabOf, type TabId } from "./chrome";
 import { useShellT } from "./i18n";
@@ -60,6 +61,9 @@ export function TabBar({ sheetOpen, onCategories }: TabBarProps) {
   const f = useFormat();
   const location = useLocation();
   const { count } = useCartCount();
+  // the bead bounces when the count changes (not while a bead flies in: the landing squishes it) — DESIGN.md §7.4
+  const bead = useRef<HTMLElement | null>(null);
+  useBounce(bead, count);
   const path = splitLocale(location.pathname).path;
   const section = sheetOpen ? "categories" : tabOf(path);
   /** aria-current: "page" on the link to this very page, "true" when the page is inside the tab's section. */
@@ -107,7 +111,7 @@ export function TabBar({ sheetOpen, onCategories }: TabBarProps) {
         <span className="shell-tab__ico">
           <Icon name="shopping-bag" size={24} filled={section === "cart"} />
           {count > 0 ? (
-            <b className="bead" data-cart-badge="" aria-hidden="true">
+            <b ref={bead} className="bead" data-cart-badge="" aria-hidden="true">
               {f.number(count)}
             </b>
           ) : null}

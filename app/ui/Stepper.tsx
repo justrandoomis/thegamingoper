@@ -3,6 +3,7 @@ import { useEffect, useRef, type PointerEvent } from "react";
 import { Icon } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import { cx } from "./cx";
+import { sakuga } from "./sakuga/fx";
 import { IconKey } from "./IconKey";
 import { useControllable } from "./roving";
 import { useDemoMode } from "./StockNote";
@@ -55,6 +56,21 @@ export function Stepper({ value, defaultValue, onChange, min = 1, max, maxReason
   const repeated = useRef(false);
   useEffect(() => () => clearTimeout(timer.current), []);
 
+  // the number ticks (a CSS spring) with wedges and a puff whenever it changes — a tap, Enter or Space on a key, a
+  // hold's repeats — never on the first render, and never for a value set from outside (the add key resetting to 1
+  // after an add, a server clamping a cart line): only a step the shopper took (DESIGN.md §7.4 "Every control")
+  const number = useRef<HTMLOutputElement | null>(null);
+  const shown = useRef(current);
+  const stepped = useRef(false);
+  useEffect(() => {
+    if (shown.current === current) return;
+    shown.current = current;
+    if (!stepped.current) return;
+    stepped.current = false;
+    sakuga.spring(number.current);
+    sakuga.tick(number.current);
+  }, [current]);
+
   const canDecrease = !disabled && current > min;
   const canIncrease = !disabled && (max === undefined || current < max);
 
@@ -62,6 +78,7 @@ export function Stepper({ value, defaultValue, onChange, min = 1, max, maxReason
     const next = clamp(latest.current + delta);
     if (next === latest.current) return false;
     latest.current = next;
+    stepped.current = true;
     set(next);
     return true;
   };
@@ -99,6 +116,8 @@ export function Stepper({ value, defaultValue, onChange, min = 1, max, maxReason
     onPointerCancel: stop,
     onContextMenu: (event: { preventDefault: () => void }) => event.preventDefault(),
     onClick: click(delta, allowed),
+    // the stepper plays its own tick on the number (above), not a press
+    "data-fx": "none",
   });
 
   // a stock limit is said only from real stock: never in demo mode (v2 §4.10)
@@ -108,7 +127,7 @@ export function Stepper({ value, defaultValue, onChange, min = 1, max, maxReason
     <span className={cx("stepper-wrap", className)}>
       <span className={cx("stepper", size === "sm" && "stepper--sm")} role="group" aria-label={label ?? t("stepper.label")}>
         <IconKey icon={<Icon name="minus" size={20} />} label={t("stepper.decrease")} {...keyProps(-1, canDecrease)} />
-        <output className="stepper__value" aria-live="polite" aria-atomic="true">
+        <output ref={number} className="stepper__value" aria-live="polite" aria-atomic="true">
           {f.number(current)}
         </output>
         <IconKey icon={<Icon name="plus" size={20} />} label={t("stepper.increase")} {...keyProps(1, canIncrease)} />

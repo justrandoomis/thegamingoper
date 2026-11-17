@@ -120,6 +120,7 @@ export function WishlistKey({ productId, name, initial = false, onChange, varian
           held={wished}
           icon={<Icon name="heart" size={20} filled={wished} />}
           onClick={toggle}
+          data-fx="wish"
           className={className}
         >
           {t(wished ? "wishlist.textHeld" : "wishlist.text")}
@@ -131,6 +132,7 @@ export function WishlistKey({ productId, name, initial = false, onChange, varian
           size={size}
           label={t(wished ? "wishlist.remove" : "wishlist.add", { name })}
           onClick={toggle}
+          data-fx="wish"
           variant={onImage ? "onImage" : "outline"}
           className={cx("key--wish", className)}
         />

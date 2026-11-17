@@ -17,6 +17,10 @@ import { createElement, useLayoutEffect, type ComponentPropsWithRef, type Elemen
  *    Use it on page sections below the first screen (shelves, the release band, the trust strip, entry cards); never
  *    on the hero, the LCP image, a form, or anything the shopper is reading when it arrives.
  *
+ *    Kit pieces that reveal by themselves (DESIGN.md §7.4 "Pages", 2026-11-17): <ShelfRail> (its cards, staggered;
+ *    `reveal={false}` to opt out), <Rail reveal>, the tile rows (<PlatformTiles reveal>, <CategoryTiles reveal>). Arrival
+ *    moments that are not scroll reveals live in ./sakuga: an empty state's entrance, the success mark, the bead.
+ *
  * 2. Rows that scroll sideways (rails, tabs, link segments, chip rows): bring one item fully into view by scrolling the
  *    ROW only — never the page — and only when part of it is hidden. Used by ./Rail (keyboard focus), ./Tabs and
  *    ./Segmented (the current one on mount and on change).

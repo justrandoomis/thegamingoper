@@ -221,7 +221,7 @@ function Thumbs({ name, items, index, onIndex, captionOf, className }: { name: s
   return (
     <div ref={row} role="radiogroup" aria-label={t("gallery.label", { name })} className={cx("thumbs", className)}>
       {items.map((entry, i) => (
-        <button key={i} type="button" className="thumb" data-press="soft" aria-label={t("gallery.thumb", { n: f.number(i + 1), caption: captionOf(entry) })} {...itemProps(i)}>
+        <button key={i} type="button" className="thumb" data-press="soft" data-fx="pop" aria-label={t("gallery.thumb", { n: f.number(i + 1), caption: captionOf(entry) })} {...itemProps(i)}>
           <span className="render-slot place-items-center">
             <ProductImage image={entry.image} alt="" sizes="76px" fit="cover" />
           </span>

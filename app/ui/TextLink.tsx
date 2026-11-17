@@ -51,7 +51,7 @@ export function TextLink<C extends ElementType = "a">({ as, arrow, icon, inline 
   const lead = parts.length > 1 && isGlyph(parts[0]) ? parts[0] : null;
   const words = lead ? parts.slice(1) : children;
   return (
-    <Tag {...rest} {...externalProps} className={cx("link", inline && "link--inline", tone === "danger" && "link--danger", className)}>
+    <Tag data-fx={Tag === "button" ? "fan" : undefined} {...rest} {...externalProps} className={cx("link", inline && "link--inline", tone === "danger" && "link--danger", className)}>
       {icon ? <Icon name={icon} size={16} /> : lead}
       <span className="link__text">{words}</span>
       {external ? (

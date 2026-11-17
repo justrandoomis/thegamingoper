@@ -31,6 +31,7 @@ import type { MessageTree } from "~/i18n/translate";
 import { splitLocale } from "~/lib/locales";
 import { MotionRoot } from "~/motion";
 import { useOnline } from "~/ui/OfflineBanner";
+import { DrawnMoments } from "~/ui/sakuga/press";
 import { Toaster } from "~/ui/Toast";
 import { DemoStrip, ShellOffline } from "./Banners";
 import { CategoriesSheet } from "./CategoriesSheet";
@@ -102,6 +103,8 @@ function Frame({ shell, errored, notFound, searchQuery, children }: { shell: She
   return (
     <div className="shell" data-chrome={chrome} data-taskbar={taskBars.drawn ? "" : undefined} data-offline={online ? undefined : ""}>
       <MotionRoot />
+      {/* drawn moments on every control (DESIGN.md §7.4): one set of passive delegated listeners, nothing rendered */}
+      <DrawnMoments />
       <a href="#main" className="shell-skip">
         {t("skip")}
       </a>

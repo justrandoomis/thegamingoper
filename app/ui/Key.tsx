@@ -106,6 +106,15 @@ export function keyPress(look: KeyLook): "clay" | "soft" {
   return look === "primary" || look === "onBand" ? "clay" : "soft";
 }
 
+/**
+ * The drawn press each look gets (DESIGN.md §7.4 "Every control"; ./sakuga/press.ts): the red actions burst, the
+ * quiet ones fan, a destructive key draws nothing (a removal is no celebration). A caller's own `data-fx` wins.
+ */
+export function keyFx(look: KeyLook): "burst" | "fan" | "none" {
+  if (look === "primary" || look === "onBand") return "burst";
+  return look === "danger" ? "none" : "fan";
+}
+
 export function keyIcon(icon: IconName | ReactNode, size: number): ReactNode {
   if (icon === null || icon === undefined || icon === false) return null;
   if (typeof icon === "string") return <Icon name={icon as IconName} size={size} />;
@@ -138,6 +147,7 @@ export function Key<C extends ElementType = "button">(props: KeyProps<C>) {
       {...state}
       className={cx("key", VARIANT_CLASS[variant] ?? "key--secondary", SIZE_CLASS[size], block && "key--block", wrap && "key--wrap", fit === "compact" && "key--compact", className)}
       data-press={(own["data-press"] as string | undefined) ?? keyPress(look)}
+      data-fx={(own["data-fx"] as string | undefined) ?? keyFx(look)}
       data-haptic={look === "primary" ? "tap" : undefined}
       data-loading={loading ? "" : undefined}
       aria-busy={loading || undefined}

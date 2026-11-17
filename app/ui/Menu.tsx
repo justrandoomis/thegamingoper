@@ -448,6 +448,8 @@ function MenuRow({ item, slot, onClose }: { item: Exclude<MenuItem, MenuSeparato
 
   const common = {
     "data-menu-row": "",
+    // a tiny pop as the row is chosen (DESIGN.md §7.4 "Every control")
+    "data-fx": "pop",
     "data-menu-label": item.label,
     tabIndex: -1,
     "aria-disabled": item.disabled || undefined,

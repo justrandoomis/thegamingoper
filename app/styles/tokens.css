@@ -347,6 +347,7 @@
   --fx-line: var(--red-deep);
   --fx-accent: var(--red);
   --fx-ink: var(--ink);
+  --fx-glare: rgb(255 255 255 / 0.32); /* the product card's glare under a fine pointer (§7.4 "Every control") */
 
   /* state: always with words */
   --danger: #b42318; /* field errors and the error summary — never brand red */
@@ -594,6 +595,7 @@
   --fx-line: var(--red);
   --fx-accent: #ff5466;
   --fx-ink: var(--ink);
+  --fx-glare: rgb(255 228 231 / 0.1); /* on charcoal glass the glare is a faint rose, never a white bloom */
 
   --danger: #ff8a80;
   --danger-tint: rgb(255 138 128 / 0.1);

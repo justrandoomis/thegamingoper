@@ -545,7 +545,35 @@ The owner's decision: **effects on key moments.** The Clay & Glass controls and 
 
 **The lettering is off** — an owner-flippable choice. Upstream lands a painted katakana sound effect with each reaction (ドン!, ズザッ, カチッ, ポン): Japanese onomatopoeia reads as foreign in an Arabic, Sorani and English store. The words stay in the vendored core, unused; `LETTERING = true` in `plans.ts` adds one word per moment.
 
-**Reference:** /design-system «لحظات مرسومة» plays all six with the real pieces (the add key there plays the moment without a cart).
+**Reference:** /design-system «لحظات مرسومة» plays all six with the real pieces (the add key there plays the moment without a cart), and «على كل زر وفي كل صفحة» plays every control below.
+
+#### 7.4.1 Every control (the owner, 2026-11-17: "effects on almost every button and pages widely")
+
+**Wherever this and §7.4 above or §6.4 ("no tilt") disagree, this wins.** The six moments stay as they are; now every storefront control also reacts, smaller than a moment (a press is not a confirmation). It is done **in the kit, once**: each control carries one attribute, `data-fx`, and one set of passive, captured, delegated document listeners (`app/ui/sakuga/press.ts`, mounted as `<DrawnMoments/>` by the storefront shell) reads it. No page wires anything. The admin never mounts it, and its density turns every moment off anyway.
+
+| Component | `data-fx` / hook | Press (CSS, on the control) | Drawn (canvas, ≤ 600 ms) |
+|---|---|---|---|
+| `Key` primary, on-band | `burst` (`keyFx(look)`) | the cap squashes (1.025 × .94) as it travels onto its wall, stretches past rest (.985 × 1.035) on the `press` spring | a small burst (r ≤ 22) and chips off the **end** corner, two puffs at its feet, wedges off the start corner |
+| `Key` secondary, ghost; `Chip`, `ChipGroup`; page numbers (`Pagination`); `TextLink as="button"` | `fan` | as above (walled keys) / the engine's soft press | a fan of three wedges off the end corner |
+| `Key` danger | `none` | as above | nothing (a removal is no celebration) |
+| `IconKey` (carousel arrows, pagination arrows, tools); `CarouselDots`; `Gallery` thumbnails; `Menu` rows; `Swatch` | `pop` | the engine's icon/soft press | a thin ring round it and three small wedges over it |
+| `WishlistKey` (both looks) | `wish` | as its key | turning on: red chips all round, a thin ring, two glints in `--fx-accent` (shapes, never hearts); off: one puff |
+| `AddToCartKey`, the card add button | `none` | as its key | its server-confirmed `added` moment only (§7.4) |
+| `Stepper` | keys `none`; `sakuga.tick` + `spring` on the number | the number ticks (1.16, 3px up, `press`) | wedges over the number, a puff at its foot — on every step the shopper takes (tap, Enter/Space, a hold's repeats); never on a value set from outside (the add key's reset to 1, a server clamp) |
+| `Tabs`, `Segmented` (indicator.ts) | `sakuga.land` + `spring` on the indicator | the thumb / underline stretches along the slide (1.14 × .86 → .97 × 1.04 → 1, `settle` time) | speed lines behind it, wedges off its **leading** edge as it lands (170 ms; physical direction, so RTL is right by itself) — on a change only, never the first placement, a font swap or a resize |
+| `Radio`, `OptionCard` | `dot` (on the `<label>`; the listener reacts to `change`) | the dot springs in (.78 → 1, `squish`) | a fan of wedges over the dot, a late glint — pointer, Space and the arrow keys alike |
+| text and search fields (`TextField type="text"/"search"`, the shell search, any `input[type=text|search]`) | none needed (`data-fx="none"` opts one out) | — | one tiny puff (2.8px) at the caret, at most every 90 ms per field; never a password, number, e-mail, tel or read-only field; the caret is measured from the field's start edge (right in RTL) |
+| `ProductCard` | `data-fx-tilt` + `.pcard__glare` | under a **fine** pointer only: tilts ≤ 4° toward it (`transform`, `--t-micro`), a soft glare (`--fx-glare`) follows it (`translate`); keyboard focus lifts the card 3px like the hover; flat again on pointerdown (the zoom morph snapshots it flat) | — |
+| `EmptyState layout="stack"` | `sakuga.enter` + `spring` on the art | the art pops in (.9 → 1, `inflate`) when the empty state ARRIVES (a client navigation, the last line removed); one rendered with the page on a full load is already painted and does not pop | puffs at the art's feet, wedges over it, a glint |
+| the cart bead (`Header`, `TabBar`) | `useBounce(ref, count)` | bounces (1.3 × .78 → .9 × 1.12 → 1, `squish` time) when the count changes — not while a fly-to-cart bead is in the air (its landing squishes it) | — |
+| `ShelfRail` | `reveal` (default on) | its cards fade up one after another as the shelf first scrolls in (the engine's reveal: below the fold only, once) | — |
+
+**Pages.** Every navigation without a grammar of its own (the default `fade`) now also slides 12 px (`travel.fadeX`) from the reading direction's **end** — mirrored by `--motion-dir`, so from the left in Arabic and Sorani — while the old page drifts 6 px toward the start; Back mirrors it. `translate`, composed with the 8 px settle; the full tier only (lite keeps the plain fade, reduced keeps its 120 ms cross-fade with no travel). The card → product morph (§7.2 `zoom` + `SharedElement`) is unchanged. React runs every page transition through `<ViewTransition>` (§7, `docs/MOTION.md`); React Router's own `viewTransition` prop is not used beside it (two transitions would fight). A link can opt out with `data-nav="none"` (`optOutNextNav()` in `nav-state.ts`): the page swaps at once. Success pages keep `<SuccessMark>`'s `complete` moment as their entrance; empty states get theirs above.
+
+**Rules (all as §7.4).** Decoration only; the listener is passive and never calls `preventDefault`, so no navigation, submit or state ever waits. It reacts to `click`, which a pointer, Enter and Space all fire — keyboard activation draws exactly what a tap draws; focus rings are untouched. Off under `prefers-reduced-motion` (the CSS half sits in a `no-preference` query and under `html[data-motion="full"]`; the canvas half checks in `fx.ts`), on the lite and reduced tiers, in a hidden tab, in print (the canvas and the glare are `display: none`), inside `[data-density="admin"]` and `[data-fx="off"]`. Every CSS half moves `scale`, `translate` or `transform` only — no box property, CLS 0. One canvas, one `requestAnimationFrame` loop that stops when nothing is live (the core's clock); the card tilt writes its four custom properties at most once a frame.
+
+**Cost.** Measured with `react-router build` against the commit before (2026-11-17, per-file gzip -9 of the entry, root, layout chain and route with their static imports): a first load of the product page grows by **2.0 kB gzipped** (the listener `press.ts` ≈ 1.3 kB, bundled into the shell's tab-bar chunk; `fx` +0.17; `indicator` +0.15; the kit components' attributes ≈ 0.4). The new plans travel in the lazy plans chunk with the core (plans 3.3 → 5.5 kB, 1.4 → 1.95 kB gz; the core unchanged, 14.4 kB gz). At 4× CPU slowdown one frame of the busiest press costs ≤ 5.2 ms and the delegated listener 0.2 ms.
+
 
 ---
 
@@ -1035,7 +1063,7 @@ The kit carries the look; page owners use the new pieces where their screens nee
 
 **Wherever this subsection and the ones above disagree, this one wins.** `tests/sakuga.test.ts` holds a test for each.
 
-- **Drawn moments** — §7.4.
+- **Drawn moments** — §7.4; **on every control and page** — §7.4.1 (`tests/sakuga-press.test.ts`).
 - **Crumbs keep their words** on every trail (`.crumbs__list > li { white-space: nowrap }`; the trail wraps between crumbs, never inside «PlayStation 5 Pro»).
 - **The compatibility note reads at 16 / 1.75 up to 1023** (`.compat-badge__note`, 13 from 1024); the device hub's tablet override is gone.
 - **More contrast takes the gloss off**: `<Band gloss>`'s specular band, sheen and deepening go with the other showcase lights under `prefers-contrast: more` (the flat crimson stays); the account's local rule is gone.

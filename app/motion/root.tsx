@@ -21,7 +21,7 @@
 import { useEffect } from "react";
 import { getMotionTier, haptic, subscribeMotionTier } from "./env";
 import { preloadExtras } from "./lazy";
-import { clearNavIntent } from "./nav-state";
+import { clearNavIntent, optOutNextNav } from "./nav-state";
 import { notePointer, setMotionLive } from "./pointer";
 import { installReveal } from "./reveal";
 import { claimWithin, rememberArmed } from "./share-registry";
@@ -171,6 +171,8 @@ function install(): () => void {
     // A plain link must not inherit the transition an earlier <MotionLink> asked for.
     const anchor = target.closest("a[href]");
     if (anchor && !anchor.hasAttribute("data-motion-link")) clearNavIntent();
+    // a link marked data-nav="none" swaps the page at once: no view transition for it
+    if (anchor?.matches('[data-nav="none"]')) optOutNextNav();
   };
 
   const onAnimationEnd = (event: AnimationEvent) => {

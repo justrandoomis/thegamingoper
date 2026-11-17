@@ -1,4 +1,5 @@
 import { useLayoutEffect, type RefObject } from "react";
+import { sakuga } from "./sakuga/fx";
 
 /**
  * A sliding indicator — Design v2.1 G6 ("tab and segmented indicators slide"). One absolutely positioned element
@@ -69,7 +70,18 @@ export function useSlidingIndicator(track: RefObject<HTMLElement | null>, key: u
         });
       }
     };
+    // a change of the current item while the indicator is live: it stretches as it slides (CSS, the indicator's
+    // [data-fx-spring]) and lands in wedges off its leading edge (DESIGN.md §7.4 "Every control"). Never on the first
+    // placement, a font swap or a resize — those re-place it below without passing here.
+    const from = element.getAttribute(attribute) === "live" ? parseFloat(element.style.getPropertyValue(x)) : NaN;
     place();
+    const to = parseFloat(element.style.getPropertyValue(x));
+    const moved = Number.isFinite(from) && Number.isFinite(to) && Math.abs(to - from) >= 1;
+    if (moved) {
+      const item = element.querySelector(selector);
+      sakuga.spring(element.querySelector('[aria-hidden="true"]:is(.seg__thumb, .tabs__ind)'));
+      sakuga.land(item, to > from ? 1 : -1);
+    }
     let live = true;
     void document.fonts?.ready.then(() => {
       if (live) place();

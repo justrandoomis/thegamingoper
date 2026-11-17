@@ -34,12 +34,15 @@ export type ShelfRailProps<T extends { id: string }> = {
   minItems?: number;
   /** Shown in place of the rail when the shelf has no items (otherwise an empty shelf renders nothing). */
   emptyText?: ReactNode;
+  /** The cards fade up one after another as the shelf first scrolls in (below the fold only — ~/ui/reveal; DESIGN.md
+   *  §7.4 "Pages"). Default on; `false` where the caller animates the shelf itself. */
+  reveal?: boolean;
   /** 1.0 — ignored. */
   fade?: unknown;
   className?: string;
 };
 
-export function ShelfRail<T extends { id: string }>({ shelf, href, viewAllLabel, renderItem, headingLevel = 2, chips, minItems = 3, emptyText, className }: ShelfRailProps<T>) {
+export function ShelfRail<T extends { id: string }>({ shelf, href, viewAllLabel, renderItem, headingLevel = 2, chips, minItems = 3, emptyText, reveal = true, className }: ShelfRailProps<T>) {
   const id = useId();
   const count = shelf.items.length;
   if (count === 0 && !emptyText) return null;
@@ -52,7 +55,7 @@ export function ShelfRail<T extends { id: string }>({ shelf, href, viewAllLabel,
       {count === 0 ? (
         <p className="panel px-4 py-6 type-body text-ink-2">{emptyText}</p>
       ) : (
-        <Rail aria-labelledby={id}>
+        <Rail aria-labelledby={id} reveal={reveal}>
           {shelf.items.map((item, index) => (
             <Fragment key={item.id}>{draw(item, index)}</Fragment>
           ))}

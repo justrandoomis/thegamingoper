@@ -1232,6 +1232,31 @@ select.field__input {
 .pcard .niche {
   border-radius: var(--r-md);
 }
+/* the glare (DESIGN.md §7.4 "Every control"): a soft spot that follows a fine pointer over the tilting card — moved by
+   `translate` from the --fx-gx/--fx-gy the delegated listener writes (app/ui/sakuga/press.ts), shown only while the card
+   tilts (pieces.css, full tier). Its own LTR so inset-inline-start is the left edge, where the pointer's x starts. */
+.pcard__glare {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  direction: ltr;
+  border-radius: inherit;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--t-micro) var(--ease-water);
+  pointer-events: none;
+}
+.pcard__glare::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 80%;
+  aspect-ratio: 1;
+  border-radius: var(--r-full);
+  background: radial-gradient(closest-side, var(--fx-glare), transparent);
+  translate: calc(var(--fx-gx, 0px) - 50%) calc(var(--fx-gy, 0px) - 50%);
+}
 @media (min-width: 48rem) {
   .pcard {
     padding: 8px;

@@ -182,7 +182,10 @@ export function ProductCard({
       data-state={state}
       data-layout={layout}
       data-product={card.id}
+      // a gentle tilt toward a fine pointer, with a glare (./sakuga/press.ts; pieces.css — full tier, never touch)
+      data-fx-tilt=""
     >
+      <span className="pcard__glare" aria-hidden="true" />
       <MotionLink
         nav="zoom"
         to={href}

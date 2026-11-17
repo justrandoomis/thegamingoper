@@ -47,57 +47,74 @@
   /* ───────────────────────────── the hero carousel ─────────────────────────────
    * A region of banners on the kit's scroll-snap track (~/ui/Carousel): the banner in view, the next one peeking on
    * phones, the bar under it (the dots centred, the pause key and the arrows at the end). THE PHONE BANNER'S SHAPE IS
-   * ONE CUSTOM PROPERTY — --hero-phone-ratio (width / height of the banner, 88% of the column wide): 315 / 220 is about
-   * 220px tall at 390 and 202px at 360, so the platform tiles show on the first phone screen. Flip it here (e.g.
+   * ONE CUSTOM PROPERTY — --hero-phone-ratio (width / height of the full-width banner, its torn edges included): 390 / 270
+   * is 270px tall at 390 (about 220px of colour between the two 18px tears) and 249px at 360, so the platform tiles show on the first phone screen. Flip it here (e.g.
    * 315 / 300 for a taller banner); the copy column's width (./view HERO_COPY_MIN.sm) does not depend on it.
    * From 768 the banner's height is the stylesheet's (340 → 380 → 400) and the slides share it. */
   .home-hero {
-    --hero-phone-ratio: 315 / 220;
+    --hero-phone-ratio: 390 / 270;
     isolation: isolate;
   }
-  /* the ambient light on the floor behind the banner (v2.1 G3: glass needs something to show), in the colour of the
-     banner in view: one layer per banner, crossfading as the banners change (opacity only) */
-  .home-hero__ambient {
+  /* the stage: the banners across the page's full width (owner request 2026-11-17, the torn-paper reference) — not a
+     card. The floor is laid over its top and bottom as a ragged torn edge in the floor's own colour (--ground: light
+     and dark follow, never a white rim), casting a soft shadow onto the banner; under the top tear the floor's colour
+     fades into the banner. No glow spills around the hero any more (the owner asked for it gone). The tears and the
+     fade stay put while the banners slide under them. --tear is the edge's height. */
+  .home-hero__stage {
+    --tear: clamp(18px, 2.6vw, 38px);
+    position: relative;
+    isolation: isolate;
+    margin-inline: calc(50% - 50vw);
+  }
+  .home-hero__tear {
     position: absolute;
-    inset: 0 0 var(--target);
-    z-index: -1;
+    z-index: 2;
+    inset-inline: 0;
+    inline-size: 100%;
+    block-size: var(--tear);
+    color: var(--ground);
+    fill: currentColor;
+    pointer-events: none;
+    /* the floor's edge casts onto the banner: down from the top tear, up from the bottom one */
+    filter: drop-shadow(0 3px 3px rgb(0 0 0 / 0.28)) drop-shadow(0 8px 14px rgb(0 0 0 / 0.18));
+  }
+  /* the floor carries its own ambient light, so a flat --ground box would show a straight seam where it meets it: the
+     tear's outer few pixels fade into the real floor, and the banners fade out under them (the jagged line itself never
+     comes closer than 8% of the box to its outer edge: ./tear) */
+  .home-hero__track {
+    mask-image: linear-gradient(to bottom, transparent calc(var(--tear) * 0.07), #000 calc(var(--tear) * 0.1), #000 calc(100% - var(--tear) * 0.1), transparent calc(100% - var(--tear) * 0.07));
+  }
+  .home-hero__tear[data-edge="top"] {
+    inset-block-start: 0;
+    mask-image: linear-gradient(to bottom, transparent 0, #000 7%);
+  }
+  .home-hero__tear[data-edge="bottom"] {
+    inset-block-end: 0;
+    mask-image: linear-gradient(to top, transparent 0, #000 7%);
+    filter: drop-shadow(0 -3px 3px rgb(0 0 0 / 0.28)) drop-shadow(0 -8px 14px rgb(0 0 0 / 0.18));
+  }
+  /* the smooth fade from the floor's colour into the banner, under the top tear */
+  .home-hero__fade {
+    position: absolute;
+    z-index: 1;
+    inset-inline: 0;
+    inset-block-start: 0;
+    block-size: calc(var(--tear) * 3.2);
+    background: linear-gradient(to bottom, color-mix(in oklab, var(--ground) 70%, transparent) 0%, color-mix(in oklab, var(--ground) 22%, transparent) 45%, transparent 100%);
     pointer-events: none;
   }
-  /* the light fades out inside its own box: its box reaches a third of the banner's height below the banner and the
-     radial ends just under the bar (62% × 58% at 48%, transparent at 72% of that: 12% → 92% of the box). A radial that
-     still had colour at the box's edge drew a hard line under the dots in the dark theme (review 2026-11-13) */
-  .home-hero__light {
-    --glow-size: 62% 58%;
-    --glow-y: 48%;
-    --glow-inset: -16% -5% -34%;
-    opacity: 0;
-    transition: opacity 640ms var(--ease-settle);
+  /* the banners are full-bleed bands: no radius, no rim, no card shadow */
+  .home-hero .home-slide.band {
+    border-radius: 0;
+    box-shadow: none;
   }
-  .home-hero__light[data-on] {
-    opacity: 1;
-  }
-  /* dark theme (client note 3): the banner's colour spills, wide and low, under the icon strip below the hero, so the
-     strip's glass tiles have that colour to show through (on the plain dark floor they read as flat grey cards). The
-     box starts halfway down the banner, reaches 168px under the bar (the strip: 12px under the bar on laptops, 104 or
-     48px tall) and 12% past the sides; the ellipse ends inside it on every side (68% × 30% at 76%, transparent at 72%
-     of that: no hard line, no edge at the strip's ends). Same crossfade as the banner's light. */
-  .home-hero__spill {
-    display: none;
-  }
-  [data-theme="dark"] .home-hero__spill {
-    --glow-inset: 50% -12% -168px;
-    --glow-size: 68% 30%;
-    --glow-y: 76%;
-    --glow-alpha: var(--glow-a-strong);
-    display: block;
-    opacity: 0;
-    transition: opacity 640ms var(--ease-settle);
-  }
-  [data-theme="dark"] .home-hero__spill[data-on] {
-    opacity: 1;
+  /* the words and the product clear the tears; the copy lines up with the page's column */
+  .home-hero .home-slide__body {
+    padding-block: calc(var(--tear) + 4px);
+    padding-inline: max(var(--gutter), calc((100% - var(--page-max)) / 2 + var(--gutter)));
   }
   .home-hero__track {
-    --carousel-radius: var(--r-xl);
+    --carousel-radius: 0px;
   }
   /* the banners keep the kit's `scroll-snap-stop: always`: a fling on a phone stops at the next banner (with `normal`
      a hard one skipped several — polish 2026-11-13); the kit's moves further than one banner fade and jump */
@@ -108,6 +125,9 @@
     .home-hero {
       --carousel-aspect: var(--hero-phone-ratio);
     }
+    .home-hero__stage {
+      --tear: 18px;
+    }
     /* the ratio sets the height from the width, so a wide phone turned on its side (740 × 360) or a desktop window at
        200% zoom (720 wide) drew a 420px "compact" banner with its key under the tab bar (review 2026-11-13): capped at
        60% of the screen's height (the cap is never under 240px), the banner keeping its full width (stretch: a grid
@@ -117,14 +137,9 @@
       max-block-size: max(240px, 60vh);
       max-block-size: max(240px, 60svh);
     }
-    /* the next banner peeks at the end; the track runs edge to edge and keeps the gutter as its snap padding */
+    /* one banner across the whole screen (the torn edges frame it; no next banner peeking) */
     .home-hero__track {
-      --carousel-gap: var(--s-3);
-      --carousel-radius: 0px;
-      grid-auto-columns: 88%;
-      margin-inline: calc(-1 * var(--gutter));
-      padding-inline: var(--gutter);
-      scroll-padding-inline: var(--gutter);
+      grid-auto-columns: 100%;
     }
   }
   /* the bar under the banner: the pause / play key at the start (before the dots: the keyboard meets it first), the
@@ -411,20 +426,12 @@
       scale: 0.95;
     }
   }
-  /* reduced motion (the OS or the store's switch): the moves are instant (the kit's), the light changes at once, the
+  /* reduced motion (the OS or the store's switch): the moves are instant (the kit's), the
      product never settles (the words and the product never drift: Hero.tsx; the hook never plays, so no dot fills) */
   @media (prefers-reduced-motion: reduce) {
-    .home-hero__light,
-    .home-hero__spill {
-      transition: none;
-    }
     .home-hero__slide[data-arrived] .home-slide__shared {
       animation: none;
     }
-  }
-  [data-motion="reduced"] .home-hero__light,
-  [data-motion="reduced"] .home-hero__spill {
-    transition: none;
   }
   [data-motion="reduced"] .home-hero__slide[data-arrived] .home-slide__shared {
     animation: none;
@@ -565,7 +572,7 @@
    * next tile peeks at the end). From 1024 (lead decision 2) the same doors are one row of compact clay pills — the
    * kind icon (20px) beside the name, 48px tall — sharing the row; a language whose names do not fit scrolls it like
    * the phones' row rather than wrap. Dark theme (client note 3): the tiles and pills are glass — a brighter veil and rim
-   * than the page's cards, the banner's colour spilling under them (.home-hero__spill) and a faint red light behind
+   * than the page's cards (no glow from the banner under them since 2026-11-17) and a faint red light behind
    * each icon. */
   .home-strip__list {
     display: grid;

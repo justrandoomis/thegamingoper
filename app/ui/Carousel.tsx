@@ -74,6 +74,9 @@ export type CarouselOptions = {
   loop?: boolean;
   /** Called with the slide in view. */
   onIndexChange?: (index: number) => void;
+  /** How a move further than one slide is drawn: "fade" (default — fade out, jump, fade in) or "slide" (the track
+   *  glides across, the slides side by side, eased; the home hero, owner request 2026-11-17). */
+  far?: "fade" | "slide";
 };
 
 export type CarouselApi = {
@@ -243,7 +246,48 @@ function jumpTo(element: HTMLElement, target: number) {
   element.style.scrollSnapType = snap;
 }
 
-export function useCarousel({ count, autoplay = 0, loop, onIndexChange }: CarouselOptions): CarouselApi {
+/** How long a far glide takes: 560ms for two slides, 90ms more for each further one, 920ms at most (pure). */
+export function glideDuration(slides: number): number {
+  return Math.min(920, 560 + 90 * Math.max(0, Math.abs(slides) - 2));
+}
+
+/**
+ * Glides the track to slide `target` (a far move with `far: "slide"`): the scroll is written once a frame on an
+ * ease-in-out curve, the slides passing side by side. Snapping and the track's smooth scroll-behaviour are suspended
+ * for the glide (snap-stop would halt it at the next slide) and restored when it lands or is cancelled. Returns the
+ * cancel.
+ */
+function glideTo(element: HTMLElement, target: number, slides: number): () => void {
+  const delta = slideOffset(element, target);
+  if (delta === null || delta === 0) return () => undefined;
+  const from = element.scrollLeft;
+  const snap = element.style.scrollSnapType;
+  const behavior = element.style.scrollBehavior;
+  element.style.scrollSnapType = "none";
+  element.style.scrollBehavior = "auto";
+  const duration = glideDuration(slides);
+  const start = performance.now();
+  let frame = 0;
+  let done = false;
+  const restore = () => {
+    if (done) return;
+    done = true;
+    cancelAnimationFrame(frame);
+    element.style.scrollSnapType = snap;
+    element.style.scrollBehavior = behavior;
+  };
+  const step = (now: number) => {
+    const p = Math.min(1, (now - start) / duration);
+    const eased = p < 0.5 ? 4 * p * p * p : 1 - (-2 * p + 2) ** 3 / 2;
+    element.scrollLeft = from + delta * eased;
+    if (p < 1) frame = requestAnimationFrame(step);
+    else restore();
+  };
+  frame = requestAnimationFrame(step);
+  return restore;
+}
+
+export function useCarousel({ count, autoplay = 0, loop, onIndexChange, far = "fade" }: CarouselOptions): CarouselApi {
   const t = useT("ui");
   const fmt = useFormat();
   const trackId = useId();
@@ -347,12 +391,22 @@ export function useCarousel({ count, autoplay = 0, loop, onIndexChange }: Carous
 
   // the fade of a move further than one slide (carouselMove "fade"): a later move takes over from it
   const fading = useRef<Animation | null>(null);
+  // the glide of a far move with `far: "slide"`: a later move, or a finger on the track, cancels it
+  const gliding = useRef<(() => void) | null>(null);
+  const farRef = useRef(far);
+  farRef.current = far;
   const goTo = useCallback((target: number, options?: { instant?: boolean }) => {
     const element = track.current;
     if (!element || slideOffset(element, target) === null) return;
     fading.current?.cancel();
     fading.current = null;
+    gliding.current?.();
+    gliding.current = null;
     const kind = carouselMove(indexRef.current, target, options?.instant ? "reduced" : getMotionTier());
+    if (kind === "fade" && farRef.current === "slide") {
+      gliding.current = glideTo(element, target, target - indexRef.current);
+      return;
+    }
     if (kind === "smooth") {
       element.scrollBy({ left: slideOffset(element, target) ?? 0, behavior: "smooth" });
       return;
@@ -376,7 +430,13 @@ export function useCarousel({ count, autoplay = 0, loop, onIndexChange }: Carous
       () => undefined,
     );
   }, []);
-  useEffect(() => () => fading.current?.cancel(), []);
+  useEffect(
+    () => () => {
+      fading.current?.cancel();
+      gliding.current?.();
+    },
+    [],
+  );
 
   const move = useCallback((delta: number) => goTo(stepIndex(indexRef.current, delta, count, wraps)), [goTo, count, wraps]);
   const stop = useCallback(() => dispatch({ type: "stop" }), []);
@@ -441,6 +501,9 @@ export function useCarousel({ count, autoplay = 0, loop, onIndexChange }: Carous
       // a scroll, so the hold ends on touchend (or pointerup for a tap and a pen), and a scroll of the TRACK in between
       // is a swipe — a vertical page scroll that starts here never moves the track.
       onPointerDown: (event) => {
+        // a finger takes the track from a far glide at once (it would fight the scroll under the finger)
+        gliding.current?.();
+        gliding.current = null;
         if (event.pointerType === "touch" || event.pointerType === "pen") dispatch({ type: "touch", on: true });
       },
       onPointerUp: (event) => {

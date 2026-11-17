@@ -74,8 +74,7 @@ export function ViewAll({ to, children }: { to: string; children?: ReactNode }) 
  * The departments as the client's reference draws them under the hero: glass icon tiles (the shell's `IconTile`, the
  * categories sheet's own tile — one look for the same doors) with the kinds' red line icons, no counts. One scrolling
  * row below 1024 (the fifth tile peeks on phones); from 1024 the same tiles drawn as one row of 48px clay pills, the
- * icon beside the name (home.css), so the platform tiles show on a laptop's first screen. Dark: glass, with the hero's
- * banner colour spilling under it (Hero.tsx `.home-hero__spill`).
+ * icon beside the name (home.css), so the platform tiles show on a laptop's first screen. Dark: glass.
  */
 export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
   const t = useT("home");

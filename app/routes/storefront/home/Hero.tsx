@@ -21,7 +21,8 @@
  * Behaviour (the kit's hook): autoplay every 6.5 s, held while the pointer is over the hero, while focus is inside it,
  * while a finger is on it, while the tab is hidden and while it is off screen; stopped for good by a swipe, an arrow, a
  * dot or a key; ← → (in the reading direction), Home, End; the pause / play key. A fling stops at the next banner (the
- * kit's `scroll-snap-stop: always`); a move further than one banner fades and jumps. Reduced motion: no autoplay,
+ * kit's `scroll-snap-stop: always`); a move further than one banner slides across too, the banners side by side (the
+ * kit's `far: "slide"`; owner request 2026-11-17: never a fade). Reduced motion: no autoplay,
  * instant moves, no parallax. The current dot fills with the time left while the banners move on by themselves (the
  * kit's `api.running` and `<CarouselDots progress>`). Only the
  * banner in view is interactive (`inert` on the others once the page is live: one banner's keys in the tab order, and
@@ -55,6 +56,7 @@ import { SafePrice } from "~/ui/PriceTag";
 import { ProductImage } from "~/ui/ProductCard";
 import { Render } from "~/ui/Stage";
 import { TextLink } from "~/ui/TextLink";
+import { TEAR_BOTTOM, TEAR_TOP, TEAR_VIEWBOX } from "./tear";
 import { bannerAway, HERO_AUTOPLAY_MS, heroTitleSizes, inView, keepLastWord, photoToWarm, pictureFailed, plainFinalYeh, splitHeadline, wordsShown } from "./view";
 
 /** The product area's quick look — fetched only when a shopper reaches for a key. */
@@ -116,7 +118,7 @@ export const HeroCarousel = memo(function HeroCarousel({ slides }: { slides: rea
   const t = useT("home");
   // the kit's hook: what holds autoplay (pointer, focus, a finger, a hidden tab, off screen) and whether the banners move
   // on by themselves right now (`api.running` — the dots' progress follows it: <CarouselDots progress>)
-  const api = useCarousel({ count: slides.length, autoplay: HERO_AUTOPLAY_MS });
+  const api = useCarousel({ count: slides.length, autoplay: HERO_AUTOPLAY_MS, far: "slide" });
   // the page is live: before that, every banner stays usable (no inert)
   const [live, setLive] = useState(false);
   // the banner that arrived by a move (its product settles once): once the banners have moved, the one in view — none on
@@ -296,30 +298,27 @@ export const HeroCarousel = memo(function HeroCarousel({ slides }: { slides: rea
   if (slides.length === 0) return null;
   return (
     <section {...rootProps} aria-label={t("hero.label")} className="carousel home-hero" data-live={live ? "" : undefined}>
-      {/* the ambient light on the floor behind the banner, in the colour of the banner in view (crossfades); in the dark
-          theme a wider, lower light spills under the icon strip below, so its glass tiles have that colour to show
-          (client note 3: on the plain dark floor they read as flat grey cards) */}
-      <div className="home-hero__ambient" aria-hidden="true">
-        {slides.map((slide, index) => (
-          <span key={slide.key} className="glow-layer home-hero__light" data-gel={gelOf(slide)} data-on={index === api.index ? "" : undefined} />
-        ))}
-        {slides.map((slide, index) => (
-          <span key={`spill-${slide.key}`} className="glow-layer home-hero__spill" data-gel={gelOf(slide)} data-on={index === api.index ? "" : undefined} />
-        ))}
-      </div>
-      <div {...trackProps} className="carousel__track home-hero__track">
-        {slides.map((slide, index) => (
-          <div
-            key={slide.key}
-            {...api.slideProps(index)}
-            className="carousel__slide home-hero__slide"
-            inert={live && index !== api.index ? true : undefined}
-            data-current={index === api.index ? "" : undefined}
-            data-arrived={arrived === index ? "" : undefined}
-          >
-            {slide.kind === "product" ? <ProductSlide slide={slide} first={index === 0} onChoose={choose} /> : <ServiceSlide slide={slide} />}
-          </div>
-        ))}
+      {/* the banners run the page's full width, integrated into the floor (owner request 2026-11-17): the floor is laid
+          over their top and bottom as a torn-paper edge (./tear), with a soft fade from the floor's colour under the top
+          tear and a shadow cast onto the banner. No glow spills around the hero (the owner asked for it gone). */}
+      <div className="home-hero__stage">
+        <div {...trackProps} className="carousel__track home-hero__track">
+          {slides.map((slide, index) => (
+            <div
+              key={slide.key}
+              {...api.slideProps(index)}
+              className="carousel__slide home-hero__slide"
+              inert={live && index !== api.index ? true : undefined}
+              data-current={index === api.index ? "" : undefined}
+              data-arrived={arrived === index ? "" : undefined}
+            >
+              {slide.kind === "product" ? <ProductSlide slide={slide} first={index === 0} onChoose={choose} /> : <ServiceSlide slide={slide} />}
+            </div>
+          ))}
+        </div>
+        <span className="home-hero__fade" aria-hidden="true" />
+        <Tear edge="top" />
+        <Tear edge="bottom" />
       </div>
       {slides.length > 1 ? (
         // the pause / play key first (the keyboard meets it before the dots, WCAG 2.2.2; home.css keeps it off the dots
@@ -340,10 +339,13 @@ export const HeroCarousel = memo(function HeroCarousel({ slides }: { slides: rea
   );
 });
 
-/** The colour of a banner's light: its platform, the brand crimson (trade-in), none (used: the brand's, low). */
-function gelOf(slide: HeroSlide): string {
-  if (slide.kind === "product") return slide.platform;
-  return "brand";
+/** A torn-paper edge in the floor's colour, laid over the banners' top or bottom (./tear; home.css colours it). */
+function Tear({ edge }: { edge: "top" | "bottom" }) {
+  return (
+    <svg className="home-hero__tear" data-edge={edge} viewBox={TEAR_VIEWBOX} preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path d={edge === "top" ? TEAR_TOP : TEAR_BOTTOM} />
+    </svg>
+  );
 }
 
 /** The headline's size in each range, as custom properties (./view heroTitleSizes). */

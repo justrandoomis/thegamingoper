@@ -12,6 +12,8 @@ import { messagesFor } from "~/i18n/i18n.server";
 import type { ProductCardData } from "~/lib/dto";
 import { LOCALES, localePath, type Locale } from "~/lib/locales";
 import type { HeroSlide } from "~/routes/storefront/home/Hero";
+import { TEAR_BOTTOM, TEAR_TOP } from "~/routes/storefront/home/tear";
+import { glideDuration } from "~/ui/Carousel";
 import { seedDemo } from "~/server/db/seed/demo";
 import { isAppError } from "~/server/errors";
 import { getCardsByIds, getDeals, getUsedSpotlight } from "~/server/services/catalog/cards.server";
@@ -1063,16 +1065,27 @@ describe("the home page's stylesheet: laptops' first screen, dark glass, the pho
     expect(glass).toMatch(/--card-veil:\s*color-mix\(in oklab, var\(--on-color\) 10%, transparent\)/);
     expect(glass).toMatch(/--card-face:/);
     expect(block("", '[data-theme="dark"] .home-strip .shell-itile__ico::before')).toMatch(/radial-gradient/);
-    // the spill is the dark theme's only (display none elsewhere), crossfades with the banner, and fades out inside its box
-    expect(block("", ".home-hero__spill")).toMatch(/display:\s*none/);
-    const spill = block("", '[data-theme="dark"] .home-hero__spill');
-    expect(spill).toMatch(/display:\s*block/);
-    const [rx, ry] = (/--glow-size:\s*(\d+)% (\d+)%/.exec(spill) ?? []).slice(1).map(Number);
-    const y = Number(/--glow-y:\s*(\d+)%/.exec(spill)?.[1]);
-    expect(rx * 0.72, "the ellipse ends inside its box's sides").toBeLessThanOrEqual(50);
-    expect(y + ry * 0.72, "and above its foot").toBeLessThanOrEqual(100);
-    // the strip paints over the light (the hero is a stacking context of its own)
+    // owner request 2026-11-17: no glow around the hero any more (the light and the spill under the strip are gone)
+    expect(css).not.toMatch(/home-hero__(light|spill|ambient)/);
     expect(block("", ".home-strip")).toMatch(/position:\s*relative/);
+  });
+
+  // owner request 2026-11-17 (the torn-paper reference): a full-width hero, the floor laid over its top and bottom as a
+  // torn edge in the floor's colour, a fade under the top tear, and far moves that slide rather than fade
+  it("the hero is a full-width stage with torn edges in the floor's colour, and its far moves slide", () => {
+    expect(block("", ".home-hero__stage")).toMatch(/margin-inline:\s*calc\(50% - 50vw\)/);
+    expect(block("", ".home-hero__tear")).toMatch(/color:\s*var\(--ground\)/);
+    expect(block("", ".home-hero__tear")).toMatch(/drop-shadow/);
+    expect(block("", ".home-hero__fade")).toMatch(/linear-gradient\(to bottom, color-mix\(in oklab, var\(--ground\)/);
+    expect(block("", ".home-hero .home-slide.band")).toMatch(/border-radius:\s*0/);
+    const hero = readFileSync(new URL("../app/routes/storefront/home/Hero.tsx", import.meta.url), "utf8");
+    expect(hero).toMatch(/<Tear edge="top" \/>[\s\S]*<Tear edge="bottom" \/>/);
+    expect(hero).toMatch(/useCarousel\(\{[^}]*far: "slide"/);
+    expect(TEAR_TOP.startsWith("M0 0H1440")).toBe(true);
+    expect(TEAR_BOTTOM.startsWith("M0 48H1440")).toBe(true);
+    expect(glideDuration(1)).toBe(560);
+    expect(glideDuration(5)).toBe(830);
+    expect(glideDuration(-9)).toBe(920);
   });
 
   // polish 2026-11-13 (the kit's carousel requests, done): the hero's local `scroll-snap-stop: normal` let a hard fling on

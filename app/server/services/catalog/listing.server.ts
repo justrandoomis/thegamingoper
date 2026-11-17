@@ -209,20 +209,55 @@ function researchedPlatform(alias: string): SQL {
  * generation › platform) is verified or partial. The same rule as listCards' deviceModel filter (cards.server.ts):
  * specificity × 10 + weakness, MAX per subject, fits when the remainder is 0 or 1. A missing rule never fits.
  */
-const FITS_OF_C = sql`(SELECT json_group_array(dm.slug)
-  FROM device_models AS dm JOIN platforms AS dp ON dp.id = dm.platform_id AND dp.is_active = 1
-  WHERE dm.status = 'published' AND (
-    dm.id = c.device_model_id
-    OR EXISTS (
-      SELECT 1 FROM compatibility_rules AS r
-      WHERE ((r.subject_type = 'product' AND r.subject_id = c.id)
-          OR (r.subject_type = 'variant' AND r.subject_id IN (SELECT fv.id FROM variants AS fv WHERE fv.product_id = c.id AND fv.is_active = 1)))
-        AND ((r.target_type = 'device_model' AND r.target_id = dm.id)
-          OR (r.target_type = 'generation' AND r.target_id = dm.generation_id)
-          OR (r.target_type = 'platform' AND r.target_id = dm.platform_id))
-      GROUP BY r.subject_type, r.subject_id
-      HAVING MAX(CASE r.target_type WHEN 'device_model' THEN 30 WHEN 'generation' THEN 20 ELSE 10 END
-               + CASE r.status WHEN 'verified' THEN 0 WHEN 'partial' THEN 1 WHEN 'unverified' THEN 2 ELSE 3 END) % 10 <= 1)))`;
+//
+// Read cost (D1 bills rows read; the free plan stops at 5M a day): this runs once per product of every listing.
+// The first version scanned every published model per product and, per model, every rule of the product (an OR
+// across subjects and targets defeats the edge index) — ~30,000 rows for 106 products, which used up the daily
+// quota on 2026-11-17 and took the store down. Now: (1) only the models a rule or `device_model_id` can name are
+// visited, driven from a candidate list computed once per product; (2) the verdict reads the most specific rule with
+// exact seeks on compatibility_rules_edge_uq (one per specificity level) — a rule's specificity × 10 + weakness,
+// MAX per subject, % 10 <= 1 is the same as "the most specific existing rule is verified or partial".
+// Rows keep the old order (published models by rowid, the order device_models_status_idx returns them).
+
+/** The status of a subject's most specific rule for model `dm` (device model › generation › platform), or NULL. */
+const ruleStatusFor = (subjectType: "product" | "variant", subjectId: SQL): SQL => {
+  const st = sql.raw(`'${subjectType}'`);
+  return sql`COALESCE(
+      (SELECT r1.status FROM compatibility_rules AS r1 WHERE r1.subject_type = ${st} AND r1.subject_id = ${subjectId} AND r1.target_type = 'device_model' AND r1.target_id = dm.id),
+      (SELECT r2.status FROM compatibility_rules AS r2 WHERE r2.subject_type = ${st} AND r2.subject_id = ${subjectId} AND r2.target_type = 'generation' AND r2.target_id = dm.generation_id),
+      (SELECT r3.status FROM compatibility_rules AS r3 WHERE r3.subject_type = ${st} AND r3.subject_id = ${subjectId} AND r3.target_type = 'platform' AND r3.target_id = dm.platform_id))`;
+};
+
+/**
+ * Ids of the models the rules of the product (alias `c`) and of its active variants name — a generation or platform
+ * rule names each of its models — plus the model the product is. CROSS JOIN keeps SQLite's join order (variants,
+ * then their rules by the edge index, then the models by their primary key / generation / platform index), so each
+ * lookup is a seek, never a scan of every rule of a subject type. Three UNION terms at most: D1's SQLite refuses
+ * longer compound SELECTs ("too many terms in compound SELECT").
+ */
+const MODEL_NAMED_BY_CR = sql`(cr.target_type = 'device_model' AND cm.id = cr.target_id)
+          OR (cr.target_type = 'generation' AND cm.generation_id = cr.target_id)
+          OR (cr.target_type = 'platform' AND cm.platform_id = cr.target_id)`;
+const CANDIDATE_MODELS_OF_C = sql`SELECT c.device_model_id AS id WHERE c.device_model_id IS NOT NULL
+      UNION SELECT cm.id FROM compatibility_rules AS cr CROSS JOIN device_models AS cm ON ${MODEL_NAMED_BY_CR}
+        WHERE cr.subject_type = 'product' AND cr.subject_id = c.id
+      UNION SELECT cm.id FROM variants AS fv CROSS JOIN compatibility_rules AS cr ON cr.subject_type = 'variant' AND cr.subject_id = fv.id
+          CROSS JOIN device_models AS cm ON ${MODEL_NAMED_BY_CR}
+        WHERE fv.product_id = c.id AND fv.is_active = 1`;
+
+const FITS_OF_C = sql`(SELECT json_group_array(k.slug) FROM (
+  SELECT dm.slug
+  FROM (${CANDIDATE_MODELS_OF_C}) AS cand
+  CROSS JOIN device_models AS dm ON dm.id = cand.id
+  JOIN platforms AS dp ON dp.id = dm.platform_id AND dp.is_active = 1
+  WHERE dm.status = 'published'
+    AND (
+      dm.id = c.device_model_id
+      OR ${ruleStatusFor("product", sql`c.id`)} IN ('verified', 'partial')
+      OR EXISTS (SELECT 1 FROM variants AS vv WHERE vv.product_id = c.id AND vv.is_active = 1
+           AND ${ruleStatusFor("variant", sql`vv.id`)} IN ('verified', 'partial')))
+  ORDER BY dm.rowid
+) AS k)`;
 
 function scopeSql(scope: ListingScope): { ctes: SQL[]; where: SQL } {
   switch (scope.kind) {
@@ -739,8 +774,42 @@ function hubOf(scope: ListingScope, rows: readonly ListingRow[], dict: Dictionar
 
 // ───────────────────────────────────────────────────────────────── public API
 
-/** The universe of a scope and the dictionaries, in one round trip. */
+/**
+ * A short per-isolate memo of loadListingRows. D1 bills rows read (5M a day on the free plan, used up on
+ * 2026-11-17 by crawlers walking the hubs) and one universe reads thousands of rows, so the same scope asked again
+ * within LISTING_MEMO_MS — a crawler's burst, the nav build and the hub in one page view — is answered from memory.
+ * Listings may show stock up to that old; the product page, the cart and checkout always read live. Finished data
+ * only, never a pending promise (see taxonomy.server.ts on why a Worker must not await another request's I/O).
+ * The entry must also be for nearly the same `now` (pre-order flags), so tests with their own clocks read fresh.
+ */
+const LISTING_MEMO_MS = 20_000;
+const LISTING_MEMO_MAX = 64;
+type ListingMemo = { at: number; now: number; value: { rows: ListingRow[]; dict: Dictionaries } };
+let listingMemo = new WeakMap<object, Map<string, ListingMemo>>();
+const memoDbKey = (db: Db): object => (db as { $client?: object }).$client ?? db;
+
+/** Drop the memo (this isolate only) — for code that just changed the catalogue or stock, and for tests. */
+export function invalidateListingRows(db?: Db): void {
+  if (db) listingMemo.delete(memoDbKey(db));
+  else listingMemo = new WeakMap();
+}
+
+/** The universe of a scope and the dictionaries, in one round trip (memoized briefly, see LISTING_MEMO_MS). */
 export async function loadListingRows(db: Db, scope: ListingScope, now: number): Promise<{ rows: ListingRow[]; dict: Dictionaries }> {
+  const dbKey = memoDbKey(db);
+  let byScope = listingMemo.get(dbKey);
+  if (!byScope) listingMemo.set(dbKey, (byScope = new Map()));
+  const key = JSON.stringify(scope);
+  const clock = Date.now();
+  const hit = byScope.get(key);
+  if (hit && clock - hit.at >= 0 && clock - hit.at < LISTING_MEMO_MS && Math.abs(now - hit.now) < LISTING_MEMO_MS) return hit.value;
+  const value = await readListingRows(db, scope, now);
+  if (byScope.size >= LISTING_MEMO_MAX) byScope.delete(byScope.keys().next().value!);
+  byScope.set(key, { at: clock, now, value });
+  return value;
+}
+
+async function readListingRows(db: Db, scope: ListingScope, now: number): Promise<{ rows: ListingRow[]; dict: Dictionaries }> {
   const [universe, categories, platforms, devices] = await runBatch(db, [
     batchSql(db, universeStatement(scope, now)),
     batchSql(db, CATEGORIES_SQL),

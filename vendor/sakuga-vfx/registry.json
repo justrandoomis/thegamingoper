@@ -1,0 +1,237 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "sakuga-vfx",
+  "homepage": "https://sakuga-vfx.vercel.app",
+  "items": [
+    {
+      "name": "button",
+      "type": "registry:file",
+      "title": "Sakuga Button",
+      "description": "A button that reacts like an anime impact frame: it squashes when pressed, inverts for one frame on release, and a burst goes off behind it with clouds and ドン!. A secondary variant is quieter. One file, no dependencies, defines <sakuga-button>.",
+      "author": "Justin Finkelman <https://github.com/finktheartist>",
+      "categories": [
+        "button",
+        "anime",
+        "animation"
+      ],
+      "files": [
+        {
+          "path": "button/button.js",
+          "type": "registry:file",
+          "target": "~/public/sakuga-vfx/button.js"
+        }
+      ],
+      "docs": "Sakuga Button is a plain script that registers a custom element. Load /sakuga-vfx/button.js with a script tag (not a module), then use <sakuga-button>Confirm</sakuga-button> (variant=\"secondary\" for the quiet one). Listen for click; call el.done() when the action worked to land a check on it. More: https://sakuga-vfx.vercel.app"
+    },
+    {
+      "name": "toggle",
+      "type": "registry:file",
+      "title": "Sakuga Toggle",
+      "description": "A switch whose flip is 43 painted frames: the knob smears across, slams into the end, throws up a splash, and the track floods and settles. The frames are inside the file (about 500 KB). One file, no dependencies, defines <sakuga-toggle>.",
+      "author": "Justin Finkelman <https://github.com/finktheartist>",
+      "categories": [
+        "switch",
+        "toggle",
+        "anime",
+        "animation"
+      ],
+      "files": [
+        {
+          "path": "toggle/toggle.js",
+          "type": "registry:file",
+          "target": "~/public/sakuga-vfx/toggle.js"
+        }
+      ],
+      "docs": "Sakuga Toggle is a plain script that registers a custom element. Load /sakuga-vfx/toggle.js with a script tag (not a module), then use <sakuga-toggle label=\"Notifications\"></sakuga-toggle>. Read el.checked and listen for change. Works in forms with a name. More: https://sakuga-vfx.vercel.app"
+    },
+    {
+      "name": "slider",
+      "type": "registry:file",
+      "title": "Sakuga Slider",
+      "description": "A range slider whose thumb stretches and lags on a spring, with cumulus rolling up behind a fast drag and a crescent thrown ahead on release. One file, no dependencies, defines <sakuga-slider>.",
+      "author": "Justin Finkelman <https://github.com/finktheartist>",
+      "categories": [
+        "slider",
+        "input",
+        "anime",
+        "animation"
+      ],
+      "files": [
+        {
+          "path": "slider/slider.js",
+          "type": "registry:file",
+          "target": "~/public/sakuga-vfx/slider.js"
+        }
+      ],
+      "docs": "Sakuga Slider is a plain script that registers a custom element. Load /sakuga-vfx/slider.js with a script tag (not a module), then use <sakuga-slider value=\"30\" label=\"Volume\"></sakuga-slider>, with min, max, step and unit. Read el.value; it fires input and change. Works in forms with a name. More: https://sakuga-vfx.vercel.app"
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:file",
+      "title": "Sakuga Checkbox",
+      "description": "A checkbox that slashes: crescents swing round the box, crystals fly, the tick draws itself, and ズザッ lands in dotted letters. One file, no dependencies, defines <sakuga-checkbox>.",
+      "author": "Justin Finkelman <https://github.com/finktheartist>",
+      "categories": [
+        "checkbox",
+        "input",
+        "anime",
+        "animation"
+      ],
+      "files": [
+        {
+          "path": "checkbox/checkbox.js",
+          "type": "registry:file",
+          "target": "~/public/sakuga-vfx/checkbox.js"
+        }
+      ],
+      "docs": "Sakuga Checkbox is a plain script that registers a custom element. Load /sakuga-vfx/checkbox.js with a script tag (not a module), then use <sakuga-checkbox>Remember me</sakuga-checkbox>. Read el.checked and listen for change. Works in forms with a name. More: https://sakuga-vfx.vercel.app"
+    },
+    {
+      "name": "radio",
+      "type": "registry:file",
+      "title": "Sakuga Radio",
+      "description": "A radio group whose picked dot springs in with a fan of wedges, two puffs and a hollow ポン. One file, no dependencies, defines <sakuga-radio>.",
+      "author": "Justin Finkelman <https://github.com/finktheartist>",
+      "categories": [
+        "radio",
+        "input",
+        "anime",
+        "animation"
+      ],
+      "files": [
+        {
+          "path": "radio/radio.js",
+          "type": "registry:file",
+          "target": "~/public/sakuga-vfx/radio.js"
+        }
+      ],
+      "docs": "Sakuga Radio is a plain script that registers a custom element. Load /sakuga-vfx/radio.js with a script tag (not a module), then use <sakuga-radio label=\"Plan\"><option value=\"a\" selected>Option A</option><option value=\"b\">Option B</option></sakuga-radio>. Read el.value and listen for change. Works in forms with a name. More: https://sakuga-vfx.vercel.app"
+    },
+    {
+      "name": "input",
+      "type": "registry:file",
+      "title": "Sakuga Input",
+      "description": "A text field that kicks up a puff of dust from the caret on every key. One file, no dependencies, defines <sakuga-input>.",
+      "author": "Justin Finkelman <https://github.com/finktheartist>",
+      "categories": [
+        "input",
+        "text",
+        "anime",
+        "animation"
+      ],
+      "files": [
+        {
+          "path": "input/input.js",
+          "type": "registry:file",
+          "target": "~/public/sakuga-vfx/input.js"
+        }
+      ],
+      "docs": "Sakuga Input is a plain script that registers a custom element. Load /sakuga-vfx/input.js with a script tag (not a module), then use <sakuga-input label=\"Name\" placeholder=\"Type something\"></sakuga-input>. Read and set el.value; it fires input and change. Works in forms with a name. More: https://sakuga-vfx.vercel.app"
+    },
+    {
+      "name": "tabs",
+      "type": "registry:file",
+      "title": "Sakuga Tabs",
+      "description": "Tabs where the raised tab slides to the one you pick, stretching, and lands with wedges and a puff. One file, no dependencies, defines <sakuga-tabs>.",
+      "author": "Justin Finkelman <https://github.com/finktheartist>",
+      "categories": [
+        "tabs",
+        "navigation",
+        "anime",
+        "animation"
+      ],
+      "files": [
+        {
+          "path": "tabs/tabs.js",
+          "type": "registry:file",
+          "target": "~/public/sakuga-vfx/tabs.js"
+        }
+      ],
+      "docs": "Sakuga Tabs is a plain script that registers a custom element. Load /sakuga-vfx/tabs.js with a script tag (not a module), then use <sakuga-tabs label=\"Sections\"><option>Home</option><option>Profile</option></sakuga-tabs>. Listen for change (e.detail: index, value, label) and show the panel yourself. More: https://sakuga-vfx.vercel.app"
+    },
+    {
+      "name": "progress",
+      "type": "registry:file",
+      "title": "Sakuga Progress",
+      "description": "A loading bar with a storm cloud riding its leading edge, pebbles lifting off the ground and ゴゴゴゴ; at the end a burst, ドン! and a check. One file, no dependencies, defines <sakuga-progress>.",
+      "author": "Justin Finkelman <https://github.com/finktheartist>",
+      "categories": [
+        "progress",
+        "loading",
+        "anime",
+        "animation"
+      ],
+      "files": [
+        {
+          "path": "progress/progress.js",
+          "type": "registry:file",
+          "target": "~/public/sakuga-vfx/progress.js"
+        }
+      ],
+      "docs": "Sakuga Progress is a plain script that registers a custom element. Load /sakuga-vfx/progress.js with a script tag (not a module), then use <sakuga-progress label=\"Loading\"></sakuga-progress>, then el.set(n) with progress from 0 to 1. Listen for sakuga:done (fires once). el.reset() for the next task. More: https://sakuga-vfx.vercel.app"
+    },
+    {
+      "name": "rating",
+      "type": "registry:file",
+      "title": "Sakuga Rating",
+      "description": "Five stars that pop in one after another, with wedges and a hollow ポン on the last; five gets a burst. One file, no dependencies, defines <sakuga-rating>.",
+      "author": "Justin Finkelman <https://github.com/finktheartist>",
+      "categories": [
+        "rating",
+        "input",
+        "anime",
+        "animation"
+      ],
+      "files": [
+        {
+          "path": "rating/rating.js",
+          "type": "registry:file",
+          "target": "~/public/sakuga-vfx/rating.js"
+        }
+      ],
+      "docs": "Sakuga Rating is a plain script that registers a custom element. Load /sakuga-vfx/rating.js with a script tag (not a module), then use <sakuga-rating label=\"Rating\"></sakuga-rating>. Read el.value (0 to 5) and listen for change. Works in forms with a name. More: https://sakuga-vfx.vercel.app"
+    },
+    {
+      "name": "toast",
+      "type": "registry:file",
+      "title": "Sakuga Toast",
+      "description": "A notification that streaks in as a smear, lands in dust with ズザッ, wobbles and leaves by shrinking. One file, no dependencies, defines <sakuga-toast>.",
+      "author": "Justin Finkelman <https://github.com/finktheartist>",
+      "categories": [
+        "toast",
+        "notification",
+        "anime",
+        "animation"
+      ],
+      "files": [
+        {
+          "path": "toast/toast.js",
+          "type": "registry:file",
+          "target": "~/public/sakuga-vfx/toast.js"
+        }
+      ],
+      "docs": "Sakuga Toast is a plain script that registers a custom element. Load /sakuga-vfx/toast.js with a script tag (not a module), then use Put <sakuga-toast></sakuga-toast> where toasts should appear and call el.show(\"Saved\"). It stays for the duration attribute (2.6 s) or until el.hide(). More: https://sakuga-vfx.vercel.app"
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:file",
+      "title": "Sakuga Tooltip",
+      "description": "A help button whose hint springs out like a speech bubble, with puffs and a hollow カチッ. One file, no dependencies, defines <sakuga-tooltip>.",
+      "author": "Justin Finkelman <https://github.com/finktheartist>",
+      "categories": [
+        "tooltip",
+        "help",
+        "anime",
+        "animation"
+      ],
+      "files": [
+        {
+          "path": "tooltip/tooltip.js",
+          "type": "registry:file",
+          "target": "~/public/sakuga-vfx/tooltip.js"
+        }
+      ],
+      "docs": "Sakuga Tooltip is a plain script that registers a custom element. Load /sakuga-vfx/tooltip.js with a script tag (not a module), then use <sakuga-tooltip text=\"Helpful hint!\"></sakuga-tooltip>. Opens on hover, focus and tap; Escape closes it. More: https://sakuga-vfx.vercel.app"
+    }
+  ]
+}

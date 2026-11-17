@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sakuga Input</title>
+<style>
+  :root { --page: #ffffff; --text: #1d1a4a; --mute: #8580b0; }
+  html { overflow-x: clip; background: var(--page); }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: var(--page); color: var(--text); font: 15px/1.45 -apple-system, "Helvetica Neue", "Segoe UI", sans-serif; overflow-x: clip; }
+  main { width: min(640px, 100vw - 32px); padding: 40px 0 60px; }
+  h1 { margin: 0; font: italic 800 26px/1.1 "Avenir Next", "Nunito", -apple-system, "Segoe UI", sans-serif; }
+  .sub { margin: 4px 0 0; color: var(--mute); }
+  .stage { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 24px; min-height: 260px; padding: 40px 0; }
+  .hint, .said { margin: 0 4px; color: var(--mute); } .said { min-height: 1.45em; margin-top: 8px; font-size: 13px; }
+  .drive { display: flex; align-items: center; gap: 10px; margin: 14px 4px 0; color: var(--mute); font-size: 13px; } .drive input { flex: 1; }
+  code { font-size: 13px; }
+  .embed body { place-items: start center; min-height: 0; } .embed h1, .embed .sub, .embed .hint { display: none; } .embed main { padding: 0; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Input</h1>
+  <p class="sub">A text field that kicks up dust.</p>
+  <div class="stage">
+  <sakuga-input id="el" label="Name" placeholder="Type something"></sakuga-input>
+  </div>
+  <p class="hint">Click it and type.</p>
+  <label class="drive" id="drive" hidden>Progress <input type="range" min="0" max="100" value="0"></label>
+  <p class="said" aria-live="polite"></p>
+</main>
+<script src="input.js"></script>
+<script>
+// This page's own wiring. The component is all in input.js.
+// ?embed=1 hides the heading and the hint.
+const Q = new URLSearchParams(location.search), el = document.getElementById('el'), el2 = document.getElementById('el2');
+if (Q.get('embed') === '1') document.documentElement.classList.add('embed');
+const say = (t) => { document.querySelector('.said').textContent = t; };
+el.addEventListener('change', () => say('change: ' + el.value));
+</script>
+</body>
+</html>

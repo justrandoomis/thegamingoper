@@ -1397,6 +1397,11 @@ img[data-opaque]:not(.render-slot img) {
   .glow-layer {
     display: none;
   }
+  /* <Band gloss>: its specular band, sheen and deepening are the gloss's light layer — gone with the other lights (the
+     flat crimson stays; polish 2026-11-17, the account drew this locally) */
+  .band.band--gloss {
+    background-image: none;
+  }
   .niche,
   .stage,
   .key--thumb > .key__cap,

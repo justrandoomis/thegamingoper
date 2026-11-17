@@ -15,6 +15,7 @@ npm run db:reset            local only: drop everything, migrate, seed reference
 | `0002_search.sql` | hand | the FTS5 table `search_index` |
 | `0003_append_only_no_replace.sql` | hand | `_replace_guard` and the `<table>_no_replace` triggers: append-only tables refuse `INSERT OR REPLACE` (section below) |
 | `0004_accounts_access_ops.sql` | drizzle-kit + hand | admin wave D (2026-11-12): tables `incident_links` (an incident's findings, runs and errors) and `employee_password_links` (one-time password-set links, hashes only); columns `roles.requires_mfa`, `consistency_findings.assigned_to` / `.incident_id`, `is_demo` on `error_reports` and `perf_rollups` (not in its key — a demo row needs a key of its own); then, hand-written, the system accounts `employee_advances` (1300), `gift_card_liability` (2150) and `salaries_payable` (2200) for a database whose chart was seeded before it (section below). No table rebuild, no trigger |
+| `0005_cart_items_cart_idx.sql` | drizzle-kit | 2026-11-17: a plain index `cart_items_cart_idx` on `cart_items (cart_id)`. The two `cart_id` unique indexes of `0000` are PARTIAL (`WHERE used_unit_id IS [NOT] NULL`), so `WHERE cart_id = ?` scanned the whole table (the cart view, the cart-reminder candidates). One `CREATE INDEX`, no rebuild, no trigger |
 | `meta/` | drizzle-kit | its journal and schema snapshots — do not edit |
 
 Tests build their own database from these files (`tests/helpers/db.ts`), so a migration that does

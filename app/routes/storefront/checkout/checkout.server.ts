@@ -12,6 +12,7 @@ import { env } from "cloudflare:workers";
 import { sha256Hex } from "~/lib/ids";
 import type { Locale } from "~/lib/locales";
 import { normalizeIraqPhone, toLatinDigits } from "~/lib/phone";
+import { cartAttribution } from "~/server/attribution.server";
 import { serializeCookie, type RequestCtx } from "~/server/context.server";
 import type { Db } from "~/server/db/drizzle.server";
 import { AppError, toAppError } from "~/server/errors";
@@ -179,7 +180,9 @@ export async function placeCheckout(db: Db, who: CheckoutWho, form: FormData, no
     const input = checkoutInputFromForm(form);
     // Without script the «use my wallet» box posts alone: the wallet's part is the balance (the core checks it again).
     if (who.customer && input.paymentMethod !== "wallet" && !input.walletIqd && ["on", "true", "1"].includes(text(form, "useWallet"))) input.walletIqd = await getWalletBalance(db, who.customer.id);
-    const result = await placeOrder(db, who, input, now);
+    // The campaign the cart came through (admin 16.04): read from KV, never a reason to stop the order.
+    const attribution = who.attribution ?? (await cartAttribution((env as { KV?: KVNamespace }).KV, who.cartToken).catch(() => null));
+    const result = await placeOrder(db, { ...who, attribution }, input, now);
     return { ok: true, ref: result.ref, accessToken: result.accessToken, replayed: result.replayed };
   } catch (error) {
     const appError = toAppError(error);

@@ -17,9 +17,14 @@
  *   · authorization per role.
  */
 import { sql } from "drizzle-orm";
+import { createElement, type ComponentType } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createRoutesStub } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { messagesFor } from "~/i18n/i18n.server";
 import { newId } from "~/lib/ids";
-import type { L10n } from "~/lib/locales";
+import type { L10n, Locale } from "~/lib/locales";
+import LinksPage from "~/routes/admin/marketing/links";
 import type { Actor, EmployeeActor } from "~/server/actor";
 import { cartItems, carts, compatibilityRules, consents, customerSegmentMembers, customerSegments, customers, deviceModels, guestContacts, outbox, platforms, products, reviews, stockLevels, variants } from "~/server/db/schema";
 import { seedDemo } from "~/server/db/seed/demo";
@@ -527,6 +532,36 @@ describe("links and attribution (16.04): the CMS's path rules; only orders that 
     expect(after.orders.attributed).toBe(1);
     expect(after.byCampaign).toEqual([{ campaignId: tracked.campaignId, name: "منشورات", utm: expect.any(String), orders: 1, paidIqd: 55_000, gmvIqd: order.totalIqd }]);
     expect(after.bySource[0]).toMatchObject({ source: "instagram", medium: "social", orders: 1 });
+  });
+
+  test("the links page shows each link's clicks and says truthfully how an order gets its source, in ar, en and ckb (follow-ups 2026-11-17)", async () => {
+    const link = await createLink(t.db, m1, { targetPath: "/platform/zz-mkt", source: "sms", medium: "campaign", idempotencyKey: "mkt-test-link-clicks1" }, NOW, ORIGIN);
+    await t.d1.prepare("UPDATE utm_links SET clicks = 1234 WHERE id = ?").bind(link.linkId).run();
+    const links = await listLinks(t.db, m1, { q: link.code, campaign: null, page: 1 }, ORIGIN);
+    expect(links.rows.map((row) => [row.id, row.clicks])).toEqual([[link.linkId, 1234]]);
+    const attribution = await attributionReport(t.db, m1, { from: "2026-11-01", to: "2026-11-10", demo: false }, NOW);
+    const page = (locale: Locale) => {
+      const Page = LinksPage as unknown as ComponentType<{ loaderData: unknown }>;
+      const Stub = createRoutesStub([{ id: "root", path: "/", children: [{ id: "page", path: "admin/marketing/links", Component: () => createElement(Page, { loaderData: { links, attribution, filters: { q: link.code, campaign: null, page: 1 } } }) }] }]);
+      return renderToStaticMarkup(
+        createElement(Stub, {
+          initialEntries: ["/admin/marketing/links"],
+          hydrationData: { loaderData: { root: { locale, dir: locale === "en" ? "ltr" : "rtl", fx: null, storeMode: "demo", i18n: messagesFor(locale, "common", "ui", "admin-marketing") }, page: null } },
+        }),
+      );
+    };
+    const text = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+    for (const [locale, clicks, boundary] of [
+      ["en", "1,234", "An order carries its campaign when its cart was started on a page opened through a campaign link"],
+      ["ar", "١٬٢٣٤", "يحمل الطلب حملته عندما تكون سلته قد بدأت من صفحة فُتحت عبر رابط حملة"],
+      ["ckb", "١٬٢٣٤", "داواکارییەک کەمپەینەکەی هەڵدەگرێت"],
+    ] as const) {
+      const html = text(page(locale));
+      expect(html, locale).toContain(boundary);
+      expect(html, locale).not.toMatch(/does not record where a visitor came from|لا تسجل مصدر الزائر|هێشتا تۆمار ناکات/);
+      expect(html, locale).not.toMatch(/Not measured|لا تُقاس|ناپێورێت/);
+      expect(html.includes(clicks) || html.includes("1234") || html.includes("1,234"), `${locale} clicks`).toBe(true);
+    }
   });
 });
 

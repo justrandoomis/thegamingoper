@@ -19,7 +19,8 @@ import { Boundary, Code, Failure, Kpis, Money, Notice, Num, Section, useFormKey,
 /**
  * /admin/marketing/links — 16.04: build a tracked link to any storefront page (the CMS's path rules), the links with
  * the orders that carry them, and the attribution of sales to campaigns — counted only from orders that really carry
- * their source. The storefront records no source yet, so the page says so instead of showing a share it cannot know.
+ * their source (the checkout writes the cart's campaign on the order, ~/server/attribution.server), and each link's
+ * clicks. Until an order carries a source the page says so instead of showing a share it cannot know.
  * Search, campaign, page and the attribution's dates in the URL (GET forms, work without JavaScript).
  */
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -80,7 +81,8 @@ export default function LinksPage({ loaderData }: Route.ComponentProps) {
     },
     { key: "campaign", header: t("links.col.campaign"), cell: (row) => (row.campaignId ? <Link to={`/admin/marketing/campaigns/${row.campaignId}`} className="adm-link">{row.campaignName ?? row.campaignId}</Link> : <span className="text-ink-2">—</span>) },
     { key: "orders", header: t("links.col.orders"), numeric: true, cell: (row) => <Num value={row.orders} /> },
-    { key: "clicks", header: t("links.col.clicks"), cell: () => <span className="text-ink-2">{t("links.notMeasured")}</span> },
+    // utm_links.clicks: a person's browser opening a page through the link, counted from the capture's deploy on (links.boundary)
+    { key: "clicks", header: t("links.col.clicks"), numeric: true, cell: (row) => <Num value={row.clicks} /> },
     { key: "created", header: t("links.col.created"), cell: (row) => <span className="whitespace-nowrap"><When at={row.createdAt} style="date" /></span> },
   ];
   const share = attribution.orders.total > 0 ? Math.round((attribution.orders.attributed / attribution.orders.total) * 100) : null;

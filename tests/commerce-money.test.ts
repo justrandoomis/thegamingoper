@@ -661,6 +661,8 @@ describe("scheduled jobs", () => {
       // origin for their links, which this run does not pass (tests/jobs-modules.test.ts runs them with it)
       ["automation.run", "succeeded"],
       ["marketing.campaigns.release", "skipped"],
+      // every five minutes again since 2026-11-17 (its cart list reads each line once); skipped without the origin too
+      ["marketing.cart_reminders.prepare", "skipped"],
       ["outbox.deliver", "skipped"],
     ]);
     expect(run.jobs[0].stats).toMatchObject({ cancelled: expect.any(Number), failed: 0 });
@@ -720,9 +722,7 @@ describe("scheduled jobs", () => {
       ["promotions.gift_cards.expire", "succeeded"],
       ["staff.commissions.sync", "succeeded"],
       ["ops.telemetry.purge", "succeeded"],
-      // polish round (2026-11-13): module 16's cart reminders (nightly; skipped here without the public origin) and
-      // module 19's demand forecasts
-      ["marketing.cart_reminders.prepare", "skipped"],
+      // polish round (2026-11-13): module 19's demand forecasts (module 16's cart reminders run every five minutes)
       ["automation.forecasts.store", "succeeded"],
       ["consistency.daily", "succeeded"],
     ]);
@@ -855,7 +855,6 @@ describe("scheduled jobs", () => {
       ["promotions.gift_cards.expire", "succeeded"],
       ["staff.commissions.sync", "succeeded"],
       ["ops.telemetry.purge", "succeeded"],
-      ["marketing.cart_reminders.prepare", "skipped"],
       ["automation.forecasts.store", "succeeded"],
       ["consistency.daily", "succeeded"],
     ]);

@@ -656,8 +656,8 @@ function ConditionStep({ view }: { view: ViewOf<"condition"> }) {
             <input type="hidden" name="inc" value="1" />
             {view.options.map((key) => (
               // the kit's checkbox row, a card like the other questions' option cards (the plain rows looked like a
-              // different form — review 2026-11-13); `.used-clay` gives it their clay face (used.css)
-              <Checkbox key={key} row className="used-clay" name="included" value={key} label={accessory(key)} defaultChecked={view.answers.included?.includes(key) ?? false} />
+              // different form — review 2026-11-13), in their clay face (the kit's <Checkbox row clay>)
+              <Checkbox key={key} row clay name="included" value={key} label={accessory(key)} defaultChecked={view.answers.included?.includes(key) ?? false} />
             ))}
           </FieldGroup>
         ) : (

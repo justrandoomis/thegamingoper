@@ -385,7 +385,7 @@ function answering(view: StatusView, viaLink: boolean): boolean {
 
 /**
  * The answer: how to be paid (the kit's clay option cards, each with its icon in a clay disc after the radio; the one
- * that cannot be chosen goes quiet, its icon too — used.css `.used-payout`) and «اقبل العرض» / «ارفض العرض». The keys are
+ * that cannot be chosen goes quiet, its icon too — the kit does that itself) and «اقبل العرض» / «ارفض العرض». The keys are
  * ONE component drawn in two places — under the cards from 1024, in the task bar below it — never both on screen. From
  * 1024 the card heads the request's column, beside the offer band; on phones it follows what the inspection found.
  */
@@ -424,7 +424,7 @@ function OfferAnswer({ view, className }: { view: StatusView; className?: string
     <>
       <Form id={ANSWER_FORM} ref={form} method="post" className={cx("panel grid gap-5 p-5 lg:p-6", className)} onSubmit={onSubmit} onChange={() => setMissing(false)}>
         <input type="hidden" name="intent" value="respond" />
-        <FieldGroup legend={t("track.offer.payout")} required error={payoutError} className="used-payout">
+        <FieldGroup legend={t("track.offer.payout")} required error={payoutError}>
           <OptionCard
             clay
             icon="wallet"

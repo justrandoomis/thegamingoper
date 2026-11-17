@@ -381,14 +381,14 @@ html:not([data-motion-ready]) [data-density="admin"] :is(.key--quiet, .key--ghos
   --h: 32px;
   font: 400 13px / 1.25 var(--font-text);
 }
-/* the dense admin is built for a mouse; on touch screens every key keeps a 44px hit area */
-@media (pointer: coarse) {
-  [data-density="admin"] .key::after {
-    content: "";
-    position: absolute;
-    inset-block: min(0px, calc((100% - var(--target)) / 2));
-    inset-inline: min(0px, calc((100% - var(--target)) / 2));
-  }
+/* the dense admin is built for a mouse, but every key keeps a 44px hit area — with a mouse too (admin-ux review
+   2026-11-17: the error page's 38px keys, the bell's rows): an ::after that reaches past the 36px look, never wider
+   than needed (a key already 44 wide or tall gains nothing on that axis) */
+[data-density="admin"] .key::after {
+  content: "";
+  position: absolute;
+  inset-block: min(0px, calc((100% - var(--target)) / 2));
+  inset-inline: min(0px, calc((100% - var(--target)) / 2));
 }
 
 /* fields: 36px, 8px radius, 13px text */

@@ -52,23 +52,37 @@ export function reminderTime(now: number): number {
   return hour < CART_RECOVERY.quietTo ? morning : morning + DAY_MS;
 }
 
+/**
+ * The carts of the reminder window (not an order yet, untouched for idleHours, younger than maxAgeDays, with a line),
+ * newest first, with their lines' count, units and value and their latest reminder. One pass: the window by
+ * carts_updated_at_idx, each cart's lines ONCE by cart_items_cart_idx (migration 0005: the older cart_id indexes are
+ * partial and could not serve `cart_id = ?`), grouped per cart; variants, used units and the customer by key; the latest
+ * reminder by the (cart_id, step) unique index. INDEXED BY and CROSS JOIN pin that order: without statistics SQLite
+ * otherwise walks every cart by its key (for the GROUP BY) or scans cart_items whole. Measured on the dev data (230
+ * carts in the window): 1,698 rows read; the old correlated subqueries read 270,447 before 0005 (cart_items scanned
+ * four times per cart) and 2,442 after it.
+ */
 async function candidateCarts(db: Db, now: number, includeDemo: boolean): Promise<CartDbRow[]> {
   const idle = now - CART_RECOVERY.idleHours * HOUR_MS;
   const oldest = now - CART_RECOVERY.maxAgeDays * DAY_MS;
   return db.all<CartDbRow>(sql`
     SELECT c.id, c.customer_id, c.updated_at, c.locale,
-      (SELECT COUNT(*) FROM cart_items ci WHERE ci.cart_id = c.id) AS lines,
-      (SELECT COALESCE(SUM(ci.qty), 0) FROM cart_items ci WHERE ci.cart_id = c.id) AS units,
-      (SELECT SUM(ci.qty * COALESCE(uu.price_iqd, v.price_iqd)) FROM cart_items ci JOIN variants v ON v.id = ci.variant_id LEFT JOIN used_units uu ON uu.id = ci.used_unit_id WHERE ci.cart_id = c.id) AS value,
-      (SELECT cr.status FROM cart_reminders cr WHERE cr.cart_id = c.id ORDER BY cr.step DESC LIMIT 1) AS reminder_status,
-      (SELECT cr.scheduled_at FROM cart_reminders cr WHERE cr.cart_id = c.id ORDER BY cr.step DESC LIMIT 1) AS reminder_at,
-      (SELECT cr.created_at FROM cart_reminders cr WHERE cr.cart_id = c.id ORDER BY cr.step DESC LIMIT 1) AS reminder_created,
+      COUNT(*) AS lines,
+      SUM(ci.qty) AS units,
+      SUM(ci.qty * COALESCE(uu.price_iqd, v.price_iqd)) AS value,
+      cr.status AS reminder_status, cr.scheduled_at AS reminder_at, cr.created_at AS reminder_created,
       c.converted_order_id,
       cu.is_demo AS customer_demo
-    FROM carts c LEFT JOIN customers cu ON cu.id = c.customer_id
-    WHERE c.converted_order_id IS NULL AND EXISTS (SELECT 1 FROM cart_items ci WHERE ci.cart_id = c.id)
+    FROM carts c INDEXED BY carts_updated_at_idx
+      CROSS JOIN cart_items ci ON ci.cart_id = c.id
+      JOIN variants v ON v.id = ci.variant_id
+      LEFT JOIN used_units uu ON uu.id = ci.used_unit_id
+      LEFT JOIN customers cu ON cu.id = c.customer_id
+      LEFT JOIN cart_reminders cr ON cr.cart_id = c.id AND cr.step = (SELECT MAX(r.step) FROM cart_reminders r WHERE r.cart_id = c.id)
+    WHERE c.converted_order_id IS NULL
       AND c.updated_at <= ${idle} AND c.updated_at >= ${oldest}
       AND (${includeDemo ? 1 : 0} = 1 OR cu.is_demo IS NULL OR cu.is_demo = 0)
+    GROUP BY c.id
     ORDER BY c.updated_at DESC
     LIMIT 2000`);
 }

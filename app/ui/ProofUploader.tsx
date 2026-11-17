@@ -5,6 +5,7 @@ import { useFormat, useT } from "~/i18n/react";
 import { isolate } from "./BidiText";
 import { cx } from "./cx";
 import { Key } from "./Key";
+import { sakuga } from "./sakuga/fx";
 import { Status } from "./Tag";
 import { TextLink } from "./TextLink";
 
@@ -172,6 +173,7 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
   const controller = useRef<AbortController | null>(null);
   const chooser = useRef<HTMLInputElement>(null);
   const camera = useRef<HTMLInputElement>(null);
+  const bar = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const latest = useRef({ onUpload, onUploaded });
   latest.current = { onUpload, onUploaded };
@@ -212,6 +214,8 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
     if (abort.signal.aborted || controller.current !== abort) return; // cancelled, or replaced by a newer file
     controller.current = null;
     if (result.ok) {
+      // progress complete: the drawn moment at the bar's end (./sakuga), measured before the bar gives way to the photo
+      sakuga.complete(bar.current);
       dispatch({ type: "done", previewUrl: result.previewUrl ?? null });
       setSaid(t("proof.uploaded"));
       latest.current.onUploaded?.(result);
@@ -324,7 +328,7 @@ export function ProofUploader({ onUpload, status = null, current = null, onUploa
             <span className="min-w-0 truncate">{t("proof.uploading", { name: isolate(state.file.name) })}</span>
             <bdi className="nums shrink-0 font-semibold">{pct(state.progress)}</bdi>
           </p>
-          <div role="progressbar" aria-label={t("proof.progress")} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} className="proof__bar">
+          <div ref={bar} role="progressbar" aria-label={t("proof.progress")} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} className="proof__bar">
             <div className="proof__fill" style={{ "--progress": `${percent}%` } as CSSProperties} />
           </div>
           {/* a one-word button: padding widens the target to 44px without moving the word */}

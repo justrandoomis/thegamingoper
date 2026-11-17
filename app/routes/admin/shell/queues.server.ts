@@ -110,7 +110,8 @@
  *   used_prices         pricing     pricing.price.approve        used-unit prices waiting for a second person, never the
  *                                                                employee's own request (countUsedDecidable)
  *   wallet_payouts      finance     customers.wallet.adjust      wallet payouts waiting for a second person, never the
- *                                   (+ finance.wallet.read)      employee's own request (walletQueue().payouts)
+ *                                   (+ finance.wallet.read)      employee's own request (countDecidablePayouts, the
+ *                                                                finance module's function for the bell; null hides it)
  *   refund_reviews      security    security.fraud.review        flagged refunds of 90 days nobody reviewed, never one the
  *                                                                reviewer asked for or approved (unreviewedCount, one
  *                                                                statement since the security owner's follow-up)
@@ -132,13 +133,17 @@
  *   rules_to_activate   automation  automation.workflow.activate rules whose dry run waits to be switched on, never by the
  *                                   (+ .workflow.read)           author of their version, whole store only (countActivatable)
  *   automation_notices  automation  a notice's audience          notices of the last 14 days not marked seen (countNotices)
+ *
+ * Added with the follow-ups (2026-11-17):
+ *   knowledge_review    support     support.knowledge.approve    help articles in review and approved ones with a revision
+ *                                                                waiting, never a version the employee saved themselves
+ *                                                                (countArticlesToApprove, the knowledge list's «review»)
  * plus notices about the employee's own account (two-step verification off, few recovery codes left).
  *
  * Not in the bell: a devices offer waiting for the customer's answer (nobody here decides); returns on their way back
  * (they wait for the parcel); inspected returns without a refund yet (their count includes those whose refund waits
  * for approval — the orders queue counts those); warranties ending soon, finance's anomaly report (a whole report per
- * page), unmatched statement lines and low stock (the home's urgent tiles); support articles waiting for approval (no
- * count function yet — asked of the support owner).
+ * page), unmatched statement lines and low stock (the home's urgent tiles).
  *
  * Read-only and quick: the shell's own counts in one batched round trip, and at the same time (never one after the
  * other) each module's own count function, asked only of the employees it concerns — the modules keep their rules, so
@@ -169,11 +174,12 @@ import { APPROVAL_KINDS as PROMOTION_APPROVAL_KINDS } from "~/server/services/ad
 import { staffDecisions } from "~/server/services/admin/staff/approvals.server";
 import { ADVANCE_APPROVAL_KIND } from "~/server/services/admin/staff/types";
 import { supportQueueCounts } from "~/server/services/admin/support/inbox.server";
+import { countArticlesToApprove } from "~/server/services/admin/support/knowledge.server";
 import { QUEUE_LINKS as SUPPORT_QUEUE_LINKS } from "~/server/services/admin/support/types";
 import { deviceQueueCounts, viewWhere as tradeInViewWhere } from "~/server/services/admin/devices/tradeins.server";
 import { countDecidableExpenses } from "~/server/services/admin/finance/expense-views.server";
 import { baghdadDay, dayStart, DAY_MS, MAX_RANGE_DAYS, rangeSearch } from "~/server/services/admin/finance/types";
-import { walletQueue } from "~/server/services/admin/finance/wallets.server";
+import { countDecidablePayouts, walletQueue } from "~/server/services/admin/finance/wallets.server";
 import { countReviewable } from "~/server/services/admin/pos/shifts.server";
 import { countDecidable } from "~/server/services/admin/pricing/prices.server";
 import { purchasingQueueCounts } from "~/server/services/admin/purchasing/alerts.server";
@@ -236,7 +242,8 @@ export type ShellQueueId =
   | "webhooks_gave_up"
   | "reorder_suggestions"
   | "rules_to_activate"
-  | "automation_notices";
+  | "automation_notices"
+  | "knowledge_review";
 /** The module a queue belongs to (its navigation row carries the bead). */
 export type ShellQueueModule =
   | "orders"
@@ -317,6 +324,7 @@ export const QUEUE_HREF: Record<ShellQueueId, string> = {
   reorder_suggestions: AUTOMATION_QUEUE_HREFS.suggestions,
   rules_to_activate: AUTOMATION_QUEUE_HREFS.rulesToActivate,
   automation_notices: AUTOMATION_QUEUE_HREFS.notices,
+  knowledge_review: "/admin/support/knowledge?view=review",
 };
 
 /**
@@ -467,7 +475,10 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
   const wantsEscalated = asks("support.ticket.read", "support");
   const wantsUnassigned = asks("support.ticket.assign", "support") && readsTickets;
   const wantsLate = asks("support.ticket.reply", "support") && readsTickets;
-  const wantsSupport = wantsEscalated || wantsUnassigned || wantsLate;
+  const wantsTickets = wantsEscalated || wantsUnassigned || wantsLate;
+  // help articles to approve: the knowledge list (its «review» view) opens for support.knowledge.approve on its own
+  const wantsKnowledge = asks("support.knowledge.approve", "support");
+  const wantsSupport = wantsTickets || wantsKnowledge;
   const wantsLeave = asks("staff.leave.approve", "staff");
   // a payroll run covers every branch: never a decision for someone limited to one (staffDecisions' rule)
   const wantsPayroll = asks("staff.payroll.approve", "staff") && !employee.branchId;
@@ -574,8 +585,13 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
     wantsPoApprovals || wantsStuckReceipts || wantsMismatches ? moduleCounts("purchasing", () => purchasingQueueCounts(db, actor, now)) : null,
     wantsWallet || wantsExpenses
       ? moduleCounts("finance", async () => {
-          const [wallet, expenses] = await Promise.all([wantsWallet ? walletQueue(db, actor) : null, wantsExpenses ? countDecidableExpenses(db, actor, now) : null]);
-          return { wallet, expenses };
+          const [wallet, payouts, expenses] = await Promise.all([
+            wantsWallet ? walletQueue(db, actor) : null,
+            // the payouts by finance's own function for the bell (null: no right to decide, the queue is hidden)
+            wantsWallet ? countDecidablePayouts(db, actor) : null,
+            wantsExpenses ? countDecidableExpenses(db, actor, now) : null,
+          ]);
+          return { wallet, payouts, expenses };
         })
       : null,
     wantsShifts ? moduleCounts("pos", () => countReviewable(db, actor)) : null,
@@ -610,7 +626,12 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
       : null,
     wantsSettingChanges ? moduleCounts("settings", () => countDecidableSettingChanges(db, actor, now)) : null,
     wantsPromotions ? moduleCounts("promotions", () => countDecidablePromotions(db, actor)) : null,
-    wantsSupport ? moduleCounts("support", () => supportQueueCounts(db, actor, now)) : null,
+    wantsSupport
+      ? moduleCounts("support", async () => {
+          const [tickets, knowledge] = await Promise.all([wantsTickets ? supportQueueCounts(db, actor, now) : null, wantsKnowledge ? countArticlesToApprove(db, actor) : null]);
+          return { tickets, knowledge };
+        })
+      : null,
     // the module's decisions and its advances together: one module, one failure (moduleCounts)
     wantsStaff
       ? moduleCounts("staff", async () => {
@@ -658,15 +679,16 @@ export async function loadWaiting(db: Db, session: EmployeeSession, now: number 
     ["tradein_payouts", "devices", wantsTradeinPayouts, devices?.toPay],
     ["used_inspections", "devices", wantsUsedInspections, devices?.unitsToInspect],
     ["used_listings", "devices", wantsUsedListings, devices?.toList],
-    ["support_escalated", "support", wantsEscalated, support?.escalatedToMe],
-    ["support_unassigned", "support", wantsUnassigned, support?.unassigned],
-    ["support_late", "support", wantsLate, support?.mineLate],
+    ["support_escalated", "support", wantsEscalated, support?.tickets?.escalatedToMe],
+    ["support_unassigned", "support", wantsUnassigned, support?.tickets?.unassigned],
+    ["support_late", "support", wantsLate, support?.tickets?.mineLate],
+    ["knowledge_review", "support", wantsKnowledge, support?.knowledge],
     ["po_approvals", "purchasing", wantsPoApprovals, purchasing?.approvals],
     ["stuck_receipts", "purchasing", wantsStuckReceipts, purchasing?.stuck],
     ["invoice_mismatches", "purchasing", wantsMismatches, purchasing?.mismatch],
     ["topups", "finance", wantsWallet, finance?.wallet?.topups],
     ["adjustments", "finance", wantsWallet, finance?.wallet?.adjustments],
-    ["wallet_payouts", "finance", wantsWallet, finance?.wallet?.payouts],
+    ["wallet_payouts", "finance", wantsWallet && finance?.payouts !== null, finance?.payouts],
     ["expenses", "finance", wantsExpenses, finance?.expenses],
     ["staff_leave", "staff", wantsLeave && staff !== null, decisions.filter((item) => item.kind === "leave").length],
     ["staff_payroll", "staff", wantsPayroll && staff !== null, decisions.filter((item) => item.kind === "payroll_run").length],

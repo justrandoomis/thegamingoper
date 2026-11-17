@@ -8,7 +8,7 @@
  *   npm test -- tests/kit-polish.test.ts
  */
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -98,21 +98,27 @@ describe("1 · names keep their tokens whole (the shared keepTokens)", () => {
   it("the shared module keeps short name tokens and Latin hyphens together, and leaves prose breakable", () => {
     expect(keepTokens("Xbox Rechargeable Battery + USB-C Cable")).toBe("Xbox Rechargeable Battery + USB‑C Cable");
     expect(keepTokens("حزاما معصم Joy-Con 2 (عدد 2)")).toBe("حزاما معصم Joy‑Con 2 (عدد 2)");
-    expect(keepTokens("PS5 Pro")).toBe("PS5 Pro");
+    expect(keepTokens("PS5ی Pro")).toBe("PS5ی\u00a0Pro");
     // a name's short tokens are glued («Xbox One», «Xbox 360»); the sentence's own words still break
     expect(keepTokens("Plays thousands of Xbox One, Xbox 360 games")).toBe("Plays thousands of Xbox One, Xbox 360 games");
     expect(keepTokens("شاشة 7.9 بوصة")).toBe("شاشة 7.9 بوصة");
     expect(keepTokens(keepTokens("Pokémon Legends: Z-A"))).toBe(keepTokens("Pokémon Legends: Z-A")); // idempotent
   });
 
-  it("the shared copy writes its two characters as escapes, and draws exactly as the product page's copy (review 2026-11-17)", async () => {
+  it("the shared module writes its two characters as escapes, and is the only copy: the product page uses it (follow-ups 2026-11-17)", async () => {
     // the builder's copy carried a literal U+00A0 and U+2011 in its source: invisible in review, and an editor or a
     // formatter that normalises spaces turns the rule into a no-op without a visible diff
     expect(read("app/lib/keep-tokens.ts")).not.toMatch(/[ ‑]/);
-    const { keepTokens: productKeepTokens } = await import("~/routes/storefront/product/text");
-    for (const name of ["Xbox Rechargeable Battery + USB-C Cable", "Nintendo Switch 2 Dock", "حزاما معصم Joy-Con 2 (عدد 2)", "GPU: 4K at up to 120 FPS and 8K HDR", "3.5 mm · 401 g", "PS5ی Pro"]) {
-      expect(keepTokens(name)).toBe(productKeepTokens(name));
-    }
+    // the product page's own copies (text.ts keepTokens, handoff.ts) are gone: one rule, one focus handoff
+    const productText = await import("~/routes/storefront/product/text");
+    expect("keepTokens" in productText).toBe(false);
+    expect(existsSync(path.join(ROOT, "app/routes/storefront/product/handoff.ts"))).toBe(false);
+    for (const file of ["product.tsx", "QuickPreview.tsx", "components/MixedText.tsx"]) expect(read(`app/routes/storefront/product/${file}`), file).toMatch(/import \{[^}]*\bkeepTokens\b[^}]*\} from "~\/lib\/keep-tokens"/);
+    for (const file of ["QuickPreview.tsx", "components/BuyStrip.tsx"]) expect(read(`app/routes/storefront/product/${file}`), file).toContain('import { useFocusHandoff } from "~/ui/focus-handoff"');
+    expect(keepTokens("Nintendo Switch 2 Dock")).toBe("Nintendo Switch\u00a02 Dock");
+    expect(keepTokens("GPU: 4K at up to 120 FPS and 8K HDR")).toBe("GPU:\u00a04K at up to\u00a0120\u00a0FPS and\u00a08K\u00a0HDR");
+    expect(keepTokens("3.5 mm · 401 g")).toBe("3.5\u00a0mm ·\u00a0401\u00a0g");
+    expect(keepTokens("PS5ی Pro")).toBe("PS5ی\u00a0Pro");
     expect(keepTokens("USB-C")).toBe("USB‑C");
     expect(keepTokens("Switch 2")).toBe("Switch 2");
   });
@@ -177,7 +183,8 @@ describe("3 · reading sizes on phones (G7)", () => {
     // CompatBadge note 13px on 360–390 phones
     expect(readingOnPhones(".sechead__reason")).toBe(true);
     expect(readingOnPhones(".pcard__meta")).toBe(true);
-    expect(readingOnPhones(".compat-badge__note")).toBe(true);
+    // the note reads at 16 up to 1023 (polish 2026-11-17: the device hub's tablet override went to the kit)
+    expect(rules(media(components, "(max-width: 63.99rem)")).some((rule) => rule.selectors.includes(".compat-badge__note") && /font:\s*var\(--type-read\)/.test(rule.body))).toBe(true);
     // the note carries no type utility: the utilities layer would beat the stylesheet's phone size
     const html = renderKit(createElement(CompatBadge, { status: "partial", device: "PS5", note: "يعمل بشرط تحديث الجهاز" }));
     const note = html.match(/<span class="([^"]*)">يعمل بشرط تحديث الجهاز<\/span>/)?.[1] ?? "";

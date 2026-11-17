@@ -4,7 +4,9 @@
  *   factParts(short) / factLine      the ONE fact line under the name: at most two facts of the short line (§6.7 item 5)
  *   withoutPreorder(items)           list items (highlights, in the box) without the ones that speak of pre-orders
  *   proseWithoutPreorder(text)       a paragraph without its sentences that speak of pre-orders
- *   keepTokens(text)                 names whose protected tokens never break across lines («Switch 2», «Z-A»)
+ *
+ * keepTokens (names whose protected tokens never break, «Switch 2», «Z-A») is the kit's ~/lib/keep-tokens since
+ * 2026-11-17: one copy for the product page, the cart lines and every other surface.
  *
  * Why the pre-order filter: the research quotes makers and other shops ("open for pre-order ahead of 20 May 2027",
  * «مكافأة الطلب المسبق: …»). On this store's page such a sentence reads as the STORE's offer, and the store takes no
@@ -12,31 +14,6 @@
  * never «طلب مسبق»). Coming-soon products say «يصدر … · الطلب يفتح عند وصوله» instead. The catalogue text itself is the
  * data owner's (requested there); until it is rewritten, the page leaves those sentences out.
  */
-
-/** A hyphen inside a Latin or number token: "Z-A", "USB-C", "Joy-Con", "BEE-001" (not "(-01)", not a spaced one). */
-const TOKEN_HYPHEN = /(?<=[\p{Script=Latin}\d])-(?=[\p{Script=Latin}\d])/gu;
-/**
- * The space before a short Latin or number token — one to three characters ("2", "Pro", "S", "Z-A", "AI+", "(L)",
- * "2)") that ends there: not a longer word, not a decimal ("7.9"), not a token glued to Arabic or Sorani ("PS5ی") —
- * and a NAME's token: it has a digit, a capital or a "+" («Switch 2», «PS5 Pro», «Xbox One», «4K HDR»), or it is a
- * unit after a number («3.5 mm», «401 g»). The small words of a sentence ("a", "of", "at", "up", "to", "and") stay
- * breakable: glued too, English prose became runs like «GPU: 4K at up to 120 FPS and 8K HDR» (47 characters that
- * cannot break — wider than a phone; review 2026-11-13).
- */
-const BEFORE_SHORT =
-  /(?<=\S) (?=\(?[\p{Script=Latin}\d][\p{Script=Latin}\d\u2011+]{0,2}\)?(?![\p{Script=Latin}\d\u2011+]|[.,\u066b]\d|[\u0600-\u06ff]))(?:(?=\(?[\p{Script=Latin}\d\u2011+]{0,2}[\p{Lu}\d+])|(?<=\d ))/gu;
-
-/**
- * A name — or a sentence with names in it — whose protected tokens never break across lines (design v2 §4.18:
- * «Switch 2», «PS5 Pro», «Go 2» never break): the space before a short name token becomes a no-break space (U+00A0), so
- * "2" never starts a line of its own («Nintendo Switch» / «2 Dock»), and a hyphen inside a Latin token becomes a
- * non-breaking hyphen (U+2011), so «Z-» never ends one («Pokémon Legends: Z-» / «A – …»). Longer words still wrap
- * at their spaces. Both characters stay inside a Latin run for the kit's splitBidi and for MixedText, so the text
- * is isolated exactly as before (tests/product.test.ts runs every catalogue text through both). Idempotent; pure.
- */
-export function keepTokens(text: string): string {
-  return text.replace(TOKEN_HYPHEN, "\u2011").replace(BEFORE_SHORT, "\u00a0");
-}
 
 /**
  * The shortest name that can take three lines at the h1 size on a 390px phone (26px Kufi in 358px; measured on every

@@ -18,6 +18,7 @@ import { useOverlayRoot } from "./Dialog";
 import { FactLine } from "./FactLine";
 import { IconKey } from "./IconKey";
 import { Key } from "./Key";
+import { sakuga } from "./sakuga/fx";
 import { Render } from "./Stage";
 import { toastStore, useToasts, type Toast, type ToastKind } from "./toast-store";
 
@@ -55,6 +56,9 @@ export type ToasterProps = {
    */
   fallback?: boolean;
   className?: string;
+  /** False: no drawn moment as a toast lands (./sakuga). The admin's toaster passes it — its toasts portal to <body>,
+   *  outside `[data-density="admin"]`, where the moments never play (review 2026-11-17). Default true. */
+  fx?: boolean;
 };
 
 type Entry = { key: number; toast: Toast; leaving: boolean };
@@ -71,7 +75,7 @@ function electToaster(): void {
 }
 let entrySeq = 0;
 
-export function Toaster({ offset = "calc(var(--safe-top) + var(--s-2))", fallback = false, className }: ToasterProps) {
+export function Toaster({ offset = "calc(var(--safe-top) + var(--s-2))", fallback = false, className, fx = true }: ToasterProps) {
   const [active, setActive] = useState(false);
   useEffect(() => {
     const claim: Claim = { fallback, setActive };
@@ -84,7 +88,7 @@ export function Toaster({ offset = "calc(var(--safe-top) + var(--s-2))", fallbac
       electToaster();
     };
   }, [fallback]);
-  return active ? <ToasterView offset={offset} className={className} /> : null;
+  return active ? <ToasterView offset={offset} className={className} fx={fx} /> : null;
 }
 
 /* The kinds' icons are inline glyphs (app/art/icons/glyphs status-*), never the sprite: a toast raised while offline
@@ -96,7 +100,7 @@ const KIND: Record<Exclude<ToastKind, "cart">, { icon: IconName; tone: string }>
   error: { icon: "status-error", tone: "text-danger" },
 };
 
-function ToasterView({ offset, className }: Required<Pick<ToasterProps, "offset">> & Pick<ToasterProps, "className">) {
+function ToasterView({ offset, className, fx }: Required<Pick<ToasterProps, "offset" | "fx">> & Pick<ToasterProps, "className">) {
   const t = useT("ui-overlays");
   const root = useOverlayRoot(true);
   const { current } = useToasts();
@@ -168,6 +172,7 @@ function ToasterView({ offset, className }: Required<Pick<ToasterProps, "offset"
       {entries.length > 0 ? (
         <section
           ref={region}
+          data-fx={fx ? undefined : "off"}
           aria-label={t("toast.region")}
           aria-keyshortcuts="F6"
           onKeyDown={onRegionKeyDown}
@@ -239,10 +244,13 @@ function ToastCard({ toast, leaving, onGone, onFocusLost }: CardProps) {
     [],
   );
 
-  // In: drops 8px from above with opacity (reduced motion: opacity only).
+  // In: drops 8px from above with opacity (reduced motion: opacity only) — and lands in a little dust (./sakuga, the
+  // drawn moment: measured here before the drop moves it; never for an error, which is no celebration)
   useLayoutEffect(() => {
     const element = card.current;
-    if (element) void materialize(element, { from: { x: element.getBoundingClientRect().left, y: 0 } });
+    if (!element) return;
+    if (toast.kind !== "error") sakuga.toast(element);
+    void materialize(element, { from: { x: element.getBoundingClientRect().left, y: 0 } });
   }, []);
 
   // Out: the way it came — unless a swipe already carried it off.

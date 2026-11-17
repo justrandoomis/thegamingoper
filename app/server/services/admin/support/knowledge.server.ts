@@ -136,6 +136,34 @@ export async function listArticles(db: Db, actor: Actor, filters: KnowledgeFilte
   return { rows: all.filter((row) => inView(row, filters.view) && matches(row)), counts, canEdit: can(actor, "support.knowledge.manage"), canApprove: can(actor, "support.knowledge.approve"), full };
 }
 
+/**
+ * How many help articles wait for THIS employee's approval — the admin bell (follow-ups 2026-11-17); null without
+ * support.knowledge.approve. The list's «review» view (an article in review, or an approved one with a pending
+ * revision), minus what the two-person rule refuses them (getArticleEditor's can.approve / can.decideRevision): an
+ * article in review they saved since its last approval (editorsSinceApproval), a revision whose editors include them.
+ * Index seeks only: the review articles by knowledge_articles_kind_idx (every kind and audience, status 'review'),
+ * each one's audit events by audit_events_entity_idx, the revisions by approvals_kind_idx (the "+" columns keep SQLite
+ * off audit_events_actor_idx — every event of the employee — and approvals_entity_idx — every revision ever).
+ */
+export async function countArticlesToApprove(db: Db, actor: Actor): Promise<number | null> {
+  if (!can(actor, "support.knowledge.approve")) return null;
+  const me = actor.kind === "employee" ? actor.id : "";
+  const list = (values: readonly string[]) => sql.join(values.map((value) => sql`${value}`), sql`, `);
+  const rows = await db.all<{ n: number }>(sql`
+    SELECT
+      (SELECT count(*) FROM knowledge_articles AS a
+        WHERE a.kind IN (${list(ARTICLE_KINDS)}) AND a.audience IN (${list(ARTICLE_AUDIENCES)}) AND a.status = 'review'
+          AND NOT EXISTS (
+            SELECT 1 FROM audit_events AS e
+            WHERE e.entity_type = 'knowledge_article' AND e.entity_id = a.id AND e.action IN (${list(EDIT_ACTIONS)})
+              AND +e.actor_kind = 'employee' AND +e.actor_id = ${me}
+              AND e.seq > coalesce((SELECT max(x.seq) FROM audit_events AS x WHERE x.entity_type = 'knowledge_article' AND x.entity_id = a.id AND x.action IN (${list(APPROVE_ACTIONS)})), 0)))
+      + (SELECT count(DISTINCT r.entity_id) FROM approvals AS r
+          WHERE r.kind = ${REVISION_KIND} AND r.status = 'pending' AND +r.entity_type = 'knowledge_article'
+            AND NOT EXISTS (SELECT 1 FROM json_each(r.payload, '$.editors') AS j WHERE j.value = ${me})) AS n`);
+  return Number(rows[0]?.n ?? 0);
+}
+
 // ───────────────────────────────────────────────────────────────── one article
 
 type Content = {

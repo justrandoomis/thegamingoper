@@ -514,15 +514,6 @@
     }
   }
 
-  /* the accessories question: the kit's checkbox rows (<Checkbox row>) wearing the clay face of the other questions'
-     option cards (<OptionCard clay>: the soft raised card, no hairline) — chosen keeps the kit's 2px ink border, focus
-     the kit's ring. The kit's checkbox row has no `clay` yet (docs/areas/used.md "Requests") */
-  .used-clay > .choice--row {
-    border-color: transparent;
-    background: var(--card-face);
-    box-shadow: var(--e-surface);
-  }
-
   /* the photo drop area while a file is dragged over it */
   .used-photos__drop[data-dragging] {
     border-color: var(--ink);
@@ -561,13 +552,6 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       column-gap: var(--s-6);
     }
-  }
-  /* the payout that cannot be chosen (store credit on a guest's request): the kit's option icon goes as quiet as its
-     words — an ink icon in a raised disc on a greyed card read as a choice that works (review 2026-11-13; the kit's
-     <OptionCard icon> keeps its ink: docs/areas/used.md "Requests") */
-  .used-payout .choice:has(> .choice__input:disabled) > .choice__icon {
-    box-shadow: none;
-    color: var(--ink-3);
   }
   /* «قبلت العرض»: the mark that draws itself, the words beside it */
   .used-done {

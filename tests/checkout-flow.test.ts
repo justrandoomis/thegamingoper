@@ -14,6 +14,7 @@
  * call them the right way and show their refusals as the contract says.
  */
 import { and, eq, gt, sql } from "drizzle-orm";
+import { env } from "cloudflare:workers";
 import { readFileSync } from "node:fs";
 import { crc32 } from "node:zlib";
 import { createElement, type ComponentType } from "react";
@@ -23,6 +24,7 @@ import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { messagesFor } from "~/i18n/i18n.server";
 import type { Locale } from "~/lib/locales";
 import type { Actor } from "~/server/actor";
+import { recordCampaignVisit } from "~/server/attribution.server";
 import { addresses, coupons, files, orders, paymentProofs, payments, products, stockLevels, variants } from "~/server/db/schema";
 import { districtId, governorateId } from "~/server/db/seed/reference";
 import { seedDemo } from "~/server/db/seed/demo";
@@ -289,6 +291,34 @@ describe("placing an order (the checkout action's path)", () => {
     // Marketing consent was not ticked, so none is stored on the order.
     const row = await t.db.select({ consent: orders.marketingConsent }).from(orders).where(eq(orders.ref, result.ref)).get();
     expect(row?.consent).toBe(false);
+  });
+
+  test("the cart's campaign reaches the order; a campaign store that fails never stops it (follow-ups 2026-11-17)", async () => {
+    const bindings = env as unknown as Record<string, unknown>;
+    const sourceOf = async (ref: string) => (await t.db.select({ attribution: orders.attribution }).from(orders).where(eq(orders.ref, ref)).get())?.attribution ?? null;
+
+    const cart = await cartWith();
+    const campaign = { source: "instagram", medium: "social", campaign: "winter-launch", content: null, term: null, link: null };
+    expect(await recordCampaignVisit(t.db, t.kv, { campaign, click: false, cartToken: cart.cartToken, ip: "203.0.113.7", now: NOW })).toMatchObject({ kept: true });
+    const placedWith = await placeCheckout(t.db, who(cart.cartToken), checkoutForm(cart.totalIqd), NOW);
+    expect(placedWith.ok).toBe(true);
+    if (!placedWith.ok) return;
+    expect(await sourceOf(placedWith.ref)).toEqual({ source: "instagram", medium: "social", campaign: "winter-launch" });
+
+    const plain = await cartWith();
+    const placedPlain = await placeCheckout(t.db, who(plain.cartToken), checkoutForm(plain.totalIqd), NOW);
+    expect(placedPlain.ok && (await sourceOf(placedPlain.ref))).toBeNull();
+
+    const broken = await cartWith();
+    const realKv = bindings.KV;
+    bindings.KV = { get: () => Promise.reject(new Error("KV is down (test)")), put: () => Promise.reject(new Error("KV is down (test)")) };
+    try {
+      const placedBroken = await placeCheckout(t.db, who(broken.cartToken), checkoutForm(broken.totalIqd), NOW);
+      expect(placedBroken).toMatchObject({ ok: true });
+      if (placedBroken.ok) expect(await sourceOf(placedBroken.ref)).toBeNull();
+    } finally {
+      bindings.KV = realKv;
+    }
   });
 
   test("a double submit (the same attempt key twice) places one order", async () => {

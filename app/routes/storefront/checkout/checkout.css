@@ -129,10 +129,7 @@
   .co-missing .key {
     --px: var(--s-4);
   }
-  /* a label on two lines: the Sorani marks (ێ ڕ) need more room between them than the key's 1.25 */
-  .co-missing .key__label {
-    line-height: 1.45;
-  }
+  /* a label on two lines: the kit's <Key wrap> gives the Sorani marks (ێ ڕ) their 1.45 itself (materials.css) */
   @media (max-width: 47.99rem) {
     .co-missing .note__action {
       grid-column: 1 / -1;

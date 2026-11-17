@@ -91,6 +91,8 @@ export const cartItems = sqliteTable(
   (t) => [
     uniqueIndex("cart_items_cart_variant_uq").on(t.cartId, t.variantId).where(sql`${t.usedUnitId} IS NULL`),
     uniqueIndex("cart_items_cart_used_unit_uq").on(t.cartId, t.usedUnitId).where(sql`${t.usedUnitId} IS NOT NULL`),
+    // the two unique indexes above are PARTIAL, so `WHERE cart_id = ?` could not use them and scanned the table
+    index("cart_items_cart_idx").on(t.cartId),
     index("cart_items_variant_idx").on(t.variantId),
     index("cart_items_used_unit_idx").on(t.usedUnitId),
     check("cart_items_qty_check", sql`${t.qty} > 0 AND (${t.usedUnitId} IS NULL OR ${t.qty} = 1)`),

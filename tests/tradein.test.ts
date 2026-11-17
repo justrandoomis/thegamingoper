@@ -806,7 +806,9 @@ describe("the wizard's pages (rendered)", () => {
     expect(power).not.toContain("used-keys");
 
     const accessories = await wizardPage(`?step=condition&device=${homeConsole.slug}&power=works&body=light`);
-    expect(accessories.match(/<div class="field used-clay"><label class="choice choice--row choice--check">/g)?.length).toBe(homeConsole.accessories.length);
+    // the kit's own clay option (polish 2026-11-17): no area class
+    expect(accessories.match(/<div class="field"><label class="choice choice--row choice--check choice--clay">/g)?.length).toBe(homeConsole.accessories.length);
+    expect(accessories).not.toContain("used-clay");
     expect(accessories).not.toContain("used-check");
     expect(accessories.match(/name="included"/g)?.length).toBe(homeConsole.accessories.length);
   });

@@ -110,7 +110,7 @@ function Frame({ data, children }: { data: AdminShellData | null; children: Reac
           <OpsReporter />
         </>
       ) : null}
-      <Toaster offset="calc(var(--safe-top) + var(--adm-top-h) + var(--s-2))" />
+      <Toaster offset="calc(var(--safe-top) + var(--adm-top-h) + var(--s-2))" fx={false} />
     </div>
   );
 }

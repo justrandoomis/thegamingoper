@@ -26,7 +26,7 @@ import { cx } from "~/ui/cx";
 import { Key } from "~/ui/Key";
 import { useOnline } from "~/ui/OfflineBanner";
 import { SafePrice } from "~/ui/PriceTag";
-import { useFocusHandoff } from "../handoff";
+import { useFocusHandoff } from "~/ui/focus-handoff";
 
 export type BuyStripProps = Omit<BuyControlsProps, "onAdded" | "message" | "onMessage"> & {
   /** The chosen version's price (shown with «✓ في السلة» after an add). */

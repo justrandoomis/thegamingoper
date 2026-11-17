@@ -269,8 +269,13 @@ and 1440, light and dark, ar and en (`.shots/admin/`), no horizontal overflow, n
   its list, each linking to the filtered list. The returns module is asked only for the four counts the bell shows.
   Cost, measured on the demo database (`tests/admin-shell-bell.test.ts`, "what the bell costs"): the owner's bell is
   59 statements — the shell's own counts in 1 batch, 56 sent before the first answer came back — reading 65 rows.
-  Left out on purpose: listed in the file header. Support articles waiting for approval have no count function
-  (asked of the support owner).
+  Left out on purpose: listed in the file header.
+- **Follow-ups (2026-11-17).** Wallet payouts now read finance's own `countDecidablePayouts` (null hides the queue);
+  a new queue `knowledge_review` (support.knowledge.approve → `/admin/support/knowledge?view=review`) counts help
+  articles in review and approved ones with a revision waiting, never a version the employee saved
+  (`countArticlesToApprove` in `services/admin/support/knowledge.server.ts`; index seeks only — EXPLAIN on the local
+  D1: `knowledge_articles_kind_idx`, `audit_events_entity_idx`, `approvals_kind_idx`). Tests in
+  `tests/admin-shell-bell.test.ts`.
 - **Search folds hyphens.** Product names keep Latin tokens with U+2011 («USB‑C», «Joy‑Con»); the command centre's
   SKU search (`foldHyphens` / `dehyphened`, `services/admin/dashboard/search.server.ts`) and the catalogue list's
   search (`listProducts`) read U+2010/U+2011 as "-" on both sides, so "USB-C" and "usb-c" find the battery. No new

@@ -3,6 +3,7 @@ import { useId, useRef, type ReactNode } from "react";
 import { Icon, type IconName } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import type { ImageRef } from "~/lib/dto";
+import { keepTokens } from "~/lib/keep-tokens";
 import { CURRENCIES } from "~/lib/money";
 import { BidiText } from "./BidiText";
 import { cx } from "./cx";
@@ -173,10 +174,12 @@ export function OrderSummary({
                 {line.image ? <ProductImage image={line.image} alt="" sizes="64px" fit="cover" /> : null}
               </Niche>
               <span className="grid min-w-0">
+                {/* names a page did not write keep their tokens whole («USB-C», «Switch 2»; idempotent, so a caller
+                    that already kept them loses nothing) */}
                 <span className="line-clamp-2 type-sm-strong text-ink">
-                  <BidiText text={line.name} />
+                  <BidiText text={keepTokens(line.name)} />
                 </span>
-                {line.optionsLabel ? <span className="type-xs text-ink-2">{line.optionsLabel}</span> : null}
+                {line.optionsLabel ? <span className="type-xs text-ink-2">{keepTokens(line.optionsLabel)}</span> : null}
               </span>
               {isIqd(line.lineTotalIqd) ? <Price amountIqd={line.lineTotalIqd} size="sm" approx="off" as="span" /> : <Broken />}
             </li>

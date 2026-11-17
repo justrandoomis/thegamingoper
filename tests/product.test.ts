@@ -48,7 +48,7 @@ import productMessages from "~/i18n/messages/product";
 import { BuyStrip, stripState } from "~/routes/storefront/product/components/BuyStrip";
 import { About, BeforeYouOrder, Highlights, InTheBox, sourceLine, Specs } from "~/routes/storefront/product/components/Details";
 import { Reviews } from "~/routes/storefront/product/components/Reviews";
-import { FOCUS_TARGET, focusHandoff } from "~/routes/storefront/product/handoff";
+import { FOCUS_TARGET, focusHandoff } from "~/ui/focus-handoff";
 import { methodsList, offersTransfer, paymentMethods, sentenceStart, SideNotes } from "~/routes/storefront/product/components/Facts";
 import { MixedText, splitMixed } from "~/routes/storefront/product/components/MixedText";
 import { PriceBlock, priceLook, priceSide, struckPrice } from "~/routes/storefront/product/components/PriceBlock";
@@ -56,7 +56,8 @@ import { alternativesPath, compatRows, DeviceHubSlot } from "~/routes/storefront
 import { stageBack, stageGel, stageStep } from "~/routes/storefront/product/components/StageCard";
 import { pickerLook, VariantPicker } from "~/routes/storefront/product/components/VariantPicker";
 import { jsonForScript, productJsonLd } from "~/routes/storefront/product/jsonld";
-import { claimsPreorder, FACT_LINE_CHARS, factLine, factParts, factRow, isLongName, keepTokens, LONG_NAME_CHARS, proseWithoutPreorder, withoutPreorder } from "~/routes/storefront/product/text";
+import { keepTokens } from "~/lib/keep-tokens";
+import { claimsPreorder, FACT_LINE_CHARS, factLine, factParts, factRow, isLongName, LONG_NAME_CHARS, proseWithoutPreorder, withoutPreorder } from "~/routes/storefront/product/text";
 import { splitBidi } from "~/ui/BidiText";
 import { onlyVariantChanged, searchFor, shownDefault, variantFor } from "~/routes/storefront/product/useVariant";
 import { createTestDb, type TestDb } from "./helpers/db";

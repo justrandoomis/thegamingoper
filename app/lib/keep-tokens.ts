@@ -5,9 +5,9 @@
  * snapshot taken before the catalogue gained its non-breaking hyphens (QA 2026-11-13: «…Battery + USB-» / «C Cable» at
  * 360–390), or a name the owner typed in the admin.
  *
- * Copied from app/routes/storefront/product/text.ts (polish round 2026-11-13, the data review's request): the product
- * page keeps its own copy until it switches to this module; tests/product.test.ts runs every catalogue text through
- * the kit's splitBidi and MixedText with it, tests/kit-polish.test.ts checks this copy.
+ * Moved here from app/routes/storefront/product/text.ts (polish round 2026-11-13; the product page's copy deleted
+ * 2026-11-17, so this is the only one): tests/product.test.ts runs every catalogue text through the kit's splitBidi and
+ * MixedText with it, tests/kit-polish.test.ts checks it.
  *
  *   <BidiText text={keepTokens(line.name)} />
  */

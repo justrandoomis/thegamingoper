@@ -159,6 +159,25 @@ export default defineMessages({
       tradein: { drafts: { purge: { name: "حذف صور مسودات المقايضة", about: "يحذف الصور الخاصة لمعالجات المقايضة المتروكة منذ يومين. يحتاج مخزن الملفات، ويُتخطى بدونه." } } },
       devices: { tradein_offers: { expire: { name: "انتهاء عروض المقايضة", about: "ينهي عروض المقايضة التي تجاوزت تاريخها مع حدث في سجلها (200 في كل تشغيل)." } } },
       customers: { segments: { recompute: { name: "إعادة حساب شرائح العملاء", about: "يعيد حساب شريحة RFM لكل عميل من طلباته ويحفظها كلها في دفعة واحدة مدققة." } } },
+      support: { tickets: { route: { name: "توجيه تذاكر الدعم", about: "يوجّه تذاكر الدعم التي تنتظر شخصاً حسب قواعد قسم الدعم (50 في كل تشغيل)." } } },
+      automation: {
+        run: { name: "قواعد الأتمتة وفحص نفاد المخزون", about: "يشغّل كل قاعدة أتمتة مفعّلة، ويفحص المخزون مرة في الساعة (أو عند التشغيل اليدوي) ليقترح شراء ما وصل حد إعادة الطلب. تشغيل بلا فحص ولا قاعدة مفعّلة يُسجَّل متخطى." },
+        forecasts: { store: { name: "حفظ توقعات الطلب", about: "يحفظ توقع طلب الشهر القادم لكل SKU له توقع؛ التشغيل الثاني يستبدل أرقامه ولا يضيف صفوفاً." } },
+      },
+      marketing: {
+        campaigns: { release: { name: "إطلاق حملات الرسائل", about: "يطلق حملات الرسائل المعتمدة التي حان وقتها: تُحجز رسائلها في طابور الرسائل ولا تُرسل. يُتخطى دون عنوان المتجر العام (PUBLIC_ORIGIN) حتى لا تُكتب روابط خاطئة." } },
+        cart_reminders: { prepare: { name: "تحضير تذكيرات السلال المتروكة", about: "يحضّر تذكيراً واحداً محجوزاً لكل سلة متروكة لعميل معروف وافق على الرسائل، من السلال الحقيقية فقط. يُتخطى دون عنوان المتجر العام (PUBLIC_ORIGIN)." } },
+      },
+      promotions: {
+        memberships: { close: { name: "إنهاء عضويات VIP المنتهية", about: "يجعل عضويات VIP التي مرّ تاريخ نهايتها منتهية." } },
+        points: {
+          sync: { name: "مزامنة النقاط", about: "يمنح نقاط الطلبات المسلّمة بعد انتهاء مهلة الإرجاع ويعكس نقاط المبالغ المستردة؛ التشغيل الثاني لا يضيف شيئاً." },
+          expire: { name: "انتهاء النقاط", about: "يُنهي النقاط التي مرّ تاريخ صلاحيتها، الأقدم أولاً." },
+        },
+        gift_cards: { expire: { name: "انتهاء بطاقات الهدايا", about: "يجعل بطاقات الهدايا التي مرّ تاريخها منتهية." } },
+      },
+      staff: { commissions: { sync: { name: "مزامنة العمولات", about: "يعيد حساب عمولات الشهر الماضي والحالي ويسجّل الفروق فقط." } } },
+      ops: { telemetry: { purge: { name: "حذف سجلات الأخطاء والأداء القديمة", about: "يحذف تقارير الأخطاء وملخصات الطلبات البطيئة الأقدم من 90 يوماً، ويُبقي ما هو دليل في حادثة." } } },
       scheduler: { name: "المجدول", about: "تشغيل يُسجَّل عندما يصل تعبير cron لا يعرفه التطبيق: مشغّل مضبوط خطأً في wrangler.jsonc." },
     },
     preview: {
@@ -872,6 +891,25 @@ export default defineMessages({
       tradein: { drafts: { purge: { name: "Purge trade-in draft photos", about: "Deletes the private photos of trade-in wizards abandoned for two days. It needs the file store and is skipped without it." } } },
       devices: { tradein_offers: { expire: { name: "Expire trade-in offers", about: "Ends trade-in offers past their date, with an event in their history (200 per run)." } } },
       customers: { segments: { recompute: { name: "Recompute customer segments", about: "Recomputes every customer's RFM segment from their orders and stores them all in one audited batch." } } },
+      support: { tickets: { route: { name: "Route support tickets", about: "Routes support tickets waiting for a person by the support module's rules (50 per run)." } } },
+      automation: {
+        run: { name: "Automation rules and stock-out scan", about: "Runs every active automation rule, and scans stock once an hour (or when run by hand) to suggest buying what reached its reorder point. A run with no scan and no active rule is recorded as skipped." },
+        forecasts: { store: { name: "Store demand forecasts", about: "Stores next month's demand forecast of every SKU that has one; a second run replaces its figures and adds no rows." } },
+      },
+      marketing: {
+        campaigns: { release: { name: "Release message campaigns", about: "Releases approved message campaigns whose time has come: their messages are held in the message queue, never sent. Skipped without the store's public origin (PUBLIC_ORIGIN), so no wrong link is written." } },
+        cart_reminders: { prepare: { name: "Prepare abandoned-cart reminders", about: "Prepares one held reminder per abandoned cart of a known customer who agreed to messages, from real carts only. Skipped without the store's public origin (PUBLIC_ORIGIN)." } },
+      },
+      promotions: {
+        memberships: { close: { name: "Close ended VIP memberships", about: "Marks VIP memberships past their end date as expired." } },
+        points: {
+          sync: { name: "Sync points", about: "Grants the points of delivered orders once the return window ends and reverses the points of refunds; a second run adds nothing." },
+          expire: { name: "Expire points", about: "Expires points past their expiry date, oldest first." },
+        },
+        gift_cards: { expire: { name: "Expire gift cards", about: "Marks gift cards past their date as expired." } },
+      },
+      staff: { commissions: { sync: { name: "Sync commissions", about: "Recomputes last and this month's commissions and records the differences only." } } },
+      ops: { telemetry: { purge: { name: "Purge old error and speed records", about: "Deletes error reports and slow-request summaries older than 90 days, keeping what an incident holds as evidence." } } },
       scheduler: { name: "Scheduler", about: "A run recorded when a cron expression the app does not know fires: a trigger set wrongly in wrangler.jsonc." },
     },
     preview: {
@@ -1585,6 +1623,25 @@ export default defineMessages({
       tradein: { drafts: { purge: { name: "سڕینەوەی وێنەکانی ڕەشنووسی ئاڵوگۆڕ", about: "وێنە تایبەتەکانی ئاڵوگۆڕە بەجێهێڵراوەکان دوای دوو ڕۆژ دەسڕێتەوە. پێویستی بە کۆگای پەڕگەیە و بەبێ ئەو تێدەپەڕێنرێت." } } },
       devices: { tradein_offers: { expire: { name: "بەسەرچوونی پێشنیارەکانی ئاڵوگۆڕ", about: "ئەو پێشنیارانەی ئاڵوگۆڕ کە بەروارەکەیان تێپەڕیوە کۆتایی پێدەهێنێت، لەگەڵ ڕووداوێک لە مێژووەکەیاندا (200 لە هەر کارپێکردنێکدا)." } } },
       customers: { segments: { recompute: { name: "دووبارە هەژمارکردنی بەشەکانی کڕیاران", about: "بەشی RFM ـی هەر کڕیارێک لە داواکارییەکانییەوە دووبارە هەژمار دەکات و هەموویان لە یەک کۆمەڵەی وردبینیکراودا هەڵدەگرێت." } } },
+      support: { tickets: { route: { name: "ئاراستەکردنی تیکێتەکانی پشتگیری", about: "تیکێتەکانی پشتگیری کە چاوەڕێی کەسێکن بەپێی یاساکانی بەشی پشتگیری ئاراستە دەکات (50 لە هەر کارپێکردنێکدا)." } } },
+      automation: {
+        run: { name: "یاساکانی خۆکارکردن و پشکنینی تەواوبوونی کۆگا", about: "هەموو یاسایەکی چالاکی خۆکارکردن کار پێدەکات، و کاتژمێری جارێک (یان کاتێک بە دەست کار پێدەکرێت) کۆگا دەپشکنێت بۆ پێشنیاری کڕینی ئەوەی گەیشتۆتە سنووری داواکردنەوە. کارپێکردنێک بێ پشکنین و بێ یاسای چالاک وەک تێپەڕێنراو تۆمار دەکرێت." },
+        forecasts: { store: { name: "هەڵگرتنی پێشبینیی داواکاری", about: "پێشبینیی داواکاریی مانگی داهاتووی هەر SKU ـیەک کە پێشبینیی هەیە هەڵدەگرێت؛ کارپێکردنی دووەم ژمارەکانی دەگۆڕێت و ڕیز زیاد ناکات." } },
+      },
+      marketing: {
+        campaigns: { release: { name: "بەڕێکردنی کەمپەینەکانی نامە", about: "کەمپەینە پەسەندکراوەکانی نامە کە کاتیان هاتووە بەڕێ دەکات: نامەکانیان لە ڕیزی نامەکاندا ڕادەگیرێن و نانێردرێن. بەبێ ناونیشانی گشتیی فرۆشگا (PUBLIC_ORIGIN) تێدەپەڕێنرێت، تا هیچ بەستەرێکی هەڵە نەنووسرێت." } },
+        cart_reminders: { prepare: { name: "ئامادەکردنی بیرخستنەوەی سەبەتە بەجێهێڵراوەکان", about: "بۆ هەر سەبەتەیەکی بەجێهێڵراوی کڕیارێکی ناسراو کە ڕازی بووە بە نامە یەک بیرخستنەوەی ڕاگیراو ئامادە دەکات، تەنها لە سەبەتە ڕاستەقینەکان. بەبێ ناونیشانی گشتیی فرۆشگا (PUBLIC_ORIGIN) تێدەپەڕێنرێت." } },
+      },
+      promotions: {
+        memberships: { close: { name: "داخستنی ئەندامێتییە تەواوبووەکانی VIP", about: "ئەندامێتییەکانی VIP کە بەرواری کۆتاییان تێپەڕیوە بە بەسەرچوو دیاری دەکات." } },
+        points: {
+          sync: { name: "هاوکاتکردنی خاڵەکان", about: "خاڵی داواکارییە گەیەنراوەکان دوای تەواوبوونی ماوەی گەڕاندنەوە دەدات و خاڵی پارە گەڕێنراوەکان پاشگەز دەکاتەوە؛ کارپێکردنی دووەم هیچ زیاد ناکات." },
+          expire: { name: "بەسەرچوونی خاڵەکان", about: "ئەو خاڵانەی کە بەرواری بەسەرچوونیان تێپەڕیوە بەسەر دەبات، کۆنترینەکان یەکەم." },
+        },
+        gift_cards: { expire: { name: "بەسەرچوونی کارتی دیاری", about: "کارتە دیارییەکان کە بەروارەکەیان تێپەڕیوە بە بەسەرچوو دیاری دەکات." } },
+      },
+      staff: { commissions: { sync: { name: "هاوکاتکردنی کۆمیسیۆنەکان", about: "کۆمیسیۆنەکانی مانگی ڕابردوو و ئەم مانگە دووبارە هەژمار دەکات و تەنها جیاوازییەکان تۆمار دەکات." } } },
+      ops: { telemetry: { purge: { name: "سڕینەوەی تۆمارە کۆنەکانی هەڵە و خێرایی", about: "ڕاپۆرتەکانی هەڵە و پوختەی داواکارییە خاوەکان کە لە 90 ڕۆژ کۆنترن دەسڕێتەوە، و ئەوەی وەک بەڵگە لە ڕووداوێکدا هەیە دەهێڵێتەوە." } } },
       scheduler: { name: "خشتەکەر", about: "کارپێکردنێک کە تۆمار دەکرێت کاتێک دەربڕینێکی cron دێت کە ئەپەکە نایناسێت: هەڵگیرسێنەرێکی هەڵە لە wrangler.jsonc." },
     },
     preview: {

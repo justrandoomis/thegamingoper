@@ -423,12 +423,6 @@
       block-size: 72px;
     }
   }
-  /* showcase lights go under more contrast — the kit hides the band's light layer but not yet the gloss (asked) */
-  @media (prefers-contrast: more) {
-    .band.band--gloss.acct-money {
-      background-image: none;
-    }
-  }
 
   /* ───────────────────────────── the money card and its quick tiles ───────────────────────────── */
   .acct-hero {

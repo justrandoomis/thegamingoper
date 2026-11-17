@@ -1,0 +1,1 @@
+CREATE INDEX `cart_items_cart_idx` ON `cart_items` (`cart_id`);

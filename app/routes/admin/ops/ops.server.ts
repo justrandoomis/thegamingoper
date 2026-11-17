@@ -132,5 +132,6 @@ export function all(form: FormData, name: string): string[] {
 
 /** What the module passes when it runs a job by hand: the Worker's file store, as the cron does. No message providers exist. */
 export function jobsEnv(): ScheduledJobsEnv {
-  return { KV: (env as { KV?: KVNamespace }).KV };
+  // PUBLIC_ORIGIN: the two marketing jobs write links with it and are skipped without it, exactly as on the schedule
+  return { KV: (env as { KV?: KVNamespace }).KV, PUBLIC_ORIGIN: (env as { PUBLIC_ORIGIN?: string }).PUBLIC_ORIGIN };
 }

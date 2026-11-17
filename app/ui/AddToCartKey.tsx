@@ -13,6 +13,7 @@ import { IconKey } from "./IconKey";
 import { Key, type KeySize } from "./Key";
 import { useOnline } from "./OfflineBanner";
 import { useControllable } from "./roving";
+import { sakuga } from "./sakuga/fx";
 import { SafePrice } from "./PriceTag";
 import { Stepper, type StepperProps } from "./Stepper";
 import { TextLink } from "./TextLink";
@@ -156,6 +157,8 @@ export function AddToCartKey(props: AddToCartKeyProps) {
 
   /** The last press came from inside a modal layer (the quick look): that layer confirms the add itself. */
   const inLayer = useRef(false);
+  /** The key or card button last pressed: the confirmed add's drawn moment plays round it. */
+  const pressed = useRef<HTMLElement | null>(null);
 
   /** Once per request outcome (the taps of one batch share it); the flight is undone per tap. */
   const settle = (outcome: AddOutcome, flight: FlyHandle, landed: Promise<void>) => {
@@ -169,6 +172,10 @@ export function AddToCartKey(props: AddToCartKeyProps) {
       const partial = outcome.added < outcome.requested;
       const sentence = partial ? t("add.announcePartial", { added: outcome.added, name: label }) : t("add.announceAdded", { name: label });
       announce(sentence);
+      // the drawn moment round the key that was pressed (./sakuga, DESIGN.md §7.4) — measured now, before onAdded lets a
+      // buy bar swap the key for «عرض السلة»; decoration only, nothing waits for it
+      const key = pressed.current;
+      if (key?.isConnected) sakuga.added(key);
       show(partial ? { tone: "warn", text: sentence, retryQty: null } : null);
       confirmed?.(outcome.cart, outcome.added);
       // An add inside a sheet or dialog (the quick look) is confirmed there («✓ في السلة») and said aloud above: a toast
@@ -221,6 +228,8 @@ export function AddToCartKey(props: AddToCartKeyProps) {
     }
     const units = Math.max(1, Math.trunc(qty));
     inLayer.current = event.currentTarget.closest('[aria-modal="true"]') !== null;
+    pressed.current = event.currentTarget;
+    sakuga.warm(event.currentTarget); // the confirmation follows: fetch the drawn moments' core now (once)
     run(units, resolveSource(source) ?? event.currentTarget);
   };
 

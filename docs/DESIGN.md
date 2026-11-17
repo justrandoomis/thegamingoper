@@ -334,7 +334,7 @@ Tailwind breakpoints: `sm` 600 · `md` 768 · `lg` 1024 · `xl` 1200 (the admin'
 
 No resting shadow on any card. A hover lift never adds a shadow. Shadows, blur and colours never animate. Hairlines are borders, not shadows.
 
-**z-index** (unchanged): `--z-raised` 1, `--z-sticky` 100, `--z-nav` 200, `--z-scrim` 300, `--z-sheet` 310, `--z-dialog` 400, `--z-toast` 500, `--z-fly` 600, `--z-intro` 700.
+**z-index** (unchanged): `--z-raised` 1, `--z-sticky` 100, `--z-nav` 200, `--z-scrim` 300, `--z-sheet` 310, `--z-dialog` 400, `--z-fx` 450 (the drawn moments' canvas, §7.4; 2026-11-17), `--z-toast` 500, `--z-fly` 600, `--z-intro` 700.
 
 ---
 
@@ -518,8 +518,34 @@ Each material moves in exactly one way: **clay travels and squishes, glass slide
 | Currency | Number replaces number |
 | Intro | Still composition for 300ms, then a 120ms cross-fade |
 | Idle | None |
+| Drawn moments (§7.4) | None at all: the core is never even fetched |
 
 Every function works identically.
+
+### 7.4 Drawn moments (sakuga, 2026-11-17)
+
+The owner's decision: **effects on key moments.** The Clay & Glass controls and their motion stay exactly as above; at six moments where a control *confirms* something, a few hand-drawn effects in the style of an anime key animator (sakuga) play round it — on one canvas over the page, never on the control itself. `app/ui/sakuga/fx.ts` (`sakuga.*`) is the API; `plans.ts` is the choreography; `core.js` is the vendored Sakuga VFX core (MIT, upstream commit c3dabb1, copied once with its licence; the web components and the 500 KB `toggle.js` are not shipped).
+
+| Moment | Where it is hooked | What is drawn (≤ 600 ms) |
+|---|---|---|
+| Added to the cart | `AddToCartKey` / the card add button, on the **server-confirmed** add (never on a failure) | three wedges over the key, crystal chips off its end corner, two puffs at its feet, a glint |
+| Checkbox ticked | `<Checkbox>` (rows too) | two crescents swing round the box, chips, a late glint; unticking: one small puff |
+| Switch flipped | `<Switch>` | speed lines behind the knob, a splash crown where it lands (the inline end), wobble marks, a glint; off: one small puff |
+| Rating chosen | the account's «قيّم ما استلمته» stars (`sakuga.rate`) | a fan of wedges over each lit star, 45 ms apart; five stars add a ring and chips |
+| Toast landing | `Toast` (not the error kind: an error is no celebration) | dust at its feet, wobble marks at its sides, two wedges off its top end corner |
+| Progress complete | `<SuccessMark>` (once, as the check finishes), `<ProofUploader>` at 100% | a ring opens round the mark (a bar: at its inline end), chips, four puffs off the diagonals, a glint |
+
+**Rules (enforced in `fx.ts`, so a caller cannot break them).** Decoration only: the state, the announcement and focus never wait for it, and nothing about the control changes. Never on the server; nothing at all under `prefers-reduced-motion`, on the engine's lite or reduced tier, without `matchMedia`, in a hidden tab, inside `[data-density="admin"]` or `[data-fx="off"]`. The same control again within 120 ms draws nothing more. Each moment is measured when it happens (the control's box in page coordinates, its direction — the plans mirror in RTL — and its theme's `--fx-*` tokens) and drawn when the code is there, or dropped if the code is more than 350 ms late (the very first moment of a visit on a slow connection may be skipped; the press of an add key, and a pointerdown on a checkbox or switch, start the fetch early).
+
+**Colour.** `--fx-fill`, `--fx-shade`, `--fx-line`, `--fx-accent`, `--fx-ink` (tokens.css). Light: a white light side, a pale red shadow tone `#f9c4ca`, the deep red `--red-deep` outline, the brand `--red` for needles, slashes and wedges. Dark: a rose light side `#ffe4e7` (pure white glared on charcoal), a rose shadow `#f38894`, a `--red` outline (the deep red sank into the page) and a lighter red `#ff5466` for the needles. The palette is read from the control's own computed style, so a `[data-theme]` island draws its own theme's colours.
+
+**Layer.** The canvas `.sakuga-fx` (pieces.css) is fixed over the viewport, `aria-hidden`, `pointer-events: none`, `contain: strict`, at `--z-fx` 450: over pages, sheets and dialogs (a moment only happens in the top layer the shopper is using), under the toasts (500) and the fly bead (600) — a toast's dust is drawn just under its edge. `display: none` in print. Fixed, it shifts nothing (CLS 0 measured).
+
+**Cost.** The route bundles carry only `fx` (2.0 kB, 1.05 kB gzipped: the guards and the measuring); the core (30.8 / 14.4 kB) and the plans (3.3 / 1.4 kB) are their own chunks, fetched with one dynamic import on the first moment. One frame of the busiest moment costs under 2 ms on a desktop CPU and at most 17 ms at a 4× CPU slowdown — no long task of its own.
+
+**The lettering is off** — an owner-flippable choice. Upstream lands a painted katakana sound effect with each reaction (ドン!, ズザッ, カチッ, ポン): Japanese onomatopoeia reads as foreign in an Arabic, Sorani and English store. The words stay in the vendored core, unused; `LETTERING = true` in `plans.ts` adds one word per moment.
+
+**Reference:** /design-system «لحظات مرسومة» plays all six with the real pieces (the add key there plays the moment without a cart).
 
 ---
 
@@ -1004,3 +1030,15 @@ The kit carries the look; page owners use the new pieces where their screens nee
 - **Glass on paper**: `@media print` drops every backdrop filter (`[class*="glass"]`, important — the glass is set in the later `components` layer) and the dark floor's light. The lint allows `backdrop-filter: none !important` anywhere.
 - **Compact tabs**: `<Tabs compact>` — 7px sides under 420px (10 elsewhere; the admin keeps 12) through one custom property, `--tab-px`, which the padding, the tab's own marker and the sliding underline all follow. The underline now reads the selected tab's padding when it is measured (`inset: "padding"`), so a page's own padding is followed too (it was a fixed 10px: 3px short at each end of the support tabs' 7px sides).
 - **Earlier requests found done**: the `pieces.css` lint findings (the phone crumbs' fade mask is written in `var(--ink)`; its two scroll-driven custom properties carry the documented allowance) — fixed in the fix round, `lint-design --strict` 0.
+
+### 15.12 Polish round 3 (2026-11-17): drawn moments and the last small requests
+
+**Wherever this subsection and the ones above disagree, this one wins.** `tests/sakuga.test.ts` holds a test for each.
+
+- **Drawn moments** — §7.4.
+- **Crumbs keep their words** on every trail (`.crumbs__list > li { white-space: nowrap }`; the trail wraps between crumbs, never inside «PlayStation 5 Pro»).
+- **The compatibility note reads at 16 / 1.75 up to 1023** (`.compat-badge__note`, 13 from 1024); the device hub's tablet override is gone.
+- **More contrast takes the gloss off**: `<Band gloss>`'s specular band, sheen and deepening go with the other showcase lights under `prefers-contrast: more` (the flat crimson stays); the account's local rule is gone.
+- **The admin's 44px hit areas, with a mouse too**: a dense key's `::after` reaches 44 past its 36–38px look; a dense menu row stays 36px to the eye, 4px apart, and its `::after` spans the gaps, so the rows' hit areas tile the menu at 44 each.
+- **`<Checkbox row clay>`**: the clay face of `<OptionCard clay>` for a checkbox question among clay option cards (the trade-in's accessories; `.used-clay` is gone). **A disabled option's icon goes quiet by itself** (no raised disc, `--ink-3`; `.used-payout` is gone).
+- **The order summary keeps names' tokens whole** whoever calls it (`keepTokens` on each line's name and option line — idempotent); checkout's local `.co-missing .key__label` line height is gone (`<Key wrap>` gives 1.45).

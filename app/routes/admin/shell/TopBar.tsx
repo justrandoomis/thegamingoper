@@ -74,6 +74,7 @@ const QUEUE_ICON: Record<ShellQueueId, IconName> = {
   reorder_suggestions: "lightning",
   rules_to_activate: "check-circle",
   automation_notices: "robot",
+  knowledge_review: "book-open",
 };
 import type { AdminShellData } from "./shell.server";
 

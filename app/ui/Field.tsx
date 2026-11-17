@@ -9,6 +9,7 @@ import {
 import { Icon, type IconName } from "~/art/Icon";
 import { useFormat, useT } from "~/i18n/react";
 import { cx } from "./cx";
+import { sakuga } from "./sakuga/fx";
 import { VisuallyHidden } from "./VisuallyHidden";
 
 /**
@@ -263,10 +264,13 @@ export type CheckboxProps = ChoiceProps & {
   /** v2.1: a checkbox ROW like the option cards — a bordered 64px row (a 2px ink border when checked), the label in
    *  16/600 and the hint inside the row under it («الجهاز يعمل · يُفحص عند الاستلام»). */
   row?: boolean;
+  /** With `row`: the clay face of <OptionCard clay> (the soft raised card, no hairline; checked keeps the 2px ink
+   *  border) — a checkbox question among clay option cards (the trade-in's accessories). */
+  clay?: boolean;
 };
 
 /** A paper box with a real border; checked = ink with a check. The whole row (≥ 44px) is the target. */
-export function Checkbox({ label, hint, error, className, id, indeterminate = false, count, end, row = false, ...input }: CheckboxProps) {
+export function Checkbox({ label, hint, error, className, id, indeterminate = false, count, end, row = false, clay = false, ...input }: CheckboxProps) {
   const ids = useFieldIds(id, hint, error);
   const f = useFormat();
   const ref = useRef<HTMLInputElement | null>(null);
@@ -275,7 +279,8 @@ export function Checkbox({ label, hint, error, className, id, indeterminate = fa
   }, [indeterminate]);
   return (
     <div className={cx("field", className)} data-invalid={error ? "" : undefined}>
-      <label className={cx("choice", row && "choice--row choice--check")} data-invalid={error ? "" : undefined}>
+      {/* pointerdown comes before the change: fetch the drawn moment's code then, so the first tick is not too late */}
+      <label className={cx("choice", row && "choice--row choice--check", row && clay && "choice--clay")} data-invalid={error ? "" : undefined} onPointerDown={(event) => sakuga.warm(event.currentTarget)}>
         <input
           {...input}
           ref={(element) => {
@@ -289,6 +294,11 @@ export function Checkbox({ label, hint, error, className, id, indeterminate = fa
           className="choice__input peer"
           aria-invalid={error ? true : undefined}
           aria-describedby={cx(ids.describedBy, input["aria-describedby"]) || undefined}
+          onChange={(event) => {
+            input.onChange?.(event);
+            // a drawn moment round the box (./sakuga: decoration after the state, never under reduced motion)
+            sakuga.check(event.currentTarget.nextElementSibling, event.currentTarget.checked);
+          }}
         />
         <span className={cx("choice__box", CHECKED_DISABLED_BOX)} aria-hidden="true">
           <Icon name={indeterminate ? "minus" : "check"} size={16} />
@@ -366,7 +376,7 @@ export function Switch({ label, hint, error, className, id, ...input }: SwitchPr
   const ids = useFieldIds(id, hint, error);
   return (
     <div className={cx("field", className)} data-invalid={error ? "" : undefined}>
-      <label className="choice choice--switch">
+      <label className="choice choice--switch" onPointerDown={(event) => sakuga.warm(event.currentTarget)}>
         <span className="choice__text">{label}</span>
         <input
           {...input}
@@ -375,6 +385,10 @@ export function Switch({ label, hint, error, className, id, ...input }: SwitchPr
           role="switch"
           className="choice__input"
           aria-describedby={cx(ids.describedBy, input["aria-describedby"]) || undefined}
+          onChange={(event) => {
+            input.onChange?.(event);
+            sakuga.toggle(event.currentTarget.nextElementSibling, event.currentTarget.checked);
+          }}
         />
         <span className="switch__track" aria-hidden="true">
           <span className="switch__knob" />

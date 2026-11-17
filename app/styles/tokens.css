@@ -122,6 +122,7 @@
   --z-scrim: 300;
   --z-sheet: 310;
   --z-dialog: 400;
+  --z-fx: 450; /* the drawn moments' canvas (app/ui/sakuga): over pages, sheets and dialogs, under toasts and the fly bead */
   --z-toast: 500;
   --z-fly: 600;
   --z-intro: 700;
@@ -338,6 +339,14 @@
   --on-band-key: #be0f27; /* label of the white key on crimson (theme-invariant) */
   --on-red: #ffffff; /* label on red and crimson faces */
   --on-color: #ffffff; /* text on crimson and platform surfaces: always solid white, never translucent */
+
+  /* drawn moments (app/ui/sakuga, DESIGN.md §7.4): the brand red family for the canvas effects — a paper-white light
+     side, a pale red shadow tone, the deep red outline, the brand red for needles, slashes and wedges */
+  --fx-fill: #ffffff;
+  --fx-shade: #f9c4ca;
+  --fx-line: var(--red-deep);
+  --fx-accent: var(--red);
+  --fx-ink: var(--ink);
 
   /* state: always with words */
   --danger: #b42318; /* field errors and the error summary — never brand red */
@@ -577,6 +586,14 @@
   --on-band-key: #be0f27;
   --on-red: #ffffff;
   --on-color: #ffffff;
+
+  /* drawn moments on charcoal: a warm rose light side (pure white glared), a rose shadow tone, a brand-red outline
+     (the light theme's deep red sank into the page) and a lighter red for the needles, so they read on --ground */
+  --fx-fill: #ffe4e7;
+  --fx-shade: #f38894;
+  --fx-line: var(--red);
+  --fx-accent: #ff5466;
+  --fx-ink: var(--ink);
 
   --danger: #ff8a80;
   --danger-tint: rgb(255 138 128 / 0.1);

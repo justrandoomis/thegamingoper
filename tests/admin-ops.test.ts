@@ -64,7 +64,8 @@ import {
 import { DAY_MS, HOUR_MS, MINUTE_MS, OPS_ERROR_KEYS, addDays, baghdadDay, baghdadDayEnd, parseErrorFilters, parseFindingFilters, parseIncidentFilters, parseOutboxFilters, parsePerfFilters, parseRunFilters, toBaghdadInput } from "~/server/services/admin/ops/types";
 import opsMessages from "~/i18n/messages/admin-ops";
 import sharedErrors from "~/i18n/messages/errors";
-import { TEST_NOW, createTestDb, type TestDb } from "./helpers/db";
+import { jobsEnv } from "~/routes/admin/ops/ops.server";
+import { TEST_NOW, TEST_VARS, createTestDb, type TestDb } from "./helpers/db";
 import { fixtures, type Fixtures } from "./helpers/factories";
 
 const NOW = TEST_NOW;
@@ -176,6 +177,23 @@ describe("authorization", () => {
     const manager = await opsQueueCounts(t.db, people.manager.actor, NOW);
     expect(typeof manager.criticalFindings).toBe("number");
     expect(typeof manager.failingJobs).toBe("number");
+  });
+
+  test("every scheduled job has a name and a description in ar, en and ckb; a run by hand gets the store's origin (follow-ups 2026-11-17)", () => {
+    const words = (locale: string, job: string) => {
+      let node: unknown = (opsMessages as unknown as Record<string, { job: unknown }>)[locale].job;
+      for (const part of job.split(".")) node = (node as Record<string, unknown> | undefined)?.[part];
+      return node as { name?: unknown; about?: unknown } | undefined;
+    };
+    for (const locale of ["ar", "en", "ckb"]) {
+      for (const job of JOB_NAMES) {
+        expect(words(locale, job)?.name, `${locale} ${job} name`).toEqual(expect.any(String));
+        expect(words(locale, job)?.about, `${locale} ${job} about`).toEqual(expect.any(String));
+      }
+    }
+    // the marketing jobs are skipped without PUBLIC_ORIGIN: "run now" from ops must pass it like the schedule does
+    expect(jobsEnv().PUBLIC_ORIGIN).toBe(TEST_VARS.PUBLIC_ORIGIN);
+    expect(jobsEnv().KV).toBeDefined();
   });
 
   test("every error code of the module has a text in ar, en and ckb", () => {

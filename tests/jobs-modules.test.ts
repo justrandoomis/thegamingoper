@@ -4,10 +4,11 @@
  *
  *   every five minutes  automation.run                     runAutomation (the active rules; the stock-out scan hourly)
  *                       marketing.campaigns.release         releaseDueCampaigns (approved campaigns whose time came)
- *                       — both before outbox.deliver
- *   every night         marketing.cart_reminders.prepare    prepareCartReminders (one held reminder per abandoned cart;
- *                                                           nightly for its D1 reads, gated by a cheap index check)
- *                       automation.forecasts.store          storeDemandForecasts, before the consistency checks
+ *                       marketing.cart_reminders.prepare    prepareCartReminders (one held reminder per abandoned cart;
+ *                                                           gated by a cheap index check; every five minutes again
+ *                                                           since 2026-11-17, its cart list reading each line once)
+ *                       — all three before outbox.deliver
+ *   every night         automation.forecasts.store          storeDemandForecasts, before the consistency checks
  *
  * Each one the way the other jobs run: a job_runs row with its counters, a run with nothing to do succeeded, a second
  * run (or two at once) adds nothing, a failing one fails alone, messages held and never sent, demo carts left to the
@@ -17,7 +18,7 @@
  */
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 import { newId } from "~/lib/ids";
 import type { L10n } from "~/lib/locales";
@@ -25,7 +26,7 @@ import type { EmployeeActor } from "~/server/actor";
 import { cartItems, cartReminders, carts, consents, jobRuns, platforms, products, stockLevels, stockMovements, variants } from "~/server/db/schema";
 import { DEFAULT_LOCATION_ID } from "~/server/db/seed/reference";
 import { runBatch } from "~/server/db/tx.server";
-import { CRON_DAILY, CRON_FREQUENT, JOB_NAMES, SCHEDULES, automationScanDue, runJob, runScheduledJobs } from "~/server/jobs.server";
+import { CRON_DAILY, CRON_FREQUENT, JOB_NAMES, SCHEDULES, automationScanDue, cartToRemindQuery, runJob, runScheduledJobs } from "~/server/jobs.server";
 import { defaultRolePermissions } from "~/server/permissions";
 import { monthKey, monthStart } from "~/server/services/admin/automation/forecast";
 import { listSuggestions } from "~/server/services/admin/automation/suggestions.server";
@@ -135,7 +136,7 @@ async function abandonedCart(customerId: string, item: Shelf, idleFor = 3 * HOUR
 // ───────────────────────────────────────────────────────────────── the schedules
 
 describe("schedules", () => {
-  test("every five minutes the automation rules and the campaigns run before the outbox; every night the cart reminders and the forecasts before the checks", () => {
+  test("every five minutes the automation rules, the campaigns and the cart reminders run before the outbox; every night the forecasts before the checks", () => {
     expect(SCHEDULES[CRON_FREQUENT]).toEqual([
       "orders.expire_unpaid",
       "inventory.reservations.expire",
@@ -143,9 +144,11 @@ describe("schedules", () => {
       "support.tickets.route",
       "automation.run",
       "marketing.campaigns.release",
+      "marketing.cart_reminders.prepare",
       "outbox.deliver",
     ]);
-    expect(SCHEDULES[CRON_DAILY].slice(-3)).toEqual(["marketing.cart_reminders.prepare", "automation.forecasts.store", "consistency.daily"]);
+    expect(SCHEDULES[CRON_DAILY].slice(-2)).toEqual(["automation.forecasts.store", "consistency.daily"]);
+    expect(SCHEDULES[CRON_DAILY]).not.toContain("marketing.cart_reminders.prepare");
     expect(automationScanDue(NOW)).toBe(true);
     expect(automationScanDue(NOW + 5 * 60_000)).toBe(false);
     expect(automationScanDue(NOW + 55 * 60_000)).toBe(false);
@@ -227,6 +230,12 @@ describe("automation.run", () => {
     const quiet = await runJob(t.db, "automation.run", at + HOUR);
     expect(quiet).toMatchObject({ status: "succeeded", stats: { scanned: 1, suggestionsCreated: 0 } });
     expect((await listSuggestions(t.db, owner, filters, "ar", at + HOUR)).lastScanAt).toBe(at + HOUR);
+    // a run that only ran the active rules (succeeded, scanned 0) checked no stock: "last checked" stays on the scan
+    await t.d1
+      .prepare("INSERT INTO job_runs (id, job, status, origin, started_at, finished_at, stats) VALUES (?, 'automation.run', 'succeeded', 'cron', ?, ?, ?)")
+      .bind(`rules-only-${at}`, at + HOUR + 5 * 60_000, at + HOUR + 5 * 60_000, JSON.stringify({ rules: 1, runs: 1, scanned: 0 }))
+      .run();
+    expect((await listSuggestions(t.db, owner, filters, "ar", at + HOUR + 5 * 60_000)).lastScanAt).toBe(at + HOUR);
     expect(await rows("SELECT id FROM reorder_suggestions WHERE variant_id = ?", product.variantId)).toHaveLength(1);
     expect(await rows("SELECT actor_kind, actor_id FROM audit_events WHERE entity_type = 'reorder_suggestion' AND actor_kind = 'system'")).toContainEqual({ actor_kind: "system", actor_id: "automation.run" });
   });
@@ -324,6 +333,19 @@ describe("marketing.campaigns.release", () => {
 // ───────────────────────────────────────────────────────────────── 16.02 cart reminders (every five minutes)
 
 describe("marketing.cart_reminders.prepare", () => {
+  test("its five-minute gate seeks cart_items by index even where migration 0005 is not applied yet (production before db:migrate:remote) — review 2026-11-17", async () => {
+    const plan = async () => (await t.db.all<{ detail: string }>(sql`EXPLAIN QUERY PLAN ${cartToRemindQuery(NOW)}`)).map((row) => row.detail).join(" | ");
+    expect(await plan()).not.toMatch(/SCAN (ci|cart_items)\b/);
+    await t.d1.prepare("DROP INDEX cart_items_cart_idx").run();
+    try {
+      const without = await plan();
+      expect(without).toMatch(/cart_items_cart_(variant|used_unit)_uq/);
+      expect(without).not.toMatch(/SCAN (ci|cart_items)\b/);
+    } finally {
+      await t.d1.prepare("CREATE INDEX `cart_items_cart_idx` ON `cart_items` (`cart_id`)").run();
+    }
+  });
+
   test("an abandoned cart of a consenting customer gets one held reminder with the store's link; two runs at once and the next run add none; a demo customer's cart is left alone", async () => {
     const item = await shelf("carts");
     const real = await account();

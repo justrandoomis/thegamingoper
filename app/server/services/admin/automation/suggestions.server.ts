@@ -289,7 +289,10 @@ export async function listSuggestions(db: Db, actor: Actor, filters: SuggestionF
     db.all<{ status: string; n: number }>(sql`
       SELECT rs.status AS status, count(*) AS n FROM reorder_suggestions AS rs JOIN variants AS v ON v.id = rs.variant_id JOIN products AS p ON p.id = v.product_id
       WHERE 1 = 1 ${text} GROUP BY rs.status`),
-    db.all<{ at: number | null }>(sql`SELECT max(started_at) AS at FROM job_runs WHERE job = 'automation.run' AND status = 'succeeded'`),
+    // the newest run that scanned (stats.scanned = 1; a run of the active rules alone checked no stock): walks
+    // job_runs_job_idx backwards from the newest run, about an hour of runs (the scan runs hourly). "+status" keeps
+    // SQLite off job_runs_status_idx (every job's succeeded runs)
+    db.all<{ at: number | null }>(sql`SELECT started_at AS at FROM job_runs WHERE job = 'automation.run' AND +status = 'succeeded' AND json_extract(stats, '$.scanned') = 1 ORDER BY started_at DESC LIMIT 1`),
     // a person's "check now", or their "run the active rules now" whose scan ran (runAutomation's stats.scanned)
     db.all<{ at: number | null }>(sql`SELECT max(at) AS at FROM audit_events WHERE action = 'automation.suggestion.scan' OR (action = 'automation.rule.run_now' AND json_extract(after, '$.scanned') = 1)`),
   ]);

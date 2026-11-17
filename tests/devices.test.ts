@@ -642,7 +642,7 @@ describe("the hub, QA fixes (wave C, 2026-11-13)", () => {
     // QA 2026-11-13: highlights, spec values, edition and version notes, the rule's notes and the sources were 14 / 1.5
     // (13 / 1.5) on a phone — 328 runs of 14px and 93 of 13px against 8 of 16px on /device/steam-deck-oled at 390
     const css = area("devices.css");
-    const components = css.slice(0, css.indexOf("@layer utilities"));
+    const components = css.includes("@layer utilities") ? css.slice(0, css.indexOf("@layer utilities")) : css;
     const phone = components.slice(components.lastIndexOf("@media (max-width: 63.99rem) {"));
     const reading = phone.slice(0, phone.indexOf("}"));
     for (const selector of [".devhub-read", ".devhub-hint", ".devhub-specs dd", ".devhub-table td", ".devhub-sources .link"]) expect(reading, selector).toContain(selector);
@@ -651,9 +651,11 @@ describe("the hub, QA fixes (wave C, 2026-11-13)", () => {
     // desktop columns keep v2's sizes
     expect(components).toMatch(/\.devhub-read \{\s*font: var\(--type-sm\);/);
     expect(components).toMatch(/\.devhub-hint \{\s*font: var\(--type-xs\);/);
-    // the kit's compatibility note reads at 16 on phones itself (polish 2026-11-17); the hub keeps it at 16 on tablets
+    // the kit's compatibility note reads at 16 on phones and tablets itself (polish 2026-11-17): no hub override left
     expect(css).not.toMatch(/\[data-compat\] > span \+ span/);
-    expect(css.slice(css.indexOf("@layer utilities"))).toMatch(/@media \(min-width: 48rem\) and \(max-width: 63\.99rem\) \{\s*\.devhub-note \.compat-badge__note \{\s*font: var\(--type-read\);/);
+    expect(css.replace(/\/\*[\s\S]*?\*\//g, "")).not.toMatch(/\.compat-badge__note/);
+    const kit = readFileSync(fileURLToPath(new URL("../app/styles/components.css", import.meta.url)), "utf8");
+    expect(kit).toMatch(/@media \(max-width: 63\.99rem\) \{\s*\.compat-badge__note \{\s*font: var\(--type-read\);/);
     // the reading runs use the reading classes, not v2's small type utilities
     const versions = area("components/VersionsSection.tsx");
     expect(versions).not.toMatch(/className="[^"]*\btype-sm\b[^"]*"/);

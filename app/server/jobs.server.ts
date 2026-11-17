@@ -21,6 +21,10 @@
  *       marketing.campaigns.release    approved message campaigns whose time has come, released as the system
  *                                      (admin 16.01, releaseDueCampaigns) — messages HELD in the outbox, never sent
  *                                      — needs `env.PUBLIC_ORIGIN` for the links: skipped without it
+ *       marketing.cart_reminders.prepare  one held reminder per abandoned cart of a known, consenting customer
+ *                                      (admin 16.02, prepareCartReminders; real carts only, the rules checked in the write).
+ *                                      Gated by an index-only check, then its cart list reads each cart's lines once
+ *                                      (see prepareReminders); needs `env.PUBLIC_ORIGIN`: skipped without it
  *       outbox.deliver                 sends queued messages — only when message providers are passed in
  *                                      `env.providers`. None is configured, so it is recorded as skipped.
  *   "30 0 * * *"     DAILY — 00:30 UTC = 03:30 Asia/Baghdad
@@ -54,10 +58,6 @@
  *                                      syncCommissionsJob)
  *       ops.telemetry.purge            error reports and slow-request rollups older than 90 days, an incident's
  *                                      evidence kept (admin 23.01/23.02, purgeOpsTelemetry)
- *       marketing.cart_reminders.prepare  one held reminder per abandoned cart of a known, consenting customer
- *                                      (admin 16.02, prepareCartReminders; real carts only, the rules checked in the write).
- *                                      DAILY, not every five minutes, for its D1 reads (see prepareReminders); needs
- *                                      `env.PUBLIC_ORIGIN`: skipped without it
  *       automation.forecasts.store     next month's demand forecast of every SKU that has one → `demand_forecasts`
  *                                      (admin 19.05, storeDemandForecasts; upserted, a second run replaces its figures)
  *       consistency.daily              stock vs movements, stock vs reservations, wallet ledger vs journal,
@@ -148,6 +148,7 @@ export const JOB_NAMES = [
   "support.tickets.route",
   "automation.run",
   "marketing.campaigns.release",
+  "marketing.cart_reminders.prepare",
   "outbox.deliver",
   "audit.seal",
   "ratelimits.cleanup",
@@ -162,7 +163,6 @@ export const JOB_NAMES = [
   "promotions.gift_cards.expire",
   "staff.commissions.sync",
   "ops.telemetry.purge",
-  "marketing.cart_reminders.prepare",
   "automation.forecasts.store",
   "consistency.daily",
 ] as const;
@@ -180,6 +180,7 @@ export const SCHEDULES: Record<string, readonly JobName[]> = {
     "support.tickets.route",
     "automation.run",
     "marketing.campaigns.release",
+    "marketing.cart_reminders.prepare",
     "outbox.deliver",
   ],
   [CRON_DAILY]: [
@@ -197,7 +198,6 @@ export const SCHEDULES: Record<string, readonly JobName[]> = {
     "promotions.gift_cards.expire",
     "staff.commissions.sync",
     "ops.telemetry.purge",
-    "marketing.cart_reminders.prepare",
     "automation.forecasts.store",
     "consistency.daily",
   ],
@@ -683,12 +683,12 @@ async function releaseCampaigns(db: Db, { now, env }: JobContext): Promise<JobRe
  * write, one reminder per cart ever — a second run adds nothing. REAL carts only: demo customers' carts are left to the
  * module's own button. Held, never sent (no provider). No cart due a reminder is a run with nothing to do.
  *
- * D1 READ COST: prepareCartReminders' cart list scans `cart_items` once per cart and per figure (its cart_id indexes
- * are partial, so a plain `cart_id = c.id` cannot use them): ≈ 264,000 rows a run on the demo data — 76 million a day
- * every five minutes. So it runs DAILY (requested of its owner: the list rewritten to read each line once, after which
- * it can return to the five-minute schedule), and only when the cheap check below finds a cart it could remind: an
- * index range over `carts.updated_at` (the 7-day window up to 2 hours ago), each such cart's customer by key, its
- * reminder by the (cart_id, step) unique index and its lines by the partial indexes (the predicates name them).
+ * D1 READ COST (measured 2026-11-17 on the dev data, 230 carts in the window): the cheap check below reads about 340
+ * rows a run — an index range over `carts.updated_at` (the 7-day window up to 2 hours ago), guest carts dropped before
+ * anything else, each remaining cart's reminder by the (cart_id, step) unique index, its lines by the partial
+ * (cart_id, …) indexes (so it stays index-only before migration 0005 reaches a database) and its customer by key. Only when it finds a cart does prepareCartReminders run: its cart list
+ * reads each cart's lines once (about 1,700 rows; it read 270,000 when the cart_id indexes were only the partial
+ * ones), so the job runs every five minutes again.
  */
 async function prepareReminders(db: Db, { now, runId, env }: JobContext): Promise<JobResult> {
   const origin = publicOrigin(env);
@@ -709,16 +709,26 @@ async function prepareReminders(db: Db, { now, runId, env }: JobContext): Promis
  * prepareCartReminders reminds (consent and the per-person limit are its own) — only a gate, index seeks only.
  */
 async function anyCartToRemind(db: Db, now: number): Promise<boolean> {
+  const rows = await db.all<{ id: string }>(cartToRemindQuery(now));
+  return rows.length > 0;
+}
+
+/**
+ * anyCartToRemind's statement (exported for tests/jobs-modules.test.ts, which checks its plan). A cart's lines are
+ * asked in two halves whose predicates name the PARTIAL (cart_id, …) unique indexes of 0000, so the gate seeks by index
+ * with or without cart_items_cart_idx: a production database the 0005 migration has not reached yet would otherwise
+ * scan cart_items once per cart, every five minutes (review 2026-11-17; same rows read with 0005 applied).
+ */
+export function cartToRemindQuery(now: number): SQL {
   const idle = now - CART_RECOVERY.idleHours * 3_600_000;
   const oldest = now - CART_RECOVERY.maxAgeDays * 86_400_000;
-  const rows = await db.all<{ id: string }>(sql`
+  return sql`
     SELECT c.id FROM carts c JOIN customers cu ON cu.id = c.customer_id
-    WHERE c.updated_at >= ${oldest} AND c.updated_at <= ${idle} AND c.converted_order_id IS NULL AND cu.is_demo = 0
+    WHERE c.updated_at >= ${oldest} AND c.updated_at <= ${idle} AND c.converted_order_id IS NULL AND c.customer_id IS NOT NULL AND cu.is_demo = 0
       AND NOT EXISTS (SELECT 1 FROM cart_reminders cr WHERE cr.cart_id = c.id)
       AND (EXISTS (SELECT 1 FROM cart_items ci WHERE ci.cart_id = c.id AND ci.used_unit_id IS NULL)
         OR EXISTS (SELECT 1 FROM cart_items ci WHERE ci.cart_id = c.id AND ci.used_unit_id IS NOT NULL))
-    LIMIT 1`);
-  return rows.length > 0;
+    LIMIT 1`;
 }
 
 /**

@@ -41,6 +41,7 @@ import { productShareImage } from "~/art";
 import { messagesFor } from "~/i18n/i18n.server";
 import { LocaleLink, useLocale, useT } from "~/i18n/react";
 import { makeT, type MessageTree } from "~/i18n/translate";
+import { keepTokens } from "~/lib/keep-tokens";
 import { DEFAULT_LOCALE, isLocale, localePath, type Locale } from "~/lib/locales";
 import { formatMoney } from "~/lib/money";
 import { getCustomer } from "~/server/auth/customer.server";
@@ -81,7 +82,7 @@ import { StageCard, stageBack, stageGel } from "./components/StageCard";
 import { VariantPicker } from "./components/VariantPicker";
 import { useProductT } from "./i18n";
 import { jsonForScript, productJsonLd } from "./jsonld";
-import { factLine, factRow, isLongName, keepTokens, proseWithoutPreorder, withoutPreorder } from "./text";
+import { factLine, factRow, isLongName, proseWithoutPreorder, withoutPreorder } from "./text";
 import { onlyVariantChanged, useVariantInUrl } from "./useVariant";
 
 import "./product.css";

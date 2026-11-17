@@ -42,9 +42,9 @@ import { Stage } from "~/ui/Stage";
 import { TextLink } from "~/ui/TextLink";
 import { PriceBlock, struckPrice, useDemoStore } from "./components/PriceBlock";
 import { VariantPicker } from "./components/VariantPicker";
-import { useFocusHandoff } from "./handoff";
+import { useFocusHandoff } from "~/ui/focus-handoff";
 import { ProductMessages, useProductT } from "./i18n";
-import { keepTokens } from "./text";
+import { keepTokens } from "~/lib/keep-tokens";
 import { searchFor, shownDefault } from "./useVariant";
 
 export type QuickPreviewProps = {

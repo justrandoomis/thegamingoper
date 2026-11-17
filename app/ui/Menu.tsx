@@ -247,6 +247,9 @@ function MenuLayer(props: LayerProps) {
 
 const ROW =
   "relative flex min-h-11 w-full cursor-pointer select-none items-center gap-3 rounded-sm px-3 py-1.5 text-start type-label text-ink outline-none admin:pointer-fine:min-h-9 " +
+  // the admin's dense 36px rows keep a 44px hit area without growing their look: 4px apart above and below, and an
+  // ::after that reaches across those gaps, so the rows' hit areas tile the menu exactly (admin-ux review 2026-11-17)
+  "admin:pointer-fine:my-1 admin:pointer-fine:after:absolute admin:pointer-fine:after:inset-x-0 admin:pointer-fine:after:-inset-y-1 admin:pointer-fine:after:content-[''] " +
   // the highlighted row: a niche fill and an ink bar on its inline-start edge (DESIGN.md §10, command palette)
   "before:pointer-events-none before:absolute before:inset-y-2 before:start-0 before:w-[3px] before:rounded-full before:bg-ink before:opacity-0 focus:bg-niche focus:before:opacity-100 " +
   "aria-disabled:cursor-default aria-disabled:text-ink-3";

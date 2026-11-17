@@ -1,7 +1,8 @@
 /**
- * Focus that survives a swap (WCAG 2.4.3) — the kit's copy of app/routes/storefront/product/handoff.ts (polish round
- * 2026-11-13; the product page keeps its own until it switches). After an add, the kit's <BuyBar> (the used-unit page,
- * the product page's sold-out and coming-soon states) replaces «أضف إلى السلة» with «عرض السلة (n)». Removing the
+ * Focus that survives a swap (WCAG 2.4.3) — moved to the kit from app/routes/storefront/product/handoff.ts (polish
+ * round 2026-11-13; the product page's copy deleted 2026-11-17, so this is the only one). After an add, the kit's
+ * <BuyBar> (the used-unit page, the product page's sold-out and coming-soon states), the product page's phone bar
+ * (BuyStrip) and the quick look's pinned foot (QuickPreview) replace «أضف إلى السلة» with «عرض السلة (n)». Removing the
  * focused key dropped focus to <body>, so the next Tab started again at the top of the page. Now the new key takes
  * focus, without scrolling, when focus was on what the swap replaced; a shopper who moved on while the add was on its
  * way is never pulled back. The live region still says «أُضيف … إلى السلة».

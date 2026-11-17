@@ -738,6 +738,12 @@ select.field__input {
   border-color: var(--line);
   background: var(--niche);
 }
+/* an option that cannot be chosen: its icon goes as quiet as its words — no raised disc, an --ink-3 glyph (an ink icon
+   in a raised disc on a greyed card read as a choice that works; the trade-in payout drew this locally, 2026-11-13) */
+.choice:has(> .choice__input:disabled) > .choice__icon {
+  box-shadow: none;
+  color: var(--ink-3);
+}
 /* option card (version, payment, answer): min 64 (payment 72), a radio at the start, a title, one hint line and the
  * option's own price or a word mark at the end; chosen = a 2px ink border (the padding gives the pixel back) */
 .choice--row {
@@ -2407,13 +2413,14 @@ select.field__input {
   color: var(--ink-2);
 }
 /* <CompatBadge note>: the rule's note under the state («يعمل بشرط …») — reading text on phones (G7: 16 / 1.75; polish
-   round 2026-11-13, it was 13px under the device hub's cards), 13px from 768. A class, not a type utility: the
-   utilities layer would beat this phone size */
+   round 2026-11-13, it was 13px under the device hub's cards) and on tablets up to 1023 (polish 2026-11-17: the hub's
+   other reading runs are 16 there; its local override went), 13px from 1024. A class, not a type utility: the
+   utilities layer would beat this reading size */
 .compat-badge__note {
   font: var(--type-xs);
   color: var(--ink-2);
 }
-@media (max-width: 47.99rem) {
+@media (max-width: 63.99rem) {
   .compat-badge__note {
     font: var(--type-read);
   }
@@ -2661,6 +2668,11 @@ select.field__input {
   gap: 2px 4px;
   font: var(--type-sm);
   color: var(--ink-2);
+}
+/* every trail: a crumb keeps its words on one line (the trail wraps between crumbs, never inside «PlayStation 5 Pro»)
+   — base.css gives every li `text-wrap: pretty`, which let a crumb break (browse's request, polish 2026-11-17) */
+.crumbs__list > li {
+  white-space: nowrap;
 }
 .crumbs__link {
   display: inline-flex;

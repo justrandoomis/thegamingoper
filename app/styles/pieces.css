@@ -577,3 +577,25 @@
   max-inline-size: none;
   margin-block: 0;
 }
+
+/* ───────────────────────────── drawn moments (DESIGN.md §7.4, app/ui/sakuga) ─────────────────────────────
+ * The one canvas the vendored core adds to <body> on the first moment (class "sakuga-fx", aria-hidden): fixed over the
+ * viewport (the core sets its size in px), never a target, over pages, sheets and dialogs but under the toasts and the
+ * fly bead (--z-fx), never printed. Fixed: it takes no space, so it shifts nothing. */
+.sakuga-fx {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  /* its own LTR, so inset-inline-start is the LEFT edge in an RTL page too: the core sizes the canvas to innerWidth,
+     which counts a classic scrollbar, and draws from x = 0 at the left — right-anchored, it hung ~17px past the left
+     edge and every moment drew that far off its control (review 2026-11-17) */
+  direction: ltr;
+  pointer-events: none;
+  z-index: var(--z-fx);
+  contain: strict;
+}
+@media print {
+  .sakuga-fx {
+    display: none !important;
+  }
+}

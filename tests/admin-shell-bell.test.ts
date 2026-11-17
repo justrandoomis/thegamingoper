@@ -17,6 +17,8 @@
  *   reorder_suggestions  automation.suggestion.approve + .read  /admin/automation/suggestions (automationQueueCounts)
  *   rules_to_activate    automation.workflow.activate + .read   /admin/automation/rules?ready=1
  *   automation_notices   a notice's audience (automation.*.read) /admin/automation#notices
+ *   knowledge_review     support.knowledge.approve          /admin/support/knowledge?view=review (countArticlesToApprove,
+ *                                                          follow-ups 2026-11-17)
  *
  * The module functions without an easy fixture here are wrapped (pass-through unless a test sets a figure): the rules
  * tests prove the bell asks them only for the employees they concern; the modules' own tests prove their counts.
@@ -34,9 +36,10 @@ import { defaultRolePermissions, type Permission } from "~/server/permissions";
 import { listProducts, parseProductFilters } from "~/server/services/admin/catalog/product.server";
 import { listDeliveries } from "~/server/services/admin/channels/webhooks.server";
 import { parseDeliveryFilters } from "~/server/services/admin/channels/types";
-import { listPayouts } from "~/server/services/admin/finance/wallets.server";
+import { countDecidablePayouts, listPayouts } from "~/server/services/admin/finance/wallets.server";
 import { listReviewQueue } from "~/server/services/admin/orders/risk.server";
 import { listRepairs } from "~/server/services/admin/returns/repair.server";
+import { countArticlesToApprove, decideArticle, getArticleEditor, listArticles, saveArticle, submitArticle } from "~/server/services/admin/support/knowledge.server";
 import { parseRepairFilters } from "~/server/services/admin/returns/types";
 import { eq } from "drizzle-orm";
 import { TEST_NOW, createTestDb, type TestDb } from "./helpers/db";
@@ -166,7 +169,7 @@ function sessionOf(person: Person): EmployeeSession {
 const queueOf = (waiting: ShellWaiting, id: ShellQueueId) => waiting.queues.find((entry) => entry.id === id) ?? null;
 const waitingFor = async (person: Person) => loadWaiting(t.db, sessionOf(person), NOW);
 
-const NEW_QUEUES = ["order_reviews", "catalog_review", "used_prices", "wallet_payouts", "refund_reviews", "rma_quarantine", "repairs_late", "campaign_approvals", "campaigns_due", "review_moderation", "webhooks_gave_up", "reorder_suggestions", "rules_to_activate", "automation_notices"] as const satisfies readonly ShellQueueId[];
+const NEW_QUEUES = ["order_reviews", "catalog_review", "used_prices", "wallet_payouts", "refund_reviews", "rma_quarantine", "repairs_late", "campaign_approvals", "campaigns_due", "review_moderation", "webhooks_gave_up", "reorder_suggestions", "rules_to_activate", "automation_notices", "knowledge_review"] as const satisfies readonly ShellQueueId[];
 
 // ───────────────────────────────────────────────────────────────── rules
 
@@ -324,6 +327,42 @@ describe("each count is what its link's list shows that employee", () => {
     // the asker is not asked to decide their own request; who only reads the wallets is not asked at all
     expect(queueOf(await waitingFor(asker), "wallet_payouts")).toBeNull();
     expect(queueOf(await waitingFor(await employeeWith(["finance.wallet.read"])), "wallet_payouts")).toBeNull();
+    // the figure is finance's own countDecidablePayouts (null = no right: the queue is hidden)
+    expect(await countDecidablePayouts(t.db, decider.actor)).toBe(queue!.count);
+    expect(await countDecidablePayouts(t.db, asker.actor)).toBe(0);
+    expect(await countDecidablePayouts(t.db, (await employeeWith(["finance.wallet.read"])).actor)).toBeNull();
+  });
+
+  test("support: help articles waiting for approval — articles in review and pending revisions, never to who wrote that version (follow-ups 2026-11-17)", async () => {
+    const writer = await employeeWith(["support.knowledge.manage", "support.knowledge.approve"]);
+    const reviewer = await employeeWith(["support.knowledge.approve"]);
+    const agent = await employeeWith(["support.ticket.read"]);
+    const article = (slug: string, titleAr: string) => ({ slug, kind: "guide" as const, audience: "public" as const, titleAr, bodyAr: "## قبل أن تبدأ\nافصل الجهاز عن الكهرباء.", reason: "مقال" });
+    expect(queueOf(await waitingFor(reviewer), "knowledge_review")).toBeNull();
+
+    // an article submitted for review
+    const first = await saveArticle(t.db, writer.actor, article("bell-review-one", "تنظيف مراوح الجهاز"), NOW);
+    await submitArticle(t.db, writer.actor, { articleId: first.articleId, expectedUpdatedAt: (await getArticleEditor(t.db, writer.actor, first.articleId)).updatedAt }, NOW + 1);
+    expect(queueOf(await waitingFor(reviewer), "knowledge_review")).toEqual({ id: "knowledge_review", module: "support", count: 1, href: "/admin/support/knowledge?view=review" });
+    // an approved article with a revision waiting (the help centre keeps the approved text until it is decided)
+    const second = await saveArticle(t.db, writer.actor, article("bell-review-two", "تحديث برنامج اليد"), NOW);
+    await submitArticle(t.db, writer.actor, { articleId: second.articleId, expectedUpdatedAt: (await getArticleEditor(t.db, writer.actor, second.articleId)).updatedAt }, NOW + 1);
+    await decideArticle(t.db, reviewer.actor, { articleId: second.articleId, decision: "approve", expectedUpdatedAt: (await getArticleEditor(t.db, reviewer.actor, second.articleId)).updatedAt }, NOW + 2);
+    expect(queueOf(await waitingFor(reviewer), "knowledge_review")?.count).toBe(1);
+    await saveArticle(t.db, writer.actor, { ...article("bell-review-two", "تحديث برنامج اليد (نسخة جديدة)"), articleId: second.articleId, expectedUpdatedAt: (await getArticleEditor(t.db, writer.actor, second.articleId)).updatedAt }, NOW + 3);
+    const queue = queueOf(await waitingFor(reviewer), "knowledge_review");
+    expect(queue?.count).toBe(2);
+    expect(await countArticlesToApprove(t.db, reviewer.actor)).toBe(2);
+    // the link's list shows exactly those rows
+    expect((await listArticles(t.db, reviewer.actor, { view: "review", q: "" }, "ar")).rows.map((row) => row.slug).sort()).toEqual(["bell-review-one", "bell-review-two"]);
+    // who wrote both versions may not approve them: not asked; an agent who only reads is not asked either
+    expect(queueOf(await waitingFor(writer), "knowledge_review")).toBeNull();
+    expect(await countArticlesToApprove(t.db, writer.actor)).toBe(0);
+    expect(queueOf(await waitingFor(agent), "knowledge_review")).toBeNull();
+    expect(await countArticlesToApprove(t.db, agent.actor)).toBeNull();
+    // approved: nothing waits any more
+    await decideArticle(t.db, reviewer.actor, { articleId: first.articleId, decision: "approve", expectedUpdatedAt: (await getArticleEditor(t.db, reviewer.actor, first.articleId)).updatedAt }, NOW + 4);
+    expect(queueOf(await waitingFor(reviewer), "knowledge_review")?.count).toBe(1);
   });
 
   test("returns: repairs past their target date — the repairs list's «late» view", async () => {

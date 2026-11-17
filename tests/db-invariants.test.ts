@@ -314,6 +314,14 @@ describe("schema and migrations", () => {
     }
   });
 
+  test("migration 0005: cart_items has a plain cart_id index, and a cart's lines are read by it (the unique ones are partial)", async () => {
+    const index = await t.d1.prepare("SELECT sql FROM sqlite_master WHERE type = 'index' AND name = 'cart_items_cart_idx'").first<{ sql: string }>();
+    expect(index?.sql).toMatch(/ON `cart_items` \(`cart_id`\)$/);
+    const plan = async (query: string) => (await t.d1.prepare(`EXPLAIN QUERY PLAN ${query}`).bind("crt_x").all<{ detail: string }>()).results.map((row) => row.detail).join(" | ");
+    expect(await plan("SELECT id, qty FROM cart_items WHERE cart_id = ?")).toContain("USING INDEX cart_items_cart_idx (cart_id=?)");
+    expect(await plan("SELECT COUNT(*) FROM cart_items WHERE cart_id = ?")).toMatch(/USING COVERING INDEX cart_items_cart_idx/);
+  });
+
   test("every foreign key column leads an index", async () => {
     const unindexed = (
       await t.d1
@@ -459,7 +467,7 @@ describe("resetting a database (scripts/db-reset.ts)", () => {
       const left = (await d1.prepare("SELECT name FROM sqlite_master WHERE name NOT LIKE 'sqlite\\_%' ESCAPE '\\' AND name NOT LIKE '\\_cf\\_%' ESCAPE '\\'").all<{ name: string }>()).results;
       expect(left).toEqual([]);
 
-      expect(await applyMigrations(d1)).toEqual(["0000_base.sql", "0001_invariants.sql", "0002_search.sql", "0003_append_only_no_replace.sql", "0004_accounts_access_ops.sql"]);
+      expect(await applyMigrations(d1)).toEqual(["0000_base.sql", "0001_invariants.sql", "0002_search.sql", "0003_append_only_no_replace.sql", "0004_accounts_access_ops.sql", "0005_cart_items_cart_idx.sql"]);
       expect(await applyMigrations(d1)).toEqual([]);
       await seedReference(db, NOW);
       expect((await db.select().from(governorates)).length).toBe(19);

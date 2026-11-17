@@ -19,7 +19,7 @@
  */
 import type { ReactNode } from "react";
 
-import { keepTokens } from "../text";
+import { keepTokens } from "~/lib/keep-tokens";
 
 /** Hebrew, Arabic (with Kurdish and Persian letters), Syriac, Thaana, N'Ko, … and the Arabic presentation forms. */
 const ARABIC_SCRIPT = /[\u0590-\u08ff\ufb1d-\ufdff\ufe70-\ufeff]/u;

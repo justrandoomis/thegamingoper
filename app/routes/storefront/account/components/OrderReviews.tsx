@@ -12,6 +12,7 @@ import { FieldGroup, TextArea } from "~/ui/Field";
 import { Niche } from "~/ui/Niche";
 import { Note } from "~/ui/Note";
 import { ProductImage } from "~/ui/ProductCard";
+import { sakuga } from "~/ui/sakuga/fx";
 import { Status, type StatusTone } from "~/ui/Tag";
 import { TextLink } from "~/ui/TextLink";
 import { toast } from "~/ui/toast-store";
@@ -136,7 +137,19 @@ function ReviewForm({ slot, name }: { slot: ReviewSlot; name: string }) {
         <span className="acct-stars">
           {STARS.map((n) => (
             <label key={n} className="acct-star">
-              <input id={`${ids}-${n}`} type="radio" name="rating" value={n} defaultChecked={sentRating === String(n)} className="acct-star__input" />
+              <input
+                id={`${ids}-${n}`}
+                type="radio"
+                name="rating"
+                value={n}
+                defaultChecked={sentRating === String(n)}
+                className="acct-star__input"
+                // the kit's drawn moment for a rating chosen (~/ui/sakuga): the lit stars pop one after another
+                onChange={(event) => {
+                  const row = event.currentTarget.closest(".acct-stars");
+                  if (row) sakuga.rate([...row.querySelectorAll(".acct-star")], n);
+                }}
+              />
               <Icon name="star" size={28} className="acct-star__off" />
               <Icon name="star" filled size={28} className="acct-star__on" />
               <span className="sr-only">{t("order.review.star", { count: n })}</span>

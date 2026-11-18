@@ -1,7 +1,21 @@
-import type { CSSProperties, SyntheticEvent } from "react";
+import { useEffect, useSyncExternalStore, type CSSProperties, type SyntheticEvent } from "react";
 import { preload } from "react-dom";
 
-import { artAspect, artFallbackSrc, artName, artSrcSet, getArt, isPhoto, parseArtName, parsePhotoKey, type ArtView } from "./index";
+import {
+  artAspect,
+  artFallbackSrc,
+  artName,
+  artRegistryServerVersion,
+  artRegistryVersion,
+  artSrcSet,
+  getArt,
+  isPhoto,
+  loadAllPhotos,
+  parseArtName,
+  parsePhotoKey,
+  subscribeArtRegistry,
+  type ArtView,
+} from "./index";
 
 export interface ArtProps {
   /** A product photo key "<slug>--<n>" from catalog/products, e.g. "nintendo-switch-2--1". */
@@ -56,11 +70,18 @@ const FULL_SIDE = 1600;
  * Purely presentational and safe on the server; it keeps no state.
  */
 export function Art({ name, view, alt, sizes = DEFAULT_SIZES, priority = false, fetchPriority, className, style }: ArtProps) {
+  // In the browser the registry fills up after the page loads (app/art/index.ts): draw again when it does.
+  useSyncExternalStore(subscribeArtRegistry, artRegistryVersion, artRegistryServerVersion);
   const target = parseArtName(name, view);
   const exact = getArt(target.key, target.view);
   // Photos have one view: any other view falls back to it.
   const art = exact ?? (target.view === "hero" ? undefined : getArt(target.key, "hero"));
   const label = artName(target.key, target.view);
+  const missing = !art;
+  useEffect(() => {
+    // A photo this page did not carry: fetch the rest of the registry (re-renders through the store).
+    if (missing) void loadAllPhotos();
+  }, [missing]);
 
   if (!art) {
     const photo = parsePhotoKey(target.key);
@@ -138,7 +159,9 @@ function frame(background: string | null): CSSProperties {
   return { backgroundColor: background ?? undefined, borderRadius: "var(--photo-radius, var(--r-md))" };
 }
 
-function blurBehind(placeholder: string): CSSProperties {
+function blurBehind(placeholder: string): CSSProperties | null {
+  // The blurred miniature is only sent for pictures the server drew (app/art/seed.server.ts).
+  if (!placeholder) return null;
   return {
     backgroundImage: `url("${placeholder}")`,
     backgroundSize: "contain",

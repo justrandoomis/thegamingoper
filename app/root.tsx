@@ -17,6 +17,7 @@ import {
 import type { Route } from "./+types/root";
 import { listNamespaces, messagesFor } from "~/i18n/i18n.server";
 import { DEFAULT_LOCALE, LOCALES, localePath, splitLocale, type Locale } from "~/lib/locales";
+import { loadAllPhotos } from "~/art";
 import { useNonce } from "~/lib/nonce";
 import { DEFAULT_PREFS, PrefsProvider, usePrefs } from "~/lib/prefs";
 import { MOTION_TIER_SCRIPT } from "~/motion/tier-script";
@@ -27,6 +28,17 @@ import { preloadFonts } from "~/styles/fonts";
 import { showToast } from "~/ui/toast-store";
 
 export const middleware: Route.MiddlewareFunction[] = [requestContextMiddleware];
+
+/**
+ * Before a client-side navigation renders, every product photo's manifest must be known: the first page
+ * only carried its own (app/art/seed.server.ts). Usually already loaded while the browser was idle.
+ */
+export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
+  async (_args, next) => {
+    await loadAllPhotos();
+    return next();
+  },
+];
 
 /** Brand files (public/, see scripts/logo/assets.mjs): favicons, the home-screen icon and the web app manifest. */
 export const links: Route.LinksFunction = () => [

@@ -3,6 +3,7 @@ import type { EntryContext, HandleErrorFunction, Params, RouterContextProvider }
 import { isRouteErrorResponse, ServerRouter } from "react-router";
 import { isbot } from "isbot";
 import { renderToReadableStream } from "react-dom/server";
+import { withArtSeed } from "~/art/seed.server";
 import { NonceContext } from "~/lib/nonce";
 import { pagePathname, peekCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
@@ -163,5 +164,6 @@ export default async function handleRequest(
   }
 
   responseHeaders.set("Content-Type", "text/html; charset=utf-8");
-  return new Response(body, { headers: responseHeaders, status: responseStatusCode });
+  // The photo manifests this page shows travel with it (app/art/seed.server.ts), not in the client bundle.
+  return new Response(withArtSeed(body, nonce), { headers: responseHeaders, status: responseStatusCode });
 }

@@ -20,6 +20,8 @@
 export { Art } from "./Art";
 export type { ArtProps } from "./Art";
 
+import { expandPhoto, type CompactPhoto } from "./compact";
+
 /**
  * Views a picture name may ask for ("<key>@front"). Photos have one view, "hero"; another view of a
  * photo falls back to it. Kept so names and components written with views keep working.
@@ -92,11 +94,69 @@ export interface PhotoManifest extends ArtManifest {
 
 const VIEWS: readonly ArtView[] = ["hero", "front", "back"];
 
-const photoManifests = import.meta.glob<PhotoManifest>("./photos/*.json", { eager: true, import: "default" });
-
 /** Photos by key ("<slug>--<n>"). */
 const photos = new Map<string, PhotoManifest>();
-for (const manifest of Object.values(photoManifests)) photos.set(manifest.key, manifest);
+
+/**
+ * Server (and tests): every manifest, collected at build time. Browser: only the manifests the page
+ * itself carries (`self.__TT_ART__`, written by app/art/seed.server.ts), then the rest without their
+ * blurred miniatures from `loadAllPhotos()` — so the client bundle no longer ships every photo.
+ */
+if (import.meta.env.SSR || import.meta.env.MODE === "test") {
+  const photoManifests = import.meta.glob<PhotoManifest>("./photos/*.json", { eager: true, import: "default" });
+  for (const manifest of Object.values(photoManifests)) photos.set(manifest.key, manifest);
+} else {
+  const seed = (globalThis as { __TT_ART__?: CompactPhoto[] }).__TT_ART__;
+  if (Array.isArray(seed)) for (const entry of seed) photos.set(entry.k, expandPhoto(entry) as PhotoManifest);
+}
+
+let registryVersion = 0;
+const registryListeners = new Set<() => void>();
+let allPhotos: Promise<void> | null = null;
+
+/**
+ * Browser only: fetches the short manifests of every photo (one small cached file) and adds the ones
+ * the page did not carry. Resolves at once on the server, and never rejects (offline: try again later).
+ */
+export function loadAllPhotos(): Promise<void> {
+  if (import.meta.env.SSR || import.meta.env.MODE === "test") return Promise.resolve();
+  if (!allPhotos) {
+    allPhotos = import("virtual:tt-art-lite").then(
+      (module) => {
+        let added = false;
+        for (const entry of module.default) {
+          if (photos.has(entry.k)) continue;
+          photos.set(entry.k, expandPhoto(entry) as PhotoManifest);
+          added = true;
+        }
+        if (added) {
+          registryVersion++;
+          for (const listener of registryListeners) listener();
+        }
+      },
+      () => {
+        allPhotos = null;
+      },
+    );
+  }
+  return allPhotos;
+}
+
+/** For `useSyncExternalStore`: changes when more photos became known in the browser. */
+export function subscribeArtRegistry(listener: () => void): () => void {
+  registryListeners.add(listener);
+  return () => registryListeners.delete(listener);
+}
+export const artRegistryVersion = (): number => registryVersion;
+export const artRegistryServerVersion = (): number => 0;
+
+if (!import.meta.env.SSR && import.meta.env.MODE !== "test" && typeof window !== "undefined") {
+  // After the page has settled, so it never competes with the page's own files.
+  const later = () => void loadAllPhotos();
+  const idle = (window as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => void }).requestIdleCallback;
+  if (document.readyState === "complete") setTimeout(() => (idle ? idle(later, { timeout: 4000 }) : later()), 1500);
+  else window.addEventListener("load", () => setTimeout(() => (idle ? idle(later, { timeout: 4000 }) : later()), 1500), { once: true });
+}
 
 const PHOTO_KEY = /^([a-z0-9]+(?:-[a-z0-9]+)*)--(\d+)$/;
 

@@ -4,7 +4,9 @@ import { isRouteErrorResponse, ServerRouter } from "react-router";
 import { isbot } from "isbot";
 import { renderToReadableStream } from "react-dom/server";
 import { withArtSeed } from "~/art/seed.server";
+import { DEFAULT_LOCALE, LOCALES } from "~/lib/locales";
 import { NonceContext } from "~/lib/nonce";
+import { criticalFonts } from "~/styles/fonts";
 import { pagePathname, peekCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
 import { recordError } from "~/server/services/admin/ops/telemetry.server";
@@ -164,6 +166,15 @@ export default async function handleRequest(
   }
 
   responseHeaders.set("Content-Type", "text/html; charset=utf-8");
+  // Early Hints (Cloudflare caches these Link headers and answers the next request for this address with a 103 at
+  // once): the browser starts on the stylesheet and the two critical fonts while the Worker is still rendering.
+  const ctx = peekCtx(loadContext);
+  const rootCss = routerContext.manifest.routes.root?.css ?? [];
+  const hints = [
+    ...rootCss.map((href) => `<${href}>; rel=preload; as=style`),
+    ...criticalFonts(LOCALES[ctx?.locale ?? DEFAULT_LOCALE].script).map((font) => `<${font.href}>; rel=preload; as=font; type="${font.type}"; crossorigin`),
+  ];
+  if (hints.length && responseStatusCode === 200) responseHeaders.set("Link", hints.join(", "));
   // The photo manifests this page shows travel with it (app/art/seed.server.ts), not in the client bundle.
   return new Response(withArtSeed(body, nonce), { headers: responseHeaders, status: responseStatusCode });
 }

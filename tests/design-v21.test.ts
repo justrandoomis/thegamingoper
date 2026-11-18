@@ -125,7 +125,7 @@ describe("G1 · the before's fonts (Kufam + IBM Plex Sans Arabic)", () => {
   it("Kufam's Arabic file draws every Sorani letter (cmap) and shapes Sorani words without a missing glyph", async () => {
     // fontkit ships no type declarations: loaded through require, typed here
     const fontkit = createRequire(import.meta.url)("fontkit") as { create: (buffer: Buffer) => { hasGlyphForCodePoint(c: number): boolean; layout(text: string): { glyphs: Array<{ id: number }> } } };
-    const font = fontkit.create(readFileSync(path.join(ROOT, "public/fonts/kufam-arabic-wght.70d76d8d.woff2")));
+    const font = fontkit.create(readFileSync(path.join(ROOT, "public/fonts/kufam-arabic-wght.3e456e1b.woff2")));
     for (const letter of ["ڕ", "ڵ", "ۆ", "ێ", "ە", "ھ", "ڤ", "پ", "چ", "ژ", "گ", "ک", "ی", "ئ"]) {
       expect(font.hasGlyphForCodePoint(letter.codePointAt(0) as number), letter).toBe(true);
     }

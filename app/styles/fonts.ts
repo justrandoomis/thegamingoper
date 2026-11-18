@@ -22,8 +22,8 @@
 import { preload } from "react-dom";
 
 export type FontScript = "Arab" | "Latn";
-/** "Latn-ext": accented Latin beyond Latin-1 (ō, ş, ł …) — never preloaded. */
-export type FontSubset = FontScript | "Latn-ext";
+/** "Latn-ext": accented Latin beyond Latin-1 (ō, ş, ł …); "Arab-ext": Arabic Supplement/Extended and presentation forms. Never preloaded. */
+export type FontSubset = FontScript | "Latn-ext" | "Arab-ext";
 
 export type FontFile = {
   /** Public URL (content-hashed; cached immutable by public/_headers). */
@@ -39,14 +39,18 @@ export type FontFile = {
 
 /** Every shipped file, for budgets and checks. Keep in step with fonts.css. */
 export const FONT_FILES: readonly FontFile[] = [
-  { href: "/fonts/kufam-arabic-wght.70d76d8d.woff2", type: "font/woff2", family: "Kufam Variable", weight: "400 900", script: "Arab", bytes: 55800 },
+  { href: "/fonts/kufam-arabic-wght.3e456e1b.woff2", type: "font/woff2", family: "Kufam Variable", weight: "400 900", script: "Arab", bytes: 44172 },
+  { href: "/fonts/kufam-arabic-wght-ext.c2703ab5.woff2", type: "font/woff2", family: "Kufam Variable", weight: "400 900", script: "Arab-ext", bytes: 24788 },
   { href: "/fonts/kufam-latin-wght.7073ba7c.woff2", type: "font/woff2", family: "Kufam Variable", weight: "400 900", script: "Latn", bytes: 36348 },
-  { href: "/fonts/plex-arabic-400.6010e7fd.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "400", script: "Arab", bytes: 42848 },
+  { href: "/fonts/plex-arabic-400.915a3e16.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "400", script: "Arab", bytes: 29168 },
+  { href: "/fonts/plex-arabic-400-ext.8d71343e.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "400", script: "Arab-ext", bytes: 27028 },
   { href: "/fonts/plex-latin-400.9ed8dcb0.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "400", script: "Latn", bytes: 19164 },
   { href: "/fonts/plex-latin-ext-400.1935fa1a.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "400", script: "Latn-ext", bytes: 6656 },
-  { href: "/fonts/plex-arabic-500.90aef64f.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "500", script: "Arab", bytes: 45296 },
+  { href: "/fonts/plex-arabic-500.38705e0e.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "500", script: "Arab", bytes: 30816 },
+  { href: "/fonts/plex-arabic-500-ext.5b4f344e.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "500", script: "Arab-ext", bytes: 29040 },
   { href: "/fonts/plex-latin-500.be6a3b2e.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "500", script: "Latn", bytes: 20088 },
-  { href: "/fonts/plex-arabic-600.16734a5a.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "600", script: "Arab", bytes: 45688 },
+  { href: "/fonts/plex-arabic-600.fd643a58.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "600", script: "Arab", bytes: 31296 },
+  { href: "/fonts/plex-arabic-600-ext.f0958906.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "600", script: "Arab-ext", bytes: 29064 },
   { href: "/fonts/plex-latin-600.63f47572.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "600", script: "Latn", bytes: 20500 },
   { href: "/fonts/plex-latin-ext-600.0f7c03bb.woff2", type: "font/woff2", family: "IBM Plex Sans Arabic", weight: "600", script: "Latn-ext", bytes: 6680 },
 ];

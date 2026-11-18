@@ -1,0 +1,62 @@
+{
+  "key": "ipega-pg-p5003-charging-station--1",
+  "view": "hero",
+  "width": 1000,
+  "height": 920,
+  "aspect": 1.087,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ipega-pg-p5003-charging-station/1-240.8f6b941b.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-pg-p5003-charging-station/1-480.ab0635ea.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-pg-p5003-charging-station/1-720.e3fca41e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/ipega-pg-p5003-charging-station/1-960.d4563412.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ipega-pg-p5003-charging-station/1-240.0df93271.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-pg-p5003-charging-station/1-480.5445aa5e.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-pg-p5003-charging-station/1-720.c9e05cdf.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/ipega-pg-p5003-charging-station/1-960.5239a3df.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/ipega-pg-p5003-charging-station/1-1000.4beb1d19.jpg",
+    "width": 1000,
+    "height": 920,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAACwBACdASoUABIAPxF2slGsJySiqA1RgCIJaQAD5DkLUq/s0k2ihqgVGx9GlsxAAP7vw27NVPUc9s5PPTD1XDt/6/yB6Q0EGD6aIQFiBrNkiT/EP8pMSKtlkcnqmzL3q1Uf1pVdOEWKTLX/FIiBJDYijFmtEQAAAAA=",
+  "dominant": "#050505",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "hero",
+  "credit": "iPega",
+  "source": {
+    "url": "https://ipega.hk/uploads/202012/5fe6d550aab90.png",
+    "page": "https://ipega.hk/ps3ps4series/76-378.html"
+  },
+  "input": "53546611a17c0b5e"
+}

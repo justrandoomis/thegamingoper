@@ -17,7 +17,7 @@ import { codeHashOf, demoCodeId, demoCodeText, seedDemoDigitalCodes } from "~/se
 import { codeContext } from "~/server/services/admin/devices/codes.server";
 import { assertDemoDataConsistent, buildDemoData, demoId, demoSerialsOf, demoTradeInGuides, demoUsedUnits, loadDemoCatalog, seedDemo, type SeedDemoResult } from "~/server/db/seed/demo";
 import type { CatalogProduct } from "~/server/db/seed/demo/catalog/types";
-import { DEMO_CATEGORIES } from "~/server/db/seed/demo/categories";
+import { DEMO_CATEGORIES, categoryOf } from "~/server/db/seed/demo/categories";
 import { DEMO_COUPONS, DEMO_FX_RATE } from "~/server/db/seed/demo/commerce";
 import { DEMO_DEVICE_MODELS, DEMO_GENERATIONS, DEMO_PLATFORMS, deviceModelsOfProducts } from "~/server/db/seed/demo/devices";
 import { capacityGb, catalogImportProblems } from "~/server/db/seed/demo/import";
@@ -88,7 +88,9 @@ afterAll(async () => {
 
 describe("demo seed definitions", () => {
   it("import the whole researched catalogue as it is", () => {
-    expect(catalog.products.length).toBe(105);
+    // every research file (105 in the first pass; the owner's sheet of 2026-11-18 added its items)
+    expect(catalog.products.length).toBe(readdirSync(path.join(PROJECT_ROOT, "catalog", "products")).filter((name) => name.endsWith(".json")).length);
+    expect(catalog.products.length).toBeGreaterThanOrEqual(105);
     expect(catalogImportProblems(catalog)).toEqual([]);
     expect(() => assertDemoDataConsistent(catalog, data)).not.toThrow();
     // Every product, plus the one store set; the set is the only product that is not researched.
@@ -237,7 +239,8 @@ describe("demo seed definitions", () => {
         if (kurdishOnly.test(record.ar)) problems.push(`${trail}.ar has Kurdish letters: ${record.ar}`);
         if (arabicOnly.test(record.ckb)) problems.push(`${trail}.ckb has Arabic letters: ${record.ckb}`);
         if (/[؀-ۿ]/u.test(record.en)) problems.push(`${trail}.en has Arabic-script letters: ${record.en}`);
-        for (const locale of ["ar", "en", "ckb"] as const) if (!String(record[locale]).trim()) problems.push(`${trail}.${locale} is empty`);
+        // (a qualifier is "" in a language whose name already says it — catalog/README.md)
+        if (!trail.endsWith(".qualifier")) for (const locale of ["ar", "en", "ckb"] as const) if (!String(record[locale]).trim()) problems.push(`${trail}.${locale} is empty`);
         return;
       }
       for (const [key, entry] of Object.entries(record)) visit(entry, `${trail}.${key}`);
@@ -356,7 +359,8 @@ describe("seedDemo", () => {
     expect(await countAll(t.d1)).toEqual(afterFirst);
     const product = (await rows<{ name: string; status: string; created_at: number }>("SELECT name, status, created_at FROM products WHERE id = ?", productId))[0];
     expect(parse<L10nValue>(product.name)).toEqual({ ar: "Nintendo Switch 2", en: "Nintendo Switch 2", ckb: "Nintendo Switch 2" });
-    expect(product.status).toBe("published");
+    // Status (and the demo flag) are state, not content: only the owner's-sheet statements move them (demo/owner.ts).
+    expect(product.status).toBe("archived");
     expect(await rows("SELECT name FROM search_index WHERE product_id = ? AND locale = 'ar'", productId)).toEqual([{ name: "nintendo switch 2" }]);
     // Money, stock and state are not the seed's to reset.
     expect(await scalar("SELECT price_iqd FROM variants WHERE id = ?", variantId)).toBe(700_000);
@@ -366,6 +370,7 @@ describe("seedDemo", () => {
 
     // Put the fixture back for the tests below.
     await t.d1.batch([
+      t.d1.prepare("UPDATE products SET status = 'published' WHERE id = ?").bind(productId),
       t.d1.prepare("UPDATE variants SET price_iqd = ? WHERE id = ?").bind(price, variantId),
       t.d1.prepare("UPDATE stock_levels SET on_hand = ? WHERE variant_id = ?").bind(onHand, variantId),
       t.d1.prepare("UPDATE used_units SET status = ?, price_iqd = ? WHERE id = ?").bind(unit.status, unit.price_iqd, unitId),
@@ -545,7 +550,8 @@ describe("imported catalogue", () => {
       const row = variants.get(variant.sku)!;
       expect(row.product, variant.sku).toBe(product.slug);
       expect(parse(row.title), variant.sku).toEqual(variant.title);
-      expect(row.options === null ? null : parse(row.options), variant.sku).toEqual({ ...(variant.options ?? {}), ...(variant.modelNumber ? { model: variant.modelNumber } : {}) });
+      const options = { ...(variant.options ?? {}), ...(variant.modelNumber ? { model: variant.modelNumber } : {}) };
+      expect(row.options === null ? null : parse(row.options), variant.sku).toEqual(Object.keys(options).length > 0 ? options : null);
       expect(row.barcode, variant.sku).toBe(variant.barcodes?.[0] ?? null);
       expect([row.is_default, row.sort, row.is_active], variant.sku).toEqual([variant.isDefault ? 1 : 0, index, 1]);
       expect(row.track_serials, variant.sku).toBe(productKindOf(product) === "console" ? 1 : 0);
@@ -574,7 +580,9 @@ describe("imported catalogue", () => {
     for (const table of ["platforms", "device_models", "categories"]) {
       for (const row of await rows<{ slug: string; art_key: string | null }>(`SELECT slug, art_key FROM ${table}`)) {
         if (row.art_key !== null) expect(catalog.photoKeys.has(row.art_key), `${table}: ${row.art_key}`).toBe(true);
-        else expect(["pc", "windows-pc", "parts"], `${table} ${row.slug} has no picture`).toContain(row.slug);
+        // no picture: the PC targets, the empty parts category, the PS4 family (no product of its own), and the owner's-sheet
+        // categories whose items have no clean official picture yet
+        else expect(["pc", "windows-pc", "parts", "ps4", "gaming-glasses", "cables-power", "cables", "ups-power", "lighting"], `${table} ${row.slug} has no picture`).toContain(row.slug);
       }
     }
   });
@@ -641,13 +649,21 @@ describe("imported catalogue", () => {
 
   it("links the category tree and files every product under a leaf", async () => {
     expect((await rows<{ slug: string }>("SELECT slug FROM categories WHERE parent_id IS NULL ORDER BY sort")).map((row) => row.slug)).toEqual([
-      "consoles", "handheld-pcs", "games", "controllers", "headsets", "storage", "accessories", "vr", "digital-cards", "parts", "used-devices",
+      "consoles", "handheld-pcs", "games", "controllers", "headsets", "storage", "accessories", "vr",
+      // added for the owner's sheet (2026-11-18)
+      "pc-peripherals", "gaming-chairs", "cables-power", "lighting",
+      "digital-cards", "parts", "used-devices",
     ]);
     expect(await scalar("SELECT count(*) FROM categories c WHERE c.parent_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM categories p WHERE p.id = c.parent_id)")).toBe(0);
     // No product sits on a category that has children (it would be missing from the child pages).
     expect(await scalar("SELECT count(*) FROM products p WHERE EXISTS (SELECT 1 FROM categories c WHERE c.parent_id = p.category_id)")).toBe(0);
     const perCategory = Object.fromEntries((await rows<{ slug: string; n: number }>("SELECT c.slug, count(p.id) AS n FROM categories c LEFT JOIN products p ON p.category_id = c.id GROUP BY c.id")).map((row) => [row.slug, row.n]));
-    expect(perCategory).toMatchObject({ "handheld-pcs": 12, vr: 1, "gift-cards": 4, subscriptions: 2, "multiplatform-games": 11, "xbox-games": 0, parts: 0, "used-devices": 0 });
+    // every product on the category its research names, else its kind's (categoryOf) — the counts follow the catalogue
+    const expected: Record<string, number> = {};
+    for (const product of catalog.products) expected[categoryOf(product)] = (expected[categoryOf(product)] ?? 0) + 1;
+    for (const set of DEMO_STORE_SETS) expected[set.category] = (expected[set.category] ?? 0) + 1;
+    for (const [slug, n] of Object.entries(perCategory)) expect(n, slug).toBe(expected[slug] ?? 0);
+    expect(perCategory).toMatchObject({ parts: 0, "used-devices": 0 });
     for (const product of catalog.products.filter((entry) => entry.kind === "game" && entry.platform === "multi")) expect(products.get(product.slug)!.category).toBe("multiplatform-games");
   });
 
@@ -884,7 +900,8 @@ describe("seeded search", () => {
     expect(await find("ايكس بوكس سيريس اس")).toContain(product("xbox-series-s"));
     expect(await find("مشغل اقراص بلايستيشن")).toContain(product("ps5-disc-drive"));
     expect(await find("ستاند بلايستيشن")).toContain(product("ps5-vertical-stand"));
-    expect((await find("قاعدة شحن يد"))[0]).toBe(product("dualsense-charging-station"));
+    // (the owner's sheet added more controller charging docks: Sony's station is among the first hits, not always first)
+    expect((await find("قاعدة شحن يد")).slice(0, 5)).toContain(product("dualsense-charging-station"));
   });
 
   it("indexes every spelling of a platform's synonym set with the platform's products", async () => {

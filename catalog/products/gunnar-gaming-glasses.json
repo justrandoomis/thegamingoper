@@ -1,0 +1,234 @@
+{
+  "slug": "gunnar-gaming-glasses",
+  "group": "power-cables-storage-misc",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "gaming-glasses",
+  "brand": "GUNNAR",
+  "status": "available",
+  "name": {
+    "ar": "نظارة الألعاب GUNNAR",
+    "en": "GUNNAR Gaming Glasses",
+    "ckb": "چاویلکەی یاریی GUNNAR"
+  },
+  "short": {
+    "ar": "عدسة Amber تحجب 65% من الضوء الأزرق · ثلاثة موديلات",
+    "en": "Amber lens blocks 65% of blue light · three models",
+    "ckb": "هاوێنەی Amber کە 65%ی ڕووناکیی شین دەگرێت · سێ مۆدێل"
+  },
+  "description": {
+    "ar": "نظارات GUNNAR الأمريكية مصممة للجلوس الطويل أمام الشاشة واللعب. عدستها بلون Amber (كهرماني) تحجب نحو 65% من الضوء الأزرق عند 450 نانومتر، وتخفف الوهج وتزيد التباين. نوفّرها بثلاثة موديلات: MOBA المصممة مع Razer، وMendocino بإطار من التيتانيوم، وموديل بإطار Onyx أسود وعدسة Amber. هذه نظارات بدون قياس طبي.",
+    "en": "GUNNAR's American eyewear is made for long hours in front of a screen and gaming. The Amber lens blocks about 65% of blue light at 450nm, cuts glare and raises contrast. We carry three models: the MOBA designed with Razer, the titanium-framed Mendocino, and a black Onyx frame with Amber lens. These are non-prescription glasses.",
+    "ckb": "چاویلکەکانی GUNNARی ئەمریکی بۆ دانیشتنی درێژ لەبەردەم شاشە و یاریکردن دروستکراون. هاوێنەی Amber (کەهرەبایی) نزیکەی 65%ی ڕووناکیی شین لە 450 نانۆمەتر دەگرێت، تیشکدانەوە کەم دەکاتەوە و جیاوازیی ڕەنگ زیاد دەکات. سێ مۆدێلمان هەیە: MOBA کە لەگەڵ Razer دیزاینکراوە، Mendocino بە چوارچێوەی تیتانیۆم، و مۆدێلێک بە چوارچێوەی ڕەشی Onyx و هاوێنەی Amber. ئەمانە چاویلکەی بێ پلەی پزیشکین."
+  },
+  "highlights": [
+    {
+      "ar": "عدسة Amber تحجب نحو 65% من الضوء الأزرق",
+      "en": "Amber lens blocks about 65% of blue light",
+      "ckb": "هاوێنەی Amber نزیکەی 65%ی ڕووناکیی شین دەگرێت"
+    },
+    {
+      "ar": "طلاء مضاد للانعكاس على وجهي العدسة",
+      "en": "Anti-reflective coating on both sides of the lens",
+      "ckb": "چینی دژە تیشکدانەوە لەسەر هەردوو ڕووی هاوێنە"
+    },
+    {
+      "ar": "نظارة بدون قياس طبي، للعب والعمل على الحاسوب",
+      "en": "Non-prescription, for gaming and computer work",
+      "ckb": "بێ پلەی پزیشکی، بۆ یاری و کاری کۆمپیوتەر"
+    },
+    {
+      "ar": "مع حقيبة وقطعة تنظيف من المايكروفايبر",
+      "en": "Comes with a microfiber pouch and cleaning cloth",
+      "ckb": "لەگەڵ کیسە و پەڕۆی پاککردنەوەی مایکرۆفایبەر"
+    }
+  ],
+  "specs": [
+    {
+      "key": "lens",
+      "label": {
+        "ar": "العدسة",
+        "en": "Lens",
+        "ckb": "هاوێنە"
+      },
+      "value": {
+        "ar": "Amber، تحجب 65% من الضوء الأزرق عند 450nm",
+        "en": "Amber, blocks 65% of blue light at 450nm",
+        "ckb": "Amber، 65%ی ڕووناکیی شین لە 450nm دەگرێت"
+      }
+    },
+    {
+      "key": "prescription",
+      "label": {
+        "ar": "القياس الطبي",
+        "en": "Prescription",
+        "ckb": "پلەی پزیشکی"
+      },
+      "value": {
+        "ar": "بدون",
+        "en": "None",
+        "ckb": "نییە"
+      }
+    },
+    {
+      "key": "models",
+      "label": {
+        "ar": "الموديلات",
+        "en": "Models",
+        "ckb": "مۆدێلەکان"
+      },
+      "value": {
+        "ar": "MOBA Razer Edition · Mendocino · Onyx/Amber",
+        "en": "MOBA Razer Edition · Mendocino · Onyx/Amber",
+        "ckb": "MOBA Razer Edition · Mendocino · Onyx/Amber"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "النظارة",
+      "en": "The glasses",
+      "ckb": "چاویلکەکە"
+    },
+    {
+      "ar": "حقيبة مايكروفايبر",
+      "en": "Microfiber pouch",
+      "ckb": "کیسەی مایکرۆفایبەر"
+    },
+    {
+      "ar": "قطعة تنظيف مايكروفايبر",
+      "en": "Microfiber cleaning cloth",
+      "ckb": "پەڕۆی پاککردنەوەی مایکرۆفایبەر"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "GUNNAR-MOBA-RZR-30007",
+      "sheetRow": 19,
+      "title": {
+        "ar": "MOBA Razer Edition · Onyx · Amber",
+        "en": "MOBA Razer Edition · Onyx · Amber",
+        "ckb": "MOBA Razer Edition · Onyx · Amber"
+      },
+      "options": {
+        "edition": "MOBA Razer Edition",
+        "frame": "Onyx",
+        "lens": "Amber"
+      },
+      "modelNumber": "RZR-30007",
+      "barcodes": [
+        "811127011400"
+      ],
+      "isDefault": true,
+      "notes": {
+        "ar": "صممتها GUNNAR مع Razer. إطار أسود من الفولاذ المقاوم للصدأ وسبائك الألومنيوم والمغنيسيوم، عرض العدسة 54 ملم، الجسر 18 ملم مع وسادات أنف قابلة للتعديل، الذراع 120 ملم، الوزن 21 غراماً.",
+        "en": "Designed by GUNNAR with Razer. Black frame in stainless steel with aluminium-magnesium alloy, 54 mm lens, 18 mm bridge with adjustable nose pads, 120 mm temples, 21 g.",
+        "ckb": "GUNNAR لەگەڵ Razer دیزاینی کردووە. چوارچێوەی ڕەش لە پۆڵای دژە ژەنگ و تێکەڵەی ئەلەمنیۆم و مەگنیسیۆم، هاوێنەی 54 ملم، پردی 18 ملم لەگەڵ پاڵپشتی لووتی ڕێکخراو، قاچی 120 ملم، 21 گرام."
+      }
+    },
+    {
+      "sku": "GUNNAR-MENDOCINO-TTM-11601",
+      "sheetRow": 17,
+      "title": {
+        "ar": "Mendocino · Midnight · Amber",
+        "en": "Mendocino · Midnight · Amber",
+        "ckb": "Mendocino · Midnight · Amber"
+      },
+      "options": {
+        "edition": "Mendocino",
+        "frame": "Midnight",
+        "lens": "Amber"
+      },
+      "modelNumber": "TTM-11601",
+      "isDefault": false,
+      "notes": {
+        "ar": "إطار تيتانيوم خفيف (نحو 15 غراماً)، عرض العدسة 55 ملم والجسر 16 ملم، مع حقيبة ثلاثية الطي. GUNNAR تسمي لون الإطار Midnight Blue، وبعض المتاجر تصفه بالأسود.",
+        "en": "Light titanium frame (about 15 g), 55 mm lens, 16 mm bridge, with a tri-fold case. GUNNAR calls the frame colour Midnight Blue; some shops describe it as black.",
+        "ckb": "چوارچێوەی سووکی تیتانیۆم (نزیکەی 15 گرام)، هاوێنەی 55 ملم، پردی 16 ملم، لەگەڵ قاپی سێ قەد. GUNNAR ڕەنگی چوارچێوەکە بە Midnight Blue ناودەبات؛ هەندێک فرۆشگا بە ڕەشی دەناسێنن."
+      }
+    },
+    {
+      "sku": "GUNNAR-ONYX-AMBER-C001",
+      "sheetRow": 18,
+      "title": {
+        "ar": "Onyx · Amber (C001)",
+        "en": "Onyx · Amber (C001)",
+        "ckb": "Onyx · Amber (C001)"
+      },
+      "options": {
+        "edition": "C001",
+        "frame": "Onyx",
+        "lens": "Amber"
+      },
+      "modelNumber": "C001",
+      "isDefault": false,
+      "notes": {
+        "ar": "C001 هو رمز GUNNAR لإطار Onyx الأسود مع عدسة Amber، ويظهر في نهاية أرقام عدة موديلات. اسأل المتجر عن اسم الموديل.",
+        "en": "C001 is GUNNAR's code for the black Onyx frame with Amber lens and ends the part numbers of several models. Ask the store for the model name.",
+        "ckb": "C001 کۆدی GUNNARە بۆ چوارچێوەی ڕەشی Onyx لەگەڵ هاوێنەی Amber و لە کۆتایی ژمارەی چەند مۆدێلێکدا دێت. ناوی مۆدێلەکە لە فرۆشگا بپرسە."
+      }
+    }
+  ],
+  "compatibility": [],
+  "related": [],
+  "images": [],
+  "sources": [
+    {
+      "url": "https://www.ldlc.com/en/product/PB00386041.html",
+      "title": "GUNNAR MOBA designed by Razer",
+      "publisher": "LDLC",
+      "retrieved": "2026-11-18",
+      "supports": "RZR-30007, 65% blue light at 450nm, anti-reflective both sides, frame materials, 54 mm lens, 18 mm nosepiece, 120 mm temples, 21 g, microfiber pouch and cloth in the box"
+    },
+    {
+      "url": "https://www.aztekcomputers.com/rzr-30007-moba-razer-edition-onyx-gaming-glasses-gunnar/p",
+      "title": "RZR-30007 MOBA Razer Edition Onyx Gaming Glasses - Gunnar",
+      "publisher": "Aztek Computers",
+      "retrieved": "2026-11-18",
+      "supports": "RZR-30007 = MOBA Razer Edition, Onyx frame, Amber lens, UPC 811127011400"
+    },
+    {
+      "url": "https://gunnar.com/products/mendocino",
+      "title": "Mendocino",
+      "publisher": "GUNNAR Optiks",
+      "retrieved": "2026-11-18",
+      "supports": "Mendocino offered in Midnight Blue frame with Amber lens (search listing; the page itself was rate-limited)"
+    },
+    {
+      "url": "https://www.adorama.com/gottm11601.html",
+      "title": "Gunnar Mendocino Midnight Blue Frame Amber Tint Tri-Fold Glasses",
+      "publisher": "Adorama",
+      "retrieved": "2026-11-18",
+      "supports": "TTM-11601 = Mendocino, Midnight Blue frame, Amber tint, titanium frame, tri-fold case, 2-year limited warranty"
+    },
+    {
+      "url": "https://www.tanotis.com/products/gunnar-mendocino-glasses-midnight-blue-frame-amber-lens",
+      "title": "Gunnar Mendocino Glasses Midnight Blue Frame Amber Lens",
+      "publisher": "Tanotis",
+      "retrieved": "2026-11-18",
+      "supports": "Mendocino about 15 g, 65% blue light and 100% UV blocked"
+    },
+    {
+      "url": "https://www.aztekcomputers.com/st002-c001-catalyst-phenom-onyx-amber-lens-glasses-gunnar/p",
+      "title": "ST002-C001 Catalyst Phenom Onyx Amber Lens Glasses - Gunnar",
+      "publisher": "Aztek Computers",
+      "retrieved": "2026-11-18",
+      "supports": "the -C001 suffix marks Onyx frame + Amber lens across GUNNAR models (also R6638-C001, ST003-C001, G0005-C001)"
+    }
+  ],
+  "notes": {
+    "ar": "نظارات GUNNAR لا تعالج مشاكل النظر ولا تغني عن فحص العين. بعض الموديلات صدرت قبل سنوات وقد لا تكون معروضة الآن على موقع GUNNAR.",
+    "en": "GUNNAR glasses do not correct vision and are not a substitute for an eye exam. Some of these models came out years ago and may no longer be listed on GUNNAR's site.",
+    "ckb": "چاویلکەکانی GUNNAR کێشەی بینین چارەسەر ناکەن و جێگرەوەی پشکنینی چاو نین. هەندێک لەم مۆدێلانە چەند ساڵ لەمەوبەر دەرچوون و لەوانەیە ئێستا لەسەر ماڵپەڕی GUNNAR نەبن."
+  },
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": true,
+    "unverified": [
+      "Owner row \"GUNNAR C001\" gives only GUNNAR's Onyx/Amber colour code, not the frame model",
+      "Owner row \"GUNNAR 11601\" read as TTM-11601 (Mendocino, Midnight Blue / Amber)",
+      "Release dates of the three models",
+      "Official GUNNAR images (gunnar.com rate-limited every request during research)"
+    ]
+  }
+}

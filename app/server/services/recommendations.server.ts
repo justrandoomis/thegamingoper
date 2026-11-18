@@ -386,7 +386,9 @@ async function newForPlan(engine: Engine, context: RecommendationContextName, mo
       reason: engine.t("rec.newFor.reason"),
       place: { context, shelf: "new", productId: null, categoryId: null, platformIds: new Set([model.platformId]), deviceModelId: model.id },
       scores,
-      accepts: (productId) => !exclude.has(productId),
+      // only the platform's new consoles: an admin pin of anything else (an accessory marked incompatible with
+      // this device, say) must not reach the device's fallback shelf unchecked
+      accepts: (productId) => !exclude.has(productId) && scores.has(productId),
       diversity: null,
     },
   };

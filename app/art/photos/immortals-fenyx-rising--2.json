@@ -1,0 +1,64 @@
+{
+  "key": "immortals-fenyx-rising--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/immortals-fenyx-rising/2-240.f484c7b9.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/immortals-fenyx-rising/2-480.b08d4cbd.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/immortals-fenyx-rising/2-720.dd3c693e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/immortals-fenyx-rising/2-960.b553e402.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/immortals-fenyx-rising/2-1440.f476ae49.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/immortals-fenyx-rising/2-240.5cda2462.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/immortals-fenyx-rising/2-480.2af8360f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/immortals-fenyx-rising/2-720.5b649e9a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/immortals-fenyx-rising/2-960.199f7945.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/immortals-fenyx-rising/2-1440.bd5b49fc.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAAAQBACdASoUAAsAPxFysFAsJqSisAgBgCIJagC1FwABdr+ubRYb7BWhwAD2Gx8+v7AaT505ge5qk3EM+euGNc0O0qcHAP5+6JsvPRYkcr1Ox1vKkmihXcx2Z+ihjN5cypSekYCWjFog0PD3nVvdB68PdIFaSTUA6gsAAA==",
+  "dominant": "#fdfbfb",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Ubisoft",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/immortal-fenyx-rising-screenshot-02-en-04sept20?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/immortals-fenyx-rising/"
+  },
+  "input": "51e3de8b91bf73ed"
+}

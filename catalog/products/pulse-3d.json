@@ -83,6 +83,7 @@
   "variants": [
     {
       "sku": "PULSE3D-WHITE",
+      "sheetRow": 124,
       "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "isDefault": true,
@@ -90,6 +91,7 @@
     },
     {
       "sku": "PULSE3D-MIDNIGHT-BLACK",
+      "sheetRow": 125,
       "title": { "ar": "أسود Midnight Black", "en": "Midnight Black", "ckb": "ڕەشی Midnight Black" },
       "options": { "color": "Midnight Black" },
       "isDefault": false,

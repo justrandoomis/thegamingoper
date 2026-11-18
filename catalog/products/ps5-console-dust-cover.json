@@ -1,0 +1,194 @@
+{
+  "slug": "ps5-console-dust-cover",
+  "group": "ps5-bags-cases-skins",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "غطاء حماية من الغبار لجهاز PS5",
+    "en": "PS5 Console Dust Cover",
+    "ckb": "بەرگی پاراستن لە تۆز بۆ PS5"
+  },
+  "short": {
+    "ar": "غطاء قماشي يحمي الجهاز من الغبار وهو مطفأ · لـ PS5 الأصلي وSlim وPro",
+    "en": "Fabric cover that keeps dust off the console while it is off · original PS5, Slim and Pro",
+    "ckb": "بەرگی قوماش کە تۆز لە کۆنسۆڵ دوور دەخاتەوە کاتێک کوژاوەیە · PS5ی ڕەسەن، Slim و Pro"
+  },
+  "description": {
+    "ar": "غطاء من القماش يُلبس فوق جهاز PS5 ليحميه من الغبار والخدوش حين لا تلعب. يوجد بمقاس الجهاز الأصلي ومقاس Slim ومقاس Pro. انزع الغطاء دائماً قبل تشغيل الجهاز حتى لا تُسد فتحات التهوية.",
+    "en": "A fabric cover that goes over the PS5 to keep dust and scratches off when you are not playing. It comes sized for the original PS5, the Slim and the Pro. Always take it off before switching the console on so the vents stay clear.",
+    "ckb": "بەرگێکی قوماش کە بەسەر PS5دا دادەدرێت بۆ دوورخستنەوەی تۆز و خەت کاتێک یاری ناکەیت. بە قەبارەی PS5ی ڕەسەن، Slim و Pro هەیە. هەمیشە پێش هەڵکردنی کۆنسۆڵەکە لای ببە تا کونەکانی هەوا داخراو نەبن."
+  },
+  "highlights": [
+    {
+      "ar": "يحمي من الغبار والخدوش عند عدم الاستخدام",
+      "en": "Keeps dust and scratches off when not in use",
+      "ckb": "لە کاتی بەکارنەهێناندا لە تۆز و خەت دەپارێزێت"
+    },
+    {
+      "ar": "ثلاثة مقاسات: PS5 الأصلي وSlim وPro",
+      "en": "Three sizes: original PS5, Slim and Pro",
+      "ckb": "سێ قەبارە: PS5ی ڕەسەن، Slim و Pro"
+    },
+    {
+      "ar": "انزعه قبل تشغيل الجهاز",
+      "en": "Remove it before switching the console on",
+      "ckb": "پێش هەڵکردنی کۆنسۆڵ لای ببە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "type",
+      "label": {
+        "ar": "النوع",
+        "en": "Type",
+        "ckb": "جۆر"
+      },
+      "value": {
+        "ar": "غطاء غبار قماشي",
+        "en": "Fabric dust cover",
+        "ckb": "بەرگی تۆزی قوماش"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "غطاء الغبار",
+      "en": "Dust cover",
+      "ckb": "بەرگی تۆز"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-DUST-COVER-FAT",
+      "sheetRow": 90,
+      "title": {
+        "ar": "لجهاز PS5 الأصلي",
+        "en": "Original PS5",
+        "ckb": "بۆ PS5ی ڕەسەن"
+      },
+      "options": {
+        "fits": "Original PS5"
+      },
+      "isDefault": true
+    },
+    {
+      "sku": "PS5-DUST-COVER-SLIM",
+      "sheetRow": 92,
+      "title": {
+        "ar": "لجهاز PS5 Slim",
+        "en": "PS5 Slim",
+        "ckb": "بۆ PS5 Slim"
+      },
+      "options": {
+        "fits": "PS5 Slim"
+      },
+      "isDefault": false
+    },
+    {
+      "sku": "PS5-DUST-COVER-PRO",
+      "sheetRow": 91,
+      "title": {
+        "ar": "لجهاز PS5 Pro",
+        "en": "PS5 Pro",
+        "ckb": "بۆ PS5 Pro"
+      },
+      "options": {
+        "fits": "PS5 Pro"
+      },
+      "isDefault": false
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "unverified",
+      "note": {
+        "ar": "اختر مقاس PS5 الأصلي",
+        "en": "Choose the original PS5 size",
+        "ckb": "قەبارەی PS5ی ڕەسەن هەڵبژێرە"
+      }
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "unverified",
+      "note": {
+        "ar": "اختر مقاس PS5 الأصلي",
+        "en": "Choose the original PS5 size",
+        "ckb": "قەبارەی PS5ی ڕەسەن هەڵبژێرە"
+      }
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "unverified",
+      "note": {
+        "ar": "اختر مقاس Slim",
+        "en": "Choose the Slim size",
+        "ckb": "قەبارەی Slim هەڵبژێرە"
+      }
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "unverified",
+      "note": {
+        "ar": "اختر مقاس Slim",
+        "en": "Choose the Slim size",
+        "ckb": "قەبارەی Slim هەڵبژێرە"
+      }
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "unverified",
+      "note": {
+        "ar": "اختر مقاس Pro",
+        "en": "Choose the Pro size",
+        "ckb": "قەبارەی Pro هەڵبژێرە"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "ps5-slim-faceplates",
+      "kind": "accessory"
+    },
+    {
+      "slug": "ps5-console-skin",
+      "kind": "accessory"
+    },
+    {
+      "slug": "ps5-vertical-stand",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.walmart.com/c/kp/ps5-console-cover",
+      "title": "PS5 Console Cover",
+      "publisher": "Walmart",
+      "retrieved": "2026-11-18",
+      "supports": "third-party fabric dust covers sold per PS5 model (original, Slim, Pro)"
+    },
+    {
+      "url": "https://ventari-20.pages.dev/p/wedorat-dust-cover-for-ps5-pro-ps5-ps5-slim-protectors-cover-for-game-console-case-skin-waterproof-washable",
+      "title": "Wedorat Dust Cover for PS5 Pro / PS5 / PS5 Slim",
+      "publisher": "Retail listing",
+      "retrieved": "2026-11-18",
+      "supports": "dust covers made for PS5, PS5 Slim and PS5 Pro; covers are for storage only and must be removed before use"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع طرف ثالث (ليس من Sony).",
+    "en": "A third-party product (not made by Sony).",
+    "ckb": "بەرهەمێکی لایەنی سێیەمە (هی Sony نییە)."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "That the sheet's 'PS5 CASE FAT / PRO / SLIM' are dust covers (inferred from the 15,000–25,000 IQD prices; the coloured 'CASE SLIM' rows at 40,000 IQD were read as faceplates)",
+      "Maker, material and colour of the covers the shop stocks",
+      "No clean product image of these exact covers was found"
+    ]
+  }
+}

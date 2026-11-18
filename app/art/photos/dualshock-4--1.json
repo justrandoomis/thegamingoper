@@ -1,0 +1,54 @@
+{
+  "key": "dualshock-4--1",
+  "view": "hero",
+  "width": 886,
+  "height": 592,
+  "aspect": 1.4966,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dualshock-4/1-240.1045fb64.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualshock-4/1-480.27d668bb.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualshock-4/1-720.a591106d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dualshock-4/1-240.a595af9d.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualshock-4/1-480.782b71f0.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualshock-4/1-720.eaa33e8b.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/dualshock-4/1-886.224e7ab2.png",
+    "width": 886,
+    "height": 592,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRkwBAABXRUJQVlA4WAoAAAAQAAAAEwAADAAAQUxQSGgAAAART6AgbQMWzsZfRATqm3kDJ7a1N9GjIwkrAImrs4Tquh87LhaHjZ76rZewh4j+TwAYAAM8ptv9vv2l8Jb3CD/fRCG/C9oVRae1xEpyf0nZrOe1rDdf5bMagJdyq2xhlbUuXFT/CIPXAFZQOCC+AAAAEAUAnQEqFAANAD8RcrBQLCakorAIAYAiCWwAnTKEcCLAhgD9M97/AgM+C61BYUjbwAD6eEZdSin3e/XVQf09D2eE00I1wUvWE5W8LIR1FfOnoti/MWosTlGRH/z6Saz5irDZA543S76Hi5AVjA/dOZBQtZmymWdjLvnCtKxdLfCp9zGALOsK3dYdPAMDg5eoYVKgrB968Z7O0ItqCT/7E1HeJk0uD/NjK37LZfD9f/tJbA1SX/Yzrhzf0AAAAA==",
+  "dominant": "#ff5927",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sony",
+  "source": {
+    "url": "https://store.sony.com.au/dw/image/v2/abbc_PRD/on/demandware.static/-/Sites-sony-master-catalog/default/dwf66eb5cf/images/PS4DUALSHOCKV2O/PS4DUALSHOCKV2O.png",
+    "page": "https://store.sony.com.au/PS4DUALSHOCKV2SO.html"
+  },
+  "input": "c8a2d9ddf1a43c5d"
+}

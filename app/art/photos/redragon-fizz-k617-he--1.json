@@ -1,0 +1,70 @@
+{
+  "key": "redragon-fizz-k617-he--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 813,
+  "aspect": 1.968,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/redragon-fizz-k617-he/1-240.75e2e4c4.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-fizz-k617-he/1-480.dcb0a821.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-fizz-k617-he/1-720.24bf9f5c.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-fizz-k617-he/1-960.e7968ea5.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/redragon-fizz-k617-he/1-1440.1e349c24.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/redragon-fizz-k617-he/1-240.0f86322b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-fizz-k617-he/1-480.32541863.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-fizz-k617-he/1-720.f73b1e18.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-fizz-k617-he/1-960.dd551bf5.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/redragon-fizz-k617-he/1-1440.b253a3f0.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/redragon-fizz-k617-he/1-1200.f2ae29ab.png",
+    "width": 1200,
+    "height": 610,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuIAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSFQAAAART6CgbRs2VBRnfxER4P3U5RaY1tbe5AtVd90m4LBCd6hoXCwS3ydImbfNENH/CQASWLuf0bFNCXZl/oODmVS4lbZqlaYIUpljcO0/WYCLDn2TwB1WUDggaAAAALADAJ0BKhQACgA/EXKxUKwmpKKwCAGAIglsALToGSeoh8ib+yqgAP7NBNpSXPAM69cfE62rH4XXwngKo3J5TBx6RdDviMKMMYFYcwPzD8dJr/HUW+cn3OcC1LnEe4fz/mobXWZOmYAA",
+  "dominant": "#464b54",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Redragon",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/Redragon_FIZZ_K617_HE_Magnetic_Hall_Effect_Keyboard_-GB_3.png",
+    "page": "https://redragonshop.com/products/fizz-k617-he-magnetic-hall-effect-keyboard"
+  },
+  "input": "8a80864ab816ca9a"
+}

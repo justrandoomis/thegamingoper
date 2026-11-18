@@ -1,0 +1,64 @@
+{
+  "key": "enotria-the-last-song--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/enotria-the-last-song/3-240.e4ee5da6.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/enotria-the-last-song/3-480.a5bc308e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/enotria-the-last-song/3-720.55987ed2.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/enotria-the-last-song/3-960.cc31de40.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/enotria-the-last-song/3-1440.9c00cc4f.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/enotria-the-last-song/3-240.60725988.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/enotria-the-last-song/3-480.a62e0d1d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/enotria-the-last-song/3-720.00d64a30.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/enotria-the-last-song/3-960.10ad6a9d.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/enotria-the-last-song/3-1440.26857f85.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAABwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQBYdhDwue7pxh4AA/vDPa9ZhN65JvV0a0gTSDwZtr9GQ2LNwMtm4HwAAAA==",
+  "dominant": "#170401",
+  "transparent": false,
+  "background": "#090101",
+  "kind": "screenshot",
+  "credit": "Jyamma Games",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202403/2115/b17e03671d06a2f662a31f012330f925941665b7a302f0de.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP7780-PPSA20515_00-0232483321110628"
+  },
+  "input": "0fd0649970386fdb"
+}

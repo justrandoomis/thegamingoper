@@ -1,0 +1,48 @@
+{
+  "key": "ipega-pg-p5s007-horizontal-stand--2",
+  "view": "hero",
+  "width": 816,
+  "height": 493,
+  "aspect": 1.6552,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ipega-pg-p5s007-horizontal-stand/2-240.7957cf98.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-pg-p5s007-horizontal-stand/2-480.44ef8ac3.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-pg-p5s007-horizontal-stand/2-720.b790fc7b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ipega-pg-p5s007-horizontal-stand/2-240.0c6917de.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-pg-p5s007-horizontal-stand/2-480.50180803.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-pg-p5s007-horizontal-stand/2-720.2a7416ac.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADQAwCdASoUAAwAPxFysFAsJqSisAgBgCIJaQAAW/GVRcUGtJuEAAAA/u1JG8n3rBANUqEub+HjRpjKZqJQYAQGH2n8F8uzLOSFtRXjw//vpt29chqPuX4FgAAAAA==",
+  "dominant": "#ebebeb",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "angle",
+  "credit": "iPega",
+  "source": {
+    "url": "https://ipega.hk/uploads/202312/65868059ec8a0.png",
+    "page": "https://ipega.hk/ps3ps4series/76-580.html"
+  },
+  "input": "4e82fc01cbf6d4fb"
+}

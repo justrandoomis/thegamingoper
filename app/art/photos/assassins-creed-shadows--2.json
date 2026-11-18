@@ -1,0 +1,64 @@
+{
+  "key": "assassins-creed-shadows--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/assassins-creed-shadows/2-240.6d63f76d.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/assassins-creed-shadows/2-480.bd1a5638.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/assassins-creed-shadows/2-720.8eac4fe8.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/assassins-creed-shadows/2-960.993fb787.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/assassins-creed-shadows/2-1440.e62410f6.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/assassins-creed-shadows/2-240.43ccd785.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/assassins-creed-shadows/2-480.38e623a6.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/assassins-creed-shadows/2-720.419f6fae.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/assassins-creed-shadows/2-960.ae635b55.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/assassins-creed-shadows/2-1440.b6999258.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAABwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZwDDNCHfhd73DuAA/uvVZL0y2RprHSFH6Mb06qqSMeKimKaw8GAA",
+  "dominant": "#140d07",
+  "transparent": false,
+  "background": "#0f0b06",
+  "kind": "screenshot",
+  "credit": "Ubisoft",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202506/2421/f66a434a38d5a5b825312d3c363951e96c66a421062b8a2d.jpg",
+    "page": "https://store.playstation.com/en-ae/product/EP0001-PPSA22100_00-GAME000000000000"
+  },
+  "input": "6fb28b9d654d383a"
+}

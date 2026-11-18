@@ -1,0 +1,110 @@
+{
+  "slug": "dxracer-craft-starswar-edition",
+  "group": "chairs",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "gaming-chairs",
+  "brand": "DXRacer",
+  "family": "dxracer-chairs",
+  "status": "limited",
+  "name": {
+    "ar": "كرسي ألعاب DXRacer Craft نسخة StarsWar",
+    "en": "DXRacer Craft StarsWar Edition Gaming Chair",
+    "ckb": "کورسیی یاری DXRacer Craft وەشانی StarsWar"
+  },
+  "short": {
+    "ar": "نسخة خاصة مطرزة لبطولة StarsWar · أسود وأحمر · مساند 4D",
+    "en": "Embroidered special edition for the StarsWar tournament · Black and red · 4D armrests",
+    "ckb": "وەشانی تایبەتی چنراو بۆ پاڵەوانێتیی StarsWar · ڕەش و سوور · دەستەی 4D"
+  },
+  "description": {
+    "ar": "نسخة رسمية من سلسلة DXRacer Craft صُنعت لبطولة الرياضات الإلكترونية StarsWar عند عودتها بعد عشر سنوات. الكرسي أسود وأحمر مع شعار StarsWar مطرز على الظهر والجانبين. فيه دعم مدمج لأسفل الظهر ومساند ذراع 4D ومقعد عريض وسميك.",
+    "en": "An official DXRacer Craft series edition made for the StarsWar esports tournament on its return after ten years. The chair is black and red, with the StarsWar emblem embroidered on the backrest and both sides. It has built-in lumbar support, 4D armrests and an extra-wide, thick seat cushion.",
+    "ckb": "وەشانێکی فەرمیی زنجیرەی DXRacer Craft کە بۆ پاڵەوانێتیی ئیسپۆرتی StarsWar دروستکراوە کاتێک دوای دە ساڵ گەڕایەوە. کورسییەکە ڕەش و سوورە، هێمای StarsWar لەسەر پشت و هەردوو لای چنراوە. پاڵپشتی ناوخۆیی پشت، دەستەی 4D و کورسیی پان و ئەستووری هەیە."
+  },
+  "highlights": [
+    { "ar": "شعار StarsWar مطرز على الظهر والجانبين", "en": "StarsWar emblem embroidered on the back and both sides", "ckb": "هێمای StarsWar لەسەر پشت و هەردوو لا چنراوە" },
+    { "ar": "دعم مدمج لأسفل الظهر (2D)", "en": "2D built-in lumbar support", "ckb": "پاڵپشتی ناوخۆیی پشتی 2D" },
+    { "ar": "مساند ذراع 4D", "en": "4D armrests", "ckb": "دەستەی 4D" },
+    { "ar": "مقعد عريض وسميك", "en": "Extra-wide, thick seat cushion", "ckb": "کورسیی پان و ئەستوور" },
+    { "ar": "هزاز بزاوية 15° مع قفل الإمالة", "en": "15° rocking with tilt lock", "ckb": "هەژاندنی 15° لەگەڵ قفڵی لاربوونەوە" }
+  ],
+  "specs": [
+    { "key": "series", "label": { "ar": "السلسلة", "en": "Series", "ckb": "زنجیرە" }, "value": { "ar": "DXRacer Craft", "en": "DXRacer Craft", "ckb": "DXRacer Craft" } },
+    { "key": "color", "label": { "ar": "اللون", "en": "Colour", "ckb": "ڕەنگ" }, "value": { "ar": "أسود وأحمر ورمادي", "en": "Black, red and grey", "ckb": "ڕەش، سوور و خۆڵەمێشی" } },
+    { "key": "armrests", "label": { "ar": "مساند الذراع", "en": "Armrests", "ckb": "دەستەکان" }, "value": { "ar": "4D", "en": "4D", "ckb": "4D" } },
+    { "key": "lumbar", "label": { "ar": "دعم الظهر", "en": "Lumbar support", "ckb": "پاڵپشتی پشت" }, "value": { "ar": "مدمج 2D", "en": "Built-in, 2D", "ckb": "ناوخۆیی، 2D" } },
+    { "key": "base", "label": { "ar": "القاعدة", "en": "Base", "ckb": "بنکە" }, "value": { "ar": "ألمنيوم، مكبس غاز Class 4", "en": "Aluminium, Class 4 gas lift", "ckb": "ئەلەمنیۆم، گازی Class 4" } }
+  ],
+  "inTheBox": [
+    { "ar": "الكرسي (يحتاج تركيباً)", "en": "The chair (needs assembly)", "ckb": "کورسییەکە (پێویستی بە بەستنەوە هەیە)" }
+  ],
+  "variants": [
+    {
+      "sku": "DXR-CRAFT-STARSWAR",
+      "sheetRow": 30,
+      "title": { "ar": "كرسي ألعاب DXRacer Craft نسخة StarsWar", "en": "DXRacer Craft StarsWar Edition Gaming Chair", "ckb": "کورسیی یاری DXRacer Craft وەشانی StarsWar" },
+      "options": { "edition": "StarsWar", "color": "Black / Red" },
+      "isDefault": true,
+      "images": ["dxracer-craft-starswar-edition--1", "dxracer-craft-starswar-edition--2"]
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    { "slug": "dxracer-drifting-series", "kind": "alternative" },
+    { "slug": "dxracer-master-series", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "dxracer-craft-starswar-edition--1",
+      "file": ".cache/product-images/dxracer-craft-starswar-edition/1.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/3c69cfac-9561-49e9-8b80-d9fa3c473bae-1.png",
+      "sourcePage": "https://dxracer.com/pages/esports/stars-war",
+      "kind": "hero",
+      "alt": { "ar": "كرسي DXRacer Craft نسخة StarsWar من الأمام", "en": "DXRacer Craft StarsWar Edition, front view", "ckb": "کورسیی DXRacer Craft وەشانی StarsWar، لە پێشەوە" },
+      "credit": "DXRacer",
+      "width": 387, "height": 685, "transparent": true
+    },
+    {
+      "key": "dxracer-craft-starswar-edition--2",
+      "file": ".cache/product-images/dxracer-craft-starswar-edition/2.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/3c69cfac-9561-49e9-8b80-d9fa3c473bae-2.png",
+      "sourcePage": "https://dxracer.com/pages/esports/stars-war",
+      "kind": "angle",
+      "alt": { "ar": "نسخة StarsWar من الجانب مع الشعار المطرز", "en": "The StarsWar Edition from the side, with the embroidered emblem", "ckb": "وەشانی StarsWar لە لاوە لەگەڵ هێما چنراوەکە" },
+      "credit": "DXRacer",
+      "width": 393, "height": 686, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://dxracer.com/pages/esports/stars-war",
+      "title": "Stars War Gaming Chair | IP Collaborations | DXRACER USA",
+      "publisher": "DXRacer USA",
+      "retrieved": "2026-11-18",
+      "supports": "DXRacer Craft StarsWar Edition: official chair of the StarsWar tournament's return after a decade, embroidery on both sides, 2D integrated lumbar support, 4D armrests, extra-wide thick seat cushion, images"
+    },
+    {
+      "url": "https://www.dxracer.com/specifications/gaming-chairs/craft",
+      "title": "CRAFT Series Specifications",
+      "publisher": "DXRacer USA",
+      "retrieved": "2026-11-18",
+      "supports": "Craft series adjustments (15° rocking, tilt lock, 4D armrests), Class 4 hydraulics, aluminium base"
+    }
+  ],
+  "notes": {
+    "ar": "StarsWar بطولة رياضات إلكترونية، ولا علاقة لهذه النسخة بسلسلة أفلام Star Wars. الكرسي يصل مفككاً ويحتاج تركيباً.",
+    "en": "StarsWar is an esports tournament; this edition has nothing to do with the Star Wars films. The chair arrives flat-packed and needs assembly.",
+    "ckb": "StarsWar پاڵەوانێتییەکی ئیسپۆرتە؛ ئەم وەشانە پەیوەندیی بە فیلمەکانی Star Wars ـەوە نییە. کورسییەکە بە جیاکراوەیی دێت و پێویستی بە بەستنەوە هەیە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "Row 30 \"IGC CHAIR STARWARS\": assumed to be DXRacer's Craft StarsWar Edition, since the other \"IGC\" rows are DXRacer chairs and this is the only DXRacer chair with that name; a licensed Star Wars chair from another maker is possible and should be checked against the box",
+      "No second source found for this edition (it is mostly sold in China)",
+      "Size, cover material, model number, release date, maximum load not published on the page",
+      "Official images are small (about 390 × 690 px)"
+    ]
+  }
+}

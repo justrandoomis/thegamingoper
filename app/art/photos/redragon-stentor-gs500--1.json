@@ -1,0 +1,62 @@
+{
+  "key": "redragon-stentor-gs500--1",
+  "view": "hero",
+  "width": 1434,
+  "height": 1309,
+  "aspect": 1.0955,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/redragon-stentor-gs500/1-240.8ba7ada5.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-stentor-gs500/1-480.deafb0ec.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-stentor-gs500/1-720.4fe383ab.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-stentor-gs500/1-960.7766f033.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/redragon-stentor-gs500/1-240.7dda0270.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-stentor-gs500/1-480.b5d12d7b.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-stentor-gs500/1-720.46b695cc.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-stentor-gs500/1-960.a460ebe1.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/redragon-stentor-gs500/1-1200.3b834fda.png",
+    "width": 1200,
+    "height": 1095,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgQBAABXRUJQVlA4WAoAAAAQAAAAEwAAEQAAQUxQSGgAAAART6CokSQ1thoYj38XEQH68cWK0XBaa9vTvHRkHYARUOjeXI+OjcPG9eQbgW/gv4wQ0f8JQBCGCMIQwJco+dPpIDiZ78w8ImChJeGlIj/T4RVaJpF71eEcEg+ReQhuCJrtshBRDmEIAFZQOCB2AAAA8AQAnQEqFAASAD8RfrZVrCekoygIAYAiCWUAzuwKB6M1T+mRX2iyX5GoN6H5iZFAAP48RB6r/8C0dVXL4AKyk5KXEYtZTxZcxeDDVR8A4HOumsmjg4jvLV1YKPtgHTs0ZyfMPT4xvAZlUmr40+/5uy9hyxgAAA==",
+  "dominant": "#070607",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Redragon",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/RedragonSTENTORGS500BestBudgetGamingSpeaker_2.png",
+    "page": "https://redragonshop.com/products/stentor-gs500"
+  },
+  "input": "75b1d6356cfb31f7"
+}

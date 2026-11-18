@@ -1,0 +1,64 @@
+{
+  "key": "crash-team-rumble--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/crash-team-rumble/3-240.962454f4.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/crash-team-rumble/3-480.de74f308.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/crash-team-rumble/3-720.41179b89.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/crash-team-rumble/3-960.1cca9350.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/crash-team-rumble/3-1440.c4e6ed21.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/crash-team-rumble/3-240.87d5f4b8.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/crash-team-rumble/3-480.889be6f4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/crash-team-rumble/3-720.a7edd055.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/crash-team-rumble/3-960.e74a36b6.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/crash-team-rumble/3-1440.17d42c2d.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAABQBACdASoUAAsAPxFysFAsJqSisAgBgCIJagCdIE3J/gJM3BcxJ31E79KAAP5H1CEpqOTI3ArQLjfrZyK2J0RDHfvQ4yPYVafJ3IFOvQ+Ta9XmL6DKJx4bX+6w4e4+KL9TbEDvbvhBgVujl8phKWwAAAA=",
+  "dominant": "#e7b687",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Activision",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202402/1623/b65a259d1067ecf3ca835f1001aa409a39011610134577b6.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP0002-PPSA06660_00-CTR23STDEDITION1"
+  },
+  "input": "b29a971f6934dded"
+}

@@ -1,0 +1,130 @@
+{
+  "slug": "switch-wired-controller",
+  "group": "nintendo-accessories",
+  "kind": "controller",
+  "platform": "nintendo",
+  "brand": "MX",
+  "status": "available",
+  "name": {
+    "ar": "يد تحكم سلكية لـ Nintendo Switch",
+    "en": "Wired Controller for Nintendo Switch",
+    "ckb": "دەسکی وایەری بۆ Nintendo Switch"
+  },
+  "short": {
+    "ar": "يد تحكم بكابل USB لـ Switch و Switch OLED",
+    "en": "USB wired controller for Switch and Switch OLED",
+    "ckb": "دەسکی وایەری USB بۆ Switch و Switch OLED"
+  },
+  "description": {
+    "ar": "يد تحكم بكابل تُوصل بقاعدة Nintendo Switch عبر USB، تناسب Switch و Switch OLED في وضع التلفاز. لا تحتاج شحنًا. مسجلة في المخزن باسم «NINTENDO SWITCH OLED WIRED MX».",
+    "en": "A wired controller that plugs into the Nintendo Switch dock over USB, for Switch and Switch OLED in TV mode. No charging needed. Listed in stock as \"NINTENDO SWITCH OLED WIRED MX\".",
+    "ckb": "دەسکێکی وایەری کە بە USB بە دۆکی Nintendo Switch دەبەسترێتەوە، بۆ Switch و Switch OLED لە دۆخی تەلەفزیۆن. پێویستی بە بارگاوی نییە. لە کۆگادا بە ناوی «NINTENDO SWITCH OLED WIRED MX» تۆمارکراوە."
+  },
+  "highlights": [
+    {
+      "ar": "اتصال سلكي عبر USB — بلا بطارية ولا شحن",
+      "en": "USB wired — no battery, no charging",
+      "ckb": "وایەری USB — بێ پاتری و بێ بارگاوی"
+    },
+    {
+      "ar": "للعب على التلفاز عبر القاعدة",
+      "en": "For TV play through the dock",
+      "ckb": "بۆ یاری لەسەر تەلەفزیۆن لە ڕێگەی دۆک"
+    }
+  ],
+  "specs": [
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "كابل USB",
+        "en": "USB cable",
+        "ckb": "کێبڵی USB"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Nintendo Switch · Nintendo Switch OLED",
+        "en": "Nintendo Switch · Nintendo Switch OLED",
+        "ckb": "Nintendo Switch · Nintendo Switch OLED"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "SW-WIRED-CTRL-MX",
+      "sheetRow": 56,
+      "title": {
+        "ar": "يد تحكم سلكية لـ Nintendo Switch",
+        "en": "Wired Controller for Nintendo Switch",
+        "ckb": "دەسکی وایەری بۆ Nintendo Switch"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-oled",
+      "status": "unverified",
+      "note": {
+        "ar": "عبر منفذ USB في القاعدة",
+        "en": "Through a USB port on the dock",
+        "ckb": "لە ڕێگەی دەرچەی USB ی دۆک"
+      }
+    },
+    {
+      "deviceModel": "switch",
+      "status": "unverified",
+      "note": {
+        "ar": "عبر منفذ USB في القاعدة",
+        "en": "Through a USB port on the dock",
+        "ckb": "لە ڕێگەی دەرچەی USB ی دۆک"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-oled",
+      "kind": "setup"
+    },
+    {
+      "slug": "nintendo-switch",
+      "kind": "setup"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://powera.com/p/brands/kirby/enhanced-wired-controller-for-nintendo-switch",
+      "title": "Enhanced Wired Controller for Nintendo Switch",
+      "publisher": "PowerA",
+      "retrieved": "2026-11-18",
+      "supports": "how wired Switch controllers connect (USB cable to the dock) and work with Switch OLED"
+    },
+    {
+      "url": "https://www.bestbuy.com/site/pdp-rematch-wired-controller-nintendo-switch-nintendo-switch-oled-model-black-white/6500867.p",
+      "title": "PDP Rematch Wired Controller for Nintendo Switch / Switch OLED",
+      "publisher": "Best Buy",
+      "retrieved": "2026-11-18",
+      "supports": "second example of wired controllers sold for Switch and Switch OLED"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Maker behind \"MX\" (no maker page found)",
+      "Motion controls, rumble and NFC support",
+      "Cable length and colour"
+    ]
+  }
+}

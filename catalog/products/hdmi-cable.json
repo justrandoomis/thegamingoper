@@ -1,0 +1,136 @@
+{
+  "slug": "hdmi-cable",
+  "group": "power-cables-storage-misc",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "cables",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "كابل HDMI",
+    "en": "HDMI Cable",
+    "ckb": "کێبڵی HDMI"
+  },
+  "short": {
+    "ar": "كابل HDMI لربط الجهاز بالتلفزيون أو الشاشة · نوعان",
+    "en": "HDMI cable to connect a console to a TV or monitor · two types",
+    "ckb": "کێبڵی HDMI بۆ بەستنەوەی ئامێر بە تەلەفزیۆن یان شاشە · دوو جۆر"
+  },
+  "description": {
+    "ar": "كابل HDMI عادي بدون علامة تجارية لربط جهاز الألعاب أو الريسيفر أو الحاسوب بالتلفزيون أو الشاشة. يتوفر بنوعين: كابل HD أساسي للاستخدام اليومي، وكابل يدعم دقة 4K بطول 1.5 متر. لتشغيل 4K بتردد 120Hz على PS5 أو Xbox Series X اختر كابلاً معتمداً لمعيار HDMI 2.1.",
+    "en": "A plain unbranded HDMI cable to connect a console, receiver or PC to a TV or monitor. It comes in two types: a basic HD cable for everyday use and a 4K-capable cable 1.5 metres long. For 4K at 120Hz on PS5 or Xbox Series X, choose a cable rated for HDMI 2.1.",
+    "ckb": "کێبڵێکی HDMIی ئاسایی بێ مارکە بۆ بەستنەوەی کۆنسۆڵ یان ڕیسیڤەر یان کۆمپیوتەر بە تەلەفزیۆن یان شاشە. بە دوو جۆر هەیە: کێبڵی HDی سەرەتایی بۆ بەکارهێنانی ڕۆژانە، و کێبڵێکی 4K بە درێژی 1.5 مەتر. بۆ 4K بە 120Hz لەسەر PS5 یان Xbox Series X کێبڵێکی HDMI 2.1 هەڵبژێرە."
+  },
+  "highlights": [
+    {
+      "ar": "موصلان HDMI قياسيان (ذكر-ذكر)",
+      "en": "Standard HDMI plug at both ends",
+      "ckb": "سەری HDMIی ستاندارد لە هەردوو لا"
+    },
+    {
+      "ar": "نوع HD أساسي، ونوع 4K بطول 1.5 متر",
+      "en": "Basic HD type, and a 4K type 1.5 m long",
+      "ckb": "جۆری HDی سەرەتایی، و جۆری 4K بە درێژی 1.5 مەتر"
+    },
+    {
+      "ar": "لـ 4K@120Hz استخدم كابل HDMI 2.1 مثل UGREEN HD140",
+      "en": "For 4K@120Hz use an HDMI 2.1 cable such as the UGREEN HD140",
+      "ckb": "بۆ 4K@120Hz کێبڵی HDMI 2.1 وەک UGREEN HD140 بەکاربهێنە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "connectors",
+      "label": {
+        "ar": "الموصلات",
+        "en": "Connectors",
+        "ckb": "سەرەکان"
+      },
+      "value": {
+        "ar": "HDMI إلى HDMI",
+        "en": "HDMI to HDMI",
+        "ckb": "HDMI بۆ HDMI"
+      }
+    },
+    {
+      "key": "types",
+      "label": {
+        "ar": "الأنواع",
+        "en": "Types",
+        "ckb": "جۆرەکان"
+      },
+      "value": {
+        "ar": "HD أساسي · 4K بطول 1.5 متر",
+        "en": "Basic HD · 4K, 1.5 m",
+        "ckb": "HDی سەرەتایی · 4K، 1.5 مەتر"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "HDMI-CABLE-HD",
+      "sheetRow": 6,
+      "title": {
+        "ar": "HD أساسي",
+        "en": "Basic HD",
+        "ckb": "HDی سەرەتایی"
+      },
+      "options": {
+        "type": "HD"
+      },
+      "isDefault": true,
+      "notes": {
+        "ar": "كابل HDMI أساسي؛ الطول والإصدار غير مذكورين في قائمة المخزن.",
+        "en": "Basic HDMI cable; length and HDMI version are not stated in the stock list.",
+        "ckb": "کێبڵی HDMIی سەرەتایی؛ درێژی و وەشانی HDMI لە لیستی کۆگادا نەنووسراوە."
+      }
+    },
+    {
+      "sku": "HDMI-CABLE-4K-1M5",
+      "sheetRow": 7,
+      "title": {
+        "ar": "4K · 1.5 متر",
+        "en": "4K · 1.5 m",
+        "ckb": "4K · 1.5 مەتر"
+      },
+      "options": {
+        "type": "4K",
+        "length": "1.5m"
+      },
+      "isDefault": false
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    {
+      "slug": "ugreen-8k-hdmi-2-1-cable",
+      "kind": "upsell"
+    }
+  ],
+  "images": [],
+  "sources": [
+    {
+      "url": "https://www.hdmi.org/spec21sub/ultrahighspeedcable",
+      "title": "Ultra High Speed HDMI Cable - Bandwidth Up To 48Gbps",
+      "publisher": "HDMI Licensing Administrator",
+      "retrieved": "2026-11-18",
+      "supports": "4K at 120Hz and 8K need an Ultra High Speed (48Gbps) HDMI cable; ordinary High Speed cables cover 1080p and 4K at 60Hz"
+    },
+    {
+      "url": "https://www.hdmi.org/spec/hdmi2_1",
+      "title": "HDMI Specification Overview",
+      "publisher": "HDMI Licensing Administrator",
+      "retrieved": "2026-11-18",
+      "supports": "the Ultra High Speed HDMI Cable was introduced with HDMI 2.1"
+    }
+  ],
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": false,
+    "unverified": [
+      "Maker, length and HDMI version of the basic \"CABLE HD\" (owner sheet gives no brand or model)",
+      "Maker and HDMI version of the \"CABLE HDMI 4K 1.5M\"",
+      "No product images: unbranded cables have no maker page"
+    ]
+  }
+}

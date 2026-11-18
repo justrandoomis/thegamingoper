@@ -1,0 +1,62 @@
+{
+  "key": "gameon-aerox-gomk60-rs--1",
+  "view": "hero",
+  "width": 1054,
+  "height": 610,
+  "aspect": 1.7279,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/gameon-aerox-gomk60-rs/1-240.671a7074.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/gameon-aerox-gomk60-rs/1-480.bf4d0f46.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/gameon-aerox-gomk60-rs/1-720.192bc6f6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/gameon-aerox-gomk60-rs/1-960.72795df1.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/gameon-aerox-gomk60-rs/1-240.658a9dd0.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/gameon-aerox-gomk60-rs/1-480.0704f1d4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/gameon-aerox-gomk60-rs/1-720.af13df4a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/gameon-aerox-gomk60-rs/1-960.01b926c9.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/gameon-aerox-gomk60-rs/1-1054.e18afa81.png",
+    "width": 1054,
+    "height": 610,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuoAAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSEAAAAARR6CmkSQ0dg6+ppIhIgLO+xZkYBMAQBr85+PUAEQggv9EoAUE1y1BRP8nABxKsgti5yxfwzbmmvX5P1+3BBwCVlA4IIQAAACwAwCdASoUAAwAPxFysFAsJqSisAgBgCIJagCdAB6OzzIYJaWJgADN57JjAuPkCpek1q56rEz1uR+MgAs8/q1hMCJCS/fsOvI8bgmMRl3UU6Jo6MdQXRmAw5Qd/3jgkQUZAv7+r6fK1C8mv0KP4jWZqk15uwxO5CFlNi35fki9oK3AAAA=",
+  "dominant": "#e8e5e4",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "GameOn",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0700/1505/8226/files/GOMK60-RS_img_1.png",
+    "page": "https://gameon.store/products/gameon-aerox-series-gomk60-rs-60-rgb-mechanical-wired-gaming-keyboard-red-switch-english-arabic"
+  },
+  "input": "12454c1aab823b7c"
+}

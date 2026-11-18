@@ -1,0 +1,150 @@
+{
+  "slug": "jys-switch-2-silicone-case",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "غطاء سيليكون JYS لجهاز Nintendo Switch 2",
+    "en": "JYS Silicone Case for Nintendo Switch 2",
+    "ckb": "بەرگی سیلیکۆنی JYS بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "غطاء سيليكون ناعم لـ Switch 2 · رمز 2292",
+    "en": "Soft silicone cover for Switch 2 · code 2292",
+    "ckb": "بەرگی سیلیکۆنی نەرم بۆ Switch 2 · کۆد 2292"
+  },
+  "description": {
+    "ar": "غطاء من السيليكون الناعم من JYS لجهاز Nintendo Switch 2، يحسّن القبضة ويحمي الجسم من الخدوش والانزلاق أثناء اللعب المحمول. رمز المورّد 2292.",
+    "en": "A soft JYS silicone cover for Nintendo Switch 2 that adds grip and protects the body from scratches and slips in handheld play. Supplier code 2292.",
+    "ckb": "بەرگێکی سیلیکۆنی نەرمی JYS بۆ Nintendo Switch 2 کە گرتن باشتر دەکات و لەشی ئامێرەکە لە خەت و خلیسکان دەپارێزێت لە یاریی دەستیدا. کۆدی دابینکەر 2292."
+  },
+  "highlights": [
+    {
+      "ar": "سيليكون ناعم مانع للانزلاق",
+      "en": "Soft, anti-slip silicone",
+      "ckb": "سیلیکۆنی نەرم و دژە خلیسکان"
+    },
+    {
+      "ar": "مصمم لـ Nintendo Switch 2",
+      "en": "Made for Nintendo Switch 2",
+      "ckb": "بۆ Nintendo Switch 2 دروستکراوە"
+    },
+    {
+      "ar": "يحمي الجسم من الخدوش",
+      "en": "Protects the body from scratches",
+      "ckb": "لەش لە خەت دەپارێزێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Nintendo Switch 2",
+        "en": "Nintendo Switch 2",
+        "ckb": "Nintendo Switch 2"
+      }
+    },
+    {
+      "key": "material",
+      "label": {
+        "ar": "المادة",
+        "en": "Material",
+        "ckb": "کەرەستە"
+      },
+      "value": {
+        "ar": "سيليكون",
+        "en": "Silicone",
+        "ckb": "سیلیکۆن"
+      }
+    },
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "رمز المورّد 2292",
+        "en": "Supplier code 2292",
+        "ckb": "کۆدی دابینکەر 2292"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-NS2-SILICONE-2292",
+      "sheetRow": 43,
+      "title": {
+        "ar": "غطاء سيليكون JYS لجهاز Nintendo Switch 2",
+        "en": "JYS Silicone Case for Nintendo Switch 2",
+        "ckb": "بەرگی سیلیکۆنی JYS بۆ Nintendo Switch 2"
+      },
+      "options": {
+        "code": "2292"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "unverified",
+      "note": {
+        "ar": "غطاء لـ Switch 2 حسب ورقة المخزن",
+        "en": "Switch 2 cover per the stock sheet",
+        "ckb": "بەرگی Switch 2 بەپێی لیستی کۆگا"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "jys-switch-2-tempered-glass",
+      "kind": "accessory"
+    },
+    {
+      "slug": "jys-switch-2-pc-case",
+      "kind": "alternative"
+    },
+    {
+      "slug": "switch-2-protective-case",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://aio.lv/en/product--jys-sb10469--11852256",
+      "title": "Protective Case for Nintendo Switch 2 by JYS (SB10469)",
+      "publisher": "AIO.lv",
+      "retrieved": "2026-11-18",
+      "supports": "JYS makes protective cases for Nintendo Switch 2"
+    },
+    {
+      "url": "https://www.fruugo.co.nz/jys-ns2263-2pcs-for-nintendo-switch-2-joy-con-grip-handle-ergonomic-controller-attachment-with-wrist/p-384331114",
+      "title": "JYS-NS2263 For Nintendo Switch 2 Joy-Con Grip",
+      "publisher": "Fruugo",
+      "retrieved": "2026-11-18",
+      "supports": "JYS uses NS22xx model codes for its Switch 2 accessories"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "No JYS page found for code 2292 (assumed JYS-NS2292)",
+      "Colour",
+      "Whether it covers the Joy-Con 2 or the console body only"
+    ]
+  }
+}

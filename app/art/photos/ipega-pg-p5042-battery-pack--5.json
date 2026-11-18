@@ -1,0 +1,48 @@
+{
+  "key": "ipega-pg-p5042-battery-pack--5",
+  "view": "hero",
+  "width": 800,
+  "height": 800,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ipega-pg-p5042-battery-pack/5-240.141d7206.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-pg-p5042-battery-pack/5-480.4f1ba415.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-pg-p5042-battery-pack/5-720.b51e6bca.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ipega-pg-p5042-battery-pack/5-240.6a860faf.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-pg-p5042-battery-pack/5-480.7d5dc13f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-pg-p5042-battery-pack/5-720.4a9ef564.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRrgAAABXRUJQVlA4IKwAAADwBACdASoUABQAPxF+tlWsJ6SjKAgBgCIJZACsAdwAer6+5W8On4kjiJTKM5rgrIAA/usnXLZ6pzCwINN4MdNrIAgJ262J2ocNqmNT8E1vHz6HFaSYG9VEiIYewWN3AHhwyPMu/Hk8dI9V1Bvu1IlxzN0Dco7UuTy1odGY9ac4ui+OKiRguYw/9ozqnx6NrtFMQvIGA3JVgkLgJAIO1ic5wDfPwVZ+niFv13AA",
+  "dominant": "#f4f4f5",
+  "transparent": false,
+  "background": "#fefefe",
+  "kind": "in-box",
+  "credit": "iPega",
+  "source": {
+    "url": "https://ipega.hk/uploads/202508/689c387279189.jpg",
+    "page": "https://ipega.hk/ps3ps4series/76-722.html"
+  },
+  "input": "cc90034a9aa08876"
+}

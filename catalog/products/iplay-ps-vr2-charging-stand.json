@@ -1,0 +1,105 @@
+{
+  "slug": "iplay-ps-vr2-charging-stand",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "iPlay",
+  "category": "vr",
+  "status": "available",
+  "name": {
+    "ar": "حامل وشاحن iPlay لنظارة PS VR2",
+    "en": "iPlay PS VR2 Charging Stand",
+    "ckb": "ستاند و شەحنەری iPlay بۆ PS VR2"
+  },
+  "short": {
+    "ar": "يحمل النظارة ويشحن يدَي Sense",
+    "en": "Holds the headset and charges the Sense controllers",
+    "ckb": "عەینەکەکە هەڵدەگرێت و کۆنتڕۆڵەرەکانی Sense شەحن دەکات"
+  },
+  "description": {
+    "ar": "حامل من iPlay لنظارة PlayStation VR2 يعرضها ويحفظها، ويشحن يدَي PS VR2 Sense في الوقت نفسه.",
+    "en": "An iPlay stand for PlayStation VR2 that displays and stores the headset and charges the two PS VR2 Sense controllers at the same time.",
+    "ckb": "ستاندێکی iPlay بۆ PlayStation VR2 کە عەینەکەکە هەڵدەگرێت و دوو کۆنتڕۆڵەری PS VR2 Sense شەحن دەکات."
+  },
+  "highlights": [
+    {
+      "ar": "مكان للنظارة ويدَي Sense",
+      "en": "Room for the headset and both Sense controllers",
+      "ckb": "شوێن بۆ عەینەک و هەردوو Sense"
+    },
+    {
+      "ar": "يشحن يدَي Sense",
+      "en": "Charges the Sense controllers",
+      "ckb": "Sense شەحن دەکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "device",
+      "label": {
+        "ar": "يتوافق مع",
+        "en": "Works with",
+        "ckb": "گونجاوە لەگەڵ"
+      },
+      "value": {
+        "ar": "PlayStation VR2",
+        "en": "PlayStation VR2",
+        "ckb": "PlayStation VR2"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "IPLAY-PSVR2-STAND",
+      "title": {
+        "ar": "حامل وشاحن iPlay لنظارة PS VR2",
+        "en": "iPlay PS VR2 Charging Stand",
+        "ckb": "ستاند و شەحنەری iPlay بۆ PS VR2"
+      },
+      "sheetRow": 156,
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps-vr2",
+      "status": "unverified",
+      "source": "https://www.playstation.com/en-us/ps-vr2/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-vr2",
+      "kind": "setup"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-us/ps-vr2/",
+      "title": "PlayStation VR2",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "PS VR2 headset and Sense controllers (charged over USB-C)"
+    },
+    {
+      "url": "https://www.bunnings.com.au/charging-stand-multifunction-vertical-dock-station-for-playstation-vr2-ps5-vr-ps-vr2-headset_p0744099",
+      "title": "Charging stand multifunction vertical dock station for PlayStation VR2",
+      "publisher": "Bunnings (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "type reference: PS VR2 stands hold the headset and charge the Sense controllers"
+    }
+  ],
+  "notes": {
+    "ar": "معظم هذه الحوامل تشحن اليدين فقط وليس النظارة، والنظارة تعمل بكابل الجهاز.",
+    "en": "Most stands of this kind charge only the controllers, not the headset, which runs on its console cable.",
+    "ckb": "زۆربەی ئەم ستاندانە تەنها کۆنتڕۆڵەر شەحن دەکەن نەک عەینەکەکە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "The owner's sheet writes 'IPLAU'; read as the iPlay accessory brand",
+      "Exact iPlay model, how it charges (magnetic adapters or USB-C), power source — no iPlay page was found"
+    ]
+  }
+}

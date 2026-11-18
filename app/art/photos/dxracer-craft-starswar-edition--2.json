@@ -1,0 +1,40 @@
+{
+  "key": "dxracer-craft-starswar-edition--2",
+  "view": "hero",
+  "width": 474,
+  "height": 767,
+  "aspect": 0.618,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-craft-starswar-edition/2-240.606fd23b.avif"
+      },
+      {
+        "w": 474,
+        "src": "/products/dxracer-craft-starswar-edition/2-474.39c4a943.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-craft-starswar-edition/2-240.330f9c54.webp"
+      },
+      {
+        "w": 474,
+        "src": "/products/dxracer-craft-starswar-edition/2-474.44eb9a47.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRgQBAABXRUJQVlA4WAoAAAAQAAAACwAAEwAAQUxQSHAAAAART6CobRs4VxBVX9cWEQH1P/QCJ7Ztq81ZQRsXm8yAfUHVMUmGAaDl1uMdb/4gIvovIEkMGoPZeVN5y4LgrxBq0hYSQyS1jJ0MKq1K30mk18JqS5If/SS5zG6TAuKaC9R3I4ek2S0Ka0piBR4kFmYAVlA4IG4AAABwAwCdASoMABQAPxFysFAsJqSisAgBgCIJQ4AACNNIinWlxxAA/uw+sJPtSgvZEq2dvCkX+d8jckZXxsTx6+3AxxCjAznwEnL+o2vmTiLrSAzrOsqCTUPfgPvqNlA3pipgL3x+EUEaEgj19BQAAA==",
+  "dominant": "#272727",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "DXRacer",
+  "source": {
+    "url": "https://nex-img.dxracer.cc/20001/3c69cfac-9561-49e9-8b80-d9fa3c473bae-2.png",
+    "page": "https://dxracer.com/pages/esports/stars-war"
+  },
+  "input": "1dfbd4a4d95c4e08"
+}

@@ -1,0 +1,209 @@
+{
+  "slug": "jys-steam-deck-clear-case-sd003",
+  "group": "handheld-pc-accessories",
+  "kind": "accessory",
+  "platform": "pc_handheld",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "غطاء JYS‑SD003 الشفاف لجهاز Steam Deck",
+    "en": "JYS‑SD003 Clear Case for Steam Deck",
+    "ckb": "کەیسی ڕوونی JYS‑SD003 بۆ Steam Deck"
+  },
+  "short": {
+    "ar": "غطاء شفاف صلب · حامل مدمج · 304 × 129 × 41 ملم",
+    "en": "Hard clear case · Built-in stand · 304 × 129 × 41 mm",
+    "ckb": "کەیسی ڕوونی ڕەق · وەستێنەری تێدایە · 304 × 129 × 41 ملم"
+  },
+  "description": {
+    "ar": "غطاء شفاف صلب من JYS يبقى على جهاز Steam Deck أثناء اللعب ويحميه من الخدوش والصدمات الخفيفة. يركَّب على الجهاز بإحكام، وفتحاته مفصلة على الأزرار والمنافذ، وفي ظهره رجل قابلة للفتح لإسناد الجهاز على الطاولة.",
+    "en": "A hard clear case from JYS that stays on the Steam Deck while you play and guards it against scratches and light knocks. It fits snugly, its cut-outs line up with the buttons and ports, and a fold-out leg on the back props the console up on a table.",
+    "ckb": "کەیسێکی ڕوونی ڕەقی JYS کە لە کاتی یاریکردندا لەسەر Steam Deck دەمێنێتەوە و لە خەت و لێدانی سووک دەیپارێزێت. بە توندی دەگونجێت، کونەکانی لەگەڵ دوگمە و دەروازەکان ڕێکن، و پێیەکی کراوە لە پشتەوە ئامێرەکە لەسەر مێز ڕادەگرێت."
+  },
+  "highlights": [
+    {
+      "ar": "شفاف يُظهر شكل الجهاز",
+      "en": "Clear, so the console's look shows through",
+      "ckb": "ڕوونە، شێوەی ئامێرەکە دەردەکەوێت"
+    },
+    {
+      "ar": "رجل خلفية تجعل الجهاز يقف على الطاولة",
+      "en": "Rear kickstand to stand the console on a table",
+      "ckb": "پێی پشتەوە بۆ وەستاندنی ئامێر لەسەر مێز"
+    },
+    {
+      "ar": "فتحات دقيقة للأزرار والمنافذ",
+      "en": "Precise cut-outs for buttons and ports",
+      "ckb": "کونی ورد بۆ دوگمە و دەروازەکان"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "JYS‑SD003",
+        "en": "JYS‑SD003",
+        "ckb": "JYS‑SD003"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Steam Deck",
+        "en": "Steam Deck",
+        "ckb": "Steam Deck"
+      }
+    },
+    {
+      "key": "size",
+      "label": {
+        "ar": "الأبعاد",
+        "en": "Dimensions",
+        "ckb": "قەبارە"
+      },
+      "value": {
+        "ar": "41 × 304 × 129 ملم",
+        "en": "41 × 304 × 129 mm",
+        "ckb": "41 × 304 × 129 ملم"
+      }
+    },
+    {
+      "key": "color",
+      "label": {
+        "ar": "اللون",
+        "en": "Colour",
+        "ckb": "ڕەنگ"
+      },
+      "value": {
+        "ar": "شفاف",
+        "en": "Clear",
+        "ckb": "ڕوون"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "الغطاء الشفاف (قطعتان أمامية وخلفية حسب الصور)",
+      "en": "Clear case (front and back parts, as pictured)",
+      "ckb": "کەیسی ڕوون (بەشی پێشەوە و پشتەوە، وەک وێنەکان)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-SD003-CLEAR",
+      "sheetRow": 10,
+      "title": {
+        "ar": "شفاف",
+        "en": "Clear",
+        "ckb": "ڕوون"
+      },
+      "options": {
+        "color": "Clear"
+      },
+      "modelNumber": "JYS-SD003",
+      "barcodes": [
+        "5904647807310"
+      ],
+      "isDefault": true,
+      "images": [
+        "jys-steam-deck-clear-case-sd003--1"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "steam-deck-lcd",
+      "status": "verified",
+      "note": {
+        "ar": "مصمم لجهاز Steam Deck",
+        "en": "Made for the Steam Deck",
+        "ckb": "بۆ Steam Deck دروستکراوە"
+      },
+      "source": "https://www.systembank.pl/futeral-pokrowiec-etui-case-+-stojak-do-konsoli-steam-deck-przezroczysty-jys-sd003-p6994.html"
+    },
+    {
+      "deviceModel": "steam-deck-oled",
+      "status": "unverified",
+      "note": {
+        "ar": "JYS لا تذكر نسخة OLED؛ مواضع بعض الفتحات قد تختلف",
+        "en": "JYS does not list the OLED model; some openings may differ",
+        "ckb": "JYS ناوی OLED نابات؛ هەندێک کون لەوانەیە جیاواز بن"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "steam-deck-lcd",
+      "kind": "setup"
+    },
+    {
+      "slug": "steam-deck-oled",
+      "kind": "setup"
+    },
+    {
+      "slug": "dobe-steam-deck-case",
+      "kind": "alternative"
+    },
+    {
+      "slug": "jys-steam-deck-carrying-case-sd001",
+      "kind": "accessory"
+    },
+    {
+      "slug": "dobe-steam-deck-tempered-glass-ty-3802",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "jys-steam-deck-clear-case-sd003--1",
+      "file": ".cache/product-images/jys-steam-deck-clear-case-sd003/1.jpg",
+      "sourceUrl": "https://www.systembank.pl/img/opis/6994/futeral-pokrowiec-etui-case-stojak-do-konsoli-steam-deck-przezroczysty-jys-sd003_o6994_2.jpg",
+      "sourcePage": "https://www.systembank.pl/futeral-pokrowiec-etui-case-+-stojak-do-konsoli-steam-deck-przezroczysty-jys-sd003-p6994.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "غطاء JYS SD003 الشفاف على Steam Deck من الخلف والأمام مع الحامل",
+        "en": "The JYS SD003 clear case on a Steam Deck, back and front, with the stand out",
+        "ckb": "کەیسی ڕوونی JYS SD003 لەسەر Steam Deck، پشتەوە و پێشەوە لەگەڵ وەستێنەر"
+      },
+      "credit": "JYS Electronics",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.systembank.pl/futeral-pokrowiec-etui-case-+-stojak-do-konsoli-steam-deck-przezroczysty-jys-sd003-p6994.html",
+      "title": "Futerał Pokrowiec Etui Case + Stojak do konsoli STEAM DECK / Przezroczysty / JYS-SD003",
+      "publisher": "SystemBank (JYS distributor, Poland)",
+      "retrieved": "2026-11-18",
+      "supports": "model JYS-SD003, clear, fitted Steam Deck cover with built-in stand, 4.1 × 30.4 × 12.9 cm, EAN 5904647807310, manufacturer JYS Electronics Co., Ltd (Shenzhen), product images"
+    },
+    {
+      "url": "https://www.mediaexpert.pl/gaming/akcesoria-do-konsol/torby-i-etui/futeral-jys-do-steam-deck-jys-sd003-przezroczysty",
+      "title": "JYS do Steam Deck JYS-SD003 Przezroczysty Etui",
+      "publisher": "Media Expert (retailer, Poland)",
+      "retrieved": "2026-11-18",
+      "supports": "second source: JYS-SD003 is a clear Steam Deck case"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "No JYS web page found; facts come from JYS's Polish distributor and retailers",
+      "Material (the distributor says rigid plastic; the exact plastic is not named)",
+      "Fit with the Steam Deck OLED"
+    ]
+  }
+}

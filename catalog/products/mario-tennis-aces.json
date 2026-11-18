@@ -1,0 +1,158 @@
+{
+  "slug": "mario-tennis-aces",
+  "group": "nintendo-consoles-games",
+  "kind": "game",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "status": "available",
+  "releaseDate": "2018-06-22",
+  "name": { "ar": "Mario Tennis Aces", "en": "Mario Tennis Aces", "ckb": "Mario Tennis Aces" },
+  "short": {
+    "ar": "Nintendo Switch · حتى 4 لاعبين · PEGI 3",
+    "en": "Nintendo Switch · Up to 4 players · PEGI 3",
+    "ckb": "Nintendo Switch · تا 4 یاریزان · PEGI 3"
+  },
+  "description": {
+    "ar": "لعبة تنس بشخصيات عالم ماريو، فيها ضربات خاصة قوية وحركات تبطئ الوقت لصد الكرات الصعبة. تضم طور قصة لماريو يتنقل فيه بين مناطق وتحديات وزعماء، وبطولات ومباريات حرة، ويمكن اللعب مع الأصدقاء على جهاز واحد أو عبر الإنترنت.",
+    "en": "A tennis game with characters from the Mario world, with powerful special shots and moves that slow time to return hard balls. It has an Adventure mode where Mario travels through areas, challenges and bosses, plus tournaments and free play, and you can play with friends on one system or online.",
+    "ckb": "یارییەکی تێنس بە کارەکتەرەکانی جیهانی ماریۆ، لێدانی تایبەتی بەهێز و جووڵەی خاوکردنەوەی کات بۆ گەڕاندنەوەی تۆپە سەختەکان تێدایە. دۆخی سەرکێشی هەیە کە ماریۆ بە ناوچە و ئاستەنگ و سەرۆکەکاندا دەگەڕێت، لەگەڵ پاڵەوانێتی و یاریی ئازاد، و دەتوانیت لەگەڵ هاوڕێیان لەسەر یەک ئامێر یان ئۆنلاین یاری بکەیت."
+  },
+  "highlights": [
+    { "ar": "حتى 4 لاعبين على جهاز واحد أو عبر الإنترنت", "en": "Up to 4 players on one system or online", "ckb": "تا 4 یاریزان لەسەر یەک ئامێر یان ئۆنلاین" },
+    { "ar": "طور قصة (Adventure) وبطولات ومباريات حرة", "en": "Adventure mode, tournaments and free play", "ckb": "دۆخی سەرکێشی (Adventure)، پاڵەوانێتی و یاریی ئازاد" },
+    { "ar": "اللعب عبر الإنترنت يحتاج Nintendo Switch Online", "en": "Online play needs Nintendo Switch Online", "ckb": "یاریی ئۆنلاین پێویستی بە Nintendo Switch Online هەیە" },
+    { "ar": "تعمل على Nintendo Switch 2 كما تعمل على Switch بحسب Nintendo", "en": "Runs on Nintendo Switch 2 the same as on Switch, according to Nintendo", "ckb": "بەپێی Nintendo لەسەر Nintendo Switch 2 وەک Switch کار دەکات" },
+    { "ar": "PEGI 3 · ESRB E · لا تدعم العربية", "en": "PEGI 3 · ESRB E · No Arabic", "ckb": "PEGI 3 · ESRB E · عەرەبی تێدا نییە" }
+  ],
+  "specs": [
+    { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch (تعمل على Nintendo Switch 2)", "en": "Nintendo Switch (runs on Nintendo Switch 2)", "ckb": "Nintendo Switch (لەسەر Nintendo Switch 2 کار دەکات)" } },
+    { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "22 حزيران 2018", "en": "22 June 2018", "ckb": "22ی حوزەیرانی 2018" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة Nintendo Switch", "en": "Nintendo Switch game card", "ckb": "کارتی یاریی Nintendo Switch" } },
+    { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "2.4 GB (النسخة الرقمية)", "en": "2.4 GB (digital version)", "ckb": "2.4 GB (وەشانی دیجیتاڵ)" } },
+    { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "1–4 على جهاز واحد؛ 2–4 محليًا لاسلكيًا أو عبر الإنترنت", "en": "1–4 on one system; 2–4 local wireless or online", "ckb": "1–4 لەسەر یەک ئامێر؛ 2–4 بێتەلی ناوخۆیی یان ئۆنلاین" } },
+    { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 3 · ESRB E (عنف كرتوني خفيف)", "en": "PEGI 3 · ESRB E (Mild Cartoon Violence)", "ckb": "PEGI 3 · ESRB E (توندوتیژیی کارتۆنیی سووک)" } },
+    { "key": "languages", "label": { "ar": "اللغات", "en": "Languages", "ckb": "زمانەکان" }, "value": { "ar": "الإنجليزية، الفرنسية، الألمانية، الإيطالية، الإسبانية، الهولندية، الروسية، اليابانية، الكورية، الصينية — بدون العربية", "en": "English, French, German, Italian, Spanish, Dutch, Russian, Japanese, Korean, Chinese — no Arabic", "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیتاڵی، ئیسپانی، هۆڵەندی، ڕووسی، یابانی، کۆری، چینی — بێ عەرەبی" } }
+  ],
+  "inTheBox": [
+    { "ar": "بطاقة لعبة Nintendo Switch داخل علبتها", "en": "Nintendo Switch game card in its case", "ckb": "کارتی یاریی Nintendo Switch لە ناو قوتووەکەیدا" }
+  ],
+  "variants": [
+    {
+      "sku": "NSG-MARIO-TENNIS-ACES",
+      "sheetRow": 203,
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch", "en": "Nintendo Switch physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch" },
+      "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
+      "isDefault": true,
+      "images": ["mario-tennis-aces--1", "mario-tennis-aces--2", "mario-tennis-aces--3", "mario-tennis-aces--4"]
+    }
+  ],
+  "game": {
+    "platforms": ["switch", "switch-oled", "switch-lite", "switch-2"],
+    "genres": [ { "ar": "رياضة (تنس)", "en": "Sports (tennis)", "ckb": "وەرزش (تێنس)" } ],
+    "players": "1-4 local, 2-4 online",
+    "online": {
+      "ar": "اللعب عبر الإنترنت والحفظ السحابي يحتاجان Nintendo Switch Online.",
+      "en": "Online play and cloud saves need Nintendo Switch Online.",
+      "ckb": "یاریی ئۆنلاین و پاشەکەوتی هەوری پێویستیان بە Nintendo Switch Online هەیە."
+    },
+    "ageRating": { "pegi": 3, "esrb": "E" },
+    "arabic": "none",
+    "physicalFormat": "cartridge",
+    "sizeGb": 2.4,
+    "developer": "Camelot Software Planning",
+    "publisher": "Nintendo"
+  },
+  "compatibility": [
+    { "deviceModel": "switch", "status": "verified", "note": { "ar": "لعبة Nintendo Switch.", "en": "A Nintendo Switch game.", "ckb": "یاریی Nintendo Switch ە." }, "source": "https://www.nintendo.com/us/store/products/mario-tennis-aces-switch/" },
+    { "deviceModel": "switch-oled", "status": "verified", "note": { "ar": "مثل Nintendo Switch.", "en": "Same as Nintendo Switch.", "ckb": "وەک Nintendo Switch." }, "source": "https://www.nintendo.com/us/store/products/mario-tennis-aces-switch/" },
+    { "deviceModel": "switch-lite", "status": "verified", "note": { "ar": "تدعم الوضع المحمول؛ اللعب الجماعي على جهاز واحد يحتاج وحدات تحكم إضافية.", "en": "Handheld mode is supported; multiplayer on one system needs extra controllers.", "ckb": "دۆخی دەستی پشتگیری دەکرێت؛ یاریی بەکۆمەڵ لەسەر یەک ئامێر دەسکی زیادەی دەوێت." }, "source": "https://www.nintendo.com/us/store/products/mario-tennis-aces-switch/" },
+    { "deviceModel": "switch-2", "status": "verified", "note": { "ar": "مدعومة: تعمل كما على Switch.", "en": "Supported: behaves as on Switch.", "ckb": "پشتگیری دەکرێت: وەک Switch کار دەکات." }, "source": "https://www.nintendo.com/us/store/products/mario-tennis-aces-switch/" }
+  ],
+  "related": [
+    { "slug": "nintendo-switch-sports-resort", "kind": "alternative" },
+    { "slug": "paper-mario-the-origami-king", "kind": "alternative" },
+    { "slug": "nintendo-switch-oled", "kind": "setup" },
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-lite", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "mario-tennis-aces--1",
+      "file": ".cache/product-images/mario-tennis-aces/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/games/switch/mario-tennis-aces/107729-switch-mario-tennis-aces-us-1200x675",
+      "sourcePage": "https://www.nintendo.com/store/products/mario-tennis-aces-107729/",
+      "kind": "box-art",
+      "alt": { "ar": "الغلاف الأمامي لـ Mario Tennis Aces على Nintendo Switch", "en": "Front cover of Mario Tennis Aces for Nintendo Switch", "ckb": "بەرگی پێشەوەی Mario Tennis Aces بۆ Nintendo Switch" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "mario-tennis-aces--2",
+      "file": ".cache/product-images/mario-tennis-aces/2.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch/70010000003889/3b32dbcc272cf2c8140404dd9a3d07d13b7450f5362edcbcbd7fd4a643a794d0",
+      "sourcePage": "https://www.nintendo.com/us/store/products/mario-tennis-aces-switch/",
+      "kind": "screenshot",
+      "alt": { "ar": "ضربة خاصة متوهجة على الملعب", "en": "A glowing special shot on the court", "ckb": "لێدانێکی تایبەتی درەوشاوە لەسەر یاریگاکە" },
+      "credit": "Nintendo",
+      "width": 1280, "height": 720, "transparent": false
+    },
+    {
+      "key": "mario-tennis-aces--3",
+      "file": ".cache/product-images/mario-tennis-aces/3.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch/70010000003889/445941288962ebea7824a1dab605764aa8067268d4b05f733155f63e13e2ce27",
+      "sourcePage": "https://www.nintendo.com/us/store/products/mario-tennis-aces-switch/",
+      "kind": "screenshot",
+      "alt": { "ar": "ماريو و Wario في مباراة على ملعب داخلي", "en": "Mario and Wario in a match on an indoor court", "ckb": "ماریۆ و Wario لە یارییەکدا لەسەر یاریگایەکی داخراو" },
+      "credit": "Nintendo",
+      "width": 1280, "height": 720, "transparent": false
+    },
+    {
+      "key": "mario-tennis-aces--4",
+      "file": ".cache/product-images/mario-tennis-aces/4.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch/70010000003889/5d1a33ab8355a9cff777372bda1a3b19cfe092950dd21031216e8df17c263e84",
+      "sourcePage": "https://www.nintendo.com/us/store/products/mario-tennis-aces-switch/",
+      "kind": "screenshot",
+      "alt": { "ar": "ماريو يواجه زعيمًا نباتيًا في طور القصة", "en": "Mario facing a plant boss in Adventure mode", "ckb": "ماریۆ لە دۆخی سەرکێشیدا ڕووبەڕووی سەرۆکێکی ڕووەکی دەبێتەوە" },
+      "credit": "Nintendo",
+      "width": 1280, "height": 720, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/mario-tennis-aces-switch/",
+      "title": "Mario Tennis Aces for Nintendo Switch (digital)",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-18",
+      "supports": "release date 6/22/18, ESRB E (Mild Cartoon Violence), players (1-4 on one system, 2-4 local wireless and online), play modes, languages, file size 2.4 GB, Online Play and Save Data Cloud with Nintendo Switch Online, publisher Nintendo, Nintendo Switch 2 compatibility status (supported), screenshots"
+    },
+    {
+      "url": "https://www.nintendo.com/store/products/mario-tennis-aces-107729/",
+      "title": "Mario Tennis Aces for Nintendo Switch (physical)",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-18",
+      "supports": "box art of the physical edition (the page itself returned an error on 2026-11-18; search listings show it as the physical edition)"
+    },
+    {
+      "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-games/Mario-Tennis-Aces-1325791.html",
+      "title": "Mario Tennis Aces | Nintendo Switch games",
+      "publisher": "Nintendo UK",
+      "retrieved": "2026-11-18",
+      "supports": "PEGI 3"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Mario_Tennis_Aces",
+      "title": "Mario Tennis Aces",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-18",
+      "supports": "independent confirmation: developer Camelot Software Planning, publisher Nintendo, release 22 June 2018, single-player and multiplayer, Adventure mode, special shots and Zone Speed"
+    }
+  ],
+  "verification": {
+    "checkedBy": "nintendo-consoles-games",
+    "secondSource": true,
+    "unverified": [
+      "Barcode (Nintendo's US page leaves the UPC blank)",
+      "The physical product page on Nintendo's US store no longer opens (it returns an error); the box art file is still on Nintendo's image server"
+    ]
+  }
+}

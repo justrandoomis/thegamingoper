@@ -1,0 +1,148 @@
+{
+  "slug": "razer-pbt-keycap-upgrade-set",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Razer",
+  "category": "keyboards",
+  "status": "available",
+  "name": {
+    "ar": "أغطية أزرار Razer PBT Keycap Upgrade Set",
+    "en": "Razer PBT Keycap Upgrade Set",
+    "ckb": "سەری دوگمەی Razer PBT Keycap Upgrade Set"
+  },
+  "short": {
+    "ar": "أغطية PBT بقولبة مزدوجة · سوداء · تخطيط US/UK",
+    "en": "Doubleshot PBT keycaps · black · US/UK layouts",
+    "ckb": "سەری دوگمەی PBTی دوو قاڵبی · ڕەش · US/UK"
+  },
+  "description": {
+    "ar": "طقم أغطية أزرار من Razer مصنوع من PBT المقاوم للمعان، بقولبة مزدوجة لا تُمحى طباعتها وتسمح بمرور الإضاءة. يناسب كيبوردات Razer الميكانيكية والبصرية وأي مفاتيح بمحور صليبي (Cherry)، ويغطي تخطيطات 104/105 أزرار الأمريكية والبريطانية مع مثبتات للأزرار الطويلة.",
+    "en": "A Razer keycap set made of shine-resistant PBT, doubleshot-moulded so the legends never wear off and light shines through. It fits Razer mechanical and optical keyboards and any cross-stem (Cherry-style) switches, covers standard 104/105-key US and UK layouts and includes stabilizers.",
+    "ckb": "کۆمەڵێک سەری دوگمەی Razer لە PBTی دژە درەوشانەوە، بە قاڵبی دووانە کە نووسینەکەی ناسڕێتەوە و ڕووناکی تێدەپەڕێت. لەگەڵ کیبۆردە میکانیکی و ئۆپتیکییەکانی Razer و هەر سویچێکی تەوەرە خاچی (Cherry) دەگونجێت، ڕیزبەندی 104/105ی US و UK دادەپۆشێت و ستابیلایزەری تێدایە."
+  },
+  "highlights": [
+    {
+      "ar": "PBT مقاوم للمعان",
+      "en": "Shine-resistant PBT",
+      "ckb": "PBTی دژە درەوشانەوە"
+    },
+    {
+      "ar": "قولبة مزدوجة تسمح بمرور الإضاءة",
+      "en": "Doubleshot, backlight compatible",
+      "ckb": "دوو قاڵبی، ڕووناکی تێدەپەڕێت"
+    },
+    {
+      "ar": "يناسب كل كيبوردات Razer الميكانيكية والبصرية",
+      "en": "Fits all Razer mechanical and optical keyboards",
+      "ckb": "لەگەڵ هەموو کیبۆردە میکانیکی و ئۆپتیکییەکانی Razer"
+    },
+    {
+      "ar": "يناسب المفاتيح ذات المحور الصليبي (Cherry)",
+      "en": "Fits cross-stem (Cherry-style) switches",
+      "ckb": "لەگەڵ سویچی تەوەرە خاچی (Cherry)"
+    },
+    {
+      "ar": "يشمل مثبتات للكيبورد الميكانيكي والبصري",
+      "en": "Includes mechanical and optical stabilizers",
+      "ckb": "ستابیلایزەری میکانیکی و ئۆپتیکی تێدایە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "material",
+      "label": {
+        "ar": "المادة",
+        "en": "Material",
+        "ckb": "ماددە"
+      },
+      "value": {
+        "ar": "PBT بقولبة مزدوجة",
+        "en": "Doubleshot PBT",
+        "ckb": "PBTی دوو قاڵبی"
+      }
+    },
+    {
+      "key": "compat",
+      "label": {
+        "ar": "يعمل مع",
+        "en": "Works with",
+        "ckb": "کار دەکات لەگەڵ"
+      },
+      "value": {
+        "ar": "تخطيطات Razer والقياسية 104/105 أزرار، أمريكي وبريطاني",
+        "en": "Razer and standard 104/105-key layouts, US and UK",
+        "ckb": "ڕیزبەندی Razer و ستانداردی 104/105، US و UK"
+      }
+    },
+    {
+      "key": "stem",
+      "label": {
+        "ar": "نوع التثبيت",
+        "en": "Stem",
+        "ckb": "جۆری تەوەرە"
+      },
+      "value": {
+        "ar": "محور صليبي (Cherry)",
+        "en": "Cross-shaped (Cherry-style)",
+        "ckb": "تەوەرەی خاچی (Cherry)"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RZ-PBT-KEYCAP-BLK",
+      "title": {
+        "ar": "أسود",
+        "en": "Classic Black",
+        "ckb": "ڕەش"
+      },
+      "options": {
+        "color": "Classic Black"
+      },
+      "modelNumber": "RC21-01490100-R3M1",
+      "isDefault": true,
+      "sheetRow": 172
+    }
+  ],
+  "related": [
+    {
+      "slug": "razer-blackwidow-v3-mini-hyperspeed",
+      "kind": "setup"
+    },
+    {
+      "slug": "hyperx-alloy-origins-core",
+      "kind": "setup"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.razer.com/gaming-keyboards-accessories/razer-pbt-keycap-upgrade-set/RC21-01490100-R3M1",
+      "title": "Razer PBT Keycap Upgrade Set – Classic Black (RC21-01490100-R3M1)",
+      "publisher": "Razer",
+      "retrieved": "2026-11-18",
+      "supports": "shine-resistant PBT, backlight compatible, doubleshot, fits Razer mechanical and optical keyboards, cross-shaped stems, Razer and standard 104/105 US and UK layouts, stabilizers included, images"
+    },
+    {
+      "url": "https://www.bestbuy.com/product/razer-pbt-keycap-upgrade-set-black/J3GV652C8C",
+      "title": "Razer PBT Keycap Upgrade Set – Black",
+      "publisher": "Best Buy",
+      "retrieved": "2026-11-18",
+      "supports": "independent confirmation of the black PBT keycap set"
+    }
+  ],
+  "notes": {
+    "ar": "الطقم مصمم للتخطيطات الكاملة؛ على الكيبوردات الأصغر (65% أو TKL) تبقى بعض الأغطية زائدة.",
+    "en": "The set is made for full-size layouts; on smaller boards (65% or TKL) some caps are left over.",
+    "ckb": "کۆمەڵەکە بۆ ڕیزبەندی تەواو دروستکراوە؛ لەسەر کیبۆردی بچووکتر (65% یان TKL) هەندێک سەری دوگمە زیاد دەمێنێتەوە."
+  },
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Exact number of keycaps (retailers say 120 or 105)",
+      "Release date",
+      "No clean official cut-out image (Razer only publishes lifestyle photos for this set)"
+    ]
+  }
+}

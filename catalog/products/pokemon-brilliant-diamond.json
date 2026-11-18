@@ -1,0 +1,164 @@
+{
+  "slug": "pokemon-brilliant-diamond",
+  "group": "nintendo-consoles-games",
+  "kind": "game",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "status": "available",
+  "releaseDate": "2021-11-19",
+  "name": { "ar": "Pokémon Brilliant Diamond", "en": "Pokémon Brilliant Diamond", "ckb": "Pokémon Brilliant Diamond" },
+  "short": {
+    "ar": "Nintendo Switch · تعمل على Switch 2 · PEGI 7",
+    "en": "Nintendo Switch · Plays on Switch 2 · PEGI 7",
+    "ckb": "Nintendo Switch · لەسەر Switch 2 کار دەکات · PEGI 7"
+  },
+  "description": {
+    "ar": "إعادة صنع للعبة Pokémon Diamond الكلاسيكية من جهاز Nintendo DS، تدور في منطقة Sinnoh برسومات جديدة بأسلوب مجسّم لطيف. تختار أول بوكيمون لك وتجمع الأوسمة وتواجه فريق Galactic، وفيها منطقة Grand Underground الواسعة تحت الأرض. لها توأم هي Pokémon Shining Pearl، وبعض البوكيمونات لا تظهر إلا في إحداهما.",
+    "en": "A remake of the classic Pokémon Diamond from Nintendo DS, set in the Sinnoh region with new, chibi-style 3D visuals. You choose your first Pokémon, earn Gym Badges and face Team Galactic, and explore the large Grand Underground. Its twin is Pokémon Shining Pearl; some Pokémon appear in only one of the two.",
+    "ckb": "دووبارە دروستکردنەوەی یارییە کلاسیکییەکەی Pokémon Diamond ی Nintendo DS، لە ناوچەی Sinnoh بە گرافیکی سێ ڕەهەندیی نوێ بە شێوازی بچووک و جوان. یەکەم پۆکیمۆنەکەت هەڵدەبژێریت، نیشانەی Gym کۆدەکەیتەوە و ڕووبەڕووی تیمی Galactic دەبیتەوە، و Grand Underground ی گەورە دەگەڕێیت. جووتەکەی Pokémon Shining Pearl ە؛ هەندێک پۆکیمۆن تەنها لە یەکێکیاندا دەردەکەون."
+  },
+  "highlights": [
+    { "ar": "إعادة صنع كاملة لـ Pokémon Diamond (2006) بقصتها ومنطقة Sinnoh", "en": "Full remake of Pokémon Diamond (2006) with its story and the Sinnoh region", "ckb": "دووبارە دروستکردنەوەی تەواوی Pokémon Diamond (2006) بە چیرۆک و ناوچەی Sinnoh ـەوە" },
+    { "ar": "لاعب واحد في القصة؛ تبادل ومعارك مع الأصدقاء محليًا أو عبر الإنترنت", "en": "Single-player story; trade and battle with friends locally or online", "ckb": "چیرۆکی تاکە یاریزان؛ ئاڵوگۆڕ و شەڕ لەگەڵ هاوڕێیان بە شێوەی ناوخۆیی یان ئۆنلاین" },
+    { "ar": "بعض البوكيمونات حصرية لهذه النسخة، والباقي في Pokémon Shining Pearl", "en": "Some Pokémon are exclusive to this version; others are only in Pokémon Shining Pearl", "ckb": "هەندێک پۆکیمۆن تایبەتن بەم وەشانە؛ هەندێکی تر تەنها لە Pokémon Shining Pearl دان" },
+    { "ar": "تعمل على Nintendo Switch 2 كما تعمل على Switch بحسب Nintendo", "en": "Runs on Nintendo Switch 2 the same as on Switch, according to Nintendo", "ckb": "بەپێی Nintendo لەسەر Nintendo Switch 2 وەک Switch کار دەکات" },
+    { "ar": "PEGI 7 · ESRB E · لا تدعم العربية", "en": "PEGI 7 · ESRB E · No Arabic", "ckb": "PEGI 7 · ESRB E · عەرەبی تێدا نییە" }
+  ],
+  "specs": [
+    { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch (تعمل على Nintendo Switch 2)", "en": "Nintendo Switch (runs on Nintendo Switch 2)", "ckb": "Nintendo Switch (لەسەر Nintendo Switch 2 کار دەکات)" } },
+    { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "19 تشرين الثاني 2021", "en": "19 November 2021", "ckb": "19ی تشرینی دووەمی 2021" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة Nintendo Switch", "en": "Nintendo Switch game card", "ckb": "کارتی یاریی Nintendo Switch" } },
+    { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "6.9 GB (النسخة الرقمية)", "en": "6.9 GB (digital version)", "ckb": "6.9 GB (وەشانی دیجیتاڵ)" } },
+    { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "1؛ لعب محلي لاسلكي 2–8؛ عبر الإنترنت حتى 16", "en": "1; local wireless 2–8; online up to 16", "ckb": "1؛ بێتەلی ناوخۆیی 2–8؛ ئۆنلاین تا 16" } },
+    { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 7 · ESRB E (عنف كرتوني خفيف، مشتريات داخل اللعبة)", "en": "PEGI 7 · ESRB E (Mild Cartoon Violence, In-Game Purchases)", "ckb": "PEGI 7 · ESRB E (توندوتیژیی کارتۆنیی سووک، کڕین لە ناو یاری)" } },
+    { "key": "languages", "label": { "ar": "اللغات", "en": "Languages", "ckb": "زمانەکان" }, "value": { "ar": "الإنجليزية، الفرنسية، الألمانية، الإيطالية، الإسبانية، اليابانية، الكورية، الصينية — بدون العربية", "en": "English, French, German, Italian, Spanish, Japanese, Korean, Chinese — no Arabic", "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیتاڵی، ئیسپانی، یابانی، کۆری، چینی — بێ عەرەبی" } }
+  ],
+  "inTheBox": [
+    { "ar": "بطاقة لعبة Nintendo Switch داخل علبتها", "en": "Nintendo Switch game card in its case", "ckb": "کارتی یاریی Nintendo Switch لە ناو قوتووەکەیدا" }
+  ],
+  "variants": [
+    {
+      "sku": "NSG-POKEMON-BD",
+      "sheetRow": 200,
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch", "en": "Nintendo Switch physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch" },
+      "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
+      "barcodes": ["045496597801"],
+      "isDefault": true,
+      "images": ["pokemon-brilliant-diamond--1", "pokemon-brilliant-diamond--2", "pokemon-brilliant-diamond--3", "pokemon-brilliant-diamond--4"],
+      "notes": {
+        "ar": "الباركود للنسخة الأمريكية (UPC) من متجر Nintendo الأمريكي. في إسبانيا تُباع باسم «Pokémon Diamante Brillante».",
+        "en": "Barcode is the US edition's UPC from Nintendo's US store. In Spain it is sold as \"Pokémon Diamante Brillante\".",
+        "ckb": "بارکۆدەکە UPC ی وەشانی ئەمریکییە لە فرۆشگای ئەمریکیی Nintendo. لە ئیسپانیا بە ناوی «Pokémon Diamante Brillante» دەفرۆشرێت."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["switch", "switch-oled", "switch-lite", "switch-2"],
+    "genres": [ { "ar": "تقمّص أدوار", "en": "Role-playing", "ckb": "ڕۆڵگێڕان" } ],
+    "players": "1, 2-8 local wireless, up to 16 online",
+    "online": {
+      "ar": "التبادل والمعارك عبر الإنترنت تحتاج Nintendo Switch Online.",
+      "en": "Online trades and battles need Nintendo Switch Online.",
+      "ckb": "ئاڵوگۆڕ و شەڕی ئۆنلاین پێویستیان بە Nintendo Switch Online هەیە."
+    },
+    "ageRating": { "pegi": 7, "esrb": "E" },
+    "arabic": "none",
+    "physicalFormat": "cartridge",
+    "sizeGb": 6.9,
+    "developer": "ILCA",
+    "publisher": "Nintendo"
+  },
+  "compatibility": [
+    { "deviceModel": "switch", "status": "verified", "note": { "ar": "لعبة Nintendo Switch.", "en": "A Nintendo Switch game.", "ckb": "یاریی Nintendo Switch ە." }, "source": "https://www.nintendo.com/us/store/products/pokemon-brilliant-diamond-switch/" },
+    { "deviceModel": "switch-oled", "status": "verified", "note": { "ar": "مثل Nintendo Switch.", "en": "Same as Nintendo Switch.", "ckb": "وەک Nintendo Switch." }, "source": "https://www.nintendo.com/us/store/products/pokemon-brilliant-diamond-switch/" },
+    { "deviceModel": "switch-lite", "status": "verified", "note": { "ar": "تدعم الوضع المحمول.", "en": "Handheld mode is supported.", "ckb": "دۆخی دەستی پشتگیری دەکرێت." }, "source": "https://www.nintendo.com/us/store/products/pokemon-brilliant-diamond-switch/" },
+    { "deviceModel": "switch-2", "status": "verified", "note": { "ar": "مدعومة: تعمل كما على Switch، والمشاكل السابقة حُلّت بتحديث (13 كانون الثاني 2026).", "en": "Supported: behaves as on Switch; earlier issues were fixed by an update (13 January 2026).", "ckb": "پشتگیری دەکرێت: وەک Switch کار دەکات؛ کێشەکانی پێشوو بە نوێکردنەوەیەک چارەسەر کران (13ی کانوونی دووەمی 2026)." }, "source": "https://www.nintendo.com/us/store/products/pokemon-brilliant-diamond-switch/" }
+  ],
+  "related": [
+    { "slug": "pokemon-shining-pearl", "kind": "alternative" },
+    { "slug": "nintendo-switch-oled", "kind": "setup" },
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-lite", "kind": "setup" },
+    { "slug": "new-pokemon-snap", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "pokemon-brilliant-diamond--1",
+      "file": ".cache/product-images/pokemon-brilliant-diamond/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/games/switch/pokemon-brilliant-diamond/114287-switch-pokemon-brilliant-diamond-us-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/pokemon-brilliant-diamond-us-114287/",
+      "kind": "box-art",
+      "alt": { "ar": "الغلاف الأمامي لـ Pokémon Brilliant Diamond على Nintendo Switch", "en": "Front cover of Pokémon Brilliant Diamond for Nintendo Switch", "ckb": "بەرگی پێشەوەی Pokémon Brilliant Diamond بۆ Nintendo Switch" },
+      "credit": "Nintendo",
+      "width": 1280, "height": 720, "transparent": false
+    },
+    {
+      "key": "pokemon-brilliant-diamond--2",
+      "file": ".cache/product-images/pokemon-brilliant-diamond/2.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/en_US/games/switch/p/pokemon-brilliant-diamond-switch/screenshot-gallery/screenshot01",
+      "sourcePage": "https://www.nintendo.com/us/store/products/pokemon-brilliant-diamond-us-114287/",
+      "kind": "screenshot",
+      "alt": { "ar": "حقيبة فيها ثلاث كرات Poké Ball لاختيار أول بوكيمون", "en": "A briefcase with three Poké Balls for choosing your first Pokémon", "ckb": "جانتایەک سێ Poké Ball ی تێدایە بۆ هەڵبژاردنی یەکەم پۆکیمۆن" },
+      "credit": "Nintendo",
+      "width": 1280, "height": 720, "transparent": false
+    },
+    {
+      "key": "pokemon-brilliant-diamond--3",
+      "file": ".cache/product-images/pokemon-brilliant-diamond/3.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/en_US/games/switch/p/pokemon-brilliant-diamond-switch/screenshot-gallery/screenshot02",
+      "sourcePage": "https://www.nintendo.com/us/store/products/pokemon-brilliant-diamond-us-114287/",
+      "kind": "screenshot",
+      "alt": { "ar": "المدرّب يسير على طريق رملي بجانب البحر في Sinnoh", "en": "The trainer walking a sandy route by the sea in Sinnoh", "ckb": "ڕاهێنەرەکە بە ڕێگایەکی لمیندا لە تەنیشت دەریا لە Sinnoh دەڕوات" },
+      "credit": "Nintendo",
+      "width": 1280, "height": 720, "transparent": false
+    },
+    {
+      "key": "pokemon-brilliant-diamond--4",
+      "file": ".cache/product-images/pokemon-brilliant-diamond/4.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/en_US/games/switch/p/pokemon-brilliant-diamond-switch/screenshot-gallery/screenshot03",
+      "sourcePage": "https://www.nintendo.com/us/store/products/pokemon-brilliant-diamond-us-114287/",
+      "kind": "screenshot",
+      "alt": { "ar": "المدرّب يواجه عضوين من فريق Galactic", "en": "The trainer facing two Team Galactic grunts", "ckb": "ڕاهێنەرەکە ڕووبەڕووی دوو ئەندامی تیمی Galactic دەبێتەوە" },
+      "credit": "Nintendo",
+      "width": 1280, "height": 720, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/pokemon-brilliant-diamond-switch/",
+      "title": "Pokémon Brilliant Diamond for Nintendo Switch (digital)",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-18",
+      "supports": "release date 11/19/21, ESRB E and descriptors, players (1; local 2-8; online up to 16), play modes, languages, file size 6.9 GB, developer ILCA, publisher Nintendo, Nintendo Switch 2 compatibility status (supported, update 01/13/2026), available now"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/pokemon-brilliant-diamond-us-114287/",
+      "title": "Pokémon Brilliant Diamond for Nintendo Switch (physical)",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-18",
+      "supports": "physical edition, UPC 00045496597801, box art and screenshots"
+    },
+    {
+      "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-games/Pokemon-Brilliant-Diamond-1930566.html",
+      "title": "Pokémon Brilliant Diamond | Nintendo Switch games",
+      "publisher": "Nintendo UK",
+      "retrieved": "2026-11-18",
+      "supports": "PEGI 7 (violence)"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Pok%C3%A9mon_Brilliant_Diamond_and_Shining_Pearl",
+      "title": "Pokémon Brilliant Diamond and Shining Pearl",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-18",
+      "supports": "independent confirmation: remake of Diamond and Pearl, developer ILCA, release 19 November 2021, version-exclusive Pokémon, Grand Underground"
+    }
+  ],
+  "verification": {
+    "checkedBy": "nintendo-consoles-games",
+    "secondSource": true,
+    "unverified": [
+      "European EAN barcode and which regional version the store holds (the owner's sheet uses the Spanish name \"Diamante\")",
+      "Whether all eight languages are on every regional cartridge"
+    ]
+  }
+}

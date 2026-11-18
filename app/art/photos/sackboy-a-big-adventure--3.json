@@ -1,0 +1,64 @@
+{
+  "key": "sackboy-a-big-adventure--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/sackboy-a-big-adventure/3-240.f0fa40c5.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/sackboy-a-big-adventure/3-480.3b561f18.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/sackboy-a-big-adventure/3-720.c5dfa351.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/sackboy-a-big-adventure/3-960.74fc04af.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/sackboy-a-big-adventure/3-1440.7b1f5619.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/sackboy-a-big-adventure/3-240.e1b50a8b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/sackboy-a-big-adventure/3-480.04d1004c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/sackboy-a-big-adventure/3-720.66a4dc6a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/sackboy-a-big-adventure/3-960.8d66b0f4.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/sackboy-a-big-adventure/3-1440.7fb8e397.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQBOgA724q5pVzCZsgAD+5Z+Mt2srmwuCHR+uLSDCZ9PYMZhuLa7vjdvgrCNVq+nlvqIj0TaHsUgSI14FI0FTAd1IgAAA",
+  "dominant": "#57784a",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202006/1221/0xMQ4MUO7aJGI1wwjsa5Fty4.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP9000-PPSA01288_00-SACKBOYADVENTURE"
+  },
+  "input": "ba6a6471326091c8"
+}

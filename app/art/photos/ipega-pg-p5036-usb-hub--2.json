@@ -1,0 +1,56 @@
+{
+  "key": "ipega-pg-p5036-usb-hub--2",
+  "view": "hero",
+  "width": 1200,
+  "height": 1104,
+  "aspect": 1.087,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ipega-pg-p5036-usb-hub/2-240.9ea2bfc8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-pg-p5036-usb-hub/2-480.6e16a70a.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-pg-p5036-usb-hub/2-720.8fa8358f.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/ipega-pg-p5036-usb-hub/2-960.6edb6b2c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ipega-pg-p5036-usb-hub/2-240.eb87395b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-pg-p5036-usb-hub/2-480.ff43d1c6.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-pg-p5036-usb-hub/2-720.0fd91767.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/ipega-pg-p5036-usb-hub/2-960.cd5c3853.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAABwBACdASoUABIAPxFys1CsJqSiqA1RgCIJaQAALc/lYBs02IfUppeJdGWAAAD+78NOMrbHPEd3dVACw5J+51oPl2nshT+ehcqvz5HRk/8XL18flvLMifkszmCkBpe+XH9sNVfHGl6sJUajzJMxQgAA",
+  "dominant": "#353536",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "angle",
+  "credit": "iPega",
+  "source": {
+    "url": "https://ipega.hk/uploads/202112/61b1ce16af1df.jpg",
+    "page": "https://ipega.hk/ps3ps4series/76-484.html"
+  },
+  "input": "07d8eef86fe321b4"
+}

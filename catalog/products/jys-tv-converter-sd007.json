@@ -1,0 +1,95 @@
+{
+  "slug": "jys-tv-converter-sd007",
+  "group": "power-cables-storage-misc",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "محوّل التلفزيون JYS لـ Steam Deck وSwitch",
+    "en": "JYS TV Converter for Steam Deck and Switch",
+    "ckb": "گۆڕەری تەلەفزیۆنی JYS بۆ Steam Deck و Switch"
+  },
+  "short": {
+    "ar": "يعرض الجهاز على التلفزيون عبر HDMI · منفذ إنترنت سلكي · JYS‑SD007",
+    "en": "Puts the handheld on a TV over HDMI · wired network port · JYS‑SD007",
+    "ckb": "ئامێرەکە لە ڕێگەی HDMIیەوە لەسەر تەلەفزیۆن پیشان دەدات · دەرچەی ئینتەرنێتی وایەر · JYS‑SD007"
+  },
+  "description": {
+    "ar": "محوّل صغير من JYS (الطراز JYS‑SD007) يوصل Steam Deck أو Nintendo Switch أو Switch OLED بالتلفزيون عبر منفذ HDMI، ويضيف منفذ إنترنت سلكي ومنافذ USB لذراع أو لوحة مفاتيح. يشحن الجهاز أثناء اللعب عند توصيل شاحنه الأصلي بالمحوّل. كابل HDMI والشاحن غير مرفقين.",
+    "en": "A compact converter from JYS (model JYS‑SD007) that connects a Steam Deck, Nintendo Switch or Switch OLED to a TV over HDMI, adding a wired network port and USB ports for a controller or keyboard. The handheld charges while you play when its own charger is plugged into the converter. The HDMI cable and charger are not included.",
+    "ckb": "گۆڕەرێکی بچووکی JYS (مۆدێلی JYS‑SD007) کە Steam Deck یان Nintendo Switch یان Switch OLED لە ڕێگەی HDMIیەوە بە تەلەفزیۆنەوە دەبەستێت، و دەرچەی ئینتەرنێتی وایەر و دەرچەی USB بۆ دەستە یان تەختەکلیل زیاد دەکات. کاتێک بارگاویکەری خۆی بە گۆڕەرەکەوە دەبەستیت، ئامێرەکە لە کاتی یاریدا بارگاوی دەبێت. کێبڵی HDMI و بارگاویکەر لەگەڵیدا نییە."
+  },
+  "highlights": [
+    { "ar": "مخرج HDMI إلى التلفزيون", "en": "HDMI output to a TV", "ckb": "دەرچەی HDMI بۆ تەلەفزیۆن" },
+    { "ar": "منفذ إنترنت سلكي ومنافذ USB", "en": "Wired network port and USB ports", "ckb": "دەرچەی ئینتەرنێتی وایەر و دەرچەکانی USB" },
+    { "ar": "منفذ USB‑C لشاحن الجهاز", "en": "USB‑C input for the handheld's charger", "ckb": "دەرچەی USB‑C بۆ بارگاویکەری ئامێرەکە" },
+    { "ar": "يعمل مع Steam Deck وSwitch وSwitch OLED", "en": "Works with Steam Deck, Switch and Switch OLED", "ckb": "لەگەڵ Steam Deck و Switch و Switch OLED کار دەکات" }
+  ],
+  "specs": [
+    { "key": "model", "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" }, "value": { "ar": "JYS‑SD007", "en": "JYS‑SD007", "ckb": "JYS‑SD007" } },
+    { "key": "ports", "label": { "ar": "المنافذ", "en": "Ports", "ckb": "دەرچەکان" }, "value": { "ar": "HDMI، شبكة سلكية (RJ45)، USB، USB‑C للطاقة", "en": "HDMI, wired network (RJ45), USB, USB‑C power in", "ckb": "HDMI، تۆڕی وایەر (RJ45)، USB، USB‑C بۆ وزە" } },
+    { "key": "material", "label": { "ar": "المادة واللون", "en": "Material and colour", "ckb": "کەرەستە و ڕەنگ" }, "value": { "ar": "بلاستيك ABS أسود", "en": "Black ABS plastic", "ckb": "پلاستیکی ABSی ڕەش" } },
+    { "key": "weight", "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" }, "value": { "ar": "نحو 90 غراماً", "en": "About 90 g", "ckb": "نزیکەی 90 گرام" } }
+  ],
+  "inTheBox": [
+    { "ar": "المحوّل فقط (بدون كابل HDMI أو شاحن)", "en": "The converter only (no HDMI cable or charger)", "ckb": "تەنها گۆڕەرەکە (بێ کێبڵی HDMI و بارگاویکەر)" }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-SD007",
+      "sheetRow": 211,
+      "title": { "ar": "محوّل التلفزيون JYS لـ Steam Deck وSwitch", "en": "JYS TV Converter for Steam Deck and Switch", "ckb": "گۆڕەری تەلەفزیۆنی JYS بۆ Steam Deck و Switch" },
+      "options": { "color": "Black" },
+      "modelNumber": "JYS-SD007",
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "steam-deck-lcd", "status": "verified", "source": "https://www.tomtop.com/p-paa4990.html" },
+    { "deviceModel": "steam-deck-oled", "status": "verified", "source": "https://www.tomtop.com/p-paa4990.html" },
+    { "deviceModel": "switch", "status": "verified", "source": "https://www.tomtop.com/p-paa4990.html" },
+    { "deviceModel": "switch-oled", "status": "verified", "source": "https://www.tomtop.com/p-paa4990.html" },
+    { "deviceModel": "switch-lite", "status": "incompatible", "note": { "ar": "Switch Lite لا يدعم العرض على التلفزيون.", "en": "Switch Lite cannot output to a TV.", "ckb": "Switch Lite ناتوانێت لەسەر تەلەفزیۆن پیشان بدات." }, "source": "https://www.nintendo.com/us/gaming-systems/switch/lite/" }
+  ],
+  "related": [
+    { "slug": "steam-deck-oled", "kind": "setup" },
+    { "slug": "nintendo-switch-oled", "kind": "setup" },
+    { "slug": "hdmi-cable", "kind": "accessory" },
+    { "slug": "ugreen-8k-hdmi-2-1-cable", "kind": "accessory" }
+  ],
+  "images": [],
+  "sources": [
+    {
+      "url": "https://www.tomtop.com/p-paa4990.html",
+      "title": "JYS Steam Deck/Switch OLED/Switch Universal TV Screen Converter With Network Port",
+      "publisher": "Tomtop",
+      "retrieved": "2026-11-18",
+      "supports": "model JYS-SD007, TV converter with network port for Steam Deck / Switch OLED / Switch, black ABS, 90 g, package = converter only (search listing; the page refused connections)"
+    },
+    {
+      "url": "https://www.alibaba.com/product-detail/GP-813-TV-Converter-For-Steam_1600627270922.html",
+      "title": "TV Converter For Steam Deck Video Conversion Dock With Network Port For Switch Oled",
+      "publisher": "Alibaba (JYS seller listing)",
+      "retrieved": "2026-11-18",
+      "supports": "JYS-SD007 is a Steam Deck video conversion dock with network port that also fits Switch OLED"
+    },
+    {
+      "url": "https://herogame.vn/dock-xuat-tv-cho-steam-deck-jys",
+      "title": "Dock xuất TV cho Steam Deck - JYS",
+      "publisher": "Herogame (Vietnam)",
+      "retrieved": "2026-11-18",
+      "supports": "JYS Steam Deck TV dock with USB 3.0, USB 2.0, HDMI and USB-C charging input"
+    }
+  ],
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": true,
+    "unverified": [
+      "Maximum output resolution and refresh rate (one seller claims 4K@60Hz)",
+      "Network port speed and exact USB port count",
+      "Charging wattage passed through to the handheld",
+      "No maker page or clean maker image found (JYS sells through marketplaces)"
+    ]
+  }
+}

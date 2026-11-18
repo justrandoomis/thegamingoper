@@ -1,0 +1,374 @@
+{
+  "slug": "demons-souls",
+  "group": "games-ps5-xbox",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "PlayStation Studios",
+  "status": "available",
+  "releaseDate": "2020-11-12",
+  "name": {
+    "ar": "Demon's Souls",
+    "en": "Demon's Souls",
+    "ckb": "Demon's Souls"
+  },
+  "short": {
+    "ar": "حصرية PS5 · قرص · ترجمة عربية",
+    "en": "PS5 exclusive · disc · Arabic subtitles",
+    "ckb": "تایبەت بە PS5 · دیسک · ژێرنووسی عەرەبی"
+  },
+  "description": {
+    "ar": "إعادة بناء كاملة لكلاسيكية FromSoftware من استوديو Bluepoint Games. تقاتل في مملكة Boletaria المظلمة ضد وحوش وزعماء صعبين، وكل خطأ له ثمن. من أوائل ألعاب PS5 الحصرية.",
+    "en": "A full rebuild of the FromSoftware classic by Bluepoint Games. You fight through the dark kingdom of Boletaria against tough monsters and bosses, where every mistake costs you. One of the first PS5 exclusives.",
+    "ckb": "دووبارە دروستکردنەوەیەکی تەواوی یارییە کلاسیکەکەی FromSoftware لەلایەن Bluepoint Games. لە شانشینی تاریکی Boletaria دژی دڕندە و سەرۆکی قورس شەڕ دەکەیت، و هەر هەڵەیەک نرخی خۆی هەیە. یەکێکە لە یەکەم یارییە تایبەتەکانی PS5."
+  },
+  "highlights": [
+    {
+      "ar": "حصرية PS5 بصعوبة عالية على طريقة ألعاب Souls.",
+      "en": "PS5 exclusive with the high challenge of Souls games.",
+      "ckb": "تایبەت بە PS5 بە قورسییەکی زۆری یارییەکانی Souls."
+    },
+    {
+      "ar": "القصة تعمل بدون إنترنت؛ اللعب الجماعي يحتاج PlayStation Plus.",
+      "en": "The story plays offline; multiplayer needs PlayStation Plus.",
+      "ckb": "چیرۆکەکە بێ ئینتەرنێت کار دەکات؛ فرەیاریزان PlayStation Plus ی پێویستە."
+    },
+    {
+      "ar": "ترجمة وقوائم بالعربية (بدون دبلجة عربية)، حسب قائمة لغات PlayStation Store.",
+      "en": "Arabic subtitles and menus (no Arabic voice), per the PlayStation Store language list.",
+      "ckb": "ژێرنووس و مێنیوی عەرەبی (بێ دەنگی عەرەبی)، بەپێی لیستی زمانەکانی PlayStation Store."
+    },
+    {
+      "ar": "التصنيف PEGI 18.",
+      "en": "Rated PEGI 18.",
+      "ckb": "پۆلێنی PEGI 18."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": {
+        "ar": "تاريخ الإصدار",
+        "en": "Release date",
+        "ckb": "بەرواری دەرچوون"
+      },
+      "value": {
+        "ar": "12 تشرين الثاني 2020",
+        "en": "12 November 2020",
+        "ckb": "12ی تشرینی دووەمی 2020"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": {
+        "ar": "الأجهزة",
+        "en": "Platforms",
+        "ckb": "ئامێرەکان"
+      },
+      "value": {
+        "ar": "PS5 فقط",
+        "en": "PS5 only",
+        "ckb": "تەنها PS5"
+      }
+    },
+    {
+      "key": "format",
+      "label": {
+        "ar": "نوع النسخة الفيزيائية",
+        "en": "Physical format",
+        "ckb": "جۆری وەشانی فیزیکی"
+      },
+      "value": {
+        "ar": "قرص PS5",
+        "en": "PS5 disc",
+        "ckb": "دیسکی PS5"
+      }
+    },
+    {
+      "key": "players",
+      "label": {
+        "ar": "عدد اللاعبين",
+        "en": "Players",
+        "ckb": "ژمارەی یاریزان"
+      },
+      "value": {
+        "ar": "لاعب واحد، ولعب أونلاين مع الآخرين",
+        "en": "1 player, with online play alongside others",
+        "ckb": "1 یاریزان، لەگەڵ یاریکردنی ئۆنلاین لەگەڵ کەسانی تر"
+      }
+    },
+    {
+      "key": "online",
+      "label": {
+        "ar": "الإنترنت والاشتراكات",
+        "en": "Internet and subscriptions",
+        "ckb": "ئینتەرنێت و بەشداریکردن"
+      },
+      "value": {
+        "ar": "القصة بدون إنترنت؛ اللعب الأونلاين يحتاج PlayStation Plus.",
+        "en": "Story offline; online play needs PlayStation Plus.",
+        "ckb": "چیرۆک بێ ئینتەرنێت؛ یاریکردنی ئۆنلاین PlayStation Plus ی پێویستە."
+      }
+    },
+    {
+      "key": "arabic",
+      "label": {
+        "ar": "اللغة العربية",
+        "en": "Arabic",
+        "ckb": "زمانی عەرەبی"
+      },
+      "value": {
+        "ar": "ترجمة وقوائم بالعربية بدون دبلجة (حسب منطقة النسخة)",
+        "en": "Arabic subtitles and menus, no Arabic voice (depends on the region of the copy)",
+        "ckb": "ژێرنووس و مێنیوی عەرەبی، بێ دەنگی عەرەبی (بەپێی ناوچەی وەشانەکە)"
+      }
+    },
+    {
+      "key": "age",
+      "label": {
+        "ar": "التصنيف العمري",
+        "en": "Age rating",
+        "ckb": "پۆلێنی تەمەن"
+      },
+      "value": {
+        "ar": "PEGI 18",
+        "en": "PEGI 18",
+        "ckb": "PEGI 18"
+      }
+    },
+    {
+      "key": "developer",
+      "label": {
+        "ar": "المطوّر والناشر",
+        "en": "Developer and publisher",
+        "ckb": "گەشەپێدەر و بڵاوکەرەوە"
+      },
+      "value": {
+        "ar": "Bluepoint Games / Sony Interactive Entertainment",
+        "en": "Bluepoint Games / Sony Interactive Entertainment",
+        "ckb": "Bluepoint Games / Sony Interactive Entertainment"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة لجهاز PS5",
+      "en": "PS5 game disc",
+      "ckb": "دیسکی یارییەکە بۆ PS5"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DEMSOULS-PS5-STD",
+      "title": {
+        "ar": "لجهاز PS5 · Standard Edition",
+        "en": "PS5 · Standard Edition",
+        "ckb": "بۆ PS5 · Standard Edition"
+      },
+      "options": {
+        "platform": "PS5",
+        "edition": "Standard",
+        "format": "Disc"
+      },
+      "isDefault": true,
+      "sheetRow": 105,
+      "images": [
+        "demons-souls--1",
+        "demons-souls--2",
+        "demons-souls--3"
+      ],
+      "notes": {
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": [
+      "ps5",
+      "ps5-slim",
+      "ps5-pro",
+      "ps5-slim-digital"
+    ],
+    "genres": [
+      {
+        "ar": "لعب أدوار وأكشن",
+        "en": "Action RPG",
+        "ckb": "ڕۆڵگێڕان و ئاکشن"
+      },
+      {
+        "ar": "أكشن صعب على طريقة Souls",
+        "en": "Soulslike action",
+        "ckb": "ئاکشنی قورس بە شێوازی Souls"
+      }
+    ],
+    "players": "1 (online co-op and invasions up to 6)",
+    "online": {
+      "ar": "القصة بدون إنترنت؛ اللعب الأونلاين يحتاج PlayStation Plus.",
+      "en": "Story offline; online play needs PlayStation Plus.",
+      "ckb": "چیرۆک بێ ئینتەرنێت؛ یاریکردنی ئۆنلاین PlayStation Plus ی پێویستە."
+    },
+    "ageRating": {
+      "pegi": 18
+    },
+    "arabic": "subtitles+interface",
+    "physicalFormat": "disc",
+    "developer": "Bluepoint Games",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "قرص PS5.",
+        "en": "PS5 disc.",
+        "ckb": "دیسکی PS5."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP9000-PPSA01341_00-DEMONSSOULS00000"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "يعمل على الموديل الذي فيه قارئ أقراص.",
+        "en": "Works on the model with a disc drive.",
+        "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP9000-PPSA01341_00-DEMONSSOULS00000"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": {
+        "ar": "القرص يحتاج قارئ الأقراص الإضافي.",
+        "en": "The disc needs the add-on Disc Drive.",
+        "ckb": "دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": {
+        "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.",
+        "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "nioh-3",
+      "kind": "alternative"
+    },
+    {
+      "slug": "elden-ring-nightreign",
+      "kind": "alternative"
+    },
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense",
+      "kind": "accessory"
+    },
+    {
+      "slug": "ps5-disc-drive",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "demons-souls--1",
+      "file": ".cache/product-images/demons-souls/1.png",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/img/rnd/202011/1717/qHFrrJINxIfsvIyudYAyjfDq.png",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP9000-PPSA01341_00-DEMONSSOULS00000",
+      "kind": "box-art",
+      "alt": {
+        "ar": "غلاف Demon's Souls",
+        "en": "Demon's Souls cover art",
+        "ckb": "وێنەی بەرگی Demon's Souls"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1440,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "demons-souls--2",
+      "file": ".cache/product-images/demons-souls/2.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202010/0821/OtTU8V9BfVqiy4jp0QhHp8ad.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP9000-PPSA01341_00-DEMONSSOULS00000",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Demon's Souls",
+        "en": "Demon's Souls screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Demon's Souls"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "demons-souls--3",
+      "file": ".cache/product-images/demons-souls/3.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202010/0821/NE92EYZjGR8hU8ZcNDgEYEX1.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP9000-PPSA01341_00-DEMONSSOULS00000",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Demon's Souls",
+        "en": "Demon's Souls screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Demon's Souls"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://store.playstation.com/en-gb/product/EP9000-PPSA01341_00-DEMONSSOULS00000",
+      "title": "Demon's Souls — PlayStation Store (UK)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "PS5, release 12 Nov 2020, PEGI 18, Arabic screen language, voice languages, Bluepoint Games remake, cover art and screenshots",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/games/demons-souls/",
+      "title": "Demon's Souls — PlayStation (UAE)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "game overview, PS5 exclusive, online play",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/",
+      "title": "Disc Drive for PS5 Digital Edition consoles",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "the add-on drive works only with PS5 Pro and the slim PS5 Digital Edition, so the original 2020 Digital Edition cannot play discs"
+    }
+  ],
+  "verification": {
+    "checkedBy": "games-ps5-xbox research 2026-11-18",
+    "secondSource": true,
+    "unverified": [
+      "Arabic support is taken from the PlayStation Store language list; the languages on a given disc depend on its region.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

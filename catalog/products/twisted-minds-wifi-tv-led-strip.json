@@ -1,0 +1,131 @@
+{
+  "slug": "twisted-minds-wifi-tv-led-strip",
+  "group": "power-cables-storage-misc",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "lighting",
+  "brand": "Twisted Minds",
+  "status": "available",
+  "name": {
+    "ar": "شريط إضاءة خلفي للتلفزيون من Twisted Minds",
+    "en": "Twisted Minds Wi‑Fi TV LED Strip",
+    "ckb": "شریتی ڕووناکیی پشتەوەی تەلەفزیۆنی Twisted Minds"
+  },
+  "short": {
+    "ar": "طول 5 متر · ألوان RGB · تحكم عبر Wi‑Fi · TM‑RGB‑5M",
+    "en": "5 m long · RGB colours · Wi‑Fi control · TM‑RGB‑5M",
+    "ckb": "درێژی 5 مەتر · ڕەنگی RGB · کۆنترۆڵ بە Wi‑Fi · TM‑RGB‑5M"
+  },
+  "description": {
+    "ar": "شريط LED بطول 5 أمتار من Twisted Minds يُلصق خلف التلفزيون أو الشاشة ليعطي إضاءة خلفية بألوان RGB، ويُتحكّم به عبر شبكة Wi‑Fi. الطول يناسب التلفزيونات الكبيرة. الطراز TM‑RGB‑5M.",
+    "en": "A 5-metre LED strip from Twisted Minds that sticks behind a TV or monitor for RGB backlighting, controlled over Wi‑Fi. The length suits large TVs. Model TM‑RGB‑5M.",
+    "ckb": "شریتێکی LEDی 5 مەتری Twisted Minds کە لە پشت تەلەفزیۆن یان شاشە دەلکێنرێت بۆ ڕووناکیی پشتەوەی RGB، و بە Wi‑Fi کۆنترۆڵ دەکرێت. درێژییەکەی بۆ تەلەفزیۆنی گەورە گونجاوە. مۆدێلی TM‑RGB‑5M."
+  },
+  "highlights": [
+    {
+      "ar": "طول 5 أمتار",
+      "en": "5 metres long",
+      "ckb": "درێژی 5 مەتر"
+    },
+    {
+      "ar": "ألوان RGB",
+      "en": "RGB colours",
+      "ckb": "ڕەنگی RGB"
+    },
+    {
+      "ar": "تحكم لاسلكي عبر Wi‑Fi",
+      "en": "Wireless control over Wi‑Fi",
+      "ckb": "کۆنترۆڵی بێتەل بە Wi‑Fi"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "TM‑RGB‑5M",
+        "en": "TM‑RGB‑5M",
+        "ckb": "TM‑RGB‑5M"
+      }
+    },
+    {
+      "key": "length",
+      "label": {
+        "ar": "الطول",
+        "en": "Length",
+        "ckb": "درێژی"
+      },
+      "value": {
+        "ar": "5 متر",
+        "en": "5 m",
+        "ckb": "5 مەتر"
+      }
+    },
+    {
+      "key": "control",
+      "label": {
+        "ar": "التحكم",
+        "en": "Control",
+        "ckb": "کۆنترۆڵ"
+      },
+      "value": {
+        "ar": "Wi‑Fi",
+        "en": "Wi‑Fi",
+        "ckb": "Wi‑Fi"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "TM-RGB-5M",
+      "sheetRow": 214,
+      "title": {
+        "ar": "5 متر",
+        "en": "5 m",
+        "ckb": "5 مەتر"
+      },
+      "options": {
+        "length": "5m"
+      },
+      "modelNumber": "TM-RGB-5M",
+      "isDefault": true
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    {
+      "slug": "twisted-minds-rgb-led-strip",
+      "kind": "alternative"
+    }
+  ],
+  "images": [],
+  "sources": [
+    {
+      "url": "https://www.ifa-berlin.com/exhibitors/twisted-minds",
+      "title": "Twisted Minds (exhibitor profile)",
+      "publisher": "IFA Berlin",
+      "retrieved": "2026-11-18",
+      "supports": "Twisted Minds is a gaming technology brand making gaming accessories"
+    },
+    {
+      "url": "https://mobpcom.com/shop/page/101",
+      "title": "Twisted Minds LED light strips (shop listing)",
+      "publisher": "Mobpcom (retailer, Oman)",
+      "retrieved": "2026-11-18",
+      "supports": "Twisted Minds sells RGB light strips under TM-RGB-<length> model codes (TM-RGB-2M listed)"
+    }
+  ],
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": false,
+    "unverified": [
+      "No page found for TM-RGB-5M itself: length, RGB and Wi-Fi are taken from the owner's stock name \"TWISTED TV LED 5M GRB WIFI TM-RGB-5M\" (\"GRB\" read as RGB)",
+      "Power source, app name, TV-size range and voice-assistant support",
+      "No maker image found"
+    ]
+  }
+}

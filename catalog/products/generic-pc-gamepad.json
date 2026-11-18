@@ -1,0 +1,75 @@
+{
+  "slug": "generic-pc-gamepad",
+  "group": "controllers-audio",
+  "kind": "controller",
+  "platform": "multi",
+  "brand": "Generic",
+  "status": "available",
+  "name": { "ar": "يد تحكم اقتصادية للكمبيوتر وAndroid", "en": "Budget Gamepad for PC and Android", "ckb": "کۆنتڕۆڵەری هەرزان بۆ PC و Android" },
+  "short": {
+    "ar": "يد تحكم عامة رخيصة · للكمبيوتر وأجهزة Android وTV Box",
+    "en": "Low-cost generic controller · For PC, Android and TV boxes",
+    "ckb": "کۆنتڕۆڵەری گشتیی هەرزان · بۆ PC، Android و TV Box"
+  },
+  "description": {
+    "ar": "يد تحكم اقتصادية بدون علامة تجارية معروفة، للعب على الكمبيوتر وأجهزة Android وأجهزة TV Box. نسخة 2.4G لاسلكية تتصل بمستقبل USB صغير يُوصل بالجهاز فتعمل مباشرة دون Bluetooth. مناسبة للألعاب الخفيفة والمحاكيات، وليست بديلاً عن أذرع المنصات الرسمية.",
+    "en": "A low-cost unbranded controller for PC, Android devices and TV boxes. The 2.4G version is wireless and connects through a small USB receiver you plug into the device, so it works straight away without Bluetooth. Good for casual games and emulators, not a replacement for official console controllers.",
+    "ckb": "کۆنتڕۆڵەرێکی هەرزانی بێ مارکەی ناسراو، بۆ PC، ئامێرەکانی Android و TV Box. وەشانی 2.4G بێتەلە و بە وەرگرێکی بچووکی USB دەبەسترێت کە لە ئامێرەکەت دەدەیت، بۆیە ڕاستەوخۆ بێ Bluetooth کار دەکات. بۆ یاریی سووک و ئیمولەیتەر باشە، نەک جێگرەوەی کۆنتڕۆڵەری فەرمیی کۆنسۆڵ."
+  },
+  "highlights": [
+    { "ar": "سعر اقتصادي للألعاب الخفيفة والمحاكيات", "en": "Budget price for casual games and emulators", "ckb": "نرخی هەرزان بۆ یاریی سووک و ئیمولەیتەر" },
+    { "ar": "نسخة 2.4G: مستقبل USB، تعمل دون Bluetooth", "en": "2.4G version: USB receiver, no Bluetooth needed", "ckb": "وەشانی 2.4G: وەرگری USB، بێ Bluetooth" },
+    { "ar": "أجهزة Android تحتاج دعم OTG لوصل المستقبل", "en": "Android devices need OTG support for the receiver", "ckb": "ئامێرەکانی Android پێویستیان بە OTG هەیە بۆ وەرگرەکە" },
+    { "ar": "نسخة 2.4G لا تعمل مع PS5 أو Xbox Series", "en": "The 2.4G version does not work with PS5 or Xbox Series", "ckb": "وەشانی 2.4G لەگەڵ PS5 یان Xbox Series کار ناکات" }
+  ],
+  "specs": [
+    { "key": "type", "label": { "ar": "النوع", "en": "Type", "ckb": "جۆر" }, "value": { "ar": "يد تحكم عامة بدون علامة تجارية", "en": "Generic unbranded gamepad", "ckb": "کۆنتڕۆڵەری گشتیی بێ مارکە" } },
+    { "key": "devices", "label": { "ar": "الأجهزة", "en": "Devices", "ckb": "ئامێرەکان" }, "value": { "ar": "الكمبيوتر، Android (مع OTG)، TV Box", "en": "PC, Android (with OTG), TV boxes", "ckb": "PC، Android (بە OTG)، TV Box" } }
+  ],
+  "inTheBox": [
+    { "ar": "يد التحكم", "en": "Gamepad", "ckb": "کۆنتڕۆڵەر" }
+  ],
+  "variants": [
+    {
+      "sku": "GAMEPAD-24G",
+      "sheetRow": 11,
+      "title": { "ar": "لاسلكية 2.4G", "en": "2.4G wireless", "ckb": "بێتەلی 2.4G" },
+      "options": { "edition": "2.4G wireless" },
+      "isDefault": true,
+      "notes": { "ar": "تأتي مع مستقبل USB لاسلكي.", "en": "Comes with a USB wireless receiver.", "ckb": "وەرگری بێتەلی USBی لەگەڵدایە." }
+    },
+    {
+      "sku": "GAMEPAD-5",
+      "sheetRow": 12,
+      "title": { "ar": "طراز Gamepad 5", "en": "Gamepad 5 model", "ckb": "مۆدێلی Gamepad 5" },
+      "options": { "edition": "Gamepad 5" },
+      "isDefault": false,
+      "notes": { "ar": "الطراز كما هو مكتوب على العلبة؛ اسأل في المتجر عن طريقة الاتصال.", "en": "Model as named on the box; ask the store how it connects.", "ckb": "مۆدێل وەک لەسەر قوتووەکە نووسراوە؛ لە فرۆشگا بپرسە چۆن دەبەسترێت." }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "windows-pc", "status": "unverified", "note": { "ar": "حسب الطراز؛ معظم هذه الأذرع تعمل بالتوصيل المباشر.", "en": "Depends on the model; most of these pads are plug-and-play.", "ckb": "بەپێی مۆدێل؛ زۆربەیان ڕاستەوخۆ کار دەکەن." } }
+  ],
+  "related": [
+    { "slug": "jys-wired-controller", "kind": "alternative" },
+    { "slug": "xbox-wireless-controller", "kind": "upsell" }
+  ],
+  "sources": [
+    { "url": "https://www.fruugo.co.nz/24g-wireless-controller-for-android-tv-box-steam-pc-ps3-with-wukong-rapid-fire-function/p-458175155", "title": "2.4G Wireless Controller for Android TV Box, Steam, PC, PS3", "publisher": "Fruugo", "retrieved": "2026-11-18", "supports": "typical generic 2.4G gamepad: USB receiver, PC / Android TV box use" },
+    { "url": "https://www.fruugo.ie/24ghz-wireless-gamepad-for-pc-laptop-usb-game-controller-joystick-for-ps3-android-tv-box-windows-raspberry-pi-4-3-joypad/p-328253514", "title": "2.4GHz Wireless Gamepad for PC Laptop, Android TV Box", "publisher": "Fruugo", "retrieved": "2026-11-18", "supports": "plug-in USB receiver, Android needs OTG, 2.4 GHz only (no Bluetooth)" }
+  ],
+  "notes": {
+    "ar": "منتج عام بدون علامة تجارية؛ المواصفات الدقيقة تختلف حسب الدفعة.",
+    "en": "Generic unbranded product; exact specs vary by batch.",
+    "ckb": "بەرهەمی گشتیی بێ مارکە؛ تایبەتمەندییە وردەکان بەپێی دەستە جیاوازن."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Maker and exact model of both rows; no maker page exists for these generic pads",
+      "What 'CONTROLLER GAMEPAD 5' is (kept as the sheet names it; it may be a PS5-style or PC pad)",
+      "Power (AA batteries or built-in battery) and PS3 support"
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "key": "redragon-eisa-k686-pro-se--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 874,
+  "aspect": 1.8307,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/redragon-eisa-k686-pro-se/1-240.6f66ae41.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-eisa-k686-pro-se/1-480.9aa0e589.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-eisa-k686-pro-se/1-720.726630db.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-eisa-k686-pro-se/1-960.62a5d3b3.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/redragon-eisa-k686-pro-se/1-1440.3621fda0.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/redragon-eisa-k686-pro-se/1-240.95bc50c0.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-eisa-k686-pro-se/1-480.33ebc792.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-eisa-k686-pro-se/1-720.d079f5d9.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-eisa-k686-pro-se/1-960.89b8084c.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/redragon-eisa-k686-pro-se/1-1440.7ac93f0e.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/redragon-eisa-k686-pro-se/1-1200.cbe06512.png",
+    "width": 1200,
+    "height": 656,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvgAAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSFAAAAARR6AokqQ2eQLunzMogIgIePWdGC/Y1tae5I+PkDYlfRbABnApqT5ahxUyODZCRP8ngN7GE4DruiTN4d647UEX4Qc1/jDw+SEi533etIClt1ZQOCCCAAAAkAMAnQEqFAALAD8RcrBQLCakorAIAYAiCUAABy3Rwc4tPuui4AD8sYaXoJ6824s4YannlvoGJEQSXwDXO1l5Kr5iijZxk05Z0SeCESsYSfl4S/STwLLjJd/Jj+Otj/fgi2pLXroGQ8Fy2cnetlEIHRqJeZDS5xrmL06dhJuWODLwAA==",
+  "dominant": "#eae8ea",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Redragon",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/RedragonEISAK686PRO98KeysWirelessGasketRGBGamingKeyboard_1.png",
+    "page": "https://redragonshop.com/products/eisa-k686-pro-se"
+  },
+  "input": "f028e6dc446f3f64"
+}

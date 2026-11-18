@@ -1,0 +1,40 @@
+{
+  "key": "dxracer-master-series--5",
+  "view": "hero",
+  "width": 691,
+  "height": 1210,
+  "aspect": 0.5711,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-master-series/5-240.f79938ea.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-master-series/5-480.b5dc8e70.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-master-series/5-240.05ea4fc6.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-master-series/5-480.16857b03.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRgQBAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSG4AAAART6CobSM2VQz33PsiImBP6lzCcBrbtursz5ZCMiUwyMgvw+BIRTI0QJZz+n3pIaL/E4A5vLaAjs7AQ/LgIxXgJQWwljyDT2knpbRv0oqipOm/2++eQuXTdMBa2xYwsyBcXg4ZZsPtYG+V6VLCDFZQOCBwAAAAsAMAnQEqCwAUAD8RcLBQLCYkorAIAYAiCWkAAFfQOS7YjZZnPgAA/tqd5AeGrFw/cZZ24tHUtxJgpG2dAFUR+EL+eeNl4DYvr2kQYQvwwHrFp/7bvZfjDS+AGOq5Os/9KrsB0tJ6ygIhErl94AAAAA==",
+  "dominant": "#272727",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "DXRacer (product render, via MaxGaming)",
+  "source": {
+    "url": "https://www.maxgaming.com/bilder/artiklar/zoom/32114_1.jpg",
+    "page": "https://www.maxgaming.com/en/dxracer-master/master-xl-black-white-epu-leather"
+  },
+  "input": "47a581a5a4cc7a1b"
+}

@@ -104,6 +104,7 @@
   "variants": [
     {
       "sku": "RAZER-BSV2X-BLK",
+      "sheetRow": 167,
       "title": { "ar": "أسود", "en": "Black", "ckb": "ڕەش" },
       "options": { "color": "Black" },
       "modelNumber": "RZ04-03240100-R3U1",
@@ -117,6 +118,7 @@
     },
     {
       "sku": "RAZER-BSV2X-WHT",
+      "sheetRow": 170,
       "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "modelNumber": "RZ04-03240700-R3U1",
@@ -125,6 +127,7 @@
     },
     {
       "sku": "RAZER-BSV2X-QTZ",
+      "sheetRow": 169,
       "title": { "ar": "وردي Quartz", "en": "Quartz (pink)", "ckb": "پەمەیی Quartz" },
       "options": { "color": "Quartz" },
       "modelNumber": "RZ04-03240800-R3U1",
@@ -133,6 +136,7 @@
     },
     {
       "sku": "RAZER-BSV2X-GRN",
+      "sheetRow": 168,
       "title": { "ar": "أخضر", "en": "Green", "ckb": "سەوز" },
       "options": { "color": "Green" },
       "modelNumber": "RZ04-03240600-R3U1",

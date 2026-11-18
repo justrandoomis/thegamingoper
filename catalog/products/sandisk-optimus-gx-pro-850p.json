@@ -125,6 +125,7 @@
       "title": { "ar": "1TB", "en": "1TB", "ckb": "1TB" },
       "options": { "storage": "1TB" },
       "modelNumber": "SDSG81100TAH-000E0",
+      "sheetRow": 123,
       "isDefault": true,
       "images": ["sandisk-optimus-gx-pro-850p--1", "sandisk-optimus-gx-pro-850p--2", "sandisk-optimus-gx-pro-850p--3"]
     },

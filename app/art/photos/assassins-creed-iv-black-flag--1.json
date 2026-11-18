@@ -1,0 +1,62 @@
+{
+  "key": "assassins-creed-iv-black-flag--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/assassins-creed-iv-black-flag/1-240.22b47bbf.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/assassins-creed-iv-black-flag/1-480.9c3c82e8.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/assassins-creed-iv-black-flag/1-720.95ed05f6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/assassins-creed-iv-black-flag/1-960.b2f07bb1.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/assassins-creed-iv-black-flag/1-240.0f7f1249.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/assassins-creed-iv-black-flag/1-480.f415d0f4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/assassins-creed-iv-black-flag/1-720.48cc84b2.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/assassins-creed-iv-black-flag/1-960.953c593d.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/assassins-creed-iv-black-flag/1-1067.5dcdc070.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADwAwCdASoNABQAPxFwsFAsJiSisAgBgCIJZQAD5UIOBTGPloRiqi+gAP6XBvoOeGQHBpCuJlYd1AkHDPbie82GWXG0TqNkFej++EVXOJFFktJmuO04euvB/9E3yLMkdscg2zNoe4y7iDw2D0K9JRa7oA270AAA",
+  "dominant": "#f8fafb",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Ubisoft",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202604/2414/81ba5198b663c1c00e1c33f7b78597340020abc30b0fc5c8.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP0001-CUSA00009_00-AC4GAMEPS4000001"
+  },
+  "input": "80c89fbc36c8e0a4"
+}

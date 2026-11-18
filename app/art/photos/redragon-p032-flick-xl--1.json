@@ -1,0 +1,62 @@
+{
+  "key": "redragon-p032-flick-xl--1",
+  "view": "hero",
+  "width": 1073,
+  "height": 583,
+  "aspect": 1.8405,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/redragon-p032-flick-xl/1-240.1c0a8eef.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-p032-flick-xl/1-480.b221c9d8.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-p032-flick-xl/1-720.7ebaacf5.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-p032-flick-xl/1-960.8c6e744f.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/redragon-p032-flick-xl/1-240.861355dd.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-p032-flick-xl/1-480.9ae081c8.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-p032-flick-xl/1-720.a553739b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-p032-flick-xl/1-960.abe6130b.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/redragon-p032-flick-xl/1-1073.9371dd84.png",
+    "width": 1073,
+    "height": 583,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSDIAAAARJ0CYbTR/w/3mcACnERHBm1AQAEhCHeBB+EAO8H+X7YGI/k8ALFbPYRPTKf1VORVYBFZQOCBAAAAAkAMAnQEqFAALAD8RgrRSLCmlIrAIAYAiCWkAAR7pAkhVU4nEAAD++JVPPZNSoL3laiHugYA7JgiX5/SNkAAAAA==",
+  "dominant": "#373737",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Redragon",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0644/1618/6586/files/ERRPA712_001_11.jpg",
+    "page": "https://dangerfield.com.au/products/p032-flick-xl-400x900-mousepad"
+  },
+  "input": "f4a6622aacc2e6bf"
+}

@@ -1,0 +1,1866 @@
+[
+ {
+  "row": 1,
+  "sheetName": "1ESPORT MOUSE PAD 90*40",
+  "sheetPrice": 15.0,
+  "priceIqd": 26250,
+  "priceBasis": "USD 15 x 1750",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 2,
+  "sheetName": "ASUS ROG STRIX GO CORE",
+  "sheetPrice": 110000.0,
+  "priceIqd": 110000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 3,
+  "sheetName": "ASUS VG249QM1A-IQ",
+  "sheetPrice": 280000.0,
+  "priceIqd": 280000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 4,
+  "sheetName": "BAG JYS -X152 ROG",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 5,
+  "sheetName": "BAG JYS-SD001 ARMY STEAM",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 6,
+  "sheetName": "CABLE HD",
+  "sheetPrice": 5000.0,
+  "priceIqd": 5000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 7,
+  "sheetName": "CABLE HDMI 4K 1.5M",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 8,
+  "sheetName": "CABLE USB RED",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 9,
+  "sheetName": "CABLE USB WHITE",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 10,
+  "sheetName": "CASE STEAM DECK -SD003",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 11,
+  "sheetName": "CONTROLLER GAMEPAD 2.4G",
+  "sheetPrice": 30000.0,
+  "priceIqd": 30000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 12,
+  "sheetName": "CONTROLLER GAMEPAD 5",
+  "sheetPrice": 30000.0,
+  "priceIqd": 30000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 13,
+  "sheetName": "CONTROLLER WIRED JYS 2288",
+  "sheetPrice": 60000.0,
+  "priceIqd": 60000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 14,
+  "sheetName": "CONTROLLER WIRED JYS-2332",
+  "sheetPrice": 50000.0,
+  "priceIqd": 50000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 15,
+  "sheetName": "DOBE XBOX BATTERY CHARCER",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 16,
+  "sheetName": "FULL BLACK CHAIR",
+  "sheetPrice": 128.0,
+  "priceIqd": 224000,
+  "priceBasis": "USD 128 x 1750",
+  "group": "chairs"
+ },
+ {
+  "row": 17,
+  "sheetName": "GUNNAR 11601",
+  "sheetPrice": 110000.0,
+  "priceIqd": 110000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 18,
+  "sheetName": "GUNNAR C001",
+  "sheetPrice": 110000.0,
+  "priceIqd": 110000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 19,
+  "sheetName": "GUNNAR RZR-30007",
+  "sheetPrice": 110000.0,
+  "priceIqd": 110000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 20,
+  "sheetName": "HEADSET SONY WI-200",
+  "sheetPrice": 50000.0,
+  "priceIqd": 50000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 21,
+  "sheetName": "HUB JYS-SDM007 4PORT",
+  "sheetPrice": 35000.0,
+  "priceIqd": 35000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 22,
+  "sheetName": "HYPER CLOUD ALPHA WIRELESS",
+  "sheetPrice": 120000.0,
+  "priceIqd": 120000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 23,
+  "sheetName": "HYPER HEADSET STINGER S 7.1 USB",
+  "sheetPrice": 135000.0,
+  "priceIqd": 135000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 24,
+  "sheetName": "HYPER K.B ALLOY ORIGINS CORE GAMING",
+  "sheetPrice": 55000.0,
+  "priceIqd": 55000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 25,
+  "sheetName": "HYPERX EARBUDS 2 BLACK",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 26,
+  "sheetName": "HYPERX EARBUDS 2 RED",
+  "sheetPrice": 35000.0,
+  "priceIqd": 35000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 27,
+  "sheetName": "HYPERX MOUSE PULSEFIRE SURGE",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 28,
+  "sheetName": "HYPERX QUADCAST",
+  "sheetPrice": 110000.0,
+  "priceIqd": 110000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 29,
+  "sheetName": "I.G.C RED WHITE AND BLACK",
+  "sheetPrice": 178.32,
+  "priceIqd": 312000,
+  "priceBasis": "USD 178.32 x 1750",
+  "group": "chairs"
+ },
+ {
+  "row": 30,
+  "sheetName": "IGC CHAIR STARWARS",
+  "sheetPrice": 390000.0,
+  "priceIqd": 390000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 31,
+  "sheetName": "IGC FINAL FANTASY",
+  "sheetPrice": 360000.0,
+  "priceIqd": 360000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 32,
+  "sheetName": "IGC FORMULA BLAK AND WHITE NW",
+  "sheetPrice": 310000.0,
+  "priceIqd": 310000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 33,
+  "sheetName": "IGC FORMULA FABRIC BLACK N",
+  "sheetPrice": 310000.0,
+  "priceIqd": 310000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 34,
+  "sheetName": "IGC MASTER BLACK FABRIC N",
+  "sheetPrice": 460000.0,
+  "priceIqd": 460000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 35,
+  "sheetName": "IGC MASTER FULL BLACK BK-PFN",
+  "sheetPrice": 485000.0,
+  "priceIqd": 485000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 36,
+  "sheetName": "IGC MASTER GREY FABRIC G",
+  "sheetPrice": 460000.0,
+  "priceIqd": 460000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 37,
+  "sheetName": "IGC MASTER WHITE AND BLACK WH/ BK",
+  "sheetPrice": 425000.0,
+  "priceIqd": 425000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 38,
+  "sheetName": "IGC PRINCE BLACK AND RED NR",
+  "sheetPrice": 265000.0,
+  "priceIqd": 265000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 39,
+  "sheetName": "IGC PRINCE GREY FABRIC G-F",
+  "sheetPrice": 235000.0,
+  "priceIqd": 235000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 40,
+  "sheetName": "IGC PRINCE PINK AND WHITE PW",
+  "sheetPrice": 235000.0,
+  "priceIqd": 235000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 41,
+  "sheetName": "IGC SPEED EDITION DRIFTING CHAIR",
+  "sheetPrice": 395000.0,
+  "priceIqd": 395000,
+  "priceBasis": "IQD",
+  "group": "chairs"
+ },
+ {
+  "row": 42,
+  "sheetName": "IYS SW 2 GLASS 2312",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 43,
+  "sheetName": "IYS SW JYS SILICON NSW2 52292",
+  "sheetPrice": 10000.0,
+  "priceIqd": 10000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 44,
+  "sheetName": "K.B GAMEON GOMK 60-RS",
+  "sheetPrice": 50000.0,
+  "priceIqd": 50000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 45,
+  "sheetName": "K.B REDRACON EISA K686AK-RGB",
+  "sheetPrice": 120000.0,
+  "priceIqd": 120000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 46,
+  "sheetName": "K.B REDRAGON K617GGB MP",
+  "sheetPrice": 75000.0,
+  "priceIqd": 75000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 47,
+  "sheetName": "K.B REDRAGON UCAL K673WB",
+  "sheetPrice": 80000.0,
+  "priceIqd": 80000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 48,
+  "sheetName": "LED ASUS VG279QM5A-IQ",
+  "sheetPrice": 410000.0,
+  "priceIqd": 410000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 49,
+  "sheetName": "LEGION GO GLASS PRO",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 50,
+  "sheetName": "MIC MAONO DM30",
+  "sheetPrice": 95000.0,
+  "priceIqd": 95000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 51,
+  "sheetName": "MIC REDRAGON GM306",
+  "sheetPrice": 90000.0,
+  "priceIqd": 90000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 52,
+  "sheetName": "MOUSE REDRAGON KING M724 BL+WH",
+  "sheetPrice": 50000.0,
+  "priceIqd": 50000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 53,
+  "sheetName": "MOUSE REDRAGON M808-KS",
+  "sheetPrice": 60000.0,
+  "priceIqd": 60000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 54,
+  "sheetName": "NINTENDO SWITCH OLED BLACK",
+  "sheetPrice": 550000.0,
+  "priceIqd": 550000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 55,
+  "sheetName": "NINTENDO SWITCH OLED WHITE",
+  "sheetPrice": 585000.0,
+  "priceIqd": 585000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 56,
+  "sheetName": "NINTENDO SWITCH OLED WIRED MX",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 57,
+  "sheetName": "OCULUS CABIE 3M",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 58,
+  "sheetName": "OCULUS CABIE 5M",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 59,
+  "sheetName": "OCULUS CHARGING DOCK KIT DOBE Q2/Q3/Q3S",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 60,
+  "sheetName": "OCULUS CHARGING STAND DOBE 3-3S",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 61,
+  "sheetName": "OCULUS CHARGING STAND DOBE Q3",
+  "sheetPrice": 35000.0,
+  "priceIqd": 35000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 62,
+  "sheetName": "OCULUS FAN DOBE",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 63,
+  "sheetName": "OCULUS QUEST 2 GUN",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 64,
+  "sheetName": "OCULUS QUEST 3 GUN",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 65,
+  "sheetName": "OCULUS QUEST2 IEN SILICON CASE NO PACKING",
+  "sheetPrice": 5.52,
+  "priceIqd": 9750,
+  "priceBasis": "USD 5.52 x 1750",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 66,
+  "sheetName": "OCULUS SILICON CASE 2 IINE",
+  "sheetPrice": 8.0,
+  "priceIqd": 14000,
+  "priceBasis": "USD 8 x 1750",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 67,
+  "sheetName": "OCULUS SILICON CASE DOBE",
+  "sheetPrice": 6.66,
+  "priceIqd": 11750,
+  "priceBasis": "USD 6.66 x 1750",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 68,
+  "sheetName": "PROTECTIVE CASE SET X153",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 69,
+  "sheetName": "PS4 ASSASSIN CREED 4 BLACK FLAG",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 70,
+  "sheetName": "PS4 CALL OF DUTY VANGUARD",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 71,
+  "sheetName": "PS4 CONTROLLER BLACK",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 72,
+  "sheetName": "PS4 CONTROLLER ORANGE SS",
+  "sheetPrice": 60000.0,
+  "priceIqd": 60000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 73,
+  "sheetName": "PS4 CONTROLLER ORIGINAL IGC",
+  "sheetPrice": 34.97,
+  "priceIqd": 61250,
+  "priceBasis": "USD 34.97 x 1750",
+  "group": "ps4"
+ },
+ {
+  "row": 74,
+  "sheetName": "PS4 CONTROLLER SILVER",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 75,
+  "sheetName": "PS4 CRASH 4 ABOUT TIME R2",
+  "sheetPrice": 50000.0,
+  "priceIqd": 50000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 76,
+  "sheetName": "PS4 CRASH BANDICOOT 1-3",
+  "sheetPrice": 55000.0,
+  "priceIqd": 55000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 77,
+  "sheetName": "PS4 GRAND TURISMOR2 VR",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 78,
+  "sheetName": "PS4 GRIPS SET",
+  "sheetPrice": 10000.0,
+  "priceIqd": 10000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 79,
+  "sheetName": "PS4 HEADSET K8",
+  "sheetPrice": 30000.0,
+  "priceIqd": 30000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 80,
+  "sheetName": "PS4 IMMORTALS FENYX",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 81,
+  "sheetName": "PS4 IT TAKES TWO",
+  "sheetPrice": 39000.0,
+  "priceIqd": 39000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 82,
+  "sheetName": "PS4 ONE PIECE ODYSSEY",
+  "sheetPrice": 65000.0,
+  "priceIqd": 65000,
+  "priceBasis": "IQD",
+  "group": "ps4"
+ },
+ {
+  "row": 83,
+  "sheetName": "PS5 CHARGE STAND TP5-5505",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 84,
+  "sheetName": "PS5 ASSASSIN CREED SHADOWS",
+  "sheetPrice": 65000.0,
+  "priceIqd": 65000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 85,
+  "sheetName": "PS5 BAG DOBE",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 86,
+  "sheetName": "PS5 BAG PRO BLACK",
+  "sheetPrice": 60000.0,
+  "priceIqd": 60000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 87,
+  "sheetName": "PS5 BAG PRO GRAY",
+  "sheetPrice": 60000.0,
+  "priceIqd": 60000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 88,
+  "sheetName": "PS5 BAG PRO PHOTOS 2",
+  "sheetPrice": 60000.0,
+  "priceIqd": 60000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 89,
+  "sheetName": "PS5 BATTERY PACK IPEGA",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 90,
+  "sheetName": "PS5 CASE FAT",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 91,
+  "sheetName": "PS5 CASE PRO",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 92,
+  "sheetName": "PS5 CASE SLIM",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 93,
+  "sheetName": "PS5 CASE SLIM BLUE",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 94,
+  "sheetName": "PS5 CASE SLIM GREEN",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 95,
+  "sheetName": "PS5 CASE SLIM RED",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 96,
+  "sheetName": "PS5 CHARGING CONTROL DOBE",
+  "sheetPrice": 13.33,
+  "priceIqd": 23250,
+  "priceBasis": "USD 13.33 x 1750",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 97,
+  "sheetName": "PS5 CHARGING DOCK 2",
+  "sheetPrice": 7.0,
+  "priceIqd": 12250,
+  "priceBasis": "USD 7 x 1750",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 98,
+  "sheetName": "PS5 CHARGING LUCKY",
+  "sheetPrice": 9.68,
+  "priceIqd": 17000,
+  "priceBasis": "USD 9.68 x 1750",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 99,
+  "sheetName": "PS5 CHARGING PORTAL MINI IPEGA",
+  "sheetPrice": 10000.0,
+  "priceIqd": 10000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 100,
+  "sheetName": "PS5 CHARGING STATION IPEGA",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 101,
+  "sheetName": "PS5 CHARGING STATION POWERA",
+  "sheetPrice": 30000.0,
+  "priceIqd": 30000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 102,
+  "sheetName": "PS5 CHARGING STATION QQ",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 103,
+  "sheetName": "PS5 CONTROLLER SHELL",
+  "sheetPrice": 6.67,
+  "priceIqd": 11750,
+  "priceBasis": "USD 6.67 x 1750",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 104,
+  "sheetName": "PS5 CRASH TEAM RUMBLE",
+  "sheetPrice": 65000.0,
+  "priceIqd": 65000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 105,
+  "sheetName": "PS5 DEMONS SOULS",
+  "sheetPrice": 50000.0,
+  "priceIqd": 50000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 106,
+  "sheetName": "PS5 DISCS TOWER LINYUVO",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 107,
+  "sheetName": "PS5 DUALSENSE BLACK QQ1",
+  "sheetPrice": 95000.0,
+  "priceIqd": 95000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 108,
+  "sheetName": "PS5 DUALSENSE BLUE QQ1",
+  "sheetPrice": 95000.0,
+  "priceIqd": 95000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 109,
+  "sheetName": "PS5 DUALSENSE COLOR QQ2",
+  "sheetPrice": 95000.0,
+  "priceIqd": 95000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 110,
+  "sheetName": "PS5 DUALSENSE EDGE QQ",
+  "sheetPrice": 275000.0,
+  "priceIqd": 275000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 111,
+  "sheetName": "PS5 DUALSENSE PURER QQ1",
+  "sheetPrice": 95000.0,
+  "priceIqd": 95000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 112,
+  "sheetName": "PS5 DUALSENSE QQ3",
+  "sheetPrice": 70000.0,
+  "priceIqd": 70000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 113,
+  "sheetName": "PS5 DUALSENSE WHITE QQ1",
+  "sheetPrice": 95000.0,
+  "priceIqd": 95000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 114,
+  "sheetName": "PS5 EDGE STICK",
+  "sheetPrice": 75000.0,
+  "priceIqd": 75000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 115,
+  "sheetName": "PS5 ENOTRIA",
+  "sheetPrice": 55000.0,
+  "priceIqd": 55000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 116,
+  "sheetName": "PS5 EXPEDITION 33",
+  "sheetPrice": 55000.0,
+  "priceIqd": 55000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 117,
+  "sheetName": "PS5 FAN P5228",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 118,
+  "sheetName": "PS5 FC27",
+  "sheetPrice": 90000.0,
+  "priceIqd": 90000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 119,
+  "sheetName": "PS5 FREEK 75-76-",
+  "sheetPrice": 10000.0,
+  "priceIqd": 10000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 120,
+  "sheetName": "PS5 GRAND TURISMO 7",
+  "sheetPrice": 49000.0,
+  "priceIqd": 49000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 121,
+  "sheetName": "PS5 GRIPS CONTROL",
+  "sheetPrice": 10000.0,
+  "priceIqd": 10000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 122,
+  "sheetName": "PS5 GTA VI",
+  "sheetPrice": 135000.0,
+  "priceIqd": 135000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 123,
+  "sheetName": "PS5 HD 1T SSD",
+  "sheetPrice": 365000.0,
+  "priceIqd": 365000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 124,
+  "sheetName": "PS5 HEADSET PULS 3D WHITE QQ",
+  "sheetPrice": 99000.0,
+  "priceIqd": 99000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 125,
+  "sheetName": "PS5 HEADSET PULS 3D BLACK QQ",
+  "sheetPrice": 110000.0,
+  "priceIqd": 110000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 126,
+  "sheetName": "PS5 HEADSET PULS 3D ELITE",
+  "sheetPrice": 225000.0,
+  "priceIqd": 225000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 127,
+  "sheetName": "PS5 HELL IS US",
+  "sheetPrice": 60000.0,
+  "priceIqd": 60000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 128,
+  "sheetName": "PS5 HELLO NEIGHBOR",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 129,
+  "sheetName": "PS5 HUB 6 IN1 IPEGA",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 130,
+  "sheetName": "PS5 HUB USB",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 131,
+  "sheetName": "PS5 IMMORTALS FENYX RISING",
+  "sheetPrice": 60000.0,
+  "priceIqd": 60000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 132,
+  "sheetName": "PS5 MAFIA THE OLD COUNTRY",
+  "sheetPrice": 70000.0,
+  "priceIqd": 70000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 133,
+  "sheetName": "PS5 METAL GEAR SOLID",
+  "sheetPrice": 75000.0,
+  "priceIqd": 75000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 134,
+  "sheetName": "PS5 MINECRFT LEGENDS",
+  "sheetPrice": 60000.0,
+  "priceIqd": 60000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 135,
+  "sheetName": "PS5 MORTAL KOMBAT1",
+  "sheetPrice": 39000.0,
+  "priceIqd": 39000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 136,
+  "sheetName": "PS5 NBA 2K 26",
+  "sheetPrice": 65000.0,
+  "priceIqd": 65000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 137,
+  "sheetName": "PS5 NINJA GAIDEN 4",
+  "sheetPrice": 95000.0,
+  "priceIqd": 95000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 138,
+  "sheetName": "PS5 NIOH 3",
+  "sheetPrice": 75000.0,
+  "priceIqd": 75000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 139,
+  "sheetName": "PS5 POPPY",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 140,
+  "sheetName": "PS5 REANIMAL",
+  "sheetPrice": 80000.0,
+  "priceIqd": 80000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 141,
+  "sheetName": "PS5 RESIDENT EVIL4",
+  "sheetPrice": 45000.0,
+  "priceIqd": 45000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 142,
+  "sheetName": "PS5 RGB LED STRIP KIT",
+  "sheetPrice": 10000.0,
+  "priceIqd": 10000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 143,
+  "sheetName": "PS5 SACKBOY",
+  "sheetPrice": 55000.0,
+  "priceIqd": 55000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 144,
+  "sheetName": "PS5 SILENT HILL F",
+  "sheetPrice": 95000.0,
+  "priceIqd": 95000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 145,
+  "sheetName": "PS5 SKIN FAT",
+  "sheetPrice": 3.0,
+  "priceIqd": 5250,
+  "priceBasis": "USD 3 x 1750",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 146,
+  "sheetName": "PS5 SLIM BAG 1",
+  "sheetPrice": 24.48,
+  "priceIqd": 42750,
+  "priceBasis": "USD 24.48 x 1750",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 147,
+  "sheetName": "PS5 SLIM BAG PHOTO",
+  "sheetPrice": 30000.0,
+  "priceIqd": 30000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 148,
+  "sheetName": "PS5 SLIM FAN",
+  "sheetPrice": 10000.0,
+  "priceIqd": 10000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 149,
+  "sheetName": "PS5 STALLER BLADE",
+  "sheetPrice": 90000.0,
+  "priceIqd": 90000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 150,
+  "sheetName": "PS5 STAND COOLING DOBE 3536B",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 151,
+  "sheetName": "PS5 STAND COOLING IYS",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 152,
+  "sheetName": "PS5 STAND FAN HORIZONTAL IPEGA PG-P5S039",
+  "sheetPrice": 35000.0,
+  "priceIqd": 35000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 153,
+  "sheetName": "PS5 STAND HORIZONTAL 4 IN 1 IPEGA PG-P5S007B",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 154,
+  "sheetName": "PS5 STAND HORIZONTAL IPEGA PG-P5S021",
+  "sheetPrice": 30000.0,
+  "priceIqd": 30000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 155,
+  "sheetName": "PS5 STAND SONY",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 156,
+  "sheetName": "PS5 STAND VR IPLAU",
+  "sheetPrice": 35000.0,
+  "priceIqd": 35000,
+  "priceBasis": "IQD",
+  "group": "ps5-accessories"
+ },
+ {
+  "row": 157,
+  "sheetName": "PS5 THE CREW MOTOR FEST",
+  "sheetPrice": 50000.0,
+  "priceIqd": 50000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 158,
+  "sheetName": "PS5 THE LAST OF US REMASTERED",
+  "sheetPrice": 60000.0,
+  "priceIqd": 60000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 159,
+  "sheetName": "PS5 WOLVERINE MARVEL",
+  "sheetPrice": 95000.0,
+  "priceIqd": 95000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 160,
+  "sheetName": "PS5 WUCHANG",
+  "sheetPrice": 80000.0,
+  "priceIqd": 80000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 161,
+  "sheetName": "PS5 WW 2K26",
+  "sheetPrice": 90000.0,
+  "priceIqd": 90000,
+  "priceBasis": "IQD",
+  "group": "ps5-games"
+ },
+ {
+  "row": 162,
+  "sheetName": "PSP 2 BAG + GLASS+ SILICON 3587",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 163,
+  "sheetName": "RAX11 ROG ALLY X",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 164,
+  "sheetName": "REDRAGON MOUSE PAD P032",
+  "sheetPrice": 30000.0,
+  "priceIqd": 30000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 165,
+  "sheetName": "REDRAGON MOUSE PAD P041",
+  "sheetPrice": 30000.0,
+  "priceIqd": 30000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 166,
+  "sheetName": "ROG GLASS 3836",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 167,
+  "sheetName": "RZR HEADSET BLACK V2 X QQ",
+  "sheetPrice": 65000.0,
+  "priceIqd": 65000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 168,
+  "sheetName": "RZR HEADSET GREEN V2 X QQ",
+  "sheetPrice": 65000.0,
+  "priceIqd": 65000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 169,
+  "sheetName": "RZR HEADSET PINK V2 X QQ",
+  "sheetPrice": 70000.0,
+  "priceIqd": 70000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 170,
+  "sheetName": "RZR HEADSET WHITE V2X QQ",
+  "sheetPrice": 70000.0,
+  "priceIqd": 70000,
+  "priceBasis": "IQD",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 171,
+  "sheetName": "RZR K.B HYPERRSPEED Z03-03891400-R3M",
+  "sheetPrice": 230000.0,
+  "priceIqd": 230000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 172,
+  "sheetName": "RZR PBT KEYCAP RC21-01490100-R3M1",
+  "sheetPrice": 55000.0,
+  "priceIqd": 55000,
+  "priceBasis": "IQD",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 173,
+  "sheetName": "SANDISK EXTREME 256GB",
+  "sheetPrice": null,
+  "priceIqd": null,
+  "priceBasis": "missing",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 174,
+  "sheetName": "SPEAKER REDRAGON GS500",
+  "sheetPrice": 21.0,
+  "priceIqd": 36750,
+  "priceBasis": "USD 21 x 1750",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 175,
+  "sheetName": "SPEAKER REDRAGON GS511",
+  "sheetPrice": 24.0,
+  "priceIqd": 42000,
+  "priceBasis": "USD 24 x 1750",
+  "group": "pc-peripherals"
+ },
+ {
+  "row": 176,
+  "sheetName": "STEAM DECK CASE DOBE",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 177,
+  "sheetName": "STEAM DECK CASE TRANSPARENT DOBE",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 178,
+  "sheetName": "STEAM DECK SILICON CASE DOBE",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 179,
+  "sheetName": "STEAM GLASS 3802",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 180,
+  "sheetName": "SW 2 BAG 1898B STORAGE",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 181,
+  "sheetName": "SW 2 BAG 1898Y STORAGE",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 182,
+  "sheetName": "SW 2 BAG 3131",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 183,
+  "sheetName": "SW 2 BAG DOBE 2136",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 184,
+  "sheetName": "SW 2 BAG NS2",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 185,
+  "sheetName": "SW 2 CASE",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 186,
+  "sheetName": "SW 2 CHARGING BASE HBS-2804",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 187,
+  "sheetName": "SW 2 CHARGING RACK HBS-2806",
+  "sheetPrice": 30000.0,
+  "priceIqd": 30000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 188,
+  "sheetName": "SW 2 GLASS CH",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 189,
+  "sheetName": "SW 2 GLASS PRO IPEGA",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 190,
+  "sheetName": "SW 2 NEW ZELDA NORMAL",
+  "sheetPrice": 102000.0,
+  "priceIqd": 102000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 191,
+  "sheetName": "SW 6 SPORT",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 192,
+  "sheetName": "SW CASE JYS 2273",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 193,
+  "sheetName": "SW CHARGING 2 8IN1",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 194,
+  "sheetName": "SW CHARGING 2 MULT IPEGE",
+  "sheetPrice": 25000.0,
+  "priceIqd": 25000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 195,
+  "sheetName": "SW CHARGING OLED",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 196,
+  "sheetName": "SW GLASS LITE CH",
+  "sheetPrice": 10000.0,
+  "priceIqd": 10000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 197,
+  "sheetName": "SW GRIPJYS -NS2290",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 198,
+  "sheetName": "SW KIT 24 IN 1",
+  "sheetPrice": 50000.0,
+  "priceIqd": 50000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 199,
+  "sheetName": "SW OLED GLASS CH",
+  "sheetPrice": 10000.0,
+  "priceIqd": 10000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 200,
+  "sheetName": "SW POKEMON DIAMANTE",
+  "sheetPrice": 100000.0,
+  "priceIqd": 100000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 201,
+  "sheetName": "SW POKEMON PERLA",
+  "sheetPrice": 45.45,
+  "priceIqd": 79500,
+  "priceBasis": "USD 45.45 x 1750",
+  "group": "nintendo"
+ },
+ {
+  "row": 202,
+  "sheetName": "SW POKEMON SNAP",
+  "sheetPrice": 40.0,
+  "priceIqd": 70000,
+  "priceBasis": "USD 40 x 1750",
+  "group": "nintendo"
+ },
+ {
+  "row": 203,
+  "sheetName": "SW TENNIS ACES",
+  "sheetPrice": 48.95,
+  "priceIqd": 85750,
+  "priceBasis": "USD 48.95 x 1750",
+  "group": "nintendo"
+ },
+ {
+  "row": 204,
+  "sheetName": "SW TENNIS KIT",
+  "sheetPrice": 15000.0,
+  "priceIqd": 15000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 205,
+  "sheetName": "SW USB CAR",
+  "sheetPrice": 10000.0,
+  "priceIqd": 10000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 206,
+  "sheetName": "SWITCH 2 WITH ZELDA GAMES",
+  "sheetPrice": 990000.0,
+  "priceIqd": 990000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 207,
+  "sheetName": "SWITCH PAPER MARIO OR KING",
+  "sheetPrice": 40.0,
+  "priceIqd": 70000,
+  "priceBasis": "USD 40 x 1750",
+  "group": "nintendo"
+ },
+ {
+  "row": 208,
+  "sheetName": "TMR ELEC TRMAGNE NS51",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 209,
+  "sheetName": "TMR ELEC TRMAGNE TIC 720",
+  "sheetPrice": 20000.0,
+  "priceIqd": 20000,
+  "priceBasis": "IQD",
+  "group": "nintendo"
+ },
+ {
+  "row": 210,
+  "sheetName": "TURTLE BEAGH P 600",
+  "sheetPrice": 90.0,
+  "priceIqd": 157500,
+  "priceBasis": "USD 90 x 1750",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 211,
+  "sheetName": "TV CONVERTER SD007",
+  "sheetPrice": 60000.0,
+  "priceIqd": 60000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 212,
+  "sheetName": "TWISTED HEADSET RGB MD07",
+  "sheetPrice": 35.0,
+  "priceIqd": 61250,
+  "priceBasis": "USD 35 x 1750",
+  "group": "controllers-audio"
+ },
+ {
+  "row": 213,
+  "sheetName": "TWISTED RGB LED STRIP TM-FW-LED",
+  "sheetPrice": 40000.0,
+  "priceIqd": 40000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 214,
+  "sheetName": "TWISTED TV LED 5M GRB WIFI TM-RGB-5M",
+  "sheetPrice": 20.41,
+  "priceIqd": 35750,
+  "priceBasis": "USD 20.41 x 1750",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 215,
+  "sheetName": "UGREEN HDMI 8K 2M",
+  "sheetPrice": 10.0,
+  "priceIqd": 17500,
+  "priceBasis": "USD 10 x 1750",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 216,
+  "sheetName": "UITRA MICRO 1T SANDISK",
+  "sheetPrice": 100.0,
+  "priceIqd": 175000,
+  "priceBasis": "USD 100 x 1750",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 217,
+  "sheetName": "UPS 1K ONLINE FALCON",
+  "sheetPrice": 260000.0,
+  "priceIqd": 260000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 218,
+  "sheetName": "UPS 1K ONLINE FALCON QQ",
+  "sheetPrice": 116000.0,
+  "priceIqd": 116000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 219,
+  "sheetName": "UPS FALCON 1200VA QQ",
+  "sheetPrice": 43000.0,
+  "priceIqd": 43000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 220,
+  "sheetName": "UPS FALCON 1500VA QQ",
+  "sheetPrice": 46000.0,
+  "priceIqd": 46000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 221,
+  "sheetName": "UPS FALCON 2000VA QQ",
+  "sheetPrice": 86000.0,
+  "priceIqd": 86000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 222,
+  "sheetName": "UPS FALCON 850 QQ",
+  "sheetPrice": 30000.0,
+  "priceIqd": 30000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 223,
+  "sheetName": "UPS STAR POWER 2000VA QQ",
+  "sheetPrice": 76000.0,
+  "priceIqd": 76000,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ },
+ {
+  "row": 224,
+  "sheetName": "XBOX BATTLEFIELD 2042",
+  "sheetPrice": 60.0,
+  "priceIqd": 105000,
+  "priceBasis": "USD 60 x 1750",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 225,
+  "sheetName": "XBOX CONTROLLER ELITE USA 2",
+  "sheetPrice": 64.19,
+  "priceIqd": 112250,
+  "priceBasis": "USD 64.19 x 1750",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 226,
+  "sheetName": "XBOX GTA VI",
+  "sheetPrice": 139000.0,
+  "priceIqd": 139000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 227,
+  "sheetName": "XBOX SERIES S SKIN",
+  "sheetPrice": 6.6,
+  "priceIqd": 11500,
+  "priceBasis": "USD 6.6 x 1750",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 228,
+  "sheetName": "XBOX SERIES S STAND DOBE",
+  "sheetPrice": 35000.0,
+  "priceIqd": 35000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 229,
+  "sheetName": "XBOX SERIES SILICON CONTROL",
+  "sheetPrice": 10000.0,
+  "priceIqd": 10000,
+  "priceBasis": "IQD",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 230,
+  "sheetName": "XBOX SERIES X SKIN",
+  "sheetPrice": 6.6,
+  "priceIqd": 11500,
+  "priceBasis": "USD 6.6 x 1750",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 231,
+  "sheetName": "XBOX SERIES X STAND FORX",
+  "sheetPrice": 19.0,
+  "priceIqd": 33250,
+  "priceBasis": "USD 19 x 1750",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 232,
+  "sheetName": "XBOX SERIES X STAND IPEGA",
+  "sheetPrice": 30.0,
+  "priceIqd": 52500,
+  "priceBasis": "USD 30 x 1750",
+  "group": "xbox-vr"
+ },
+ {
+  "row": 233,
+  "sheetName": "كارت جهاز",
+  "sheetPrice": 1500.0,
+  "priceIqd": 1500,
+  "priceBasis": "IQD",
+  "group": "power-cables-handheld-misc"
+ }
+]

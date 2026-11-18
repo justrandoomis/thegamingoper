@@ -75,6 +75,7 @@
   "variants": [
     {
       "sku": "NS2G-ZELDA-OOT",
+      "sheetRow": 190,
       "title": {
         "ar": "نسخة فيزيائية لـ Nintendo Switch 2",
         "en": "Nintendo Switch 2 physical edition",

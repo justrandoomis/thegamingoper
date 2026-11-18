@@ -1,0 +1,56 @@
+{
+  "key": "paper-mario-the-origami-king--4",
+  "view": "hero",
+  "width": 1280,
+  "height": 720,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/paper-mario-the-origami-king/4-240.64e3ccc6.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/paper-mario-the-origami-king/4-480.648f7d17.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/paper-mario-the-origami-king/4-720.5e80cdff.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/paper-mario-the-origami-king/4-960.35548287.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/paper-mario-the-origami-king/4-240.03aa1724.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/paper-mario-the-origami-king/4-480.12d66f43.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/paper-mario-the-origami-king/4-720.3a3cfef4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/paper-mario-the-origami-king/4-960.3ddfc752.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAQBACdASoUAAsAPxFysFAsJqSisAgBgCIJbACdMoGvqgL9C5K2D/tlsAD+dYEAHFgDw9NdYcgnqKQ7f5sVq0teqRaxc6vQg587SijJUcKAsQgsM/wLCyN0KJOngWkOTqst/9LLOSPTpcz96X4kAcFpEEz3+qHVVXr6xg1d+JZYAA==",
+  "dominant": "#fddc66",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/en_US/games/switch/p/paper-mario-the-origami-king-switch/screenshot-gallery/screenshot03",
+    "page": "https://www.nintendo.com/us/store/products/paper-mario-the-origami-king-us-110720/"
+  },
+  "input": "3a0181879662d8b2"
+}

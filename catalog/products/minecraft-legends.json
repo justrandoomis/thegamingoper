@@ -1,0 +1,378 @@
+{
+  "slug": "minecraft-legends",
+  "group": "games-ps5-xbox",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "Mojang Studios",
+  "status": "available",
+  "releaseDate": "2023-04-18",
+  "name": {
+    "ar": "Minecraft Legends",
+    "en": "Minecraft Legends",
+    "ckb": "Minecraft Legends"
+  },
+  "short": {
+    "ar": "PS5 · قرص · استراتيجية وأكشن في عالم Minecraft",
+    "en": "PS5 · disc · action strategy in the Minecraft world",
+    "ckb": "PS5 · دیسک · ستراتیژی و ئاکشن لە جیهانی Minecraft"
+  },
+  "description": {
+    "ar": "لعبة استراتيجية وأكشن من عالم Minecraft: تقود جيشاً من المخلوقات لتدافع عن عالمك ضد غزو Piglins. فيها قصة يمكن لعبها وحدك أو مع الأصدقاء أونلاين، وطور مواجهة بين فريقين.",
+    "en": "An action-strategy game in the Minecraft world: you lead an army of mobs to defend the Overworld from the Piglin invasion. It has a campaign you can play alone or with friends online, plus a team-versus-team mode.",
+    "ckb": "یارییەکی ستراتیژی و ئاکشن لە جیهانی Minecraft: سوپایەک لە بوونەوەران سەرکردایەتی دەکەیت بۆ بەرگریکردن لە جیهانەکەت دژی هێرشی Piglin ەکان. چیرۆکێکی هەیە کە بە تەنها یان لەگەڵ هاوڕێکانت ئۆنلاین یاری دەکرێت، و شێوازێکی تیم بەرامبەر تیم."
+  },
+  "highlights": [
+    {
+      "ar": "قصة فردية أو تعاونية، وطور مواجهة 4 ضد 4 أونلاين.",
+      "en": "Solo or co-op campaign, plus 4v4 online versus mode.",
+      "ckb": "چیرۆکی تاکەکەسی یان هاوکاری، لەگەڵ شێوازی 4 بەرامبەر 4 ی ئۆنلاین."
+    },
+    {
+      "ar": "توقف تطوير محتوى جديد للعبة في كانون الثاني 2024.",
+      "en": "New content development ended in January 2024.",
+      "ckb": "پەرەپێدانی ناوەڕۆکی نوێ لە کانوونی دووەمی 2024 کۆتایی هات."
+    },
+    {
+      "ar": "لا تدعم العربية: اللغة العربية غير موجودة في قائمة لغات اللعبة على PlayStation Store.",
+      "en": "No Arabic: it is not in the game's PlayStation Store language list.",
+      "ckb": "عەرەبی تێدا نییە: لە لیستی زمانەکانی یارییەکە لە PlayStation Store دا نییە."
+    },
+    {
+      "ar": "التصنيف PEGI 7.",
+      "en": "Rated PEGI 7.",
+      "ckb": "پۆلێنی PEGI 7."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": {
+        "ar": "تاريخ الإصدار",
+        "en": "Release date",
+        "ckb": "بەرواری دەرچوون"
+      },
+      "value": {
+        "ar": "18 نيسان 2023",
+        "en": "18 April 2023",
+        "ckb": "18ی نیسانی 2023"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": {
+        "ar": "الأجهزة",
+        "en": "Platforms",
+        "ckb": "ئامێرەکان"
+      },
+      "value": {
+        "ar": "PS5 (اللعبة متوفرة أيضاً على PS4)",
+        "en": "PS5 (the game is also on PS4)",
+        "ckb": "PS5 (یارییەکە لەسەر PS4 یش هەیە)"
+      }
+    },
+    {
+      "key": "format",
+      "label": {
+        "ar": "نوع النسخة الفيزيائية",
+        "en": "Physical format",
+        "ckb": "جۆری وەشانی فیزیکی"
+      },
+      "value": {
+        "ar": "قرص PS5",
+        "en": "PS5 disc",
+        "ckb": "دیسکی PS5"
+      }
+    },
+    {
+      "key": "players",
+      "label": {
+        "ar": "عدد اللاعبين",
+        "en": "Players",
+        "ckb": "ژمارەی یاریزان"
+      },
+      "value": {
+        "ar": "1 محلياً، حتى 4 تعاونياً أونلاين، و4 ضد 4",
+        "en": "1 offline, up to 4 online co-op, 4v4 versus",
+        "ckb": "1 بێ ئینتەرنێت، تا 4 هاوکاری ئۆنلاین، و 4 بەرامبەر 4"
+      }
+    },
+    {
+      "key": "online",
+      "label": {
+        "ar": "الإنترنت والاشتراكات",
+        "en": "Internet and subscriptions",
+        "ckb": "ئینتەرنێت و بەشداریکردن"
+      },
+      "value": {
+        "ar": "القصة الفردية بدون إنترنت؛ اللعب الأونلاين يحتاج PlayStation Plus.",
+        "en": "Solo campaign offline; online play needs PlayStation Plus.",
+        "ckb": "چیرۆکی تاکەکەسی بێ ئینتەرنێت؛ یاریکردنی ئۆنلاین PlayStation Plus ی پێویستە."
+      }
+    },
+    {
+      "key": "arabic",
+      "label": {
+        "ar": "اللغة العربية",
+        "en": "Arabic",
+        "ckb": "زمانی عەرەبی"
+      },
+      "value": {
+        "ar": "لا توجد العربية في قائمة لغات PlayStation Store",
+        "en": "No Arabic in the PlayStation Store language list",
+        "ckb": "عەرەبی لە لیستی زمانەکانی PlayStation Store دا نییە"
+      }
+    },
+    {
+      "key": "age",
+      "label": {
+        "ar": "التصنيف العمري",
+        "en": "Age rating",
+        "ckb": "پۆلێنی تەمەن"
+      },
+      "value": {
+        "ar": "PEGI 7",
+        "en": "PEGI 7",
+        "ckb": "PEGI 7"
+      }
+    },
+    {
+      "key": "developer",
+      "label": {
+        "ar": "المطوّر والناشر",
+        "en": "Developer and publisher",
+        "ckb": "گەشەپێدەر و بڵاوکەرەوە"
+      },
+      "value": {
+        "ar": "Mojang Studios, Blackbird Interactive / Xbox Game Studios",
+        "en": "Mojang Studios, Blackbird Interactive / Xbox Game Studios",
+        "ckb": "Mojang Studios, Blackbird Interactive / Xbox Game Studios"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة لجهاز PS5",
+      "en": "PS5 game disc",
+      "ckb": "دیسکی یارییەکە بۆ PS5"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "MCLEGENDS-PS5-DLX",
+      "title": {
+        "ar": "لجهاز PS5 · Deluxe Edition",
+        "en": "PS5 · Deluxe Edition",
+        "ckb": "بۆ PS5 · Deluxe Edition"
+      },
+      "options": {
+        "platform": "PS5",
+        "edition": "Deluxe",
+        "format": "Disc"
+      },
+      "isDefault": true,
+      "sheetRow": 134,
+      "images": [
+        "minecraft-legends--1",
+        "minecraft-legends--2",
+        "minecraft-legends--3"
+      ],
+      "notes": {
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": [
+      "ps5",
+      "ps5-slim",
+      "ps5-pro",
+      "ps5-slim-digital"
+    ],
+    "genres": [
+      {
+        "ar": "استراتيجية",
+        "en": "Strategy",
+        "ckb": "ستراتیژی"
+      },
+      {
+        "ar": "أكشن ومغامرة",
+        "en": "Action-adventure",
+        "ckb": "ئاکشن و سەرکێشی"
+      }
+    ],
+    "players": "1-4 co-op online, 4v4 online",
+    "online": {
+      "ar": "القصة الفردية بدون إنترنت؛ اللعب الأونلاين يحتاج PlayStation Plus.",
+      "en": "Solo campaign offline; online play needs PlayStation Plus.",
+      "ckb": "چیرۆکی تاکەکەسی بێ ئینتەرنێت؛ یاریکردنی ئۆنلاین PlayStation Plus ی پێویستە."
+    },
+    "ageRating": {
+      "pegi": 7
+    },
+    "arabic": "none",
+    "physicalFormat": "disc",
+    "developer": "Mojang Studios / Blackbird Interactive",
+    "publisher": "Xbox Game Studios"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "قرص PS5.",
+        "en": "PS5 disc.",
+        "ckb": "دیسکی PS5."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP4433-PPSA05510_00-1296939562310362"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "يعمل على الموديل الذي فيه قارئ أقراص.",
+        "en": "Works on the model with a disc drive.",
+        "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP4433-PPSA05510_00-1296939562310362"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": {
+        "ar": "القرص يحتاج قارئ الأقراص الإضافي.",
+        "en": "The disc needs the add-on Disc Drive.",
+        "ckb": "دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": {
+        "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.",
+        "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "minecraft",
+      "kind": "alternative"
+    },
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense",
+      "kind": "accessory"
+    },
+    {
+      "slug": "ps5-disc-drive",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "minecraft-legends--1",
+      "file": ".cache/product-images/minecraft-legends/1.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202207/1516/vKJUC8jvShq5YUHt83QDSwis.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP4433-PPSA05510_00-1296939562310362",
+      "kind": "box-art",
+      "alt": {
+        "ar": "غلاف Minecraft Legends",
+        "en": "Minecraft Legends cover art",
+        "ckb": "وێنەی بەرگی Minecraft Legends"
+      },
+      "credit": "Mojang Studios / Microsoft",
+      "width": 1440,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "minecraft-legends--2",
+      "file": ".cache/product-images/minecraft-legends/2.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202207/1516/fW92t1AmqKdUiX5AUnEQchD1.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP4433-PPSA05510_00-1296939562310362",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Minecraft Legends",
+        "en": "Minecraft Legends screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Minecraft Legends"
+      },
+      "credit": "Mojang Studios / Microsoft",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "minecraft-legends--3",
+      "file": ".cache/product-images/minecraft-legends/3.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202207/1516/rCwcQu0dh8YUxh6iL72vvDPG.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP4433-PPSA05510_00-1296939562310362",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Minecraft Legends",
+        "en": "Minecraft Legends screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Minecraft Legends"
+      },
+      "credit": "Mojang Studios / Microsoft",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://store.playstation.com/en-gb/product/EP4433-PPSA05510_00-1296939562310362",
+      "title": "Minecraft Legends — PlayStation Store (UK)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "PS4/PS5, Mojang AB, release 18 Apr 2023, PEGI 7, languages without Arabic, cover art and screenshots",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/games/minecraft-legends/",
+      "title": "Minecraft Legends — PlayStation (UAE)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "game overview: action strategy, Piglins, co-op and versus",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Minecraft_Legends",
+      "title": "Minecraft Legends",
+      "publisher": "Wikipedia",
+      "supports": "fact-check: developers, release 18 Apr 2023, development ceased 10 Jan 2024",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/",
+      "title": "Disc Drive for PS5 Digital Edition consoles",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "the add-on drive works only with PS5 Pro and the slim PS5 Digital Edition, so the original 2020 Digital Edition cannot play discs"
+    }
+  ],
+  "verification": {
+    "checkedBy": "games-ps5-xbox research 2026-11-18",
+    "secondSource": true,
+    "unverified": [
+      "Arabic support is taken from the PlayStation Store language list; the languages on a given disc depend on its region.",
+      "No EAN/UPC barcode recorded.",
+      "The sheet says only 'MINECRAFT LEGENDS'; we listed the physical PS5 release as the Deluxe Edition (the boxed version sold at retail) — confirm on the box."
+    ]
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "slug": "iine-quest-2-silicone-cover",
+  "group": "xbox-vr",
+  "kind": "vr",
+  "platform": "multi",
+  "brand": "IINE",
+  "status": "available",
+  "name": {
+    "ar": "غطاء سيليكون IINE لنظارة Meta Quest 2",
+    "en": "IINE Silicone Cover for Meta Quest 2",
+    "ckb": "بەرگی سیلیکۆنی IINE بۆ Meta Quest 2"
+  },
+  "short": {
+    "ar": "سيليكون ناعم يحمي النظارة من الخدوش والعرق · لـ Quest 2",
+    "en": "Soft silicone that guards the headset against scratches and sweat · for Quest 2",
+    "ckb": "سیلیکۆنی نەرم کە چاویلکە لە خەت و ئارەقە دەپارێزێت · بۆ Quest 2"
+  },
+  "description": {
+    "ar": "غطاء من السيليكون الناعم من IINE لنظارة Meta Quest 2، يحميها من الخدوش والصدمات الخفيفة والعرق، ويسهل مسحه وتنظيفه. يُركّب ويُنزع باليد دون أدوات.",
+    "en": "A soft silicone cover from IINE for the Meta Quest 2 that protects it from scratches, light knocks and sweat, and is easy to wipe clean. It goes on and comes off by hand, with no tools.",
+    "ckb": "بەرگێکی سیلیکۆنی نەرم لە IINE بۆ Meta Quest 2 کە لە خەت، لێدانی سووک و ئارەقە دەیپارێزێت، و بە ئاسانی پاک دەکرێتەوە. بە دەست دادەنرێت و لادەبرێت، بێ ئامراز."
+  },
+  "highlights": [
+    { "ar": "لـ Meta Quest 2", "en": "For Meta Quest 2", "ckb": "بۆ Meta Quest 2" },
+    { "ar": "يحمي من الخدوش والعرق", "en": "Guards against scratches and sweat", "ckb": "لە خەت و ئارەقە دەپارێزێت" },
+    { "ar": "سهل التنظيف", "en": "Easy to clean", "ckb": "ئاسان پاک دەکرێتەوە" }
+  ],
+  "specs": [
+    { "key": "material", "label": { "ar": "المادة", "en": "Material", "ckb": "ماددە" }, "value": { "ar": "سيليكون", "en": "Silicone", "ckb": "سیلیکۆن" } },
+    { "key": "fits", "label": { "ar": "يناسب", "en": "Fits", "ckb": "گونجاوە بۆ" }, "value": { "ar": "Meta Quest 2", "en": "Meta Quest 2", "ckb": "Meta Quest 2" } }
+  ],
+  "variants": [
+    {
+      "sku": "IINE-Q2-SIL-BOX",
+      "sheetRow": 66,
+      "title": { "ar": "بالعلبة", "en": "Boxed", "ckb": "لەگەڵ قوتوو" },
+      "options": { "packaging": "Retail box" },
+      "isDefault": true
+    },
+    {
+      "sku": "IINE-Q2-SIL-NB",
+      "sheetRow": 65,
+      "title": { "ar": "بدون علبة", "en": "Without box", "ckb": "بێ قوتوو" },
+      "options": { "packaging": "No box" },
+      "isDefault": false,
+      "notes": {
+        "ar": "القطعة نفسها لكن بدون علبة البيع.",
+        "en": "The same item without its retail box.",
+        "ckb": "هەمان پارچەیە بەڵام بێ قوتووی فرۆشتن."
+      }
+    }
+  ],
+  "related": [
+    { "slug": "dobe-quest-silicone-cover", "kind": "alternative" },
+    { "slug": "meta-quest-gun-stock", "kind": "accessory" }
+  ],
+  "sources": [
+    {
+      "url": "https://us.vrcover.com/products/silicone-cover-grey-for-oculus™-quest-2",
+      "title": "Silicone Cover for Oculus Quest 2",
+      "publisher": "VR Cover",
+      "retrieved": "2026-11-18",
+      "supports": "what a Quest 2 silicone cover does (sweat and wear protection, wipe clean) and that Quest 2 covers do not fit Quest 3"
+    },
+    {
+      "url": "https://skarredghost.com/2021/09/08/oculus-quest-2-silicone-cover-review/",
+      "title": "Oculus Quest 2 silicone cover review",
+      "publisher": "The Ghost Howls",
+      "retrieved": "2026-11-18",
+      "supports": "second source: silicone covers for Quest 2 are fitted by hand and easy to clean"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع IINE وليس من Meta. لا يناسب Quest 3 أو Quest 3S.",
+    "en": "Made by IINE, not by Meta. It does not fit the Quest 3 or Quest 3S.",
+    "ckb": "دروستکراوی IINE ـیە، نەک Meta. بۆ Quest 3 یان Quest 3S ناگونجێت."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "No IINE page for this cover was found: what the set includes (shell only, or face cover and controller grips too) and its colour",
+      "That the two sheet rows differ only in packaging ('NO PACKING' vs the other row) is an assumption",
+      "No product image of the exact item"
+    ]
+  }
+}

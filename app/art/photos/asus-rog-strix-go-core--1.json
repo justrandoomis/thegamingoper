@@ -1,0 +1,70 @@
+{
+  "key": "asus-rog-strix-go-core--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 787,
+  "aspect": 2.033,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/asus-rog-strix-go-core/1-240.d883a263.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/asus-rog-strix-go-core/1-480.e6b27a57.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/asus-rog-strix-go-core/1-720.c6a17061.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/asus-rog-strix-go-core/1-960.ce5ae20d.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/asus-rog-strix-go-core/1-1440.d0652f13.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/asus-rog-strix-go-core/1-240.390b42be.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/asus-rog-strix-go-core/1-480.a6873bca.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/asus-rog-strix-go-core/1-720.adf1a4a2.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/asus-rog-strix-go-core/1-960.1980e782.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/asus-rog-strix-go-core/1-1440.8c279936.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/asus-rog-strix-go-core/1-1200.16ebf4ea.png",
+    "width": 1200,
+    "height": 590,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRs4AAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSGAAAAART6CobSM2Vg799faIiEBoOPsinNba9jQvVXew/2EFFK6l2m4TGRfHyQJtAv5n3rQVIvo/AfrzPPqfIsttdCWzuwOUai2vt7WuLKsJuDgnnk8LNDIT8IJQMsOsTjZH/QxWUDggSAAAAFADAJ0BKhQACgA/EXKwUKwmpKKwCAGAIglpAABa82OpvPwAAP7o5A+g+FjY6oYnl5cwqsQhLeSaOz29SMwQ8GBkjCK9wAAAAA==",
+  "dominant": "#181717",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "ASUSTeK Computer Inc.",
+  "source": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/FFCD4964-8379-4484-9077-4C592D999386",
+    "page": "https://rog.asus.com/headsets-audio/headsets/3-5mm-headsets/rog-strix-go-core-model/gallery/"
+  },
+  "input": "d53038bd9b286378"
+}

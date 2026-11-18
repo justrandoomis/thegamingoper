@@ -1,0 +1,107 @@
+{
+  "slug": "star-power-ups-2000va",
+  "group": "power-cables-storage-misc",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "ups-power",
+  "brand": "Star Power",
+  "status": "available",
+  "name": {
+    "ar": "جهاز UPS من Star Power",
+    "en": "Star Power UPS 2000VA",
+    "ckb": "ئامێری UPSی Star Power"
+  },
+  "short": {
+    "ar": "قدرة 2000VA · بطارية احتياطية عند انقطاع الكهرباء",
+    "en": "2000VA · battery backup for power cuts",
+    "ckb": "2000VA · پاتریی یەدەگ بۆ بڕانی کارەبا"
+  },
+  "description": {
+    "ar": "جهاز UPS بقدرة 2000VA من Star Power، يمد جهاز الألعاب أو الحاسوب بالكهرباء من البطارية عند الانقطاع المفاجئ، فيتسع الوقت لحفظ اللعبة وإطفاء الجهاز بأمان.",
+    "en": "A 2000VA UPS from Star Power that keeps a console or PC running on battery through a sudden power cut, leaving time to save and shut down safely.",
+    "ckb": "ئامێرێکی UPSی 2000VAی Star Power کە لە کاتی بڕانی لەناکاوی کارەبادا کۆنسۆڵ یان کۆمپیوتەر لەسەر پاتری بە کار دەهێڵێتەوە، بۆ ئەوەی کاتت هەبێت یارییەکە پاشەکەوت بکەیت و بە سەلامەتی بیکوژێنیتەوە."
+  },
+  "highlights": [
+    {
+      "ar": "قدرة 2000VA",
+      "en": "2000VA capacity",
+      "ckb": "توانای 2000VA"
+    },
+    {
+      "ar": "للحفظ والإطفاء الآمن عند انقطاع الكهرباء",
+      "en": "For saving and shutting down safely in a power cut",
+      "ckb": "بۆ پاشەکەوتکردن و کوژاندنەوەی سەلامەت لە کاتی بڕانی کارەبا"
+    }
+  ],
+  "specs": [
+    {
+      "key": "capacity",
+      "label": {
+        "ar": "القدرة",
+        "en": "Capacity",
+        "ckb": "توانا"
+      },
+      "value": {
+        "ar": "2000VA",
+        "en": "2000VA",
+        "ckb": "2000VA"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "STAR-POWER-UPS-2000VA",
+      "sheetRow": 223,
+      "title": {
+        "ar": "2000VA",
+        "en": "2000VA",
+        "ckb": "2000VA"
+      },
+      "options": {
+        "capacity": "2000VA"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    {
+      "slug": "power-falcon-ups",
+      "kind": "alternative"
+    },
+    {
+      "slug": "power-falcon-online-ups-1kva",
+      "kind": "upsell"
+    }
+  ],
+  "images": [],
+  "sources": [
+    {
+      "url": "https://www.se.com/sk/sk/faqs/FA157485/",
+      "title": "Watt Ratings Differs From Volt Amp Ratings",
+      "publisher": "Schneider Electric (APC)",
+      "retrieved": "2026-11-18",
+      "supports": "a UPS VA rating is larger than its watt rating; size the UPS by the watts and VA the connected equipment draws"
+    },
+    {
+      "url": "https://blog.se.com/infrastructure-and-grid/power-management-metering-monitoring-power-quality/2015/02/20/watts-vs-va-whats-difference-anyway/",
+      "title": "VA vs watts: What’s the difference anyway?",
+      "publisher": "Schneider Electric",
+      "retrieved": "2026-11-18",
+      "supports": "confirms VA (apparent power) and watts (real power) differ; UPS must be sized for both"
+    }
+  ],
+  "notes": {
+    "ar": "قدرة VA ليست الواط: اختر قدرة أعلى من استهلاك أجهزتك مجتمعة.",
+    "en": "VA is not watts: choose a size above the combined draw of your devices.",
+    "ckb": "VA وات نییە: توانایەک هەڵبژێرە کە لە کۆی بەکارهێنانی ئامێرەکانت زیاتر بێت."
+  },
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": false,
+    "unverified": [
+      "No maker website, retailer page or spec sheet found for a \"Star Power\" 2000VA UPS: type (offline / line-interactive / online), wattage, battery, outlets and runtime are unknown",
+      "No product image found"
+    ]
+  }
+}

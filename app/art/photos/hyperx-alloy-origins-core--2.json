@@ -1,0 +1,56 @@
+{
+  "key": "hyperx-alloy-origins-core--2",
+  "view": "hero",
+  "width": 1158,
+  "height": 895,
+  "aspect": 1.2939,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-alloy-origins-core/2-240.4182fe81.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-alloy-origins-core/2-480.3dae293f.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-alloy-origins-core/2-720.2cc40dbf.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-alloy-origins-core/2-960.14894fcc.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-alloy-origins-core/2-240.64907b3f.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-alloy-origins-core/2-480.b2cd416a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-alloy-origins-core/2-720.549ef8b8.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-alloy-origins-core/2-960.f7e70728.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRvIAAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSFwAAAART6CobSM2VgK99d8XEQFOf2/GglFs201e+paJApqAaiEWcMB8CyzJMhK+3jQkRPR/AlAeUB8FRl/7EoXFYxOIzMyJnlUUcttgGlyDbVC/2NJLQcZE9zULAKNHFVZQOCBwAAAA0AMAnQEqFAAPAD8RcLBQLCYkorAIAYAiCUAToDFoGGZtrV/tnoQAAP7bYko8FyiyDXw4gezeqJG/CD/MZQeD+/TINzi7I7Af1pPHWCSsllEqEW/xVKy55r2L5DMg0EvrCskZCvYWtW9+ai10K6AAAA==",
+  "dominant": "#191919",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "HyperX",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_alloy_origins_core_us_2_angled_left_renamed_1.jpg",
+    "page": "https://hyperx.com/products/hyperx-alloy-origins-core-mechanical-gaming-keyboard"
+  },
+  "input": "76b9af3e3818b3f1"
+}

@@ -1,0 +1,64 @@
+{
+  "key": "crash-bandicoot-n-sane-trilogy--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/crash-bandicoot-n-sane-trilogy/2-240.089d9fa2.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/crash-bandicoot-n-sane-trilogy/2-480.9d4ad27d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/crash-bandicoot-n-sane-trilogy/2-720.686e4c02.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/crash-bandicoot-n-sane-trilogy/2-960.e3b20492.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/crash-bandicoot-n-sane-trilogy/2-1440.15e63991.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/crash-bandicoot-n-sane-trilogy/2-240.60099b50.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/crash-bandicoot-n-sane-trilogy/2-480.db2fe486.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/crash-bandicoot-n-sane-trilogy/2-720.f7076937.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/crash-bandicoot-n-sane-trilogy/2-960.c56906fd.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/crash-bandicoot-n-sane-trilogy/2-1440.20ae4741.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAAAwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZgCdACy1PIkYAP7tIGxByg8dSRd/jLlzubAPpH08buqSIc3T+SvU64ZZ4I4edbCJlzGvFa3FoE3AOY71nP+vgpMWlBS8AAA=",
+  "dominant": "#191407",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Activision",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/crash-bandicoot-n-sane-trilogy-screen-03-ps4-eu-20jun17?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/crash-bandicoot-n-sane-trilogy/"
+  },
+  "input": "3398fa56a344a8a1"
+}

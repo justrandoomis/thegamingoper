@@ -1,0 +1,165 @@
+{
+  "slug": "dxracer-drifting-series",
+  "group": "chairs",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "gaming-chairs",
+  "brand": "DXRacer",
+  "family": "dxracer-chairs",
+  "status": "available",
+  "name": {
+    "ar": "كرسي ألعاب DXRacer Drifting",
+    "en": "DXRacer Drifting Series Gaming Chair",
+    "ckb": "کورسیی یاری DXRacer Drifting"
+  },
+  "short": {
+    "ar": "تصميم مقعد السباق · نسخ خاصة مطرزة · مساند 3D · قاعدة ألمنيوم",
+    "en": "Race-car bucket seat look · Embroidered special editions · 3D armrests · Aluminium base",
+    "ckb": "شێوەی کورسیی ئۆتۆمبێلی ڕەیسینگ · وەشانی تایبەتی چنراو · دەستەی 3D · بنکەی ئەلەمنیۆم"
+  },
+  "description": {
+    "ar": "Drifting سلسلة DXRacer المستوحاة من مقاعد السيارات الرياضية، بظهر أعرض وأجنحة جانبية تسند الجسم. فيها مسند رأس من جل التبريد ووسادة لأسفل الظهر ومساند ذراع 3D، والظهر يميل من 90° إلى 135°. تصدر منها نسخ خاصة مطرزة، منها نسخة Speed ونسخة Final Fantasy VII Rebirth الرسمية.",
+    "en": "Drifting is DXRacer's series styled on sports-car bucket seats, with a wider backrest and side wings that hold you in place. It has a cooling-gel headrest, a lumbar pillow and 3D armrests, and the backrest reclines from 90° to 135°. It comes in embroidered special editions, among them the Speed edition and the official Final Fantasy VII Rebirth edition.",
+    "ckb": "Drifting زنجیرەیەکی DXRacerە کە لە کورسیی ئۆتۆمبێلی وەرزشی وەرگیراوە، بە پشتێکی پانتر و باڵی لاتەنیشت کە جەستە دەگرن. سەرپشتی جێلی سارد، سەرینی پشت و دەستەی 3D ـی هەیە، و پشتەکەی لە 90° تا 135° دەچەمێتەوە. وەشانی تایبەتی چنراوی هەیە، لەوانە وەشانی Speed و وەشانی فەرمیی Final Fantasy VII Rebirth."
+  },
+  "highlights": [
+    { "ar": "تصميم مقعد سيارة سباق بأجنحة جانبية", "en": "Bucket-seat design with side wings", "ckb": "دیزاینی کورسیی ڕەیسینگ بە باڵی لاتەنیشت" },
+    { "ar": "مسند رأس من جل التبريد ووسادة لأسفل الظهر", "en": "Cooling-gel headrest and lumbar pillow", "ckb": "سەرپشتی جێلی سارد و سەرینی پشت" },
+    { "ar": "مساند ذراع 3D (ارتفاع، عمق، دوران)", "en": "3D armrests (height, depth, rotation)", "ckb": "دەستەی 3D (بەرزی، قووڵی، سووڕانەوە)" },
+    { "ar": "ظهر يميل من 90° إلى 135°", "en": "Backrest reclines 90°–135°", "ckb": "پشت لە 90° تا 135° دەچەمێتەوە" },
+    { "ar": "قاعدة ألمنيوم ومكبس غاز Class 4", "en": "Aluminium base, Class 4 gas lift", "ckb": "بنکەی ئەلەمنیۆم، گازی Class 4" }
+  ],
+  "specs": [
+    { "key": "series", "label": { "ar": "السلسلة", "en": "Series", "ckb": "زنجیرە" }, "value": { "ar": "DXRacer Drifting", "en": "DXRacer Drifting", "ckb": "DXRacer Drifting" } },
+    { "key": "cover", "label": { "ar": "الكسوة", "en": "Cover", "ckb": "ڕووپۆش" }, "value": { "ar": "جلد صناعي EPU", "en": "EPU leatherette", "ckb": "چەرمی دەستکردی EPU" } },
+    { "key": "recline", "label": { "ar": "ميلان الظهر", "en": "Recline", "ckb": "چەمانەوەی پشت" }, "value": { "ar": "90° – 135°", "en": "90° – 135°", "ckb": "90° – 135°" } },
+    { "key": "armrests", "label": { "ar": "مساند الذراع", "en": "Armrests", "ckb": "دەستەکان" }, "value": { "ar": "3D", "en": "3D", "ckb": "3D" } },
+    { "key": "base", "label": { "ar": "القاعدة", "en": "Base", "ckb": "بنکە" }, "value": { "ar": "ألمنيوم، مكبس غاز Class 4", "en": "Aluminium, Class 4 gas lift", "ckb": "ئەلەمنیۆم، گازی Class 4" } }
+  ],
+  "inTheBox": [
+    { "ar": "الكرسي (يحتاج تركيباً)", "en": "The chair (needs assembly)", "ckb": "کورسییەکە (پێویستی بە بەستنەوە هەیە)" }
+  ],
+  "variants": [
+    {
+      "sku": "DXR-DRIFTING-SPEED",
+      "sheetRow": 41,
+      "title": { "ar": "نسخة Speed", "en": "Speed edition", "ckb": "وەشانی Speed" },
+      "options": { "edition": "Speed", "color": "Black / White" },
+      "isDefault": true,
+      "images": ["dxracer-drifting-series--1", "dxracer-drifting-series--2"],
+      "notes": { "ar": "أسود وأبيض ورمادي مع رسم سيارة ونقشة «DRIFTING SPEED» على الظهر.", "en": "Black, white and grey, with a drifting car and «DRIFTING SPEED» on the backrest.", "ckb": "ڕەش، سپی و خۆڵەمێشی، لەگەڵ وێنەی ئۆتۆمبێل و «DRIFTING SPEED» لەسەر پشت." }
+    },
+    {
+      "sku": "DXR-DRIFTING-FF7R",
+      "sheetRow": 31,
+      "title": { "ar": "نسخة Final Fantasy VII Rebirth", "en": "Final Fantasy VII Rebirth edition", "ckb": "وەشانی Final Fantasy VII Rebirth" },
+      "options": { "edition": "Final Fantasy VII Rebirth", "color": "Black / White" },
+      "isDefault": false,
+      "images": ["dxracer-drifting-series--3", "dxracer-drifting-series--4", "dxracer-drifting-series--5"],
+      "notes": { "ar": "نسخة رسمية بالتعاون مع Square Enix: شعار اللعبة ورموز الأبطال مطرزة في الأمام وسيف Buster Sword على الظهر. أُعلن عنها في 27 فبراير 2024.", "en": "Official collaboration with Square Enix: the game logo and party icons embroidered on the front and Cloud's Buster Sword on the back. Announced on 27 February 2024.", "ckb": "وەشانی فەرمی لەگەڵ Square Enix: لۆگۆی یارییەکە و هێمای پاڵەوانەکان لە پێشەوە چنراون و شمشێری Buster Sword لە پشتەوە. لە 27ی شوباتی 2024 ڕاگەیەندرا." }
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    { "slug": "dxracer-craft-starswar-edition", "kind": "alternative" },
+    { "slug": "dxracer-master-series", "kind": "upsell" },
+    { "slug": "dxracer-formula-series", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "dxracer-drifting-series--1",
+      "file": ".cache/product-images/dxracer-drifting-series/1.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/f5fe4c5b-63e2-4acd-bcdf-82d6cddc5ce4-1.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/drifting?sku=GC/LDC23LTA/SPEED.NW",
+      "kind": "hero",
+      "alt": { "ar": "كرسي DXRacer Drifting نسخة Speed من الأمام", "en": "DXRacer Drifting Speed edition, front view", "ckb": "کورسیی DXRacer Drifting وەشانی Speed، لە پێشەوە" },
+      "credit": "DXRacer",
+      "width": 800, "height": 960, "transparent": true
+    },
+    {
+      "key": "dxracer-drifting-series--2",
+      "file": ".cache/product-images/dxracer-drifting-series/2.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/8d4ac67d-5d1d-4c6d-adc6-83f0774ff501-2.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/drifting?sku=GC/LDC23LTA/SPEED.NW",
+      "kind": "angle",
+      "alt": { "ar": "نسخة Speed من الجانب", "en": "The Speed edition from an angle", "ckb": "وەشانی Speed لە لاوە" },
+      "credit": "DXRacer",
+      "width": 800, "height": 960, "transparent": true
+    },
+    {
+      "key": "dxracer-drifting-series--3",
+      "file": ".cache/product-images/dxracer-drifting-series/3.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/faa7d195-667f-4f9c-8fb1-8815f8fdfb7f-1.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/drifting?sku=GC/LDC23LTA/FINALFANTASYVIIR",
+      "kind": "angle",
+      "alt": { "ar": "نسخة Final Fantasy VII Rebirth من الأمام", "en": "The Final Fantasy VII Rebirth edition, front view", "ckb": "وەشانی Final Fantasy VII Rebirth لە پێشەوە" },
+      "credit": "DXRacer / Square Enix",
+      "width": 800, "height": 960, "transparent": true
+    },
+    {
+      "key": "dxracer-drifting-series--4",
+      "file": ".cache/product-images/dxracer-drifting-series/4.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/3c5e4b3a-3e85-4c26-9348-9fe754667f83-2.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/drifting?sku=GC/LDC23LTA/FINALFANTASYVIIR",
+      "kind": "angle",
+      "alt": { "ar": "نسخة Final Fantasy VII Rebirth من زاوية", "en": "The Final Fantasy VII Rebirth edition from an angle", "ckb": "وەشانی Final Fantasy VII Rebirth لە گۆشەیەکەوە" },
+      "credit": "DXRacer / Square Enix",
+      "width": 800, "height": 960, "transparent": true
+    },
+    {
+      "key": "dxracer-drifting-series--5",
+      "file": ".cache/product-images/dxracer-drifting-series/5.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/3c5e4b3a-3e85-4c26-9348-9fe754667f83-3.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/drifting?sku=GC/LDC23LTA/FINALFANTASYVIIR",
+      "kind": "angle",
+      "alt": { "ar": "نسخة Final Fantasy VII Rebirth من الجانب", "en": "The Final Fantasy VII Rebirth edition from the side", "ckb": "وەشانی Final Fantasy VII Rebirth لە لاوە" },
+      "credit": "DXRacer / Square Enix",
+      "width": 800, "height": 960, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dxracer.com/products/gaming-chairs/drifting",
+      "title": "Drifting Series Gaming Chair",
+      "publisher": "DXRacer USA",
+      "retrieved": "2026-11-18",
+      "supports": "series features (bucket-seat design with widened backrest and side wings, cooling gel headrest, lumbar support, 3D armrests, 90°–135° recline, EPU leatherette), Speed edition (GC/LDC23LTA/SPEED.NW, GC/XLDC23LTA/SPEED.NW) and Final Fantasy VII Rebirth edition (GC/LDC23LTA/FINALFANTASYVIIR, GC/XLDC23LTA/FINALFANTASYVIIR) in L and XL sizes, images"
+    },
+    {
+      "url": "https://www.dxracer.com/specifications/gaming-chairs/drifting",
+      "title": "DRIFTING Series Specifications",
+      "publisher": "DXRacer USA",
+      "retrieved": "2026-11-18",
+      "supports": "armrest adjustments, swappable seat cushion, Class 4 hydraulics, aluminium base"
+    },
+    {
+      "url": "https://dxracer.com/pages/blog/dxracer-and-final-fantasy-vii-rebirth-partner-up",
+      "title": "DXRacer and Final Fantasy VII Rebirth Partner Up",
+      "publisher": "DXRacer USA",
+      "retrieved": "2026-11-18",
+      "supports": "Final Fantasy VII Rebirth chair announced 27 February 2024, collaboration with Square Enix"
+    },
+    {
+      "url": "https://gamingtrend.com/feature/reviews/dxracer-drifting-series-final-fantasy-gaming-chair-review-overpriced-and-comfortable-for-the-most-part/",
+      "title": "DXRacer Drifting Series Final Fantasy gaming chair review",
+      "publisher": "GamingTrend",
+      "retrieved": "2026-11-18",
+      "supports": "second source: the Final Fantasy chair is a Drifting Series chair with embroidered party icons and the Buster Sword on the back"
+    }
+  ],
+  "notes": {
+    "ar": "الكرسي يصل مفككاً ويحتاج تركيباً. النسختان تأتيان بمقاسين L وXL لدى الصانع.",
+    "en": "The chair arrives flat-packed and needs assembly. The maker sells both editions in L and XL sizes.",
+    "ckb": "کورسییەکە بە جیاکراوەیی دێت و پێویستی بە بەستنەوە هەیە. دروستکەر هەردوو وەشانەکە بە قەبارەی L و XL دەفرۆشێت."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "The owner's sheet calls these chairs \"IGC\"; no gaming-chair brand of that name was found. \"Speed Edition Drifting\" and the Final Fantasy chair are DXRacer Drifting editions, so the rows are treated as DXRacer chairs",
+      "Row 31 \"IGC FINAL FANTASY\" is assumed to be the Final Fantasy VII Rebirth Drifting chair (DXRacer's current Final Fantasy chair); DXRacer also made an earlier Final Fantasy XVI chair",
+      "Size (L or XL) of the units in stock not known, so no model number or barcode is set on the variants",
+      "Maximum load and recommended height not confirmed on a DXRacer page"
+    ]
+  }
+}

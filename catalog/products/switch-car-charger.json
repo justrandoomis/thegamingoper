@@ -1,0 +1,124 @@
+{
+  "slug": "switch-car-charger",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "شاحن سيارة لجهاز Nintendo Switch",
+    "en": "Car Charger for Nintendo Switch",
+    "ckb": "شارژەری ئۆتۆمبێل بۆ Nintendo Switch"
+  },
+  "short": {
+    "ar": "يشحن الجهاز من مقبس السيارة عبر USB",
+    "en": "Charges the console from the car socket over USB",
+    "ckb": "ئامێرەکە لە سۆکێتی ئۆتۆمبێل بە USB بارگاوی دەکات"
+  },
+  "description": {
+    "ar": "شاحن يدخل في مقبس الولاعة في السيارة ويشحن Nintendo Switch عبر USB. مسجل في المخزن باسم «SW USB CAR». سرعة الشحن تعتمد على قدرة الشاحن؛ الجهاز يأخذ 15 فولت عند الشحن السريع.",
+    "en": "A charger that plugs into the car lighter socket and charges a Nintendo Switch over USB. Listed in stock as \"SW USB CAR\". Charging speed depends on the charger output; the console takes 15 V for full-speed charging.",
+    "ckb": "شارژەرێک کە دەچێتە سۆکێتی جگەرەی ئۆتۆمبێل و Nintendo Switch بە USB بارگاوی دەکات. لە کۆگادا بە «SW USB CAR» تۆمارکراوە. خێرایی بارگاویکردن بەندە بە توانای شارژەرەکە؛ ئامێرەکە بۆ بارگاویکردنی خێرا 15 ڤۆڵت وەردەگرێت."
+  },
+  "highlights": [
+    {
+      "ar": "للشحن في السيارة أثناء السفر",
+      "en": "For charging in the car on trips",
+      "ckb": "بۆ بارگاویکردن لە ئۆتۆمبێلدا لە گەشتدا"
+    },
+    {
+      "ar": "ليس منتجًا رسميًا من Nintendo",
+      "en": "Not an official Nintendo product",
+      "ckb": "بەرهەمی فەرمیی Nintendo نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "power",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "وزە"
+      },
+      "value": {
+        "ar": "مقبس سيارة 12V",
+        "en": "12 V car socket",
+        "ckb": "سۆکێتی ئۆتۆمبێلی 12V"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "SW-CAR-CHARGER",
+      "sheetRow": 205,
+      "title": {
+        "ar": "شاحن سيارة لجهاز Nintendo Switch",
+        "en": "Car Charger for Nintendo Switch",
+        "ckb": "شارژەری ئۆتۆمبێل بۆ Nintendo Switch"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch",
+      "status": "unverified",
+      "note": {
+        "ar": "شحن عبر USB‑C",
+        "en": "USB-C charging",
+        "ckb": "بارگاویکردن بە USB-C"
+      }
+    },
+    {
+      "deviceModel": "switch-oled",
+      "status": "unverified",
+      "note": {
+        "ar": "شحن عبر USB‑C",
+        "en": "USB-C charging",
+        "ckb": "بارگاویکردن بە USB-C"
+      }
+    },
+    {
+      "deviceModel": "switch-lite",
+      "status": "unverified",
+      "note": {
+        "ar": "شحن عبر USB‑C",
+        "en": "USB-C charging",
+        "ckb": "بارگاویکردن بە USB-C"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch",
+      "kind": "setup"
+    },
+    {
+      "slug": "nintendo-switch-lite",
+      "kind": "setup"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://nyko.com/products/travel-charger-ex-for-nintendo-switch",
+      "title": "Travel Charger EX for Nintendo Switch",
+      "publisher": "Nyko",
+      "retrieved": "2026-11-18",
+      "supports": "car chargers for Switch plug into the 12 V socket; 15 V 2 A output for full-speed charging"
+    },
+    {
+      "url": "https://www.ifixit.com/Answers/View/380310/How+to+charge+a+Nintendo+Switch+in+the+car!",
+      "title": "How to charge a Nintendo Switch in the car",
+      "publisher": "iFixit",
+      "retrieved": "2026-11-18",
+      "supports": "console input is 15 V"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Maker, output voltage and whether the cable is attached or a USB port only"
+    ]
+  }
+}

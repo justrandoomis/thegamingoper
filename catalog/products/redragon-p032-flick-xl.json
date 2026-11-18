@@ -1,0 +1,157 @@
+{
+  "slug": "redragon-p032-flick-xl",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Redragon",
+  "category": "mouse-pads",
+  "status": "available",
+  "name": {
+    "ar": "ماوس باد Redragon P032 Flick XL",
+    "en": "Redragon P032 Flick XL",
+    "ckb": "ماوس پادی Redragon P032 Flick XL"
+  },
+  "short": {
+    "ar": "ماوس باد 90×40 سم · سطح قماش ناعم · قاعدة مانعة للانزلاق",
+    "en": "90×40 cm · smooth cloth · non-slip base",
+    "ckb": "90×40 سم · قوماشی نەرم · بنکەی نەخلیسکاو"
+  },
+  "description": {
+    "ar": "ماوس باد ممتد من Redragon بمقاس 90×40 سم يتسع للكيبورد والماوس، بسطح قماشي ناعم لانزلاق سلس وقاعدة مطاطية لا تتحرك على المكتب. مناسب لمن يلعب بحساسية منخفضة وحركات واسعة.",
+    "en": "An extended 90×40 cm Redragon pad that fits the keyboard and mouse, with a smooth silk-processed cloth surface for easy glide and a rubber base that stays put. Good for low-sensitivity players who make wide movements.",
+    "ckb": "ماوس پادێکی درێژی 90×40 سمی Redragon کە کیبۆرد و ماوس دەگرێتەوە، بە ڕووکاری قوماشی نەرم بۆ خلیسکانی ئاسان و بنکەی لاستیکی کە ناجووڵێت. باشە بۆ یاریزانانی هەستیاری نزم."
+  },
+  "highlights": [
+    {
+      "ar": "مقاس 90×40 سم يغطي الكيبورد والماوس",
+      "en": "90×40 cm, fits keyboard and mouse",
+      "ckb": "90×40 سم، کیبۆرد و ماوس دەگرێتەوە"
+    },
+    {
+      "ar": "سطح قماشي ناعم",
+      "en": "Smooth cloth surface",
+      "ckb": "ڕووکاری قوماشی نەرم"
+    },
+    {
+      "ar": "قاعدة مطاطية مانعة للانزلاق",
+      "en": "Non-slip rubber base",
+      "ckb": "بنکەی لاستیکی نەخلیسکاو"
+    }
+  ],
+  "specs": [
+    {
+      "key": "size",
+      "label": {
+        "ar": "المقاس",
+        "en": "Size",
+        "ckb": "قەبارە"
+      },
+      "value": {
+        "ar": "90 × 40 سم",
+        "en": "90 × 40 cm",
+        "ckb": "90 × 40 سم"
+      }
+    },
+    {
+      "key": "surface",
+      "label": {
+        "ar": "السطح",
+        "en": "Surface",
+        "ckb": "ڕووکار"
+      },
+      "value": {
+        "ar": "قماش معالج بلمسة حريرية",
+        "en": "Silk-processed cloth",
+        "ckb": "قوماشی ئاوریشمی"
+      }
+    },
+    {
+      "key": "base",
+      "label": {
+        "ar": "القاعدة",
+        "en": "Base",
+        "ckb": "بنکە"
+      },
+      "value": {
+        "ar": "مطاط مانع للانزلاق",
+        "en": "Non-slip rubber",
+        "ckb": "لاستیکی نەخلیسکاو"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RD-P032",
+      "title": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      },
+      "options": {
+        "color": "Black",
+        "size": "XL 90x40 cm"
+      },
+      "modelNumber": "P032",
+      "barcodes": [
+        "6950376779908"
+      ],
+      "isDefault": true,
+      "images": [
+        "redragon-p032-flick-xl--1"
+      ],
+      "sheetRow": 164
+    }
+  ],
+  "related": [
+    {
+      "slug": "redragon-p041-xeon-xl",
+      "kind": "alternative"
+    },
+    {
+      "slug": "redragon-storm-pro-m808-ks",
+      "kind": "setup"
+    }
+  ],
+  "images": [
+    {
+      "key": "redragon-p032-flick-xl--1",
+      "file": ".cache/product-images/redragon-p032-flick-xl/1.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0644/1618/6586/files/ERRPA712_001_11.jpg",
+      "sourcePage": "https://dangerfield.com.au/products/p032-flick-xl-400x900-mousepad",
+      "kind": "hero",
+      "alt": {
+        "ar": "ماوس باد Redragon P032 من الأعلى",
+        "en": "Redragon P032 pad from above",
+        "ckb": "ماوس پادی Redragon P032 لە سەرەوە"
+      },
+      "credit": "Redragon",
+      "width": 1060,
+      "height": 1590,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://dangerfield.com.au/products/p032-flick-xl-400x900-mousepad",
+      "title": "Redragon P032 Flick XL 400x900 Mousepad",
+      "publisher": "Dangerfield (Redragon reseller, Australia)",
+      "retrieved": "2026-11-18",
+      "supports": "P032 Flick XL, 900×400 mm, silk-processed cloth surface, non-slip rubber base, barcode 6950376779908, image"
+    },
+    {
+      "url": "https://www.mediamarkt.nl/en/product/_redragon-p032-gaming-mousepad-168420329.html",
+      "title": "Redragon P032 gaming mousepad",
+      "publisher": "MediaMarkt",
+      "retrieved": "2026-11-18",
+      "supports": "confirmation of the P032 XL gaming pad"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Thickness (listings say 3 mm or 4 mm)",
+      "No Redragon page found; facts from resellers"
+    ]
+  }
+}

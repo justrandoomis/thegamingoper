@@ -1,0 +1,56 @@
+{
+  "key": "pokemon-shining-pearl--4",
+  "view": "hero",
+  "width": 1280,
+  "height": 720,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/pokemon-shining-pearl/4-240.5d0662dd.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/pokemon-shining-pearl/4-480.586f3e6b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/pokemon-shining-pearl/4-720.f00f4192.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/pokemon-shining-pearl/4-960.b9233989.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/pokemon-shining-pearl/4-240.505fabf8.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/pokemon-shining-pearl/4-480.7725722c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/pokemon-shining-pearl/4-720.db39f878.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/pokemon-shining-pearl/4-960.d97e7cd4.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAADQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJbACdAB9E01+eaUrwC7AA/vDb3k3h6FUnzVlRPVegnLvJoy5KD2B6i29FIY26z/QCmp1Lex1oKEHTNyxEv5v2R46i/zfRvudWNbC79mgNkFGftITA0Bgt2oME4zq/AEAAAA==",
+  "dominant": "#040201",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/en_US/games/switch/p/pokemon-shining-pearl-switch/screenshot-gallery/screenshot06",
+    "page": "https://www.nintendo.com/us/store/products/pokemon-shining-pearl-us-114377/"
+  },
+  "input": "45a36019fa5343ec"
+}

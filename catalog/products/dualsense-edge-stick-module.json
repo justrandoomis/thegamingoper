@@ -1,0 +1,69 @@
+{
+  "slug": "dualsense-edge-stick-module",
+  "group": "controllers-audio",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Sony",
+  "status": "available",
+  "releaseDate": "2023-01-26",
+  "name": { "ar": "وحدة عصا بديلة لذراع DualSense Edge", "en": "Stick Module for DualSense Edge", "ckb": "مۆدیولی جۆیستیکی جێگرەوە بۆ DualSense Edge" },
+  "short": {
+    "ar": "قطعة Sony الرسمية · تُركّب يميناً أو يساراً دون أدوات",
+    "en": "Official Sony part · Fits left or right, no tools needed",
+    "ckb": "پارچەی فەرمیی Sony · چەپ یان ڕاست دادەنرێت، بێ ئامراز"
+  },
+  "description": {
+    "ar": "وحدة العصا التناظرية البديلة من Sony لذراع DualSense Edge. إذا بدأت العصا تنحرف أو توقفت عن العمل، تفتح الغطاء الأمامي للذراع وتسحب الوحدة القديمة وتركّب الجديدة حتى تسمع صوت الطقة، دون أي أدوات. الوحدة نفسها تناسب الجهة اليسرى أو اليمنى.",
+    "en": "Sony's replacement analogue stick module for the DualSense Edge controller. When a stick starts drifting or stops working, you open the controller's front cover, pull the old module out and slide the new one in until it clicks, with no tools. The same module fits either the left or the right side.",
+    "ckb": "مۆدیولی جۆیستیکی جێگرەوەی Sony بۆ کۆنتڕۆڵەری DualSense Edge. کاتێک جۆیستیکەکە دەست بە لادان دەکات یان کار ناکات، بەرگی پێشەوەی کۆنتڕۆڵەرەکە دەکەیتەوە، مۆدیولە کۆنەکە دەردەهێنیت و نوێیەکە دادەنێیت تا دەنگی کلیک دەبیستیت، بێ هیچ ئامرازێک. هەمان مۆدیول بۆ لای چەپ یان ڕاست دەگونجێت."
+  },
+  "highlights": [
+    { "ar": "قطعة Sony الرسمية لذراع DualSense Edge فقط", "en": "Official Sony part, for the DualSense Edge only", "ckb": "پارچەی فەرمیی Sony، تەنها بۆ DualSense Edge" },
+    { "ar": "تبديل سهل دون أدوات عند انحراف العصا", "en": "Tool-free swap when a stick starts drifting", "ckb": "گۆڕینی ئاسان بێ ئامراز کاتێک جۆیستیک لادەدات" },
+    { "ar": "الوحدة نفسها تُركّب يساراً أو يميناً", "en": "The same module fits left or right", "ckb": "هەمان مۆدیول چەپ یان ڕاست دادەنرێت" },
+    { "ar": "لا تناسب ذراع DualSense العادية", "en": "Does not fit the standard DualSense", "ckb": "بۆ DualSenseی ئاسایی ناگونجێت" }
+  ],
+  "specs": [
+    { "key": "compatible", "label": { "ar": "يناسب", "en": "Fits", "ckb": "دەگونجێت بۆ" }, "value": { "ar": "ذراع DualSense Edge اللاسلكية (CFI-ZCP1)", "en": "DualSense Edge wireless controller (CFI-ZCP1)", "ckb": "کۆنتڕۆڵەری بێتەلی DualSense Edge (CFI-ZCP1)" } },
+    { "key": "install", "label": { "ar": "التركيب", "en": "Installation", "ckb": "دانان" }, "value": { "ar": "دون أدوات: فك الغطاء، رفع الذراع، سحب الوحدة وتركيب الجديدة", "en": "Tool-free: remove the cover, raise the lever, swap the module", "ckb": "بێ ئامراز: بەرگ لابە، دەسکەکە بەرزکەوە، مۆدیول بگۆڕە" } }
+  ],
+  "inTheBox": [
+    { "ar": "وحدة عصا واحدة", "en": "One stick module", "ckb": "یەک مۆدیولی جۆیستیک" }
+  ],
+  "variants": [
+    {
+      "sku": "DSEDGE-STICK-MODULE",
+      "sheetRow": 114,
+      "title": { "ar": "وحدة عصا بديلة لذراع DualSense Edge", "en": "Stick Module for DualSense Edge", "ckb": "مۆدیولی جۆیستیکی جێگرەوە بۆ DualSense Edge" },
+      "options": {},
+      "isDefault": true,
+      "images": ["dualsense-edge-stick-module--1", "dualsense-edge-stick-module--2"]
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5", "status": "verified", "note": { "ar": "لذراع DualSense Edge فقط.", "en": "For the DualSense Edge controller only.", "ckb": "تەنها بۆ کۆنتڕۆڵەری DualSense Edge." }, "source": "https://store.playstation.com/en-us/product/PSD001-PSDU01548_79-STICKMODUL4TDFBU" },
+    { "deviceModel": "ps5-slim", "status": "verified", "note": { "ar": "لذراع DualSense Edge فقط.", "en": "For the DualSense Edge controller only.", "ckb": "تەنها بۆ کۆنتڕۆڵەری DualSense Edge." }, "source": "https://store.playstation.com/en-us/product/PSD001-PSDU01548_79-STICKMODUL4TDFBU" },
+    { "deviceModel": "ps5-pro", "status": "verified", "note": { "ar": "لذراع DualSense Edge فقط.", "en": "For the DualSense Edge controller only.", "ckb": "تەنها بۆ کۆنتڕۆڵەری DualSense Edge." }, "source": "https://store.playstation.com/en-us/product/PSD001-PSDU01548_79-STICKMODUL4TDFBU" }
+  ],
+  "related": [
+    { "slug": "dualsense-edge", "kind": "setup" },
+    { "slug": "dualsense-controller-shell", "kind": "accessory" }
+  ],
+  "images": [
+    { "key": "dualsense-edge-stick-module--1", "file": ".cache/product-images/dualsense-edge-stick-module/1.webp", "sourceUrl": "https://image.api.playstation.com/media-direct/is/image/sierialto/stick-module-angle?scl=1&fmt=png-alpha", "sourcePage": "https://store.playstation.com/en-us/product/PSD001-PSDU01548_79-STICKMODUL4TDFBU", "kind": "hero", "alt": { "ar": "وحدة العصا البديلة لذراع DualSense Edge", "en": "DualSense Edge replacement stick module", "ckb": "مۆدیولی جۆیستیکی جێگرەوەی DualSense Edge" }, "credit": "Sony Interactive Entertainment", "width": 900, "height": 900, "transparent": true },
+    { "key": "dualsense-edge-stick-module--2", "file": ".cache/product-images/dualsense-edge-stick-module/2.webp", "sourceUrl": "https://image.api.playstation.com/media-direct/is/image/sierialto/stick-module-front?scl=1&fmt=png-alpha", "sourcePage": "https://store.playstation.com/en-us/product/PSD001-PSDU01548_79-STICKMODUL4TDFBU", "kind": "angle", "alt": { "ar": "الوحدة من الأمام", "en": "The module from the front", "ckb": "مۆدیولەکە لە پێشەوە" }, "credit": "Sony Interactive Entertainment", "width": 900, "height": 900, "transparent": true }
+  ],
+  "sources": [
+    { "url": "https://store.playstation.com/en-us/product/PSD001-PSDU01548_79-STICKMODUL4TDFBU", "title": "Stick Module for DualSense Edge® Wireless Controller", "publisher": "Sony Interactive Entertainment (PlayStation Store US)", "retrieved": "2026-11-18", "supports": "official replacement module for the DualSense Edge, US$19 price, images" },
+    { "url": "https://www.playstation.com/en-au/support/hardware/edge-replace-stick/", "title": "How to replace a stick module on your DualSense Edge wireless controller", "publisher": "PlayStation Support", "retrieved": "2026-11-18", "supports": "tool-free replacement steps, modules sold separately, left and right interchangeable" },
+    { "url": "https://www.jbhifi.com.au/products/ps5-playstation-5-dualsense-edge-stick-module", "title": "PS5 PlayStation 5 DualSense Edge Stick Module", "publisher": "JB Hi-Fi", "retrieved": "2026-11-18", "supports": "retail listing of the Sony stick module" }
+  ],
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Release date: sold from the DualSense Edge launch (26 January 2023); the module's own first-sale date is not published",
+      "Sony model number of the module"
+    ]
+  }
+}

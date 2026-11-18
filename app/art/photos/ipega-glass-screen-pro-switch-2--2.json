@@ -1,0 +1,48 @@
+{
+  "key": "ipega-glass-screen-pro-switch-2--2",
+  "view": "hero",
+  "width": 866,
+  "height": 686,
+  "aspect": 1.2624,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ipega-glass-screen-pro-switch-2/2-240.aff37672.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-glass-screen-pro-switch-2/2-480.9121f278.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-glass-screen-pro-switch-2/2-720.be993221.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ipega-glass-screen-pro-switch-2/2-240.f6e721fd.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-glass-screen-pro-switch-2/2-480.e30c1a3e.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-glass-screen-pro-switch-2/2-720.1e58d989.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRgoBAABXRUJQVlA4WAoAAAAQAAAAEwAADwAAQUxQSGUAAAART6CojSQ0dB6YXhgRAZWNPy4JJ7ZtLcv9/Y82BasCdCc71B8azRID0K53vJ9NIaL/EwDTylMMfkHUFRZ/ljc6wJ5SDxfK/T5VM1WgEbYqX/Wyj7JtivZP8pABwJvXngVxN7VgDABWUDggfgAAANADAJ0BKhQAEAA/EXKwUCwmpKKwCAGAIglpAAPj2dxefTzG+aEz4AD+tarepgL5DH2f+0LonDK0ZBR+XIYBbR9ySe6nQc+fz8rDGwXh+mFViN0lksmDSzpiYTNTZ3unIH2ovgt1cbyY7Jmn9hIo+SX+4rZ75TtGI9TCkAAAAA==",
+  "dominant": "#f6f6f6",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "iPega",
+  "source": {
+    "url": "https://ipega.hk/uploads/202505/683919add7be8.png",
+    "page": "https://ipega.hk/switch2series/102-627.html"
+  },
+  "input": "06b88107dfff4adb"
+}

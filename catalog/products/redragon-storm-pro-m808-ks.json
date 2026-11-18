@@ -1,0 +1,220 @@
+{
+  "slug": "redragon-storm-pro-m808-ks",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Redragon",
+  "category": "mice",
+  "status": "available",
+  "name": {
+    "ar": "ماوس Redragon Storm Pro M808‑KS",
+    "en": "Redragon Storm Pro M808‑KS",
+    "ckb": "ماوسی Redragon Storm Pro M808‑KS"
+  },
+  "short": {
+    "ar": "لاسلكي 2.4 غيغاهرتز وسلكي · حتى 16000 DPI · RGB",
+    "en": "2.4 GHz wireless + wired · up to 16,000 DPI · RGB",
+    "ckb": "بێتەلی 2.4 گیگاهێرتز و وایەری · تا 16000 DPI · RGB"
+  },
+  "description": {
+    "ar": "ماوس ألعاب من Redragon بغلاف خلية النحل الخفيف، يعمل لاسلكياً عبر 2.4 غيغاهرتز أو بالكابل. فيه بطارية قابلة للشحن ووضع توفير، وسبعة أزرار قابلة للبرمجة، ودقة من 100 حتى 16000 DPI مع إضاءة RGB.",
+    "en": "A Redragon gaming mouse with a light honeycomb shell that works wireless over 2.4 GHz or with its cable. It has a rechargeable battery with an eco mode, seven programmable buttons and 100 to 16,000 DPI with RGB lighting.",
+    "ckb": "ماوسێکی یاری Redragon بە لەشی شانەی هەنگوینی سووک، بە بێتەلی 2.4 گیگاهێرتز یان بە کێبڵ کار دەکات. پاتریی بارگاوییکراو و شێوازی پاشەکەوت، حەوت دوگمەی بەرنامەبۆکراو، و 100 تا 16000 DPI لەگەڵ RGBی هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "لاسلكي 2.4 غيغاهرتز أو سلكي",
+      "en": "2.4 GHz wireless or wired",
+      "ckb": "بێتەلی 2.4 گیگاهێرتز یان وایەری"
+    },
+    {
+      "ar": "دقة 100–16000 DPI",
+      "en": "100–16,000 DPI",
+      "ckb": "100–16000 DPI"
+    },
+    {
+      "ar": "7 أزرار قابلة للبرمجة",
+      "en": "7 programmable buttons",
+      "ckb": "7 دوگمەی بەرنامەبۆکراو"
+    },
+    {
+      "ar": "بطارية قابلة للشحن مع وضع توفير",
+      "en": "Rechargeable battery with eco mode",
+      "ckb": "پاتریی بارگاوییکراو لەگەڵ شێوازی پاشەکەوت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "2.4 غيغاهرتز لاسلكي، أو سلكي",
+        "en": "2.4 GHz wireless or wired",
+        "ckb": "2.4 گیگاهێرتزی بێتەل یان وایەری"
+      }
+    },
+    {
+      "key": "dpi",
+      "label": {
+        "ar": "الدقة DPI",
+        "en": "DPI",
+        "ckb": "وردی DPI"
+      },
+      "value": {
+        "ar": "100–16000",
+        "en": "100–16,000",
+        "ckb": "100–16000"
+      }
+    },
+    {
+      "key": "buttons",
+      "label": {
+        "ar": "الأزرار",
+        "en": "Buttons",
+        "ckb": "دوگمەکان"
+      },
+      "value": {
+        "ar": "7 قابلة للبرمجة",
+        "en": "7 programmable",
+        "ckb": "7 بەرنامەبۆکراو"
+      }
+    },
+    {
+      "key": "lighting",
+      "label": {
+        "ar": "الإضاءة",
+        "en": "Lighting",
+        "ckb": "ڕووناکی"
+      },
+      "value": {
+        "ar": "RGB بـ 16.8 مليون لون",
+        "en": "RGB, 16.8 million colours",
+        "ckb": "RGB بە 16.8 ملیۆن ڕەنگ"
+      }
+    },
+    {
+      "key": "software",
+      "label": {
+        "ar": "البرنامج",
+        "en": "Software",
+        "ckb": "بەرنامە"
+      },
+      "value": {
+        "ar": "برنامج Redragon للأزرار والإضاءة وحالة البطارية",
+        "en": "Redragon software for buttons, lighting and battery status",
+        "ckb": "بەرنامەی Redragon بۆ دوگمە و ڕووناکی و دۆخی پاتری"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RD-M808-KS",
+      "title": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "M808-KS",
+      "barcodes": [
+        "6950376781277"
+      ],
+      "isDefault": true,
+      "images": [
+        "redragon-storm-pro-m808-ks--1",
+        "redragon-storm-pro-m808-ks--2"
+      ],
+      "sheetRow": 53
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "عبر مستقبل USB أو الكابل.",
+        "en": "Through the USB receiver or the cable.",
+        "ckb": "لە ڕێگەی ڕیسیڤەری USB یان کێبڵ."
+      },
+      "source": "https://redragonshop.com/products/wireless-m808-mouse"
+    }
+  ],
+  "related": [
+    {
+      "slug": "redragon-k1ng-m724",
+      "kind": "alternative"
+    },
+    {
+      "slug": "redragon-p032-flick-xl",
+      "kind": "accessory"
+    },
+    {
+      "slug": "redragon-fizz-k617-he",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "redragon-storm-pro-m808-ks--1",
+      "file": ".cache/product-images/redragon-storm-pro-m808-ks/1.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0012/4957/4961/products/RedragonM808wirelessmouse.png",
+      "sourcePage": "https://redragonshop.com/products/wireless-m808-mouse",
+      "kind": "hero",
+      "alt": {
+        "ar": "ماوس Redragon Storm Pro الأسود مع مستقبل USB",
+        "en": "Black Redragon Storm Pro with its USB receiver",
+        "ckb": "Redragon Storm Proی ڕەش لەگەڵ ڕیسیڤەری USB"
+      },
+      "credit": "Redragon",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    },
+    {
+      "key": "redragon-storm-pro-m808-ks--2",
+      "file": ".cache/product-images/redragon-storm-pro-m808-ks/2.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0012/4957/4961/products/RedragonM808wirelessrgbgamingmouse.png",
+      "sourcePage": "https://redragonshop.com/products/wireless-m808-mouse",
+      "kind": "angle",
+      "alt": {
+        "ar": "الماوس بزاوية مع إضاءة RGB الجانبية",
+        "en": "Mouse at an angle with side RGB lit",
+        "ckb": "ماوسەکە بە گۆشەیەک لەگەڵ RGBی تەنیشت"
+      },
+      "credit": "Redragon",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://redragonshop.com/products/wireless-m808-mouse",
+      "title": "STORM PRO M808 RGB Wireless Gaming Mouse",
+      "publisher": "Redragon (official store)",
+      "retrieved": "2026-11-18",
+      "supports": "dual mode (2.4 GHz wireless and wired), honeycomb shell, rechargeable battery, eco mode, 7 programmable buttons, 100–16,000 DPI, 16.8M colour RGB, battery status in software, images"
+    },
+    {
+      "url": "https://dangerfield.com.au/products/m808-ks-storm-pro-mouse",
+      "title": "Redragon M808-KS Storm Pro mouse",
+      "publisher": "Dangerfield (Redragon reseller, Australia)",
+      "retrieved": "2026-11-18",
+      "supports": "model code M808-KS = Storm Pro dual-mode black, barcode 6950376781277"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Sensor model, weight and battery capacity (resellers disagree)",
+      "Release date"
+    ]
+  }
+}

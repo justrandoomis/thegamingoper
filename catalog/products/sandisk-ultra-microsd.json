@@ -1,0 +1,133 @@
+{
+  "slug": "sandisk-ultra-microsd",
+  "group": "power-cables-storage-misc",
+  "kind": "storage",
+  "platform": "multi",
+  "brand": "SanDisk",
+  "status": "available",
+  "name": {
+    "ar": "بطاقة ذاكرة SanDisk Ultra microSDXC",
+    "en": "SanDisk Ultra microSDXC UHS‑I Card",
+    "ckb": "کارتی بیرگەی SanDisk Ultra microSDXC"
+  },
+  "short": {
+    "ar": "1TB · قراءة حتى 150MB/s · مع محوّل SD",
+    "en": "1TB · up to 150MB/s read · with SD adapter",
+    "ckb": "1TB · خوێندنەوە تا 150MB/s · لەگەڵ ئەداپتەری SD"
+  },
+  "description": {
+    "ar": "بطاقة microSDXC من فئة Ultra لدى SanDisk بسعة كبيرة 1TB، تأتي مع محوّل SD. مناسبة لتخزين مكتبة ألعاب كبيرة على Nintendo Switch وSwitch OLED وSwitch Lite أو على Steam Deck، وللهواتف والأجهزة اللوحية. تقرأ بسرعة تصل إلى 150 ميغابايت في الثانية. لا تصلح لحفظ ألعاب Nintendo Switch 2.",
+    "en": "SanDisk's Ultra-series microSDXC card in a large 1TB, with an SD adapter. It suits a big game library on Nintendo Switch, Switch OLED, Switch Lite or Steam Deck, as well as phones and tablets. It reads at up to 150MB/s. It cannot hold Nintendo Switch 2 games.",
+    "ckb": "کارتی microSDXCی زنجیرەی Ultraی SanDisk بە قەبارەی گەورەی 1TB، لەگەڵ ئەداپتەری SD. بۆ کتێبخانەیەکی گەورەی یاری لەسەر Nintendo Switch و Switch OLED و Switch Lite یان Steam Deck گونجاوە، هەروەها بۆ مۆبایل و تابلێت. خێرایی خوێندنەوەی تا 150 مێگابایت لە چرکەیەکدایە. ناتوانێت یارییەکانی Nintendo Switch 2 هەڵبگرێت."
+  },
+  "highlights": [
+    { "ar": "سعة 1TB", "en": "1TB capacity", "ckb": "قەبارەی 1TB" },
+    { "ar": "قراءة حتى 150MB/s", "en": "Reads up to 150MB/s", "ckb": "خوێندنەوە تا 150MB/s" },
+    { "ar": "تصنيف A1 وClass 10", "en": "A1 and Class 10 rated", "ckb": "پلەی A1 و Class 10" },
+    { "ar": "مع محوّل SD في العلبة", "en": "SD adapter in the box", "ckb": "ئەداپتەری SD لە قوتووەکەدایە" },
+    { "ar": "ضمان محدود 10 سنوات من SanDisk", "en": "10-year limited warranty from SanDisk", "ckb": "گەرەنتیی سنووردار 10 ساڵ لە SanDisk" }
+  ],
+  "specs": [
+    { "key": "capacity", "label": { "ar": "السعة", "en": "Capacity", "ckb": "قەبارە" }, "value": { "ar": "1TB", "en": "1TB", "ckb": "1TB" } },
+    { "key": "card_type", "label": { "ar": "نوع البطاقة", "en": "Card type", "ckb": "جۆری کارت" }, "value": { "ar": "microSDXC بواجهة UHS-I", "en": "microSDXC, UHS-I", "ckb": "microSDXC، UHS-I" } },
+    { "key": "read_speed", "label": { "ar": "سرعة القراءة", "en": "Read speed", "ckb": "خێرایی خوێندنەوە" }, "value": { "ar": "حتى 150 ميغابايت/ثانية (الكتابة أبطأ)", "en": "Up to 150 MB/s (writes are slower)", "ckb": "تا 150 مێگابایت/چرکە (نووسین هێواشترە)" } },
+    { "key": "ratings", "label": { "ar": "التصنيفات", "en": "Ratings", "ckb": "پلەکان" }, "value": { "ar": "A1، Class 10، U1", "en": "A1, Class 10, U1", "ckb": "A1، Class 10، U1" } },
+    { "key": "model", "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" }, "value": { "ar": "SDSQUAC-1T00-GN6MA", "en": "SDSQUAC-1T00-GN6MA", "ckb": "SDSQUAC-1T00-GN6MA" } },
+    { "key": "weight", "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" }, "value": { "ar": "0.26 غرام", "en": "0.26 g", "ckb": "0.26 گرام" } },
+    { "key": "warranty", "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" }, "value": { "ar": "ضمان محدود 10 سنوات من SanDisk", "en": "10-year limited warranty (SanDisk)", "ckb": "گەرەنتیی سنووردار 10 ساڵ (SanDisk)" } }
+  ],
+  "inTheBox": [
+    { "ar": "بطاقة SanDisk Ultra microSDXC سعة 1TB", "en": "SanDisk Ultra 1TB microSDXC card", "ckb": "کارتی SanDisk Ultra microSDXC بە قەبارەی 1TB" },
+    { "ar": "محوّل SD", "en": "SD adapter", "ckb": "ئەداپتەری SD" }
+  ],
+  "variants": [
+    {
+      "sku": "SANDISK-ULTRA-1TB",
+      "sheetRow": 216,
+      "title": { "ar": "1TB", "en": "1TB", "ckb": "1TB" },
+      "options": { "storage": "1TB" },
+      "modelNumber": "SDSQUAC-1T00-GN6MA",
+      "barcodes": ["619659200589"],
+      "isDefault": true,
+      "images": ["sandisk-ultra-microsd--1", "sandisk-ultra-microsd--2"],
+      "notes": {
+        "ar": "رقم الموديل والباركود (UPC) من متجر SanDisk الأمريكي، وقد يختلفان في مناطق أخرى.",
+        "en": "Model number and UPC from SanDisk's US store; other regions may use other codes.",
+        "ckb": "ژمارەی مۆدێل و بارکۆد (UPC) لە فرۆشگای SanDiskی ئەمریکاوەیە؛ لە ناوچەکانی تر لەوانەیە جیاواز بن."
+      }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "switch", "status": "verified", "note": { "ar": "يقبل Switch بطاقات microSDXC حتى 2TB لحفظ الألعاب.", "en": "Switch takes microSDXC cards up to 2TB for game storage.", "ckb": "Switch کارتی microSDXC تا 2TB بۆ هەڵگرتنی یاری وەردەگرێت." }, "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/" },
+    { "deviceModel": "switch-oled", "status": "verified", "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/" },
+    { "deviceModel": "switch-lite", "status": "verified", "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/" },
+    { "deviceModel": "switch-2", "status": "incompatible", "note": { "ar": "Switch 2 لا يشغّل الألعاب إلا من بطاقات microSD Express.", "en": "Switch 2 only runs games from microSD Express cards.", "ckb": "Switch 2 تەنها لە کارتی microSD Expressەوە یاری دەکات." }, "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/" },
+    { "deviceModel": "steam-deck-lcd", "status": "unverified", "note": { "ar": "لـ Steam Deck منفذ microSD قياسي؛ لم نجد صفحة رسمية تذكر هذه البطاقة بالاسم.", "en": "Steam Deck has a standard microSD slot; no official page names this card.", "ckb": "Steam Deck کونی microSDی ستانداردی هەیە؛ هیچ پەڕەیەکی فەرمی ناوی ئەم کارتەی نەهێناوە." } },
+    { "deviceModel": "steam-deck-oled", "status": "unverified" }
+  ],
+  "related": [
+    { "slug": "sandisk-extreme-microsd", "kind": "alternative" },
+    { "slug": "sandisk-microsd-express", "kind": "alternative" },
+    { "slug": "nintendo-switch-oled", "kind": "setup" },
+    { "slug": "steam-deck-oled", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "sandisk-ultra-microsd--1",
+      "file": ".cache/product-images/sandisk-ultra-microsd/1.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/ultra-uhs-i-microsd-120/gallery/ultra-uhs-i-microsd-120-1tb-front.png",
+      "sourcePage": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-ultra-uhs-i-microsd?sku=SDSQUAC-1T00-GN6MA",
+      "kind": "hero",
+      "alt": {
+        "ar": "بطاقة SanDisk Ultra microSDXC سعة 1TB من الأمام، باللونين الأحمر والرمادي",
+        "en": "SanDisk Ultra 1TB microSDXC card, front, red and grey",
+        "ckb": "کارتی SanDisk Ultra microSDXC بە قەبارەی 1TB لە پێشەوە، سوور و خۆڵەمێشی"
+      },
+      "credit": "Sandisk",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    },
+    {
+      "key": "sandisk-ultra-microsd--2",
+      "file": ".cache/product-images/sandisk-ultra-microsd/2.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/ultra-uhs-i-microsd-120/gallery/ultra-uhs-i-microsd-120-adapter.png",
+      "sourcePage": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-ultra-uhs-i-microsd?sku=SDSQUAC-1T00-GN6MA",
+      "kind": "in-box",
+      "alt": {
+        "ar": "محوّل SD المرفق مع بطاقة SanDisk Ultra",
+        "en": "The SD adapter that comes with the SanDisk Ultra card",
+        "ckb": "ئەداپتەری SD کە لەگەڵ کارتی SanDisk Ultra دێت"
+      },
+      "credit": "Sandisk",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-ultra-uhs-i-microsd",
+      "title": "SanDisk Ultra microSDXC UHS-I Card with Adapter",
+      "publisher": "Sandisk",
+      "retrieved": "2026-11-18",
+      "supports": "1TB model SDSQUAC-1T00-GN6MA, UPC 619659200589, read up to 150MB/s, A1, weight, 10-year limited warranty, in the box (card + SD adapter), images"
+    },
+    {
+      "url": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/",
+      "title": "microSD Card and microSD Express Card Compatibility with Nintendo Switch 2 and Nintendo Switch",
+      "publisher": "Nintendo Support",
+      "retrieved": "2026-11-18",
+      "supports": "original Switch family takes microSDXC cards up to 2TB; Switch 2 only takes microSD Express for games"
+    }
+  ],
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": true,
+    "unverified": [
+      "Owner sheet row \"UITRA MICRO 1T SANDISK\" read as SanDisk Ultra microSDXC 1TB (\"UITRA\" = Ultra)",
+      "Write speed of the 1TB card (SanDisk does not publish it)",
+      "Release date of this 1TB generation"
+    ]
+  }
+}

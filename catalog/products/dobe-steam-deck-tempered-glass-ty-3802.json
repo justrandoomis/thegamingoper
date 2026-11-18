@@ -1,0 +1,201 @@
+{
+  "slug": "dobe-steam-deck-tempered-glass-ty-3802",
+  "group": "handheld-pc-accessories",
+  "kind": "accessory",
+  "platform": "pc_handheld",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "زجاج حماية DOBE TY‑3802 لجهاز Steam Deck",
+    "en": "DOBE TY‑3802 Tempered Glass for Steam Deck",
+    "ckb": "شیشەی پارێزەری DOBE TY‑3802 بۆ Steam Deck"
+  },
+  "short": {
+    "ar": "قطعتان · زجاج مقسّى · لشاشة Steam Deck",
+    "en": "2 pieces · Tempered glass · For the Steam Deck screen",
+    "ckb": "2 پارچە · شیشەی ڕەقکراو · بۆ شاشەی Steam Deck"
+  },
+  "description": {
+    "ar": "واقي شاشة من الزجاج المقسّى من DOBE لجهاز Steam Deck. يقاوم الخدوش وبصمات الأصابع ولا يتشظى، ويركب على الشاشة بإحكام دون أن يؤثر على اللمس. في العلبة قطعتان مع مناديل التنظيف وملصقات الغبار والتوجيه.",
+    "en": "A DOBE tempered-glass protector for the Steam Deck. It resists scratches and fingerprints, is shatterproof and fits the screen closely without affecting touch. The pack has two sheets plus cleaning wipes, dust-removal and guide stickers.",
+    "ckb": "پارێزەری شاشەی شیشەی ڕەقکراوی DOBE بۆ Steam Deck. دژی خەت و شوێنپەنجەیە، پرژ نابێتەوە و بە ڕێکی لەسەر شاشە دادەنیشێت بێ کاریگەری لەسەر دەستلێدان. قوتووەکە دوو پارچەی تێدایە لەگەڵ دەسماڵی پاککردنەوە و لکێنەری تۆز و ڕێنمایی."
+  },
+  "highlights": [
+    {
+      "ar": "قطعتا زجاج في العلبة",
+      "en": "Two glass sheets per pack",
+      "ckb": "دوو پارچە شیشە لە قوتووەکەدا"
+    },
+    {
+      "ar": "مقاوم للخدوش والبصمات",
+      "en": "Scratch- and fingerprint-resistant",
+      "ckb": "دژی خەت و شوێنپەنجە"
+    },
+    {
+      "ar": "لا يتشظى عند الكسر",
+      "en": "Shatterproof",
+      "ckb": "پرژ نابێتەوە"
+    },
+    {
+      "ar": "لا يؤثر على اللمس",
+      "en": "Keeps touch responsive",
+      "ckb": "کاریگەری لەسەر دەستلێدان نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "TY‑3802",
+        "en": "TY‑3802",
+        "ckb": "TY‑3802"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Steam Deck",
+        "en": "Steam Deck",
+        "ckb": "Steam Deck"
+      }
+    },
+    {
+      "key": "pieces",
+      "label": {
+        "ar": "عدد القطع",
+        "en": "Pieces",
+        "ckb": "ژمارەی پارچە"
+      },
+      "value": {
+        "ar": "2",
+        "en": "2",
+        "ckb": "2"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "2 × واقي شاشة زجاجي",
+      "en": "2 × glass screen protector",
+      "ckb": "2 × پارێزەری شاشەی شیشە"
+    },
+    {
+      "ar": "2 × مناديل تنظيف (مبللة وجافة)",
+      "en": "2 × cleaning wipe sets (wet and dry)",
+      "ckb": "2 × دەسماڵی پاککردنەوە (تەڕ و وشک)"
+    },
+    {
+      "ar": "2 × ملصقات إزالة الغبار والتوجيه",
+      "en": "2 × dust-removal and guide sticker sets",
+      "ckb": "2 × لکێنەری لابردنی تۆز و ڕێنمایی"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TY-3802",
+      "sheetRow": 179,
+      "title": {
+        "ar": "زجاج حماية DOBE TY‑3802 لجهاز Steam Deck",
+        "en": "DOBE TY‑3802 Tempered Glass for Steam Deck",
+        "ckb": "شیشەی پارێزەری DOBE TY‑3802 بۆ Steam Deck"
+      },
+      "modelNumber": "TY-3802",
+      "isDefault": true,
+      "images": [
+        "dobe-steam-deck-tempered-glass-ty-3802--1"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "steam-deck-lcd",
+      "status": "verified",
+      "note": {
+        "ar": "مصمم لشاشة Steam Deck",
+        "en": "Made for the Steam Deck screen",
+        "ckb": "بۆ شاشەی Steam Deck دروستکراوە"
+      },
+      "source": "https://www.dobe-game.com/en/productshow-66-1247.html"
+    },
+    {
+      "deviceModel": "steam-deck-oled",
+      "status": "unverified",
+      "note": {
+        "ar": "DOBE لا تحدد إن كان يناسب نسخة OLED (شاشتها 7.4 بوصة)",
+        "en": "DOBE does not say whether it fits the OLED model (7.4-inch screen)",
+        "ckb": "DOBE نالێت بۆ OLED (شاشەی 7.4 ئینج) دەگونجێت یان نا"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "steam-deck-lcd",
+      "kind": "setup"
+    },
+    {
+      "slug": "steam-deck-oled",
+      "kind": "setup"
+    },
+    {
+      "slug": "dobe-steam-deck-case",
+      "kind": "accessory"
+    },
+    {
+      "slug": "jys-steam-deck-carrying-case-sd001",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "dobe-steam-deck-tempered-glass-ty-3802--1",
+      "file": ".cache/product-images/dobe-steam-deck-tempered-glass-ty-3802/1.jpg",
+      "sourceUrl": "https://www.dobe-game.com/uploads/image/20240321/1711007668.jpg",
+      "sourcePage": "https://www.dobe-game.com/en/productshow-66-1247.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "الزجاج مركّب على Steam Deck",
+        "en": "The glass fitted on a Steam Deck",
+        "ckb": "شیشەکە لەسەر Steam Deck دانراوە"
+      },
+      "credit": "DOBE (Shenzhen Yuyuanxin Electronic Technology)",
+      "width": 1000,
+      "height": 1000,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dobe-game.com/en/productshow-66-1247.html",
+      "title": "Tempered Glass Screen For Valve Steam Deck Game Console",
+      "publisher": "DOBE (Shenzhen Yuyuanxin Electronic Technology Co., Ltd.)",
+      "retrieved": "2026-11-18",
+      "supports": "DOBE tempered-glass protector for the Steam Deck: hardness, scratch and fingerprint resistance, shatterproof, touch unaffected; product images (2 sheets, wipes, stickers)"
+    },
+    {
+      "url": "https://ecommerce.datablitz.com.ph/products/dobe-tempered-glass-screen-protector-for-steam-deck-ty-3802",
+      "title": "Dobe Tempered Glass Screen Protector For Steam Deck TY-3802",
+      "publisher": "Datablitz (retailer, Philippines)",
+      "retrieved": "2026-11-18",
+      "supports": "second source: model number TY-3802 for DOBE's Steam Deck tempered glass"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "DOBE's own page does not print the model number; TY-3802 comes from retailer listings",
+      "Fit on the Steam Deck OLED",
+      "Hardness rating and thickness"
+    ]
+  }
+}

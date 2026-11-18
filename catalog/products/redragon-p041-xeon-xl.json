@@ -1,0 +1,144 @@
+{
+  "slug": "redragon-p041-xeon-xl",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Redragon",
+  "category": "mouse-pads",
+  "status": "available",
+  "name": {
+    "ar": "ماوس باد Redragon P041 Xeon XL",
+    "en": "Redragon P041 Xeon XL",
+    "ckb": "ماوس پادی Redragon P041 Xeon XL"
+  },
+  "short": {
+    "ar": "ماوس باد 90×40 سم · سطح مقاوم للماء",
+    "en": "90×40 cm · water-resistant surface",
+    "ckb": "90×40 سم · ڕووکاری دژە ئاو"
+  },
+  "description": {
+    "ar": "ماوس باد ممتد من Redragon بمقاس 90×40 سم يغطي الكيبورد والماوس، بسطح قماشي ناعم الملمس عليه طبقة مقاومة للماء تسهّل التنظيف، وقاعدة تثبّته على المكتب.",
+    "en": "An extended 90×40 cm Redragon pad that covers the keyboard and mouse, with a nano-textured cloth surface and a water-resistant coating that makes cleaning easy, on a base that keeps it in place.",
+    "ckb": "ماوس پادێکی درێژی 90×40 سمی Redragon کە کیبۆرد و ماوس دادەپۆشێت، بە ڕووکاری قوماشی ورد و چینێکی دژە ئاو کە پاککردنەوە ئاسان دەکات، و بنکەیەک کە لە شوێنی خۆی دەیهێڵێتەوە."
+  },
+  "highlights": [
+    {
+      "ar": "مقاس 90×40 سم يغطي الكيبورد والماوس",
+      "en": "90×40 cm, fits keyboard and mouse",
+      "ckb": "90×40 سم، کیبۆرد و ماوس دەگرێتەوە"
+    },
+    {
+      "ar": "طبقة مقاومة للماء",
+      "en": "Water-resistant coating",
+      "ckb": "چینی دژە ئاو"
+    },
+    {
+      "ar": "قاعدة ثابتة لا تنزلق",
+      "en": "Stays firmly in place",
+      "ckb": "لە شوێنی خۆی دەمێنێتەوە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "size",
+      "label": {
+        "ar": "المقاس",
+        "en": "Size",
+        "ckb": "قەبارە"
+      },
+      "value": {
+        "ar": "90 × 40 سم",
+        "en": "90 × 40 cm",
+        "ckb": "90 × 40 سم"
+      }
+    },
+    {
+      "key": "surface",
+      "label": {
+        "ar": "السطح",
+        "en": "Surface",
+        "ckb": "ڕووکار"
+      },
+      "value": {
+        "ar": "قماش بملمس نانو مع طبقة مقاومة للماء",
+        "en": "Nano-textured cloth, water-resistant coating",
+        "ckb": "قوماشی ورد، چینی دژە ئاو"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RD-P041",
+      "title": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      },
+      "options": {
+        "color": "Black",
+        "size": "XL 90x40 cm"
+      },
+      "modelNumber": "P041",
+      "barcodes": [
+        "6950376719607"
+      ],
+      "isDefault": true,
+      "images": [
+        "redragon-p041-xeon-xl--1"
+      ],
+      "sheetRow": 165
+    }
+  ],
+  "related": [
+    {
+      "slug": "redragon-p032-flick-xl",
+      "kind": "alternative"
+    },
+    {
+      "slug": "redragon-k1ng-m724",
+      "kind": "setup"
+    }
+  ],
+  "images": [
+    {
+      "key": "redragon-p041-xeon-xl--1",
+      "file": ".cache/product-images/redragon-p041-xeon-xl/1.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0644/1618/6586/files/ERRPA705_001_11.jpg",
+      "sourcePage": "https://dangerfield.com.au/products/p041-xeon-xl-mousepad",
+      "kind": "hero",
+      "alt": {
+        "ar": "ماوس باد Redragon P041 Xeon من الأعلى",
+        "en": "Redragon P041 Xeon pad from above",
+        "ckb": "ماوس پادی Redragon P041 Xeon لە سەرەوە"
+      },
+      "credit": "Redragon",
+      "width": 1060,
+      "height": 1590,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://dangerfield.com.au/products/p041-xeon-xl-mousepad",
+      "title": "Redragon P041 Xeon XL Mousepad",
+      "publisher": "Dangerfield (Redragon reseller, Australia)",
+      "retrieved": "2026-11-18",
+      "supports": "P041 Xeon XL, 900×400×3 mm, nano-textured cloth, waterproof coating, barcode 6950376719607, image"
+    },
+    {
+      "url": "https://www.digitec.ch/en/s1/product/redragon-xeon-mouse-pad-90x40cm-xl-mousepad-49046528",
+      "title": "Redragon Xeon Mouse Pad 90x40cm XL",
+      "publisher": "Digitec",
+      "retrieved": "2026-11-18",
+      "supports": "confirmation: 400 × 900 mm XL size"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Thickness (one listing says 3 mm)",
+      "No Redragon page found; facts from resellers"
+    ]
+  }
+}

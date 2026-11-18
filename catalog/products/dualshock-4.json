@@ -1,0 +1,244 @@
+{
+  "slug": "dualshock-4",
+  "group": "ps4",
+  "kind": "controller",
+  "platform": "playstation",
+  "brand": "Sony",
+  "family": "dualshock-4",
+  "status": "discontinued",
+  "releaseDate": "2016-09-15",
+  "name": {
+    "ar": "يد التحكم اللاسلكية DualShock 4",
+    "en": "DualShock 4 Wireless Controller",
+    "ckb": "کۆنتڕۆڵەری بێتەلی DualShock 4"
+  },
+  "short": {
+    "ar": "يد تحكم PS4 الرسمية من Sony · لوحة لمس · سماعة مدمجة · منفذ 3.5 ملم",
+    "en": "Official Sony PS4 controller · Touch pad · Built-in speaker · 3.5mm jack",
+    "ckb": "کۆنتڕۆڵەری فەرمیی Sony بۆ PS4 · تاچپاد · بڵندگۆی ناوەکی · دەروازەی 3.5 ملم"
+  },
+  "description": {
+    "ar": "يد التحكم الأصلية من Sony لجهاز PS4، بالإصدار الثاني (CUH-ZCT2) الذي يظهر فيه ضوء الشريط أعلى لوحة اللمس. فيها لوحة لمس قابلة للضغط، ومستشعر حركة، وسماعة صغيرة مدمجة، ومنفذ سماعة 3.5 ملم، وبطارية تُشحن من منفذ USB في الجهاز. تعمل أيضاً على PS5 مع ألعاب PS4 فقط.",
+    "en": "Sony's original PS4 controller, in the second version (CUH-ZCT2) whose light bar also shows on top of the touch pad. It has a clickable touch pad, motion sensors, a small built-in speaker, a 3.5mm headset jack and a battery that charges from the console's USB port. It also works on PS5, with PS4 games only.",
+    "ckb": "کۆنتڕۆڵەری ڕەسەنی Sony بۆ PS4، وەشانی دووەم (CUH-ZCT2) کە ڕووناکیی light bar لەسەر تاچپادەکەش دەردەکەوێت. تاچپادی کرتەکراو، هەستەوەری جووڵە، بڵندگۆیەکی بچووکی ناوەکی، دەروازەی گوێگری 3.5 ملم و پاترییەک کە لە دەروازەی USB ی ئامێرەکە بارگە دەکرێت. لەسەر PS5 یش کار دەکات، تەنها لەگەڵ یارییەکانی PS4."
+  },
+  "highlights": [
+    {
+      "ar": "يد تحكم Sony الأصلية لجهاز PS4 (الإصدار الثاني CUH-ZCT2)",
+      "en": "Genuine Sony PS4 controller (second version, CUH-ZCT2)",
+      "ckb": "کۆنتڕۆڵەری ڕەسەنی Sony بۆ PS4 (وەشانی دووەم، CUH-ZCT2)"
+    },
+    {
+      "ar": "لوحة لمس، مستشعر حركة، ضوء شريط، سماعة مدمجة ومنفذ سماعة 3.5 ملم",
+      "en": "Touch pad, motion sensors, light bar, built-in speaker and 3.5mm headset jack",
+      "ckb": "تاچپاد، هەستەوەری جووڵە، light bar، بڵندگۆی ناوەکی و دەروازەی گوێگری 3.5 ملم"
+    },
+    {
+      "ar": "تُشحن عبر منفذ Micro‑USB",
+      "en": "Charges over Micro‑USB",
+      "ckb": "بە Micro‑USB بارگە دەکرێت"
+    },
+    {
+      "ar": "على PS5 تعمل مع ألعاب PS4 فقط، لا مع ألعاب PS5",
+      "en": "On PS5 it works with PS4 games only, not PS5 games",
+      "ckb": "لەسەر PS5 تەنها لەگەڵ یارییەکانی PS4 کار دەکات، نەک یارییەکانی PS5"
+    },
+    {
+      "ar": "Sony أوقفت إنتاجها؛ المتوفر من المخزون الموجود",
+      "en": "Sony no longer makes it; sold from existing stock",
+      "ckb": "Sony ئیتر بەرهەمی ناهێنێت؛ لە کۆگای ماوە دەفرۆشرێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" },
+      "value": { "ar": "CUH-ZCT2", "en": "CUH-ZCT2", "ckb": "CUH-ZCT2" }
+    },
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": { "ar": "Bluetooth، Micro‑USB، منفذ 3.5 ملم، منفذ توسعة", "en": "Bluetooth, Micro‑USB, 3.5mm jack, extension port", "ckb": "Bluetooth، Micro‑USB، دەروازەی 3.5 ملم، دەروازەی زیادە" }
+    },
+    {
+      "key": "features",
+      "label": { "ar": "الميزات", "en": "Features", "ckb": "تایبەتمەندییەکان" },
+      "value": {
+        "ar": "لوحة لمس قابلة للضغط، مستشعر حركة (تسارع وجيروسكوب)، اهتزاز، ضوء شريط، سماعة مدمجة، زر Share",
+        "en": "Clickable touch pad, motion sensors (accelerometer and gyroscope), vibration, light bar, built-in speaker, Share button",
+        "ckb": "تاچپادی کرتەکراو، هەستەوەری جووڵە (خێرایی و جایرۆسکۆپ)، لەرینەوە، light bar، بڵندگۆی ناوەکی، دوگمەی Share"
+      }
+    },
+    {
+      "key": "devices",
+      "label": { "ar": "الأجهزة المتوافقة", "en": "Compatible devices", "ckb": "ئامێرە گونجاوەکان" },
+      "value": {
+        "ar": "PS4 بكل موديلاته؛ PS5 مع ألعاب PS4 فقط",
+        "en": "All PS4 models; PS5 with PS4 games only",
+        "ckb": "هەموو جۆرەکانی PS4؛ PS5 تەنها لەگەڵ یارییەکانی PS4"
+      }
+    }
+  ],
+  "inTheBox": [
+    { "ar": "يد التحكم DualShock 4", "en": "DualShock 4 wireless controller", "ckb": "کۆنتڕۆڵەری DualShock 4" },
+    { "ar": "دليل الاستخدام", "en": "User manual", "ckb": "ڕێبەری بەکارهێنان" }
+  ],
+  "variants": [
+    {
+      "sku": "DS4-JET-BLACK",
+      "sheetRow": 73,
+      "title": { "ar": "أسود Jet Black", "en": "Jet Black", "ckb": "ڕەشی Jet Black" },
+      "options": { "color": "Jet Black" },
+      "modelNumber": "CUH-ZCT2",
+      "isDefault": true,
+      "images": ["dualshock-4--2", "dualshock-4--3", "dualshock-4--4"]
+    },
+    {
+      "sku": "DS4-SUNSET-ORANGE",
+      "sheetRow": 72,
+      "title": { "ar": "برتقالي Sunset Orange", "en": "Sunset Orange", "ckb": "پرتەقاڵیی Sunset Orange" },
+      "options": { "color": "Sunset Orange", "edition": "Special edition" },
+      "modelNumber": "CUH-ZCT2",
+      "isDefault": false,
+      "images": ["dualshock-4--1"],
+      "notes": {
+        "ar": "إصدار خاص بواجهة برتقالية وأزرار وعصي وظهر بنفسجي غامق. Sony لم تطرحه رسمياً في الشرق الأوسط، فهو مستورد.",
+        "en": "Special edition with an orange front and dark purple buttons, sticks and back. Sony did not release it officially in the Middle East, so it is an import.",
+        "ckb": "وەشانی تایبەت بە ڕووی پرتەقاڵی و دوگمە و دەسک و پشتی مۆری تاریک. Sony بە فەرمی لە ڕۆژهەڵاتی ناوەڕاست نەیهێنایە بازاڕ، بۆیە هاوردەکراوە."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps4",
+      "status": "verified",
+      "note": { "ar": "يد التحكم الأصلية لجهاز PS4.", "en": "The standard PS4 controller.", "ckb": "کۆنتڕۆڵەری سەرەکیی PS4." },
+      "source": "https://www.playstation.com/en-ae/accessories/dualshock-4-wireless-controller/"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "partial",
+      "note": { "ar": "مع ألعاب PS4 فقط؛ ألعاب PS5 تحتاج DualSense.", "en": "PS4 games only; PS5 games need a DualSense.", "ckb": "تەنها یارییەکانی PS4؛ یارییەکانی PS5 پێویستیان بە DualSense هەیە." },
+      "source": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "partial",
+      "note": { "ar": "مع ألعاب PS4 فقط.", "en": "PS4 games only.", "ckb": "تەنها یارییەکانی PS4." },
+      "source": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": { "ar": "مع ألعاب PS4 فقط.", "en": "PS4 games only.", "ckb": "تەنها یارییەکانی PS4." },
+      "source": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/"
+    },
+    {
+      "deviceModel": "windows-pc",
+      "status": "unverified",
+      "note": { "ar": "تعمل في كثير من الألعاب عبر USB أو Bluetooth (مثلاً عبر Steam)؛ غير مذكور في صفحة Sony.", "en": "Works in many games over USB or Bluetooth (for example through Steam); not stated on Sony's page.", "ckb": "لە زۆر یاریدا بە USB یان Bluetooth کار دەکات (بۆ نموونە لە ڕێگەی Steam)؛ لە پەڕەی Sony دا نەنووسراوە." },
+      "source": "https://en.wikipedia.org/wiki/DualShock#DualShock_4"
+    }
+  ],
+  "related": [
+    { "slug": "ps4-compatible-wireless-controller", "kind": "alternative" },
+    { "slug": "ps4-controller-thumb-grips", "kind": "accessory" },
+    { "slug": "onikuma-k8", "kind": "accessory" },
+    { "slug": "dualsense", "kind": "upsell" }
+  ],
+  "images": [
+    {
+      "key": "dualshock-4--1",
+      "file": ".cache/product-images/dualshock-4/1.png",
+      "sourceUrl": "https://store.sony.com.au/dw/image/v2/abbc_PRD/on/demandware.static/-/Sites-sony-master-catalog/default/dwf66eb5cf/images/PS4DUALSHOCKV2O/PS4DUALSHOCKV2O.png",
+      "sourcePage": "https://store.sony.com.au/PS4DUALSHOCKV2SO.html",
+      "kind": "hero",
+      "alt": { "ar": "يد DualShock 4 باللون Sunset Orange من الأمام", "en": "Sunset Orange DualShock 4 from the front", "ckb": "DualShock 4 ی Sunset Orange لە پێشەوە" },
+      "credit": "Sony",
+      "width": 1000, "height": 1000, "transparent": true
+    },
+    {
+      "key": "dualshock-4--2",
+      "file": ".cache/product-images/dualshock-4/2.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ps4-accessories-ds4-jet-black-screen-01-en-28oct20?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-ae/accessories/dualshock-4-wireless-controller/",
+      "kind": "hero",
+      "alt": { "ar": "يد DualShock 4 السوداء Jet Black من الأمام", "en": "Jet Black DualShock 4 from the front", "ckb": "DualShock 4 ی ڕەشی Jet Black لە پێشەوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "dualshock-4--3",
+      "file": ".cache/product-images/dualshock-4/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ps4-accessories-ds4-jet-black-screen-02-en-28oct20?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-ae/accessories/dualshock-4-wireless-controller/",
+      "kind": "angle",
+      "alt": { "ar": "يد DualShock 4 السوداء من زاوية أخرى", "en": "Jet Black DualShock 4 from another angle", "ckb": "DualShock 4 ی ڕەش لە گۆشەیەکی ترەوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1920, "height": 1080, "transparent": false
+    },
+    {
+      "key": "dualshock-4--4",
+      "file": ".cache/product-images/dualshock-4/4.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/ps4-accessories-ds4-jet-black-screen-03-en-28oct20?$native--t$",
+      "sourcePage": "https://www.playstation.com/en-ae/accessories/dualshock-4-wireless-controller/",
+      "kind": "angle",
+      "alt": { "ar": "يد DualShock 4 السوداء من الجانب", "en": "Jet Black DualShock 4 from the side", "ckb": "DualShock 4 ی ڕەش لە لاوە" },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1920, "height": 1080, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-ae/accessories/dualshock-4-wireless-controller/",
+      "title": "DUALSHOCK®4 wireless controller",
+      "publisher": "Sony Interactive Entertainment (PlayStation UAE)",
+      "retrieved": "2026-11-18",
+      "supports": "features (touch pad, light bar, motion sensors, speaker, 3.5mm jack, USB charging), colours Jet Black, Glacier White, Magma Red, Midnight Blue, Jet Black pictures"
+    },
+    {
+      "url": "https://blog.playstation.com/archive/2017/10/19/introducing-the-sunset-orange-dualshock-4-wireless-controller-out-14th-november",
+      "title": "Introducing the Sunset Orange Dualshock 4 wireless controller, out 14th November",
+      "publisher": "PlayStation.Blog",
+      "retrieved": "2026-11-18",
+      "supports": "Sunset Orange special edition: orange front with dark purple buttons, sticks and back; release 14 November 2017 in select markets; not sold officially in the Middle East and Africa"
+    },
+    {
+      "url": "https://store.sony.com.au/PS4DUALSHOCKV2SO.html",
+      "title": "PlayStation4 DualShock Wireless Controllers (Sunset Orange)",
+      "publisher": "Sony Australia (official store)",
+      "retrieved": "2026-11-18",
+      "supports": "Sunset Orange product (code PS4DUALSHOCKV2SO) and its product picture"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/DualShock#DualShock_4",
+      "title": "DualShock – DualShock 4",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-18",
+      "supports": "model numbers CUH-ZCT1/CUH-ZCT2, second version released 15 September 2016 with light bar visible on the touch pad, Micro-USB, Bluetooth 2.1+EDR, 3.5mm TRRS jack, colour list including Sunset Orange and Silver"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/",
+      "title": "Backward compatibility: PS4 games playable on PS5 consoles",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "DualShock 4 can be used on PS5 for supported PS4 games, not PS5 games"
+    }
+  ],
+  "notes": {
+    "ar": "Sony أوقفت إنتاج DualShock 4، وما يُباع اليوم من المخزون. يد PS5 هي DualSense.",
+    "en": "Sony has stopped making the DualShock 4; units sold today come from existing stock. The PS5 controller is the DualSense.",
+    "ckb": "Sony بەرهەمهێنانی DualShock 4 ی ڕاگرتووە؛ ئەوەی ئەمڕۆ دەفرۆشرێت لە کۆگای ماوەیە. کۆنتڕۆڵەری PS5 بریتییە لە DualSense."
+  },
+  "verification": {
+    "checkedBy": "ps4-research",
+    "secondSource": true,
+    "unverified": [
+      "Sheet row 73 'PS4 CONTROLLER ORIGINAL IGC' is read as a genuine Jet Black DualShock 4 (the standard colour); the colour and what 'IGC' means here are not stated in the sheet.",
+      "Sheet row 72 'PS4 CONTROLLER ORANGE SS' is read as the official Sunset Orange special edition (SS = Sunset).",
+      "Whether a USB cable is in the box differs by region and was not confirmed.",
+      "Battery capacity and play time are not on Sony's current page.",
+      "Exact discontinuation date not published by Sony."
+    ]
+  }
+}

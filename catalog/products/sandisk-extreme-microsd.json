@@ -1,0 +1,119 @@
+{
+  "slug": "sandisk-extreme-microsd",
+  "group": "power-cables-storage-misc",
+  "kind": "storage",
+  "platform": "multi",
+  "brand": "SanDisk",
+  "status": "available",
+  "name": {
+    "ar": "بطاقة ذاكرة SanDisk Extreme microSDXC",
+    "en": "SanDisk Extreme microSDXC UHS‑I Card",
+    "ckb": "کارتی بیرگەی SanDisk Extreme microSDXC"
+  },
+  "short": {
+    "ar": "256GB · قراءة حتى 190MB/s · كتابة حتى 130MB/s",
+    "en": "256GB · up to 190MB/s read · up to 130MB/s write",
+    "ckb": "256GB · خوێندنەوە تا 190MB/s · نووسین تا 130MB/s"
+  },
+  "description": {
+    "ar": "بطاقة microSDXC سريعة من فئة Extreme لدى SanDisk، بسعة 256GB. تصلح لجهاز Nintendo Switch وSwitch OLED وSwitch Lite ولأجهزة Steam Deck والهواتف والكاميرات. تقرأ بسرعة تصل إلى 190 ميغابايت في الثانية وتكتب حتى 130، وتحمل تصنيفات A2 وU3 وV30. لا تعمل لحفظ ألعاب Nintendo Switch 2، فهو يحتاج بطاقة microSD Express.",
+    "en": "SanDisk's fast Extreme-series microSDXC card, in 256GB. It suits the Nintendo Switch, Switch OLED and Switch Lite, Steam Deck, phones and cameras. It reads at up to 190MB/s and writes at up to 130MB/s, with A2, U3 and V30 ratings. It cannot hold Nintendo Switch 2 games: Switch 2 needs a microSD Express card.",
+    "ckb": "کارتی microSDXCی خێرای زنجیرەی Extremeی SanDisk بە قەبارەی 256GB. بۆ Nintendo Switch و Switch OLED و Switch Lite و Steam Deck و مۆبایل و کامێرا گونجاوە. خێرایی خوێندنەوەی تا 190 مێگابایت لە چرکەیەکدا و نووسینی تا 130یە، و پلەکانی A2 و U3 و V30ی هەیە. ناتوانێت یارییەکانی Nintendo Switch 2 هەڵبگرێت، چونکە Switch 2 پێویستی بە کارتی microSD Express هەیە."
+  },
+  "highlights": [
+    { "ar": "سعة 256GB", "en": "256GB capacity", "ckb": "قەبارەی 256GB" },
+    { "ar": "قراءة حتى 190MB/s وكتابة حتى 130MB/s", "en": "Reads up to 190MB/s, writes up to 130MB/s", "ckb": "خوێندنەوە تا 190MB/s و نووسین تا 130MB/s" },
+    { "ar": "تصنيف A2 للتطبيقات وU3 وV30 لتصوير فيديو 4K", "en": "A2 app rating, U3 and V30 for 4K video", "ckb": "پلەی A2 بۆ ئەپەکان، U3 و V30 بۆ ڤیدیۆی 4K" },
+    { "ar": "تعمل مع Switch الأول وSteam Deck، ولا تعمل لألعاب Switch 2", "en": "Works with the original Switch and Steam Deck; not for Switch 2 games", "ckb": "لەگەڵ Switchی یەکەم و Steam Deck کار دەکات؛ بۆ یارییەکانی Switch 2 نا" },
+    { "ar": "ضمان محدود مدى الحياة من SanDisk", "en": "Lifetime limited warranty from SanDisk", "ckb": "گەرەنتیی سنووردار بۆ هەموو تەمەن لە SanDisk" }
+  ],
+  "specs": [
+    { "key": "capacity", "label": { "ar": "السعة", "en": "Capacity", "ckb": "قەبارە" }, "value": { "ar": "256GB", "en": "256GB", "ckb": "256GB" } },
+    { "key": "card_type", "label": { "ar": "نوع البطاقة", "en": "Card type", "ckb": "جۆری کارت" }, "value": { "ar": "microSDXC بواجهة UHS-I", "en": "microSDXC, UHS-I", "ckb": "microSDXC، UHS-I" } },
+    { "key": "read_speed", "label": { "ar": "سرعة القراءة", "en": "Read speed", "ckb": "خێرایی خوێندنەوە" }, "value": { "ar": "حتى 190 ميغابايت/ثانية (أعلى من 104 تحتاج قارئاً متوافقاً)", "en": "Up to 190 MB/s (above 104 MB/s needs a compatible reader)", "ckb": "تا 190 مێگابایت/چرکە (سەرووی 104 پێویستی بە خوێنەرێکی گونجاو هەیە)" } },
+    { "key": "write_speed", "label": { "ar": "سرعة الكتابة", "en": "Write speed", "ckb": "خێرایی نووسین" }, "value": { "ar": "حتى 130 ميغابايت/ثانية", "en": "Up to 130 MB/s", "ckb": "تا 130 مێگابایت/چرکە" } },
+    { "key": "ratings", "label": { "ar": "التصنيفات", "en": "Ratings", "ckb": "پلەکان" }, "value": { "ar": "A2، U3، V30، Class 10", "en": "A2, U3, V30, Class 10", "ckb": "A2، U3، V30، Class 10" } },
+    { "key": "model", "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" }, "value": { "ar": "SDSQXAV-256G-GN6MA", "en": "SDSQXAV-256G-GN6MA", "ckb": "SDSQXAV-256G-GN6MA" } },
+    { "key": "dimensions", "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارەی دەرەکی" }, "value": { "ar": "15 × 11 × 1 ملم (حجم microSD القياسي)", "en": "15 × 11 × 1 mm (standard microSD size)", "ckb": "15 × 11 × 1 ملم (قەبارەی ستانداردی microSD)" } },
+    { "key": "warranty", "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" }, "value": { "ar": "ضمان محدود مدى الحياة من SanDisk", "en": "Lifetime limited warranty (SanDisk)", "ckb": "گەرەنتیی سنووردار بۆ هەموو تەمەن (SanDisk)" } }
+  ],
+  "variants": [
+    {
+      "sku": "SANDISK-EXTREME-256",
+      "sheetRow": 173,
+      "title": { "ar": "256GB", "en": "256GB", "ckb": "256GB" },
+      "options": { "storage": "256GB" },
+      "modelNumber": "SDSQXAV-256G-GN6MA",
+      "barcodes": ["619659188504"],
+      "isDefault": true,
+      "images": ["sandisk-extreme-microsd--1"],
+      "notes": {
+        "ar": "رقم الموديل والباركود (UPC) من متجر SanDisk الأمريكي، وقد يختلفان في مناطق أخرى.",
+        "en": "Model number and UPC from SanDisk's US store; other regions may use other codes.",
+        "ckb": "ژمارەی مۆدێل و بارکۆد (UPC) لە فرۆشگای SanDiskی ئەمریکاوەیە؛ لە ناوچەکانی تر لەوانەیە جیاواز بن."
+      }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "switch", "status": "verified", "note": { "ar": "يقبل Switch بطاقات microSDXC لحفظ الألعاب.", "en": "Switch takes microSDXC cards for game storage.", "ckb": "Switch کارتی microSDXC بۆ هەڵگرتنی یاری وەردەگرێت." }, "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/" },
+    { "deviceModel": "switch-oled", "status": "verified", "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/" },
+    { "deviceModel": "switch-lite", "status": "verified", "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/" },
+    { "deviceModel": "switch-2", "status": "incompatible", "note": { "ar": "Switch 2 لا يشغّل الألعاب إلا من بطاقات microSD Express؛ هذه البطاقة تفتح فقط الصور والفيديو الملتقطة على Switch الأول.", "en": "Switch 2 only runs games from microSD Express cards; this card only opens screenshots and videos taken on the original Switch.", "ckb": "Switch 2 تەنها لە کارتی microSD Expressەوە یاری دەکات؛ ئەم کارتە تەنها وێنە و ڤیدیۆی Switchی یەکەم دەکاتەوە." }, "source": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/" },
+    { "deviceModel": "steam-deck-lcd", "status": "unverified", "note": { "ar": "لـ Steam Deck منفذ microSD قياسي (UHS-I)؛ لم نجد صفحة رسمية تذكر هذه البطاقة بالاسم.", "en": "Steam Deck has a standard UHS-I microSD slot; no official page names this card.", "ckb": "Steam Deck کونی microSDی ستانداردی (UHS-I) هەیە؛ هیچ پەڕەیەکی فەرمی ناوی ئەم کارتەی نەهێناوە." } },
+    { "deviceModel": "steam-deck-oled", "status": "unverified" }
+  ],
+  "related": [
+    { "slug": "sandisk-ultra-microsd", "kind": "alternative" },
+    { "slug": "sandisk-microsd-express", "kind": "alternative" },
+    { "slug": "nintendo-switch-oled", "kind": "setup" },
+    { "slug": "nintendo-switch-lite", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "sandisk-extreme-microsd--1",
+      "file": ".cache/product-images/sandisk-extreme-microsd/1.png",
+      "sourceUrl": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/extreme-uhs-i-microsd/extreme-uhs-i-microsd-256gb.png",
+      "sourcePage": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-extreme-uhs-i-microsd?sku=SDSQXAV-256G-GN6MA",
+      "kind": "hero",
+      "alt": {
+        "ar": "بطاقة SanDisk Extreme microSDXC سعة 256GB من الأمام، باللونين الأحمر والذهبي",
+        "en": "SanDisk Extreme 256GB microSDXC card, front, red and gold",
+        "ckb": "کارتی SanDisk Extreme microSDXC بە قەبارەی 256GB لە پێشەوە، سوور و زێڕین"
+      },
+      "credit": "Sandisk",
+      "width": 1680,
+      "height": 1680,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-extreme-uhs-i-microsd",
+      "title": "SanDisk Extreme microSDXC UHS-I Card",
+      "publisher": "Sandisk",
+      "retrieved": "2026-11-18",
+      "supports": "256GB model SDSQXAV-256G-GN6MA, UPC 619659188504, read up to 190MB/s, write up to 130MB/s, A2/U3/V30, size, lifetime limited warranty, image"
+    },
+    {
+      "url": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/68425/",
+      "title": "microSD Card and microSD Express Card Compatibility with Nintendo Switch 2 and Nintendo Switch",
+      "publisher": "Nintendo Support",
+      "retrieved": "2026-11-18",
+      "supports": "original Switch family takes microSDHC/microSDXC cards; Switch 2 only takes microSD Express for games"
+    }
+  ],
+  "notes": {
+    "ar": "سرعات SanDisk القصوى مقاسة في مختبراتها، والسرعات الأعلى من 104MB/s تحتاج جهازاً أو قارئاً يدعم تقنية SanDisk QuickFlow. ضمان SanDisk يخضع لشروط بلد الشراء.",
+    "en": "SanDisk's top speeds are its own lab figures; speeds above 104MB/s need a device or reader that supports SanDisk QuickFlow. SanDisk's warranty follows the terms of the country of purchase.",
+    "ckb": "خێراییە بەرزەکانی SanDisk ژمارەی تاقیگەی خۆیانن؛ خێرایی سەرووی 104MB/s پێویستی بە ئامێر یان خوێنەرێکە کە SanDisk QuickFlow پشتگیری بکات. گەرەنتیی SanDisk بەپێی مەرجەکانی وڵاتی کڕینە."
+  },
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": true,
+    "unverified": [
+      "Owner sheet says only \"SANDISK EXTREME 256GB\": assumed the microSD card (the common Extreme item in gaming shops), not an SD card or portable SSD",
+      "Whether the card in stock comes with an SD adapter",
+      "Release date of this 190MB/s generation"
+    ]
+  }
+}

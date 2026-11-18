@@ -1,0 +1,98 @@
+{
+  "slug": "ps4-controller-thumb-grips",
+  "group": "ps4",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "طقم أغطية عصي التحكم لـ PS4",
+    "en": "Thumb Grips Set for PS4 Controller",
+    "ckb": "سێتی سەرپۆشی دەسکی جۆیستیک بۆ PS4"
+  },
+  "short": {
+    "ar": "أغطية سيليكون لعصي يد DualShock 4 · قبضة أفضل · تحمي العصي من التآكل",
+    "en": "Silicone caps for DualShock 4 sticks · Better grip · Protects the sticks from wear",
+    "ckb": "سەرپۆشی سیلیکۆن بۆ جۆیستیکەکانی DualShock 4 · گرتنی باشتر · پاراستنی جۆیستیک لە سووان"
+  },
+  "description": {
+    "ar": "طقم أغطية مطاطية تُركّب فوق عصي التحكم في يد PS4. تعطي سطحاً أخشن للإبهام فلا ينزلق أثناء اللعب، وتحمي مطاط العصي الأصلي من التآكل. تُركّب وتُنزع باليد بدون أدوات.",
+    "en": "A set of rubber caps that fit over the analog sticks of a PS4 controller. They give your thumbs a rougher surface so they do not slip while playing, and protect the stick's own rubber from wear. They go on and come off by hand, no tools needed.",
+    "ckb": "سێتێک سەرپۆشی لاستیکی کە لەسەر جۆیستیکەکانی کۆنتڕۆڵەری PS4 دادەنرێن. ڕووێکی زبرتر دەدەن بە پەنجە گەورەکانت تا لە کاتی یاریدا نەخلیسکێن، و لاستیکی جۆیستیکەکە لە سووان دەپارێزن. بە دەست دادەنرێن و لادەبرێن، بێ ئامراز."
+  },
+  "highlights": [
+    {
+      "ar": "تُركّب فوق عصي يد DualShock 4 بدون أدوات",
+      "en": "Fit over DualShock 4 sticks, no tools needed",
+      "ckb": "بێ ئامراز لەسەر جۆیستیکەکانی DualShock 4 دادەنرێن"
+    },
+    {
+      "ar": "قبضة أفضل وتمنع انزلاق الإبهام",
+      "en": "Better grip, stops thumbs slipping",
+      "ckb": "گرتنی باشتر، پەنجە ناخلیسکێت"
+    },
+    {
+      "ar": "تحمي مطاط العصي الأصلي من التآكل",
+      "en": "Protect the stick's original rubber from wear",
+      "ckb": "لاستیکی ڕەسەنی جۆیستیک لە سووان دەپارێزن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "material",
+      "label": { "ar": "المادة", "en": "Material", "ckb": "ماددە" },
+      "value": { "ar": "سيليكون / مطاط", "en": "Silicone / rubber", "ckb": "سیلیکۆن / لاستیک" }
+    },
+    {
+      "key": "devices",
+      "label": { "ar": "الأجهزة المتوافقة", "en": "Compatible devices", "ckb": "ئامێرە گونجاوەکان" },
+      "value": { "ar": "يد DualShock 4 (وغالباً DualSense)", "en": "DualShock 4 controller (usually DualSense too)", "ckb": "کۆنتڕۆڵەری DualShock 4 (زۆرجار DualSense یش)" }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "PS4-THUMB-GRIPS",
+      "sheetRow": 78,
+      "title": { "ar": "طقم أغطية عصي التحكم لـ PS4", "en": "Thumb Grips Set for PS4 Controller", "ckb": "سێتی سەرپۆشی دەسکی جۆیستیک بۆ PS4" },
+      "options": { "pack": "Set" },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps4",
+      "status": "unverified",
+      "note": { "ar": "تُركّب على يد DualShock 4 وليس على الجهاز.", "en": "Fits the DualShock 4 controller, not the console.", "ckb": "لەسەر کۆنتڕۆڵەری DualShock 4 دادەنرێت، نەک ئامێرەکە." },
+      "source": "https://support.trust.com/en/support/solutions/articles/9000239961-gxt-262-thumb-grips-8-pack-for-ps4-controllers-20814"
+    }
+  ],
+  "related": [
+    { "slug": "dualshock-4", "kind": "setup" },
+    { "slug": "ps4-compatible-wireless-controller", "kind": "setup" }
+  ],
+  "sources": [
+    {
+      "url": "https://support.trust.com/en/support/solutions/articles/9000239961-gxt-262-thumb-grips-8-pack-for-ps4-controllers-20814",
+      "title": "GXT 262 Thumb Grips 8-pack for PS4 controllers - 20814",
+      "publisher": "Trust (maker of a comparable set)",
+      "retrieved": "2026-11-18",
+      "supports": "what a PS4 thumb-grip set is: caps that fit over DualShock 4 analog sticks"
+    },
+    {
+      "url": "https://www.psfanatic.com/mudder-thumb-grips-review/",
+      "title": "Mudder Thumb Grips Review",
+      "publisher": "PSFanatic",
+      "retrieved": "2026-11-18",
+      "supports": "thumb grips improve grip and feel on DualShock 4 sticks; sets come as several pairs"
+    }
+  ],
+  "verification": {
+    "checkedBy": "ps4-research",
+    "secondSource": true,
+    "unverified": [
+      "Sheet row 78 'PS4 GRIPS SET' (10,000 IQD) is read as a generic set of analog-stick thumb grips; maker, number of pieces and colours are not in the sheet.",
+      "It could instead be a controller silicone skin with grips; not confirmed.",
+      "No product picture: the exact set is unknown."
+    ]
+  }
+}

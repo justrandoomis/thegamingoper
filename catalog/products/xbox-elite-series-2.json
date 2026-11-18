@@ -127,6 +127,7 @@
   "variants": [
     {
       "sku": "ELITE2-BLK",
+      "sheetRow": 225,
       "title": {
         "ar": "النسخة الكاملة · أسود",
         "en": "Full kit · Black",

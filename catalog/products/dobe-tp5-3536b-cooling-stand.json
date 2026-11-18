@@ -1,0 +1,294 @@
+{
+  "slug": "dobe-tp5-3536b-cooling-stand",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة تبريد عمودية DOBE TP5‑3536B لجهاز PS5 Slim",
+    "en": "DOBE TP5‑3536B Vertical Cooling Stand for PS5 Slim",
+    "ckb": "ستاندی ساردکەرەوەی ستوونی DOBE TP5‑3536B بۆ PS5 Slim"
+  },
+  "short": {
+    "ar": "مروحتان بثلاث سرعات · شحن يدين · رف لـ 11 قرص",
+    "en": "Two fans, 3 speeds · Charges two controllers · Holds 11 discs",
+    "ckb": "دوو پانکە بە 3 خێرایی · شەحنی دوو کۆنتڕۆڵەر · 11 دیسک"
+  },
+  "description": {
+    "ar": "قاعدة عمودية من DOBE لجهاز PS5 Slim بنسختيه، فيها مروحتا تبريد بثلاث سرعات، ومكانان لشحن يدَي DualSense، ورف يتسع لـ 11 قرص لعبة.",
+    "en": "A DOBE upright stand for the PS5 Slim (disc and digital) with two cooling fans at three speeds, two DualSense charging spots and a rack for 11 game discs.",
+    "ckb": "ستاندێکی ستوونیی DOBE بۆ PS5 Slim (دیسک و دیجیتاڵ) لەگەڵ دوو پانکەی ساردکردنەوە بە سێ خێرایی، دوو شوێنی شەحنی DualSense و ڕەفێک بۆ 11 دیسک."
+  },
+  "highlights": [
+    {
+      "ar": "مروحتا تبريد بثلاث سرعات",
+      "en": "Two cooling fans with 3 speeds",
+      "ckb": "دوو پانکە بە 3 خێرایی"
+    },
+    {
+      "ar": "يشحن يدَي DualSense معاً",
+      "en": "Charges two DualSense controllers",
+      "ckb": "دوو DualSense شەحن دەکات"
+    },
+    {
+      "ar": "رف لـ 11 قرص لعبة",
+      "en": "Rack for 11 game discs",
+      "ckb": "ڕەف بۆ 11 دیسکی یاری"
+    },
+    {
+      "ar": "يناسب PS5 Slim بنسختي الأقراص والرقمية",
+      "en": "Fits PS5 Slim disc and digital",
+      "ckb": "بۆ PS5 Slimی دیسک و دیجیتاڵ"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "TP5‑3536B",
+        "en": "TP5‑3536B",
+        "ckb": "TP5‑3536B"
+      }
+    },
+    {
+      "key": "cooling",
+      "label": {
+        "ar": "التبريد",
+        "en": "Cooling",
+        "ckb": "ساردکردنەوە"
+      },
+      "value": {
+        "ar": "مروحتان، 3 سرعات",
+        "en": "2 fans, 3 speeds",
+        "ckb": "2 پانکە، 3 خێرایی"
+      }
+    },
+    {
+      "key": "charging",
+      "label": {
+        "ar": "الشحن",
+        "en": "Charging",
+        "ckb": "شەحن"
+      },
+      "value": {
+        "ar": "يدان DualSense",
+        "en": "2 DualSense controllers",
+        "ckb": "2 DualSense"
+      }
+    },
+    {
+      "key": "storage",
+      "label": {
+        "ar": "التخزين",
+        "en": "Storage",
+        "ckb": "هەڵگرتن"
+      },
+      "value": {
+        "ar": "حتى 11 قرص",
+        "en": "Up to 11 discs",
+        "ckb": "تا 11 دیسک"
+      }
+    },
+    {
+      "key": "ports",
+      "label": {
+        "ar": "المنافذ",
+        "en": "Ports",
+        "ckb": "دەروازەکان"
+      },
+      "value": {
+        "ar": "منفذ USB‑C واحد",
+        "en": "1 USB‑C port",
+        "ckb": "1 دەروازەی USB‑C"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قاعدة التبريد",
+      "en": "Cooling stand",
+      "ckb": "ستاندی ساردکەرەوە"
+    },
+    {
+      "ar": "دعامة PS5",
+      "en": "PS5 support bracket",
+      "ckb": "پاڵپشتی PS5"
+    },
+    {
+      "ar": "كابل شحن",
+      "en": "Charging cable",
+      "ckb": "وایەری شەحن"
+    },
+    {
+      "ar": "براغي التثبيت",
+      "en": "Retaining screws",
+      "ckb": "بزمارەی بەستن"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TP5-3536B",
+      "title": {
+        "ar": "قاعدة تبريد عمودية DOBE TP5‑3536B لجهاز PS5 Slim",
+        "en": "DOBE TP5‑3536B Vertical Cooling Stand for PS5 Slim",
+        "ckb": "ستاندی ساردکەرەوەی ستوونی DOBE TP5‑3536B بۆ PS5 Slim"
+      },
+      "options": {
+        "color": "White/Black"
+      },
+      "modelNumber": "TP5-3536B",
+      "sheetRow": 150,
+      "isDefault": true,
+      "images": [
+        "dobe-tp5-3536b-cooling-stand--1",
+        "dobe-tp5-3536b-cooling-stand--2",
+        "dobe-tp5-3536b-cooling-stand--3",
+        "dobe-tp5-3536b-cooling-stand--4"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "source": "https://www.pbtech.com/product/GAMDBE3536B/DOBE-Vertical-Cooling-Stand-with-Controller-Chargi"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "verified",
+      "source": "https://www.pbtech.com/product/GAMDBE3536B/DOBE-Vertical-Cooling-Stand-with-Controller-Chargi"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-slim-digital-edition",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-pro",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-edge",
+      "kind": "setup"
+    },
+    {
+      "slug": "jys-ps5-cooling-stand",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ps5-vertical-stand",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "dobe-tp5-3536b-cooling-stand--1",
+      "file": ".cache/product-images/dobe-tp5-3536b-cooling-stand/1.jpg",
+      "sourceUrl": "https://www.pbtech.com/imgprod/G/A/GAMDBE3536B__6.jpg",
+      "sourcePage": "https://www.pbtech.com/product/GAMDBE3536B/DOBE-Vertical-Cooling-Stand-with-Controller-Chargi",
+      "kind": "hero",
+      "alt": {
+        "ar": "جهاز PS5 Slim على القاعدة مع يدين وأقراص",
+        "en": "A PS5 Slim on the stand with controllers and discs",
+        "ckb": "PS5 Slim لەسەر ستاندەکە لەگەڵ کۆنتڕۆڵەر و دیسک"
+      },
+      "credit": "DOBE",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    },
+    {
+      "key": "dobe-tp5-3536b-cooling-stand--2",
+      "file": ".cache/product-images/dobe-tp5-3536b-cooling-stand/2.jpg",
+      "sourceUrl": "https://www.pbtech.com/imgprod/G/A/GAMDBE3536B__1.jpg",
+      "sourcePage": "https://www.pbtech.com/product/GAMDBE3536B/DOBE-Vertical-Cooling-Stand-with-Controller-Chargi",
+      "kind": "angle",
+      "alt": {
+        "ar": "القاعدة مع الدعامة والجهاز",
+        "en": "The stand with its bracket and console",
+        "ckb": "ستاندەکە لەگەڵ پاڵپشت و کۆنسۆڵ"
+      },
+      "credit": "DOBE",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    },
+    {
+      "key": "dobe-tp5-3536b-cooling-stand--3",
+      "file": ".cache/product-images/dobe-tp5-3536b-cooling-stand/3.jpg",
+      "sourceUrl": "https://www.pbtech.com/imgprod/G/A/GAMDBE3536B__5.jpg",
+      "sourcePage": "https://www.pbtech.com/product/GAMDBE3536B/DOBE-Vertical-Cooling-Stand-with-Controller-Chargi",
+      "kind": "detail",
+      "alt": {
+        "ar": "القاعدة فارغة مع رف الأقراص",
+        "en": "The empty stand with the disc rack",
+        "ckb": "ستاندەکە بە بەتاڵی لەگەڵ ڕەفی دیسک"
+      },
+      "credit": "DOBE",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    },
+    {
+      "key": "dobe-tp5-3536b-cooling-stand--4",
+      "file": ".cache/product-images/dobe-tp5-3536b-cooling-stand/4.jpg",
+      "sourceUrl": "https://www.pbtech.com/imgprod/G/A/GAMDBE3536B__3.jpg",
+      "sourcePage": "https://www.pbtech.com/product/GAMDBE3536B/DOBE-Vertical-Cooling-Stand-with-Controller-Chargi",
+      "kind": "in-box",
+      "alt": {
+        "ar": "محتويات العلبة",
+        "en": "What's in the box",
+        "ckb": "ناوەڕۆکی قوتوو"
+      },
+      "credit": "DOBE",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.pbtech.com/product/GAMDBE3536B/DOBE-Vertical-Cooling-Stand-with-Controller-Chargi",
+      "title": "DOBE Vertical Cooling Stand with Controller Charging Dock For PS5 / PS5 Slim (TP5-3536B)",
+      "publisher": "PB Tech (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "model, PS5 Slim disc and digital fit, 2 controllers, dual fans, 3 speeds, 1 USB-C port, 11 discs, pictures"
+    },
+    {
+      "url": "https://ecommerce.datablitz.com.ph/products/dobe-multifunctional-cooling-stand-for-ps5-new-slim-ps5-tp5-3536b",
+      "title": "Dobe Multifunctional Cooling Stand For PS5 / New Slim PS5 TP5-3536B",
+      "publisher": "Datablitz (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "fact-check: two DualSense chargers, disc rack, cooling stand"
+    }
+  ],
+  "notes": {
+    "ar": "اليدان والجهاز غير مرفقين.",
+    "en": "Console and controllers not included.",
+    "ckb": "کۆنسۆڵ و کۆنتڕۆڵەرەکان لەگەڵیدا نین."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Datablitz says 10 discs, PB Tech 11",
+      "Fit on the PS5 Pro (not stated for TP5-3536B)",
+      "No DOBE-run page was found"
+    ]
+  }
+}

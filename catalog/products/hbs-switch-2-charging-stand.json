@@ -1,0 +1,139 @@
+{
+  "slug": "hbs-switch-2-charging-stand",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "HBS",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة شحن HBS لجهاز Nintendo Switch 2",
+    "en": "HBS Charging Stand for Nintendo Switch 2",
+    "ckb": "بنکەی بارگاویکردنی HBS بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "شحن يدي Joy-Con 2 وتنظيم الجهاز والألعاب",
+    "en": "Charges Joy-Con 2 and organises console and games",
+    "ckb": "Joy-Con 2 بارگاوی دەکات و ئامێر و یارییەکان ڕێکدەخات"
+  },
+  "description": {
+    "ar": "قواعد شحن غير رسمية لجهاز Nintendo Switch 2 تشحن يدي Joy-Con 2 وتوفر مكانًا للجهاز وبطاقات الألعاب. لدينا موديلان: HBS-2804 (قاعدة) و HBS-2806 (رف شحن).",
+    "en": "Unofficial charging stands for Nintendo Switch 2 that charge Joy-Con 2 and give the console and game cards a place. Two models: HBS-2804 (base) and HBS-2806 (charging rack).",
+    "ckb": "بنکەی بارگاویکردنی نافەرمی بۆ Nintendo Switch 2 کە Joy-Con 2 بارگاوی دەکەن و شوێن بۆ ئامێر و کارتی یاری دابین دەکەن. دوو مۆدێل: HBS-2804 (بنکە) و HBS-2806 (ڕەفی بارگاویکردن)."
+  },
+  "highlights": [
+    {
+      "ar": "يشحن يدي Joy-Con 2",
+      "en": "Charges Joy-Con 2",
+      "ckb": "Joy-Con 2 بارگاوی دەکات"
+    },
+    {
+      "ar": "مكان لبطاقات الألعاب",
+      "en": "Game card storage",
+      "ckb": "شوێنی کارتی یاری"
+    },
+    {
+      "ar": "ليس منتجًا رسميًا من Nintendo",
+      "en": "Not an official Nintendo product",
+      "ckb": "بەرهەمی فەرمیی Nintendo نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Nintendo Switch 2 ويدا Joy-Con 2",
+        "en": "Nintendo Switch 2 and Joy-Con 2",
+        "ckb": "Nintendo Switch 2 و Joy-Con 2"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "HBS-2804",
+      "sheetRow": 186,
+      "title": {
+        "ar": "قاعدة شحن HBS‑2804",
+        "en": "HBS‑2804 charging base",
+        "ckb": "بنکەی بارگاویکردنی HBS‑2804"
+      },
+      "modelNumber": "HBS-2804",
+      "options": {
+        "model": "HBS-2804"
+      },
+      "isDefault": true
+    },
+    {
+      "sku": "HBS-2806",
+      "sheetRow": 187,
+      "title": {
+        "ar": "رف شحن HBS‑2806",
+        "en": "HBS‑2806 charging rack",
+        "ckb": "ڕەفی بارگاویکردنی HBS‑2806"
+      },
+      "modelNumber": "HBS-2806",
+      "options": {
+        "model": "HBS-2806"
+      },
+      "isDefault": false
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "unverified",
+      "note": {
+        "ar": "لـ Switch 2 حسب ورقة المخزن",
+        "en": "For Switch 2 per the stock sheet",
+        "ckb": "بۆ Switch 2 بەپێی لیستی کۆگا"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "joy-con-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "ipega-switch-2-charging-station",
+      "kind": "alternative"
+    },
+    {
+      "slug": "switch-2-joy-con-charging-dock-8-in-1",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.bestbuy.ca/en-ca/product/new-switch2-storage-charger-host-controller-card-storage-ns2-rgb-glare-controller-fast-charging-black/19371498",
+      "title": "Switch 2 storage charger – host, controller and card storage (model 2804)",
+      "publisher": "Best Buy Canada",
+      "retrieved": "2026-11-18",
+      "supports": "a Switch 2 storage charger listed with model number 2804, 5V/2A"
+    },
+    {
+      "url": "https://www.bestbuy.ca/en-ca/product/switch-2-charging-dock-station-rgb-stand-with-console-game-card-storage/19915181",
+      "title": "Switch 2 Charging Dock Station RGB Stand with Console & Game Card Storage",
+      "publisher": "Best Buy Canada",
+      "retrieved": "2026-11-18",
+      "supports": "the charging-stand type: Joy-Con charging, console stand, game card storage"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Maker \"HBS\" (no maker page found)",
+      "Number of controllers each model charges",
+      "Power input and lighting"
+    ]
+  }
+}

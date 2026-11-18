@@ -1,0 +1,265 @@
+{
+  "slug": "jys-rog-ally-carrying-case-x152",
+  "group": "handheld-pc-accessories",
+  "kind": "accessory",
+  "platform": "pc_handheld",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "حقيبة JYS‑X152 لأجهزة ROG Ally",
+    "en": "JYS‑X152 Carrying Case for ROG Ally",
+    "ckb": "جانتای JYS‑X152 بۆ ROG Ally"
+  },
+  "short": {
+    "ar": "حقيبة صلبة · ROG Ally وAlly X وXbox Ally · 5 فتحات بطاقات",
+    "en": "Hard case · ROG Ally, Ally X and Xbox Ally · 5 card slots",
+    "ckb": "جانتای ڕەق · ROG Ally، Ally X و Xbox Ally · 5 شوێنی کارت"
+  },
+  "description": {
+    "ar": "حقيبة حمل صلبة من JYS تتسع لجهاز ROG Ally أو ROG Ally X أو ROG Xbox Ally أو ROG Xbox Ally X مع الشاحن والكابل. مكونة من ثلاث طبقات: سطح PU مقاوم للماء، وEVA صلبة تمتص الصدمات، وبطانة مخملية ناعمة. في داخلها جيب شبكي و5 فتحات لبطاقات الذاكرة، ولوح يحمي الشاشة ويعمل كحامل، ولها مقبض للحمل.",
+    "en": "A hard carrying case from JYS that holds a ROG Ally, ROG Ally X, ROG Xbox Ally or ROG Xbox Ally X together with its charger and cable. It has three layers — a water-resistant PU shell, shock-absorbing EVA and a soft velvet lining — plus a mesh pocket, five memory-card slots, a flap that protects the screen and doubles as a stand, and a carry handle.",
+    "ckb": "جانتایەکی ڕەقی JYS کە ROG Ally، ROG Ally X، ROG Xbox Ally یان ROG Xbox Ally X لەگەڵ شەحنکەر و وایەرەکەی هەڵدەگرێت. سێ چینی هەیە: ڕووی PUی دژە ئاو، EVAی ڕەقی کەمکەرەوەی لێدان و ناوپۆشی مەخمەلی نەرم. گیرفانێکی تۆڕی، 5 شوێنی کارتی بیرگە، پەڕەیەک کە شاشە دەپارێزێت و وەک وەستێنەر کار دەکات، و دەسکی هەڵگرتنی هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "يناسب ROG Ally وAlly X وROG Xbox Ally وXbox Ally X",
+      "en": "Fits ROG Ally, Ally X, ROG Xbox Ally and Xbox Ally X",
+      "ckb": "گونجاوە بۆ ROG Ally، Ally X، ROG Xbox Ally و Xbox Ally X"
+    },
+    {
+      "ar": "ثلاث طبقات حماية: PU وEVA وبطانة مخملية",
+      "en": "Three layers: PU, EVA and velvet lining",
+      "ckb": "سێ چین پاراستن: PU، EVA و ناوپۆشی مەخمەلی"
+    },
+    {
+      "ar": "مكان للشاحن والكابل و5 بطاقات ذاكرة",
+      "en": "Room for charger, cable and 5 memory cards",
+      "ckb": "شوێن بۆ شەحنکەر، وایەر و 5 کارتی بیرگە"
+    },
+    {
+      "ar": "لوح داخلي يحمي الشاشة ويعمل كحامل",
+      "en": "Inner flap protects the screen and works as a stand",
+      "ckb": "پەڕەی ناوەوە شاشە دەپارێزێت و وەک وەستێنەر کار دەکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "JYS‑X152",
+        "en": "JYS‑X152",
+        "ckb": "JYS‑X152"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "ROG Ally · ROG Ally X · ROG Xbox Ally · ROG Xbox Ally X",
+        "en": "ROG Ally · ROG Ally X · ROG Xbox Ally · ROG Xbox Ally X",
+        "ckb": "ROG Ally · ROG Ally X · ROG Xbox Ally · ROG Xbox Ally X"
+      }
+    },
+    {
+      "key": "material",
+      "label": {
+        "ar": "الخامة",
+        "en": "Material",
+        "ckb": "کەرەستە"
+      },
+      "value": {
+        "ar": "PU مقاوم للماء + EVA + بطانة مخملية",
+        "en": "Water-resistant PU + EVA + velvet lining",
+        "ckb": "PUی دژە ئاو + EVA + ناوپۆشی مەخمەلی"
+      }
+    },
+    {
+      "key": "storage",
+      "label": {
+        "ar": "التخزين داخل الحقيبة",
+        "en": "Storage inside",
+        "ckb": "شوێنی ناو جانتاکە"
+      },
+      "value": {
+        "ar": "الجهاز، الشاحن، الكابل، 5 بطاقات ذاكرة، جيب شبكي",
+        "en": "Console, charger, cable, 5 memory cards, mesh pocket",
+        "ckb": "ئامێر، شەحنکەر، وایەر، 5 کارتی بیرگە، گیرفانی تۆڕی"
+      }
+    },
+    {
+      "key": "color",
+      "label": {
+        "ar": "اللون",
+        "en": "Colour",
+        "ckb": "ڕەنگ"
+      },
+      "value": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "حقيبة الحمل فقط (الجهاز غير مشمول)",
+      "en": "Carrying case only (console not included)",
+      "ckb": "تەنها جانتاکە (ئامێر لەگەڵیدا نییە)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-X152-BLACK",
+      "sheetRow": 4,
+      "title": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "JYS-X152",
+      "barcodes": [
+        "5904647831957"
+      ],
+      "isDefault": true,
+      "images": [
+        "jys-rog-ally-carrying-case-x152--1"
+      ],
+      "notes": {
+        "ar": "الباركود هو لنسخة V2 السوداء كما يبيعها موزع JYS في بولندا.",
+        "en": "The barcode is the black V2 version as listed by JYS's Polish distributor.",
+        "ckb": "باڕکۆدەکە هی وەشانی V2ی ڕەشە بەپێی دابەشکەری JYS لە پۆڵەندا."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "rog-ally",
+      "status": "verified",
+      "note": {
+        "ar": "مقصورة مصممة لهذا الجهاز حسب JYS",
+        "en": "Fitted compartment for this handheld, per JYS",
+        "ckb": "بەشێکی تایبەت بەم ئامێرە، بەپێی JYS"
+      },
+      "source": "https://www.systembank.pl/etui-ochronne-futeral-case-hard-case-do-asus-rog-ally-rog-xbox-ally-x-jys-x152-v2-czarny-p11092.html"
+    },
+    {
+      "deviceModel": "rog-ally-x",
+      "status": "verified",
+      "note": {
+        "ar": "مقصورة مصممة لهذا الجهاز حسب JYS",
+        "en": "Fitted compartment for this handheld, per JYS",
+        "ckb": "بەشێکی تایبەت بەم ئامێرە، بەپێی JYS"
+      },
+      "source": "https://www.systembank.pl/etui-ochronne-futeral-case-hard-case-do-asus-rog-ally-rog-xbox-ally-x-jys-x152-v2-czarny-p11092.html"
+    },
+    {
+      "deviceModel": "rog-xbox-ally",
+      "status": "verified",
+      "note": {
+        "ar": "مقصورة مصممة لهذا الجهاز حسب JYS",
+        "en": "Fitted compartment for this handheld, per JYS",
+        "ckb": "بەشێکی تایبەت بەم ئامێرە، بەپێی JYS"
+      },
+      "source": "https://www.systembank.pl/etui-ochronne-futeral-case-hard-case-do-asus-rog-ally-rog-xbox-ally-x-jys-x152-v2-czarny-p11092.html"
+    },
+    {
+      "deviceModel": "rog-xbox-ally-x",
+      "status": "verified",
+      "note": {
+        "ar": "مقصورة مصممة لهذا الجهاز حسب JYS",
+        "en": "Fitted compartment for this handheld, per JYS",
+        "ckb": "بەشێکی تایبەت بەم ئامێرە، بەپێی JYS"
+      },
+      "source": "https://www.systembank.pl/etui-ochronne-futeral-case-hard-case-do-asus-rog-ally-rog-xbox-ally-x-jys-x152-v2-czarny-p11092.html"
+    }
+  ],
+  "related": [
+    {
+      "slug": "rog-ally-x",
+      "kind": "setup"
+    },
+    {
+      "slug": "rog-xbox-ally-x",
+      "kind": "setup"
+    },
+    {
+      "slug": "jys-rog-ally-x-carrying-case-rax011",
+      "kind": "alternative"
+    },
+    {
+      "slug": "jys-rog-ally-protective-case-set-x153",
+      "kind": "accessory"
+    },
+    {
+      "slug": "dobe-rog-ally-tempered-glass-ty-3836",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "jys-rog-ally-carrying-case-x152--1",
+      "file": ".cache/product-images/jys-rog-ally-carrying-case-x152/1.jpg",
+      "sourceUrl": "https://www.systembank.pl/img/opis/11092/etui-ochronne-futeral-case-hard-case-do-asus-rog-ally-rog-xbox-ally-x-jys-x152-v2-czarny_o11092_1.jpg",
+      "sourcePage": "https://www.systembank.pl/etui-ochronne-futeral-case-hard-case-do-asus-rog-ally-rog-xbox-ally-x-jys-x152-v2-czarny-p11092.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "حقيبة JYS X152 السوداء مغلقة",
+        "en": "The black JYS X152 case, closed",
+        "ckb": "جانتای ڕەشی JYS X152، داخراو"
+      },
+      "credit": "JYS Electronics",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.systembank.pl/etui-ochronne-futeral-case-hard-case-do-asus-rog-ally-rog-xbox-ally-x-jys-x152-v2-czarny-p11092.html",
+      "title": "Etui Ochronne Futerał Case Hard Case do ASUS ROG Ally / ROG XBOX Ally X / JYS-X152-V2 / Czarny",
+      "publisher": "SystemBank (JYS distributor, Poland)",
+      "retrieved": "2026-11-18",
+      "supports": "model JYS-X152-V2 / X152, black, fits ROG Ally / Ally X / Xbox Ally / Xbox Ally X, PU + EVA + velvet, 5 card slots, screen flap and stand, EAN 5904647831957, manufacturer JYS Electronics Co., Ltd (Shenzhen), product images"
+    },
+    {
+      "url": "https://www.skygames.com.pk/?p=16253",
+      "title": "JYS ROG Xbox Ally/X Storage Case – JYS X152",
+      "publisher": "Sky Games (retailer, Pakistan)",
+      "retrieved": "2026-11-18",
+      "supports": "second source: X152 fits ROG Ally / Ally X / Xbox Ally family, three-layer build, mesh pocket, five SD card slots, handle, case only"
+    },
+    {
+      "url": "https://gameone.ph/jys-carrying-case-for-rog-xbox-ally-rog-xbox-ally-x-game-accessories-jys-x152-v3.html",
+      "title": "JYS Carrying Case for ROG Xbox Ally & ROG Xbox Ally X (JYS-X152-V3)",
+      "publisher": "Game One (retailer, Philippines)",
+      "retrieved": "2026-11-18",
+      "supports": "a later V3 revision exists; same features and desktop-stand function"
+    }
+  ],
+  "notes": {
+    "ar": "تبيع JYS هذه الحقيبة بعدة نسخ (V2 وV3) وبلون أبيض أيضاً؛ القطعة المتوفرة سوداء.",
+    "en": "JYS sells this case in revisions V2 and V3 and also in white; the unit in stock is black.",
+    "ckb": "JYS ئەم جانتایە بە وەشانی V2 و V3 و ڕەنگی سپیش دەفرۆشێت؛ ئەوەی لە کۆگادایە ڕەشە."
+  },
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "No JYS web page found; facts come from JYS's Polish distributor and retailers",
+      "Which revision (V2 or V3) the stocked unit is",
+      "Colour of the stocked unit (assumed black)"
+    ]
+  }
+}

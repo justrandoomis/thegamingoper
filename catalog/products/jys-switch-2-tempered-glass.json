@@ -1,0 +1,150 @@
+{
+  "slug": "jys-switch-2-tempered-glass",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "واقي شاشة زجاجي JYS لجهاز Nintendo Switch 2",
+    "en": "JYS Tempered Glass for Nintendo Switch 2",
+    "ckb": "پارێزەری شاشەی شووشەیی JYS بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "زجاج مقسّى لشاشة Switch 2 مقاس 7.9 بوصة",
+    "en": "Tempered glass for the 7.9-inch Switch 2 screen",
+    "ckb": "شووشەی بەهێزکراو بۆ شاشەی 7.9 ئینجی Switch 2"
+  },
+  "description": {
+    "ar": "واقي شاشة من الزجاج المقسّى من JYS مصنوع لشاشة Nintendo Switch 2. يحمي الشاشة من الخدوش والصدمات الخفيفة ويُركّب فوقها مباشرة. رمز المورّد على العلبة 2312.",
+    "en": "A JYS tempered-glass screen protector cut for the Nintendo Switch 2 screen. It guards the display against scratches and light knocks and goes straight on top of it. The supplier code on the box is 2312.",
+    "ckb": "پارێزەری شاشەی شووشەی بەهێزکراوی JYS کە بۆ شاشەی Nintendo Switch 2 بڕاوە. شاشەکە لە خەت و لێدانی سووک دەپارێزێت و ڕاستەوخۆ لەسەری دادەنرێت. کۆدی دابینکەر لەسەر قوتووەکە 2312 ـە."
+  },
+  "highlights": [
+    {
+      "ar": "مقاس شاشة Nintendo Switch 2 (7.9 بوصة)",
+      "en": "Sized for the Nintendo Switch 2 screen (7.9 inch)",
+      "ckb": "بە قەبارەی شاشەی Nintendo Switch 2 (7.9 ئینج)"
+    },
+    {
+      "ar": "زجاج مقسّى يحمي من الخدوش",
+      "en": "Tempered glass that guards against scratches",
+      "ckb": "شووشەی بەهێزکراو کە لە خەت دەپارێزێت"
+    },
+    {
+      "ar": "لا يناسب Switch أو Switch OLED أو Switch Lite",
+      "en": "Does not fit Switch, Switch OLED or Switch Lite",
+      "ckb": "گونجاو نییە بۆ Switch و Switch OLED و Switch Lite"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Nintendo Switch 2",
+        "en": "Nintendo Switch 2",
+        "ckb": "Nintendo Switch 2"
+      }
+    },
+    {
+      "key": "type",
+      "label": {
+        "ar": "النوع",
+        "en": "Type",
+        "ckb": "جۆر"
+      },
+      "value": {
+        "ar": "زجاج مقسّى",
+        "en": "Tempered glass",
+        "ckb": "شووشەی بەهێزکراو"
+      }
+    },
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "رمز المورّد 2312",
+        "en": "Supplier code 2312",
+        "ckb": "کۆدی دابینکەر 2312"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-NS2-GLASS-2312",
+      "sheetRow": 42,
+      "title": {
+        "ar": "واقي شاشة زجاجي JYS لجهاز Nintendo Switch 2",
+        "en": "JYS Tempered Glass for Nintendo Switch 2",
+        "ckb": "پارێزەری شاشەی شووشەیی JYS بۆ Nintendo Switch 2"
+      },
+      "options": {
+        "code": "2312"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": {
+        "ar": "مصمم لشاشة Switch 2",
+        "en": "Made for the Switch 2 screen",
+        "ckb": "بۆ شاشەی Switch 2 دروستکراوە"
+      },
+      "source": "https://aio.lv/en/product--jys-sb11123--11852271"
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "jys-switch-2-silicone-case",
+      "kind": "accessory"
+    },
+    {
+      "slug": "ch-tempered-glass-nintendo",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ipega-glass-screen-pro-switch-2",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://aio.lv/en/product--jys-sb11123--11852271",
+      "title": "Tempered Glass Screen Protector for Nintendo Switch 2 JYS SB11123",
+      "publisher": "AIO.lv",
+      "retrieved": "2026-11-18",
+      "supports": "JYS makes a tempered-glass screen protector for the Nintendo Switch 2 LCD"
+    },
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/",
+      "title": "Nintendo Switch 2 – Tech Specs",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-18",
+      "supports": "7.9-inch screen of the console it fits"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Exact JYS model number behind supplier code 2312 (no JYS page found)",
+      "Pack contents (one or two sheets, applicator)"
+    ]
+  }
+}

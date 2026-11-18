@@ -1,0 +1,241 @@
+{
+  "slug": "ipega-pg-p5003-charging-station",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "iPega",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة شحن iPega PG‑P5003 ليدَي DualSense",
+    "en": "iPega PG‑P5003 Charging Station for DualSense",
+    "ckb": "وێستگەی شەحنی iPega PG‑P5003 بۆ DualSense"
+  },
+  "short": {
+    "ar": "يدان معاً · قاعدة مضيئة ومؤشرات LED · كابل مخفي",
+    "en": "Two controllers · Lit base with LED indicators · Hidden cable",
+    "ckb": "دوو کۆنتڕۆڵەر · بنکەی ڕووناک و نیشاندەری LED · وایەری شاراوە"
+  },
+  "description": {
+    "ar": "قاعدة شحن من iPega تحمل يدَي DualSense وتشحنهما معاً عبر منفذي USB‑C. القاعدة مضيئة وتبين مؤشرات زرقاء وحمراء حالة الشحن، ويُخزن كابل USB داخلها عند عدم الاستخدام.",
+    "en": "An iPega station that holds two DualSense controllers and charges both through two USB‑C plugs. The base lights up, blue and red indicators show the charging state, and the USB cable stores inside it.",
+    "ckb": "وێستگەیەکی iPega کە دوو DualSense هەڵدەگرێت و بە دوو USB‑C شەحنیان دەکات. بنکەکە ڕووناک دەبێت، نیشاندەری شین و سوور دۆخی شەحن پیشان دەدەن، و وایەری USB لەناویدا هەڵدەگیرێت."
+  },
+  "highlights": [
+    {
+      "ar": "يشحن يدين معاً، نحو 3 ساعات للشحن الكامل",
+      "en": "Charges two controllers, about 3 hours to full",
+      "ckb": "دوو کۆنتڕۆڵەر شەحن دەکات، نزیکەی 3 کاتژمێر تا پڕ"
+    },
+    {
+      "ar": "قاعدة مضيئة ومؤشرات LED",
+      "en": "Lit base and LED indicators",
+      "ckb": "بنکەی ڕووناک و نیشاندەری LED"
+    },
+    {
+      "ar": "كابل USB يُخزن داخل القاعدة",
+      "en": "USB cable stores inside the base",
+      "ckb": "وایەری USB لەناو بنکەکەدا هەڵدەگیرێت"
+    },
+    {
+      "ar": "حماية متعددة للشحن الآمن",
+      "en": "Multiple charging protections",
+      "ckb": "چەند پاراستنێک بۆ شەحنی سەلامەت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "PG‑P5003",
+        "en": "PG‑P5003",
+        "ckb": "PG‑P5003"
+      }
+    },
+    {
+      "key": "input",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "وزە"
+      },
+      "value": {
+        "ar": "4.8–5.5V عبر USB (من جهاز PS5 أو شاحن)",
+        "en": "4.8–5.5V over USB (PS5 console or charger)",
+        "ckb": "4.8–5.5V لە ڕێگەی USB (PS5 یان شەحنەر)"
+      }
+    },
+    {
+      "key": "output",
+      "label": {
+        "ar": "الإخراج",
+        "en": "Output",
+        "ckb": "دەرچوون"
+      },
+      "value": {
+        "ar": "2 × USB‑C، ‏600mA لكل منفذ",
+        "en": "2 × USB‑C, 600mA each",
+        "ckb": "2 × USB‑C، هەریەکە 600mA"
+      }
+    },
+    {
+      "key": "charging-time",
+      "label": {
+        "ar": "مدة الشحن",
+        "en": "Charging time",
+        "ckb": "ماوەی شەحن"
+      },
+      "value": {
+        "ar": "نحو 3 ساعات",
+        "en": "About 3 hours",
+        "ckb": "نزیکەی 3 کاتژمێر"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "IPEGA-PG-P5003",
+      "title": {
+        "ar": "قاعدة شحن iPega PG‑P5003 ليدَي DualSense",
+        "en": "iPega PG‑P5003 Charging Station for DualSense",
+        "ckb": "وێستگەی شەحنی iPega PG‑P5003 بۆ DualSense"
+      },
+      "options": {
+        "color": "White"
+      },
+      "modelNumber": "PG-P5003",
+      "sheetRow": 100,
+      "isDefault": true,
+      "images": [
+        "ipega-pg-p5003-charging-station--1",
+        "ipega-pg-p5003-charging-station--2",
+        "ipega-pg-p5003-charging-station--3",
+        "ipega-pg-p5003-charging-station--4"
+      ]
+    }
+  ],
+  "related": [
+    {
+      "slug": "dualsense",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-edge",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-charging-station",
+      "kind": "alternative"
+    },
+    {
+      "slug": "powera-twin-charging-station-dualsense",
+      "kind": "alternative"
+    },
+    {
+      "slug": "dobe-ps5-dual-charging-dock",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ps5-controller-dual-charging-dock",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "ipega-pg-p5003-charging-station--1",
+      "file": ".cache/product-images/ipega-pg-p5003-charging-station/1.png",
+      "sourceUrl": "https://ipega.hk/uploads/202012/5fe6d550aab90.png",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-378.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "قاعدة PG‑P5003 وعليها يدان",
+        "en": "The PG‑P5003 holding two controllers",
+        "ckb": "PG‑P5003 لەگەڵ دوو کۆنتڕۆڵەر"
+      },
+      "credit": "iPega",
+      "width": 1000,
+      "height": 920,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5003-charging-station--2",
+      "file": ".cache/product-images/ipega-pg-p5003-charging-station/2.jpg",
+      "sourceUrl": "https://ipega.hk/uploads/202012/5fe6d54a06157.jpg",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-378.html",
+      "kind": "angle",
+      "alt": {
+        "ar": "القاعدة فارغة بحاملَيها الشفافين",
+        "en": "The empty station with its clear holders",
+        "ckb": "وێستگەکە بە بەتاڵی لەگەڵ هەڵگرە ڕوونەکانی"
+      },
+      "credit": "iPega",
+      "width": 1000,
+      "height": 920,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5003-charging-station--3",
+      "file": ".cache/product-images/ipega-pg-p5003-charging-station/3.png",
+      "sourceUrl": "https://ipega.hk/uploads/202012/5fe6d55110fde.png",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-378.html",
+      "kind": "detail",
+      "alt": {
+        "ar": "القاعدة من الأعلى مع مؤشري الشحن",
+        "en": "Top view with the two charge indicators",
+        "ckb": "لە سەرەوە لەگەڵ دوو نیشاندەری شەحن"
+      },
+      "credit": "iPega",
+      "width": 1000,
+      "height": 920,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5003-charging-station--4",
+      "file": ".cache/product-images/ipega-pg-p5003-charging-station/4.png",
+      "sourceUrl": "https://ipega.hk/uploads/202012/5fe6d5528502a.png",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-378.html",
+      "kind": "in-box",
+      "alt": {
+        "ar": "علبة القاعدة",
+        "en": "The retail box",
+        "ckb": "قوتووی وێستگەکە"
+      },
+      "credit": "iPega",
+      "width": 1000,
+      "height": 920,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ipega.hk/ps3ps4series/76-378.html",
+      "title": "PG-p5003 p5 charging stand",
+      "publisher": "iPega (official site)",
+      "retrieved": "2026-11-18",
+      "supports": "model, product pictures, instructions"
+    },
+    {
+      "url": "https://mytrendyphone.eu/shop/ipega-pg-p5003-sony-playstation-5-dualsense-charging-station-267661p.html",
+      "title": "iPega PG-P5003 Sony PlayStation 5 DualSense Charging Station",
+      "publisher": "MyTrendyPhone (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "two USB-C plugs, lit base, blue/red LED, hidden cable, input 4.8-5.5V, outputs 2 × 600mA, about 3 hours"
+    }
+  ],
+  "notes": {
+    "ar": "اليدان غير مرفقتين. أزلنا من صور iPega سطر رقم براءة الاختراع المطبوع أسفلها.",
+    "en": "Controllers not included. The patent-number line printed under iPega's pictures was cropped off.",
+    "ckb": "کۆنتڕۆڵەرەکان لەگەڵیدا نین."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "The owner's sheet says only 'PS5 CHARGING STATION IPEGA'; PG-P5003 is assumed as iPega's best-known DualSense station (iPega also sells PG-P5012 and PG-P5016)"
+    ]
+  }
+}

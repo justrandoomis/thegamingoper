@@ -1,0 +1,64 @@
+{
+  "key": "hello-neighbor-2--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hello-neighbor-2/3-240.06d4df56.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hello-neighbor-2/3-480.34725d39.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hello-neighbor-2/3-720.df58c5f8.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hello-neighbor-2/3-960.87a0ceff.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hello-neighbor-2/3-1440.4dec14db.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hello-neighbor-2/3-240.aa1c4dc4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hello-neighbor-2/3-480.ac7af683.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hello-neighbor-2/3-720.00b94dc9.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hello-neighbor-2/3-960.1b43ecec.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hello-neighbor-2/3-1440.86d9532a.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAAAQBACdASoUAAsAPxFysFAsJqSisAgBgCIJYgCdAB6JVVM+sUbmSv+oAAD+08zcW/IfEcTe6On6I8wQezeUbaMCLLfjZCkeenSAXjkyh/oT6LOdpfELyKFAAuUAAA==",
+  "dominant": "#d8ebf3",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "tinyBuild",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202202/0217/yzgojVg7pr7N1vGcMo5pcesu.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP0096-PPSA07426_00-2365742178691030"
+  },
+  "input": "805ec79a14e0fde7"
+}

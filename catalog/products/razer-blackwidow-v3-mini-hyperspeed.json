@@ -1,0 +1,244 @@
+{
+  "slug": "razer-blackwidow-v3-mini-hyperspeed",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Razer",
+  "category": "keyboards",
+  "status": "available",
+  "name": {
+    "ar": "كيبورد Razer BlackWidow V3 Mini HyperSpeed",
+    "en": "Razer BlackWidow V3 Mini HyperSpeed",
+    "ckb": "کیبۆردی Razer BlackWidow V3 Mini HyperSpeed"
+  },
+  "short": {
+    "ar": "65% لاسلكي · مفاتيح Razer Green · حتى 200 ساعة",
+    "en": "65% wireless · Razer Green switches · up to 200 h",
+    "ckb": "65% بێتەل · سویچی Razer Green · تا 200 کاتژمێر"
+  },
+  "description": {
+    "ar": "كيبورد ميكانيكي لاسلكي من Razer بحجم 65%، صغير مثل كيبوردات 60% لكنه يحتفظ بأزرار الأسهم. يتصل عبر Razer HyperSpeed اللاسلكي أو بلوتوث مع ثلاثة أجهزة أو كابل USB‑C، وبطاريته تدوم حتى 200 ساعة. هذه النسخة بمفاتيح Razer Green ذات النقرة المسموعة.",
+    "en": "A 65% wireless Razer mechanical keyboard, as compact as a 60% board but keeping the arrow keys. It connects over Razer HyperSpeed wireless, Bluetooth with up to three devices, or a USB-C cable, and the battery lasts up to 200 hours. This version has clicky Razer Green switches.",
+    "ckb": "کیبۆردێکی میکانیکی بێتەلی 65%ی Razer، بچووک وەک کیبۆردی 60% بەڵام دوگمەکانی تیر دەهێڵێتەوە. بە Razer HyperSpeedی بێتەل، بلووتوز لەگەڵ 3 ئامێر، یان کێبڵی USB‑C دەبەسترێت، و پاترییەکەی تا 200 کاتژمێر دەمێنێتەوە. ئەم وەشانە سویچی Razer Greenی کرتەداری هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "ثلاثة أوضاع: HyperSpeed وبلوتوث (3 أجهزة) وUSB‑C",
+      "en": "3 modes: HyperSpeed, Bluetooth (3 devices), USB-C",
+      "ckb": "3 شێواز: HyperSpeed، بلووتوز (3 ئامێر)، USB‑C"
+    },
+    {
+      "ar": "بطارية حتى 200 ساعة",
+      "en": "Up to 200 hours of battery",
+      "ckb": "پاتری تا 200 کاتژمێر"
+    },
+    {
+      "ar": "مفاتيح Razer Green لمسية بنقرة",
+      "en": "Clicky tactile Razer Green switches",
+      "ckb": "سویچی Razer Greenی کرتەدار"
+    },
+    {
+      "ar": "حجم 65% مع أزرار الأسهم",
+      "en": "65% size with arrow keys",
+      "ckb": "قەبارەی 65% لەگەڵ دوگمەی تیر"
+    },
+    {
+      "ar": "إضاءة Razer Chroma RGB لكل زر",
+      "en": "Per-key Razer Chroma RGB",
+      "ckb": "Razer Chroma RGB بۆ هەر دوگمەیەک"
+    }
+  ],
+  "specs": [
+    {
+      "key": "layout",
+      "label": {
+        "ar": "التصميم",
+        "en": "Layout",
+        "ckb": "شێوە"
+      },
+      "value": {
+        "ar": "65%، تخطيط أمريكي",
+        "en": "65%, US layout",
+        "ckb": "65%، ئەمریکی"
+      }
+    },
+    {
+      "key": "switches",
+      "label": {
+        "ar": "المفاتيح",
+        "en": "Switches",
+        "ckb": "سویچەکان"
+      },
+      "value": {
+        "ar": "Razer Green ميكانيكية (لمسية بنقرة)",
+        "en": "Razer Green mechanical (tactile, clicky)",
+        "ckb": "Razer Greenی میکانیکی (کرتەدار)"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "Razer HyperSpeed لاسلكي 2.4 غيغاهرتز، بلوتوث حتى 3 أجهزة، كابل USB‑C قابل للفصل",
+        "en": "Razer HyperSpeed 2.4 GHz, Bluetooth up to 3 devices, detachable USB-C",
+        "ckb": "Razer HyperSpeed ‏2.4 گیگاهێرتز، بلووتوز تا 3 ئامێر، USB‑Cی جیاکراوە"
+      }
+    },
+    {
+      "key": "battery",
+      "label": {
+        "ar": "البطارية",
+        "en": "Battery",
+        "ckb": "پاتری"
+      },
+      "value": {
+        "ar": "حتى 200 ساعة؛ الشحن الكامل في أقل من 5 ساعات",
+        "en": "Up to 200 hours; full charge in under 5 hours",
+        "ckb": "تا 200 کاتژمێر؛ بارگاویی تەواو لە کەمتر لە 5 کاتژمێر"
+      }
+    },
+    {
+      "key": "keycaps",
+      "label": {
+        "ar": "أغطية الأزرار",
+        "en": "Keycaps",
+        "ckb": "سەری دوگمەکان"
+      },
+      "value": {
+        "ar": "ABS بقولبة مزدوجة مع طباعة جانبية",
+        "en": "Doubleshot ABS with side-printed legends",
+        "ckb": "ABSی دوو قاڵبی لەگەڵ نووسینی تەنیشت"
+      }
+    },
+    {
+      "key": "lighting",
+      "label": {
+        "ar": "الإضاءة",
+        "en": "Lighting",
+        "ckb": "ڕووناکی"
+      },
+      "value": {
+        "ar": "Razer Chroma RGB لكل زر",
+        "en": "Per-key Razer Chroma RGB",
+        "ckb": "Razer Chroma RGB بۆ هەر دوگمە"
+      }
+    },
+    {
+      "key": "warranty",
+      "label": {
+        "ar": "الضمان",
+        "en": "Warranty",
+        "ckb": "گەرەنتی"
+      },
+      "value": {
+        "ar": "حتى سنتين حسب Razer",
+        "en": "Up to 2 years per Razer",
+        "ckb": "تا 2 ساڵ بەپێی Razer"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RZ-BWV3MINI-HS-GRN",
+      "title": {
+        "ar": "مفاتيح Green",
+        "en": "Green switches",
+        "ckb": "سویچی Green"
+      },
+      "options": {
+        "switch": "Razer Green",
+        "layout": "US"
+      },
+      "modelNumber": "RZ03-03891400-R3M1",
+      "isDefault": true,
+      "images": [
+        "razer-blackwidow-v3-mini-hyperspeed--3"
+      ],
+      "sheetRow": 171,
+      "notes": {
+        "ar": "رقم الموديل في ورقة المخزن ناقص الحرفين الأوليين: RZ03‑03891400‑R3M1.",
+        "en": "The stock sheet drops the leading letters of the model number: RZ03-03891400-R3M1.",
+        "ckb": "ژمارەی مۆدێل لە لیستی کۆگادا پیتە سەرەتاییەکانی نییە: RZ03‑03891400‑R3M1."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "عبر مستقبل HyperSpeed أو بلوتوث أو USB‑C.",
+        "en": "Through the HyperSpeed dongle, Bluetooth or USB-C.",
+        "ckb": "لە ڕێگەی HyperSpeed، بلووتوز یان USB‑C."
+      },
+      "source": "https://www.razer.com/gaming-keyboards/razer-blackwidow-v3-mini-hyperspeed"
+    }
+  ],
+  "related": [
+    {
+      "slug": "razer-pbt-keycap-upgrade-set",
+      "kind": "upsell"
+    },
+    {
+      "slug": "gameon-aerox-gomk60-rs",
+      "kind": "alternative"
+    },
+    {
+      "slug": "razer-blackshark-v2-x",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "razer-blackwidow-v3-mini-hyperspeed--3",
+      "file": ".cache/product-images/razer-blackwidow-v3-mini-hyperspeed/3.png",
+      "sourceUrl": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h8e/h5c/9533910155294/blackwidow-v3-mini-hyperspeed-4-500x500.png",
+      "sourcePage": "https://www.razer.com/gaming-keyboards/razer-blackwidow-v3-mini-hyperspeed/RZ03-03891400-R3M1",
+      "kind": "hero",
+      "alt": {
+        "ar": "كيبورد Razer BlackWidow V3 Mini HyperSpeed من الأعلى بإضاءة RGB",
+        "en": "Razer BlackWidow V3 Mini HyperSpeed from above with RGB lit",
+        "ckb": "Razer BlackWidow V3 Mini HyperSpeed لە سەرەوە بە RGB"
+      },
+      "credit": "Razer",
+      "width": 500,
+      "height": 500,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.razer.com/gaming-keyboards/razer-blackwidow-v3-mini-hyperspeed",
+      "title": "Razer BlackWidow V3 Mini HyperSpeed",
+      "publisher": "Razer",
+      "retrieved": "2026-11-18",
+      "supports": "65% form factor with arrow keys, HyperSpeed wireless, Bluetooth up to 3 devices, USB-C cable, Razer Green and Yellow switch versions, doubleshot ABS side-printed keycaps, up to 200 hours battery, under 5 hours to charge, Chroma RGB, up to 2 years warranty"
+    },
+    {
+      "url": "https://www.razer.com/gaming-keyboards/razer-blackwidow-v3-mini-hyperspeed/RZ03-03891400-R3M1",
+      "title": "Razer BlackWidow V3 Mini HyperSpeed – RZ03-03891400-R3M1",
+      "publisher": "Razer",
+      "retrieved": "2026-11-18",
+      "supports": "model number RZ03-03891400-R3M1 = Green switch version, images"
+    },
+    {
+      "url": "https://www.pcgamer.com/razer-blackwidow-v3-mini-hyperspeed-review",
+      "title": "Razer BlackWidow V3 Mini HyperSpeed review",
+      "publisher": "PC Gamer",
+      "retrieved": "2026-11-18",
+      "supports": "independent confirmation of the wireless 65% keyboard"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Release date (reviewed in 2021)",
+      "Weight and box contents"
+    ]
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "slug": "meta-quest-gun-stock",
+  "group": "xbox-vr",
+  "kind": "vr",
+  "platform": "multi",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "مقبض مسدس لأيدي Meta Quest",
+    "en": "Gun Attachment for Meta Quest Controllers",
+    "ckb": "دەسکی دەمانچە بۆ دەسکەکانی Meta Quest"
+  },
+  "short": {
+    "ar": "تُثبّت فيه يد Quest فتمسكها كالسلاح في ألعاب التصويب",
+    "en": "Holds a Quest controller so you aim it like a gun in shooting games",
+    "ckb": "دەسکی Quest ـی تێدا جێگیر دەکرێت بۆ ئەوەی وەک چەک بیگریت لە یارییە تەقەکردنەکاندا"
+  },
+  "description": {
+    "ar": "قطعة على شكل سلاح تُثبّت فيها يد Meta Quest، فتمسكها كمسدس أو بندقية في ألعاب التصويب بالواقع الافتراضي، ما يجعل التصويب أثبت والإحساس أقرب للحقيقة. كل نسخة مقاسها ليد نظارة معيّنة: نسخة لأيدي Quest 2 ونسخة لأيدي Quest 3.",
+    "en": "A gun-shaped holder that a Meta Quest controller clips into, so you hold it like a pistol or rifle in VR shooting games: steadier aim and a more real feel. Each version is shaped for one headset's controllers: one for Quest 2 controllers and one for Quest 3 controllers.",
+    "ckb": "پارچەیەکی شێوە چەک کە دەسکی Meta Quest ـی تێدا جێگیر دەکرێت، بۆ ئەوەی وەک دەمانچە یان تفەنگ بیگریت لە یارییە تەقەکردنەکانی واقیعی مەجازیدا: نیشانگرتنی جێگیرتر و هەستێکی ڕاستەقینەتر. هەر وەشانێک بۆ دەسکی چاویلکەیەکی دیاریکراوە: یەکێک بۆ دەسکەکانی Quest 2 و یەکێک بۆ دەسکەکانی Quest 3."
+  },
+  "highlights": [
+    { "ar": "تصويب أثبت في ألعاب الواقع الافتراضي", "en": "Steadier aim in VR shooters", "ckb": "نیشانگرتنی جێگیرتر لە یارییە تەقەکردنەکانی VR" },
+    { "ar": "نسخة لأيدي Quest 2 ونسخة لأيدي Quest 3", "en": "One version for Quest 2 controllers, one for Quest 3", "ckb": "وەشانێک بۆ دەسکەکانی Quest 2 و یەکێک بۆ Quest 3" },
+    { "ar": "اليد والنظارة غير مرفقتين", "en": "Controller and headset not included", "ckb": "دەسک و چاویلکە لەگەڵی نین" }
+  ],
+  "specs": [
+    { "key": "fits", "label": { "ar": "يناسب", "en": "Fits", "ckb": "گونجاوە بۆ" }, "value": { "ar": "أيدي Meta Quest 2 أو Quest 3 حسب النسخة", "en": "Meta Quest 2 or Quest 3 Touch controllers, depending on the version", "ckb": "دەسکەکانی Meta Quest 2 یان Quest 3، بەپێی وەشان" } }
+  ],
+  "variants": [
+    {
+      "sku": "MQ-GUN-Q2",
+      "sheetRow": 63,
+      "title": { "ar": "لأيدي Quest 2", "en": "For Quest 2 controllers", "ckb": "بۆ دەسکەکانی Quest 2" },
+      "options": { "fits": "Quest 2" },
+      "isDefault": true
+    },
+    {
+      "sku": "MQ-GUN-Q3",
+      "sheetRow": 64,
+      "title": { "ar": "لأيدي Quest 3", "en": "For Quest 3 controllers", "ckb": "بۆ دەسکەکانی Quest 3" },
+      "options": { "fits": "Quest 3" },
+      "isDefault": false
+    }
+  ],
+  "related": [
+    { "slug": "dobe-quest-3-charging-stand-ty-3835", "kind": "accessory" },
+    { "slug": "iine-quest-2-silicone-cover", "kind": "accessory" }
+  ],
+  "sources": [
+    {
+      "url": "https://www.desertcart.co.th/products/635662397-amvr-vr-g-un-stock-attachment-compatible-with-meta-oculus",
+      "title": "AMVR VR gun stock attachment compatible with Meta Oculus Quest",
+      "publisher": "Desertcart",
+      "retrieved": "2026-11-18",
+      "supports": "what a Quest gun attachment is: a weighted pistol grip the controller clips into for VR shooters"
+    },
+    {
+      "url": "https://www.desertcart.nl/products/616071151-baomaeyea-vr-gunstock-for-meta-quest-3-quest-3s-gun",
+      "title": "VR gunstock for Meta Quest 3 / Quest 3S",
+      "publisher": "Desertcart",
+      "retrieved": "2026-11-18",
+      "supports": "second source: gun attachments are made per controller model (Quest 3/3S versions)"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع طرف ثالث وليس من Meta. أيدي Quest 3 وQuest 3S متشابهة، لكن أيدي Quest 2 مختلفة، فاختر النسخة حسب يدك.",
+    "en": "A third-party product, not made by Meta. Quest 3 and Quest 3S controllers are the same shape but Quest 2 controllers are different, so pick the version for your controllers.",
+    "ckb": "بەرهەمێکی لایەنی سێیەمە، هی Meta نییە. دەسکەکانی Quest 3 و Quest 3S وەک یەکن بەڵام هی Quest 2 جیاوازن، بۆیە وەشان بەپێی دەسکەکەت هەڵبژێرە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Maker, shape (pistol grip or full rifle stock) and material of the shop's 'OCULUS QUEST 2 GUN' and 'OCULUS QUEST 3 GUN'",
+      "Why the Quest 3 version costs about twice the Quest 2 one (likely a larger stock)",
+      "No product image of the exact items"
+    ]
+  }
+}

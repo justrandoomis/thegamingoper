@@ -6,7 +6,8 @@
  *   3. runs seedReference() — governorates, settings defaults, chart of accounts, …
  *   4. runs seedRoles() — the built-in staff roles and their default permissions
  *   5. runs the demo seed (app/server/db/seed/demo.ts) when that file exists — it imports the researched
- *      catalogue (catalog/products/*.json, read from disk) with demo prices and stock
+ *      catalogue (catalog/products/*.json, read from disk) in the owner's state: the items of his price sheet
+ *      (catalog/owner-sheet-2026-11-18.json) at their prices with one unit each, every other product archived
  *   6. prints the row counts of the main tables
  *
  *   npm run db:reset                 everything above
@@ -89,7 +90,7 @@ const demoSeedOverride = argv.find((arg) => arg.startsWith("--demo-seed="))?.sli
 const DEMO_SEED = demoSeedOverride ? path.resolve(demoSeedOverride) : path.join(PROJECT_ROOT, "app", "server", "db", "seed", "demo.ts");
 const DEMO_SEED_LABEL = path.relative(PROJECT_ROOT, DEMO_SEED).replaceAll("\\", "/");
 
-type DemoSeed = (db: Db, now: number, context: { d1: D1Database; kv: KVNamespace; env: Env }) => unknown;
+type DemoSeed = (db: Db, now: number, context: { d1: D1Database; kv: KVNamespace; env: Env; ownerSheet: boolean }) => unknown;
 
 /** The demo seed is written by its own owner; accept the obvious export names. */
 function findDemoSeed(module: Record<string, unknown>): DemoSeed | null {
@@ -153,7 +154,8 @@ async function main(): Promise<number> {
         exitCode = 1;
       } else {
         try {
-          const result = await seedDemo(db, now, { d1, kv: proxy.env.KV, env: proxy.env });
+          // ownerSheet: the owner's real items at his prices, everything else archived (catalog/README.md "Owner's sheet").
+          const result = await seedDemo(db, now, { d1, kv: proxy.env.KV, env: proxy.env, ownerSheet: true });
           console.log(`Demo data: seeded${result === undefined ? "" : ` ${JSON.stringify(result)}`}.`);
           // Demo digital codes are encrypted with this environment's DATA_KEY, so they come after the plain seed.
           const codesModule = path.join(path.dirname(DEMO_SEED), "demo", "codes.ts");

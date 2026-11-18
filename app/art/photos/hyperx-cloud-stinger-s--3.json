@@ -1,0 +1,64 @@
+{
+  "key": "hyperx-cloud-stinger-s--3",
+  "view": "hero",
+  "width": 1552,
+  "height": 1600,
+  "aspect": 0.97,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-stinger-s/3-240.d5707642.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-stinger-s/3-480.9ef8ffb4.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-stinger-s/3-720.8c65c24c.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-stinger-s/3-960.aacbaad0.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyperx-cloud-stinger-s/3-1440.601f386c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-stinger-s/3-240.7f33c54b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-stinger-s/3-480.9d3eb05f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-stinger-s/3-720.f6177679.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-stinger-s/3-960.0df36c19.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyperx-cloud-stinger-s/3-1440.2e971f4e.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRjoBAABXRUJQVlA4WAoAAAAQAAAAEgAAEwAAQUxQSJgAAAART6CmbSQ2dwRuvy9bj4hA6NObXoBq29ayauFEh+rWHKpbc8k0miWiS3TY7wv3vkJE/5M/U8dzAQDH+3KUH2DTNlC+GICjEdjaBqSsABSnzE0ArDqGjRGAbcm47RuA7jZtvH0swPNTMV6VhIBUMWw0g7kuVeaSibvWUVKS3fHR2gwPtUvSBOhoNpd8AAO3Y18z8J3hBwP/AFZQOCB8AAAAMAQAnQEqEwAUAD8RgLhVrCglIygIAYAiCWkAA+KJG/Q34eEtRdONGsSwAP7BHT7yI/nkAZ+uwqLnApz+LeaI8Kn7IAiAvr/o22ZO5bOil//idF142Uhngq6QRxdWRkcBDncEdopg9Y1+szRI2wDs1eEEAgszjh6p4AAAAA==",
+  "dominant": "#181818",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "HyperX (HP Inc.), via Icecat",
+  "source": {
+    "url": "https://images.icecat.biz/img/gallery/ce9b526031b8c61896c3fc43f29b4ed2d2ae70b1.jpg",
+    "page": "https://icecat.biz/en/p/hyperx/hhss1s-aa-bk-g/cloud-stinger-s-80427488.html"
+  },
+  "input": "58c85c983ee5599e"
+}

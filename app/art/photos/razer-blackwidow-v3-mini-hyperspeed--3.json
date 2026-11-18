@@ -1,0 +1,46 @@
+{
+  "key": "razer-blackwidow-v3-mini-hyperspeed--3",
+  "view": "hero",
+  "width": 348,
+  "height": 163,
+  "aspect": 2.135,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/razer-blackwidow-v3-mini-hyperspeed/3-240.0a042455.avif"
+      },
+      {
+        "w": 348,
+        "src": "/products/razer-blackwidow-v3-mini-hyperspeed/3-348.b742ff51.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/razer-blackwidow-v3-mini-hyperspeed/3-240.9c950222.webp"
+      },
+      {
+        "w": 348,
+        "src": "/products/razer-blackwidow-v3-mini-hyperspeed/3-348.b736f148.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/razer-blackwidow-v3-mini-hyperspeed/3-348.6df8e59c.png",
+    "width": 348,
+    "height": 163,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4WAoAAAAQAAAAEwAACAAAQUxQSDQAAAARL0CQbTOFQd0fZBDXiIjgNaEoktSIUwASQAESclmIfzPZVwxE9H8CxoHWWW/tgPKBjgsdVlA4IEIAAADQAwCdASoUAAkAPxF2sVCsJySisAgBgCIJYwCdACK5/WtA7y9O5oAA/kSKECrCW1qEU+E5C7quUQlX1ChWnuAAAAA=",
+  "dominant": "#181b22",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Razer",
+  "source": {
+    "url": "https://medias-p1.phoenix.razer.com/sys-master-phoenix-images-container/h8e/h5c/9533910155294/blackwidow-v3-mini-hyperspeed-4-500x500.png",
+    "page": "https://www.razer.com/gaming-keyboards/razer-blackwidow-v3-mini-hyperspeed/RZ03-03891400-R3M1"
+  },
+  "input": "0808327db003aef6"
+}

@@ -1,0 +1,54 @@
+{
+  "key": "jys-usb-hub-sdm007--1",
+  "view": "hero",
+  "width": 744,
+  "height": 1447,
+  "aspect": 0.5142,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/jys-usb-hub-sdm007/1-240.5a8bcb9f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/jys-usb-hub-sdm007/1-480.cfa6c828.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/jys-usb-hub-sdm007/1-720.6207d957.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/jys-usb-hub-sdm007/1-240.9578976e.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/jys-usb-hub-sdm007/1-480.17ec5e5f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/jys-usb-hub-sdm007/1-720.08f96719.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/jys-usb-hub-sdm007/1-744.f60e967c.png",
+    "width": 744,
+    "height": 1447,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtQAAABXRUJQVlA4WAoAAAAQAAAACQAAEwAAQUxQSFIAAAART6CgjSQ1dxr47pk/IgLwePmNZwab2tqbfDQLTQB7ViQgJRu9jP8YBzy9SdAQ0f8JUHIbJffRyWD6MUehMaCPBoPQGnglFnh/hCJH5OXOp1ISVlA4IFwAAACQAwCdASoKABQAPxFysFAsJqSisAgBgCIJZQDImCBUBN4r/r4QAP4uyRWaxIS6p41PeOwRItyvzF1aUMgfRC/XpPUAykg4LzI8PhYxtUmDU/x0PoNpeQPeywAAAA==",
+  "dominant": "#64656a",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "JYS Electronics",
+  "source": {
+    "url": "https://www.systembank.pl/img/opis/11944/hub-adapter-usb-3-0-4w1-3x-usb-a-1x-usb-c-5-gb-s-do-ps5-pc-steam-machine-jys-sdm007-v2_o11944_1.jpg",
+    "page": "https://www.systembank.pl/hub-adapter-usb-3-0-4w1-3x-usb-a-1x-usb-c-5-gb-s-do-ps5-pc-steam-machine-jys-sdm007-v2-p11944.html"
+  },
+  "input": "fff545ac912fdb8a"
+}

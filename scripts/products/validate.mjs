@@ -20,6 +20,20 @@ const IMAGE_KINDS = ["hero", "angle", "detail", "in-box", "box-art", "screenshot
 const ARABIC = ["voice+subtitles+interface", "subtitles+interface", "interface", "none", "unknown"];
 const FORMATS = ["cartridge", "game-key-card", "disc", "code-in-box"];
 
+// Store categories and device keys, read from the seed's own tables so the two never drift apart.
+const SEED_DIR = path.join(ROOT, "app", "server", "db", "seed", "demo");
+const categoriesSource = readFileSync(path.join(SEED_DIR, "categories.ts"), "utf8");
+const CATEGORY_SLUGS = new Set([...categoriesSource.matchAll(/\bslug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]));
+const CATEGORY_PARENTS = new Set([...categoriesSource.matchAll(/\bparent:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]));
+const devicesSource = readFileSync(path.join(SEED_DIR, "devices.ts"), "utf8");
+const modelsPart = devicesSource.slice(devicesSource.indexOf("export const DEMO_DEVICE_MODELS"));
+const DEVICE_KEYS = new Set([...modelsPart.slice(0, modelsPart.indexOf("\n];")).matchAll(/\bslug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]));
+
+// The owner's price sheet (variants[].sheetRow): every row except the skipped ones is exactly one variant.
+const SHEET_FILE = path.join(ROOT, "catalog", "owner-sheet-2026-11-18.json");
+const SHEET_SKIPPED = new Set([233]);
+const SHEET = existsSync(SHEET_FILE) ? new Map(JSON.parse(readFileSync(SHEET_FILE, "utf8")).map((row) => [row.row, row])) : null;
+
 const only = process.argv.slice(2);
 const files = existsSync(DIR) ? readdirSync(DIR).filter((f) => f.endsWith(".json")) : [];
 const all = new Map();
@@ -28,6 +42,17 @@ for (const f of files) {
     all.set(f.replace(/\.json$/, ""), JSON.parse(readFileSync(path.join(DIR, f), "utf8")));
   } catch (e) {
     all.set(f.replace(/\.json$/, ""), { __parseError: String(e.message) });
+  }
+}
+
+/** Sheet row → every "slug/SKU" that claims it, over the WHOLE catalogue (also when only some files are checked). */
+const rowClaims = new Map();
+for (const [slug, p] of all) {
+  for (const v of Array.isArray(p?.variants) ? p.variants : []) {
+    if (v?.sheetRow === undefined) continue;
+    const list = rowClaims.get(v.sheetRow) ?? [];
+    list.push(`${slug}/${v.sku}`);
+    rowClaims.set(v.sheetRow, list);
   }
 }
 
@@ -160,6 +185,14 @@ for (const [slug, p] of all) {
       if (v.isDefault) defaults++;
       for (const k of v.images || []) if (!(p.images || []).some((im) => im.key === k)) errs.push(`variants[${i}].images references unknown image "${k}"`);
       if (v.priceIqd !== undefined && v.priceIqd !== null) warns.push(`variants[${i}].priceIqd is set — prices are not researched`);
+      if (v.sheetRow !== undefined) {
+        if (!Number.isInteger(v.sheetRow)) errs.push(`variants[${i}].sheetRow must be a whole number`);
+        else if (!SHEET) errs.push(`variants[${i}].sheetRow: the owner's sheet ${path.relative(ROOT, SHEET_FILE)} is missing`);
+        else if (!SHEET.has(v.sheetRow)) errs.push(`variants[${i}].sheetRow ${v.sheetRow} is not a row of the owner's sheet`);
+        else if (SHEET_SKIPPED.has(v.sheetRow)) errs.push(`variants[${i}].sheetRow ${v.sheetRow} is a row the owner left out of the store`);
+        const claims = rowClaims.get(v.sheetRow) ?? [];
+        if (claims.length > 1) errs.push(`variants[${i}].sheetRow ${v.sheetRow} is claimed ${claims.length} times (${claims.join(", ")}) — every row is exactly one variant`);
+      }
     });
     if (p.variants?.length && defaults !== 1) errs.push(`exactly one default variant required (found ${defaults})`);
     if (p.kind === "game") {
@@ -180,7 +213,14 @@ for (const [slug, p] of all) {
       if (!RELATED.includes(r.kind)) errs.push(`related[${i}].kind must be one of ${RELATED.join("|")}`);
       if (r.slug && !all.has(r.slug)) warns.push(`related[${i}] points at "${r.slug}" which has no file (yet)`);
     });
-    if (!Array.isArray(p.images) || !p.images.length) errs.push("at least one image required");
+    if (p.category !== undefined) {
+      if (!CATEGORY_SLUGS.has(p.category)) errs.push(`category "${p.category}" is not a store category (app/server/db/seed/demo/categories.ts)`);
+      else if (CATEGORY_PARENTS.has(p.category)) errs.push(`category "${p.category}" has sub-categories: name one of them`);
+    }
+    for (const [i, c] of (p.compatibility || []).entries()) if (c.deviceModel && !DEVICE_KEYS.has(c.deviceModel)) errs.push(`compatibility[${i}].deviceModel "${c.deviceModel}" is not a device of app/server/db/seed/demo/devices.ts`);
+    for (const key of p.game?.platforms || []) if (!DEVICE_KEYS.has(key)) errs.push(`game.platforms "${key}" is not a device of app/server/db/seed/demo/devices.ts`);
+    // No clean official picture: the product has none (the storefront shows its placeholder) — list it under noImage.
+    if (!Array.isArray(p.images) || !p.images.length) warns.push("no image (allowed when no clean official picture exists — report the slug under noImage)");
     (p.images || []).forEach((im, i) => {
       if (!new RegExp(`^${slug}--\\d+$`).test(im.key || "")) errs.push(`images[${i}].key must be "${slug}--<n>"`);
       if (imageKeys.has(im.key)) errs.push(`images[${i}].key duplicates one in ${imageKeys.get(im.key)}`);
@@ -209,6 +249,15 @@ for (const [slug, p] of all) {
   }
   errorCount += errs.length;
   warnCount += warns.length;
+}
+
+if (!only.length && SHEET) {
+  const missing = [...SHEET.values()].filter((row) => !SHEET_SKIPPED.has(row.row) && !rowClaims.has(row.row));
+  if (missing.length) {
+    console.log(`\nowner's sheet: ${missing.length} row(s) not yet a catalogue variant`);
+    for (const row of missing) console.log(`  warn  row ${row.row} "${row.sheetName}"`);
+    warnCount += missing.length;
+  }
 }
 
 const checked = only.length ? only.length : all.size;

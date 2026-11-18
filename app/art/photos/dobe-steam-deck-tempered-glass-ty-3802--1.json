@@ -1,0 +1,62 @@
+{
+  "key": "dobe-steam-deck-tempered-glass-ty-3802--1",
+  "view": "hero",
+  "width": 963,
+  "height": 450,
+  "aspect": 2.14,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dobe-steam-deck-tempered-glass-ty-3802/1-240.09d8d7ca.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-steam-deck-tempered-glass-ty-3802/1-480.30ba625b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-steam-deck-tempered-glass-ty-3802/1-720.7ef54c4c.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dobe-steam-deck-tempered-glass-ty-3802/1-960.a793656a.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dobe-steam-deck-tempered-glass-ty-3802/1-240.f36cff01.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-steam-deck-tempered-glass-ty-3802/1-480.2e280222.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-steam-deck-tempered-glass-ty-3802/1-720.44a561d5.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dobe-steam-deck-tempered-glass-ty-3802/1-960.484262a9.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/dobe-steam-deck-tempered-glass-ty-3802/1-963.c7b51262.png",
+    "width": 963,
+    "height": 450,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRqoAAABXRUJQVlA4WAoAAAAQAAAAEwAACAAAQUxQSEIAAAARP6CmkRQ4exaOHypKZBERgdnnlUFVbdvQm/j2Goggggi+NPA0oP9ac4OI/k8A6BZSt+XgMrf+k8s7ic2WlSDoEgFWUDggQgAAAHADAJ0BKhQACQA/EXKwUCwmpKKwCAGAIglpAAA4u4Vfjso0AAD+zrKRceNtjH5FX1N0MNyKTBHY+WAfCalL7UAAAA==",
+  "dominant": "#262626",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "DOBE (Shenzhen Yuyuanxin Electronic Technology)",
+  "source": {
+    "url": "https://www.dobe-game.com/uploads/image/20240321/1711007668.jpg",
+    "page": "https://www.dobe-game.com/en/productshow-66-1247.html"
+  },
+  "input": "80cf798db98195fc"
+}

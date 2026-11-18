@@ -5,7 +5,8 @@
  *
  * Games sold for PlayStation and Xbox in one product (a variant per platform) go to
  * "multiplatform-games": a product has one category, and filing them under one platform would hide
- * them from the other. No catalogue game is Xbox-only, so "xbox-games" is empty for now; "parts" and
+ * them from the other. A product may name its category itself (`category` in its research file: a gaming chair, a
+ * keyboard, a UPS) — it must be a leaf of this tree. No catalogue game is Xbox-only, so "xbox-games" is empty for now; "parts" and
  * "used-devices" hold no products either (spare parts are not researched yet; used units are listed
  * through their own pages). The navigation hides empty categories.
  */
@@ -117,6 +118,52 @@ export const DEMO_CATEGORIES: readonly CategorySeed[] = [
     description: t3("نظارات الواقع الافتراضي وما يعمل معها.", "Virtual reality headsets.", "چاویلکەکانی ڕاستیی مەجازی."),
     artKey: "playstation-vr2--1",
   },
+  // ── added for the owner's sheet (2026-11-18): PC gear, chairs, cables and power, lighting ──
+  {
+    slug: "pc-peripherals",
+    kind: "pc",
+    name: t3("ملحقات الحاسوب", "PC gaming gear", "پاشکۆکانی کۆمپیوتەر"),
+    description: t3(
+      "لوحات مفاتيح وماوس ولوحات ماوس ومايكروفونات وسماعات خارجية وشاشات ونظارات ألعاب.",
+      "Keyboards, mice, mouse pads, microphones, speakers, monitors and gaming glasses.",
+      "تەختەکلیل، ماوس، ماوس پاد، مایکرۆفۆن، سپیکەر، شاشە و چاویلکەی یاری.",
+    ),
+    artKey: "redragon-ucal-k673-pro--1",
+  },
+  { slug: "keyboards", parent: "pc-peripherals", kind: "pc", name: t3("لوحات المفاتيح", "Keyboards", "تەختەکلیلەکان"), artKey: "redragon-ucal-k673-pro--1" },
+  { slug: "mice", parent: "pc-peripherals", kind: "pc", name: t3("الماوس", "Mice", "ماوسەکان"), artKey: "redragon-storm-pro-m808-ks--1" },
+  { slug: "mouse-pads", parent: "pc-peripherals", kind: "pc", name: t3("لوحات الماوس", "Mouse pads", "ماوس پادەکان"), artKey: "redragon-p032-flick-xl--1" },
+  { slug: "microphones", parent: "pc-peripherals", kind: "pc", name: t3("المايكروفونات", "Microphones", "مایکرۆفۆنەکان"), artKey: "hyperx-quadcast--3" },
+  { slug: "speakers", parent: "pc-peripherals", kind: "pc", name: t3("السماعات الخارجية", "Speakers", "سپیکەرەکان"), artKey: "redragon-yorick-gs511--1" },
+  { slug: "monitors", parent: "pc-peripherals", kind: "pc", name: t3("الشاشات", "Monitors", "شاشەکان"), artKey: "asus-tuf-gaming-vg249qm1a--1" },
+  { slug: "gaming-glasses", parent: "pc-peripherals", kind: "pc", name: t3("نظارات الألعاب", "Gaming glasses", "چاویلکەی یاری"), artKey: null },
+  {
+    slug: "gaming-chairs",
+    kind: "chairs",
+    name: t3("كراسي الألعاب", "Gaming chairs", "کورسیی یاری"),
+    description: t3("كراسي ألعاب مريحة للجلسات الطويلة.", "Gaming chairs for long sessions.", "کورسیی یاری بۆ دانیشتنی درێژ."),
+    artKey: "dxracer-master-series--1",
+  },
+  {
+    slug: "cables-power",
+    kind: "cables",
+    name: t3("الكابلات والطاقة", "Cables & power", "کێبڵ و وزە"),
+    description: t3(
+      "كابلات HDMI و USB ومحولات، وأجهزة UPS تحمي أجهزتك عند انقطاع الكهرباء.",
+      "HDMI and USB cables, adapters, and UPS units that keep your setup running through power cuts.",
+      "کێبڵی HDMI و USB و گۆڕەر، و ئامێری UPS کە ئامێرەکانت لە کاتی بڕانی کارەبادا دەپارێزێت.",
+    ),
+    artKey: null,
+  },
+  { slug: "cables", parent: "cables-power", kind: "cables", name: t3("الكابلات والمحولات", "Cables & adapters", "کێبڵ و گۆڕەر"), artKey: null },
+  { slug: "ups-power", parent: "cables-power", kind: "cables", name: t3("أجهزة UPS والطاقة الاحتياطية", "UPS & backup power", "وزەی یەدەگ و UPS"), artKey: null },
+  {
+    slug: "lighting",
+    kind: "lighting",
+    name: t3("الإضاءة", "Lighting", "ڕووناکی"),
+    description: t3("أشرطة إضاءة RGB لغرفة الألعاب والتلفاز.", "RGB light strips for your gaming room and TV.", "پەتی ڕووناکیی RGB بۆ ژووری یاری و تەلەفزیۆن."),
+    artKey: null,
+  },
   {
     slug: "digital-cards",
     kind: "digital",
@@ -154,11 +201,16 @@ export const DEMO_CATEGORIES: readonly CategorySeed[] = [
   },
 ];
 
+/** A category with no child category: the only kind a product is filed under. */
+export const isLeafCategory = (slug: string): boolean => DEMO_CATEGORIES.some((category) => category.slug === slug) && !DEMO_CATEGORIES.some((category) => category.parent === slug);
+
 /** A digital product sold by length of membership (PlayStation Plus, Game Pass) rather than by face value. */
 export const isSubscription = (product: CatalogProduct): boolean => product.kind === "digital" && product.variants.some((variant) => variant.options?.duration !== undefined);
 
 /** The category a catalogue product is filed under. */
 export function categoryOf(product: CatalogProduct): string {
+  // The research chose one (a chair, a keyboard, a UPS): it wins over the kind's default.
+  if (product.category) return product.category;
   switch (product.kind) {
     case "console":
       if (product.platform === "nintendo" || product.platform === "playstation" || product.platform === "xbox") return `${product.platform}-consoles`;

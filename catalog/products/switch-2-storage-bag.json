@@ -1,0 +1,163 @@
+{
+  "slug": "switch-2-storage-bag",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "حقيبة حمل لجهاز Nintendo Switch 2",
+    "en": "Carrying Bag for Nintendo Switch 2",
+    "ckb": "جانتای هەڵگرتن بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "حقيبة حمل وتخزين لـ Switch 2 وملحقاته",
+    "en": "Carry and storage bag for Switch 2 and its accessories",
+    "ckb": "جانتای گواستنەوە و هەڵگرتن بۆ Switch 2 و پاشکۆکانی"
+  },
+  "description": {
+    "ar": "حقائب حمل غير رسمية لجهاز Nintendo Switch 2 تحمي الجهاز في التنقل وتتسع لملحقات صغيرة وبطاقات الألعاب. لدينا عدة موديلات بأرقام المورّد كما هي على العلبة.",
+    "en": "Unofficial carrying bags for Nintendo Switch 2 that protect the console on the go and hold small accessories and game cards. We stock several models, named by the supplier code on the box.",
+    "ckb": "جانتای هەڵگرتنی نافەرمی بۆ Nintendo Switch 2 کە ئامێرەکە لە گەشتدا دەپارێزن و پاشکۆی بچووک و کارتی یاری تێدا جێدەبێتەوە. چەند مۆدێلێکمان هەیە، بە کۆدی دابینکەری سەر قوتووەکە."
+  },
+  "highlights": [
+    {
+      "ar": "مقاس Nintendo Switch 2",
+      "en": "Sized for Nintendo Switch 2",
+      "ckb": "بە قەبارەی Nintendo Switch 2"
+    },
+    {
+      "ar": "مكان لبطاقات الألعاب والملحقات الصغيرة",
+      "en": "Room for game cards and small accessories",
+      "ckb": "شوێن بۆ کارتی یاری و پاشکۆی بچووک"
+    },
+    {
+      "ar": "ليست منتجًا رسميًا من Nintendo",
+      "en": "Not an official Nintendo product",
+      "ckb": "بەرهەمی فەرمیی Nintendo نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Nintendo Switch 2",
+        "en": "Nintendo Switch 2",
+        "ckb": "Nintendo Switch 2"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-BAG-1898B",
+      "sheetRow": 180,
+      "title": {
+        "ar": "موديل 1898B",
+        "en": "Model 1898B",
+        "ckb": "مۆدێلی 1898B"
+      },
+      "options": {
+        "code": "1898B"
+      },
+      "isDefault": true
+    },
+    {
+      "sku": "NS2-BAG-1898Y",
+      "sheetRow": 181,
+      "title": {
+        "ar": "موديل 1898Y",
+        "en": "Model 1898Y",
+        "ckb": "مۆدێلی 1898Y"
+      },
+      "options": {
+        "code": "1898Y"
+      },
+      "isDefault": false
+    },
+    {
+      "sku": "NS2-BAG-3131",
+      "sheetRow": 182,
+      "title": {
+        "ar": "موديل 3131",
+        "en": "Model 3131",
+        "ckb": "مۆدێلی 3131"
+      },
+      "options": {
+        "code": "3131"
+      },
+      "isDefault": false
+    },
+    {
+      "sku": "NS2-BAG-NS2",
+      "sheetRow": 184,
+      "title": {
+        "ar": "موديل NS2",
+        "en": "Model NS2",
+        "ckb": "مۆدێلی NS2"
+      },
+      "options": {
+        "code": "NS2"
+      },
+      "isDefault": false
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "unverified",
+      "note": {
+        "ar": "حقيبة لـ Switch 2 حسب ورقة المخزن",
+        "en": "Switch 2 bag per the stock sheet",
+        "ckb": "جانتای Switch 2 بەپێی لیستی کۆگا"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "nintendo-switch-2-carrying-case",
+      "kind": "alternative"
+    },
+    {
+      "slug": "dobe-switch-2-storage-bag",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.fruugo.ca/storage-bag-for-switch-2-gray-portable-carrying-case-for-console-and-accessories/p-432189203",
+      "title": "Storage Bag for Switch 2 – Portable Carrying Case For Console And Accessories",
+      "publisher": "Fruugo",
+      "retrieved": "2026-11-18",
+      "supports": "unbranded Switch 2 storage bags for the console and accessories"
+    },
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch-2/accessories/",
+      "title": "Nintendo Switch 2 Accessories",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-18",
+      "supports": "official carrying case for comparison (these bags are not official)"
+    }
+  ],
+  "notes": {
+    "ar": "موديلا 1898B و 1898Y من نفس الحقيبة على الأرجح بلونين مختلفين (B و Y)، ولم نتأكد من اللون.",
+    "en": "1898B and 1898Y are probably the same bag in two colours (B and Y); the colours are not confirmed.",
+    "ckb": "1898B و 1898Y بەگومانی زۆر هەمان جانتان بە دوو ڕەنگی جیاواز (B و Y)؛ ڕەنگەکان دڵنیا نین."
+  },
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Maker of each model (supplier codes 1898B, 1898Y, 3131, NS2 not found online)",
+      "Colours, sizes and game-card slots per model"
+    ]
+  }
+}

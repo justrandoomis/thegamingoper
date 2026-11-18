@@ -1,0 +1,375 @@
+{
+  "slug": "enotria-the-last-song",
+  "group": "games-ps5-xbox",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "Jyamma Games",
+  "status": "available",
+  "releaseDate": "2024-09-19",
+  "name": {
+    "ar": "Enotria: The Last Song",
+    "en": "Enotria: The Last Song",
+    "ckb": "Enotria: The Last Song"
+  },
+  "short": {
+    "ar": "PS5 · قرص · أكشن Souls من الفلكلور الإيطالي",
+    "en": "PS5 · disc · soulslike from Italian folklore",
+    "ckb": "PS5 · دیسک · ئاکشنی Souls لە فۆلکلۆری ئیتاڵی"
+  },
+  "description": {
+    "ar": "لعبة أكشن صعبة على طريقة Souls، مستوحاة من الفلكلور الإيطالي ومن عالم مشمس بدل الأجواء المظلمة المعتادة. تغيّر أقنعة شخصيتك أسلوب قتالها، وتواجه زعماء صعبين. من تطوير ونشر Jyamma Games.",
+    "en": "A soulslike action game inspired by Italian folklore, set in a sunlit world instead of the usual gloom. The masks you wear change how your character fights, and you face tough bosses. Developed and published by Jyamma Games.",
+    "ckb": "یارییەکی ئاکشنی قورس بە شێوازی Souls، کە لە فۆلکلۆری ئیتاڵییەوە هاتووە و لە جیهانێکی خۆرەتاودایە نەک تاریک. ماسکەکان شێوازی شەڕی کارەکتەرەکەت دەگۆڕن، و ڕووبەڕووی سەرۆکی قورس دەبیتەوە. لەلایەن Jyamma Games دروستکراو و بڵاوکراوەتەوە."
+  },
+  "highlights": [
+    {
+      "ar": "عالم مستوحى من صيف إيطاليا وفلكلورها.",
+      "en": "A world inspired by Italian summer and folklore.",
+      "ckb": "جیهانێک کە لە هاوینی ئیتاڵیا و فۆلکلۆرەکەیەوە هاتووە."
+    },
+    {
+      "ar": "لاعب واحد وتعمل بدون إنترنت.",
+      "en": "Single-player, plays offline.",
+      "ckb": "تاکەکەسییە و بێ ئینتەرنێت کار دەکات."
+    },
+    {
+      "ar": "لا تدعم العربية: اللغة العربية غير موجودة في قائمة لغات اللعبة على PlayStation Store.",
+      "en": "No Arabic: it is not in the game's PlayStation Store language list.",
+      "ckb": "عەرەبی تێدا نییە: لە لیستی زمانەکانی یارییەکە لە PlayStation Store دا نییە."
+    },
+    {
+      "ar": "التصنيف PEGI 16.",
+      "en": "Rated PEGI 16.",
+      "ckb": "پۆلێنی PEGI 16."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": {
+        "ar": "تاريخ الإصدار",
+        "en": "Release date",
+        "ckb": "بەرواری دەرچوون"
+      },
+      "value": {
+        "ar": "19 أيلول 2024",
+        "en": "19 September 2024",
+        "ckb": "19ی ئەیلوولی 2024"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": {
+        "ar": "الأجهزة",
+        "en": "Platforms",
+        "ckb": "ئامێرەکان"
+      },
+      "value": {
+        "ar": "PS5 (هذه النسخة)",
+        "en": "PS5 (this version)",
+        "ckb": "PS5 (ئەم وەشانە)"
+      }
+    },
+    {
+      "key": "format",
+      "label": {
+        "ar": "نوع النسخة الفيزيائية",
+        "en": "Physical format",
+        "ckb": "جۆری وەشانی فیزیکی"
+      },
+      "value": {
+        "ar": "قرص PS5",
+        "en": "PS5 disc",
+        "ckb": "دیسکی PS5"
+      }
+    },
+    {
+      "key": "players",
+      "label": {
+        "ar": "عدد اللاعبين",
+        "en": "Players",
+        "ckb": "ژمارەی یاریزان"
+      },
+      "value": {
+        "ar": "لاعب واحد",
+        "en": "1 player",
+        "ckb": "1 یاریزان"
+      }
+    },
+    {
+      "key": "online",
+      "label": {
+        "ar": "الإنترنت والاشتراكات",
+        "en": "Internet and subscriptions",
+        "ckb": "ئینتەرنێت و بەشداریکردن"
+      },
+      "value": {
+        "ar": "تعمل بدون إنترنت ولا تحتاج اشتراكاً؛ التحديثات تحتاج إنترنت.",
+        "en": "Plays offline with no subscription; updates need internet.",
+        "ckb": "بێ ئینتەرنێت و بێ بەشداریکردن کار دەکات؛ نوێکردنەوەکان ئینتەرنێتیان پێویستە."
+      }
+    },
+    {
+      "key": "arabic",
+      "label": {
+        "ar": "اللغة العربية",
+        "en": "Arabic",
+        "ckb": "زمانی عەرەبی"
+      },
+      "value": {
+        "ar": "لا توجد العربية في قائمة لغات PlayStation Store",
+        "en": "No Arabic in the PlayStation Store language list",
+        "ckb": "عەرەبی لە لیستی زمانەکانی PlayStation Store دا نییە"
+      }
+    },
+    {
+      "key": "age",
+      "label": {
+        "ar": "التصنيف العمري",
+        "en": "Age rating",
+        "ckb": "پۆلێنی تەمەن"
+      },
+      "value": {
+        "ar": "PEGI 16",
+        "en": "PEGI 16",
+        "ckb": "PEGI 16"
+      }
+    },
+    {
+      "key": "developer",
+      "label": {
+        "ar": "المطوّر والناشر",
+        "en": "Developer and publisher",
+        "ckb": "گەشەپێدەر و بڵاوکەرەوە"
+      },
+      "value": {
+        "ar": "Jyamma Games",
+        "en": "Jyamma Games",
+        "ckb": "Jyamma Games"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة لجهاز PS5",
+      "en": "PS5 game disc",
+      "ckb": "دیسکی یارییەکە بۆ PS5"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "ENOTRIA-PS5-STD",
+      "title": {
+        "ar": "لجهاز PS5 · Standard Edition",
+        "en": "PS5 · Standard Edition",
+        "ckb": "بۆ PS5 · Standard Edition"
+      },
+      "options": {
+        "platform": "PS5",
+        "edition": "Standard",
+        "format": "Disc"
+      },
+      "isDefault": true,
+      "sheetRow": 115,
+      "images": [
+        "enotria-the-last-song--1",
+        "enotria-the-last-song--2",
+        "enotria-the-last-song--3"
+      ],
+      "notes": {
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": [
+      "ps5",
+      "ps5-slim",
+      "ps5-pro",
+      "ps5-slim-digital"
+    ],
+    "genres": [
+      {
+        "ar": "لعب أدوار وأكشن",
+        "en": "Action RPG",
+        "ckb": "ڕۆڵگێڕان و ئاکشن"
+      },
+      {
+        "ar": "أكشن صعب على طريقة Souls",
+        "en": "Soulslike action",
+        "ckb": "ئاکشنی قورس بە شێوازی Souls"
+      }
+    ],
+    "players": "1",
+    "online": {
+      "ar": "تعمل بدون إنترنت ولا تحتاج اشتراكاً؛ التحديثات تحتاج إنترنت.",
+      "en": "Plays offline with no subscription; updates need internet.",
+      "ckb": "بێ ئینتەرنێت و بێ بەشداریکردن کار دەکات؛ نوێکردنەوەکان ئینتەرنێتیان پێویستە."
+    },
+    "ageRating": {
+      "pegi": 16
+    },
+    "arabic": "none",
+    "physicalFormat": "disc",
+    "developer": "Jyamma Games",
+    "publisher": "Jyamma Games"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "قرص PS5.",
+        "en": "PS5 disc.",
+        "ckb": "دیسکی PS5."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP7780-PPSA20515_00-0232483321110628"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "يعمل على الموديل الذي فيه قارئ أقراص.",
+        "en": "Works on the model with a disc drive.",
+        "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP7780-PPSA20515_00-0232483321110628"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": {
+        "ar": "القرص يحتاج قارئ الأقراص الإضافي.",
+        "en": "The disc needs the add-on Disc Drive.",
+        "ckb": "دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": {
+        "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.",
+        "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "wuchang-fallen-feathers",
+      "kind": "alternative"
+    },
+    {
+      "slug": "demons-souls",
+      "kind": "alternative"
+    },
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense",
+      "kind": "accessory"
+    },
+    {
+      "slug": "ps5-disc-drive",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "enotria-the-last-song--1",
+      "file": ".cache/product-images/enotria-the-last-song/1.png",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202308/0214/e080a6c700cecce38b97e8d342f85cf9343666de5af18e90.png",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP7780-PPSA20515_00-0232483321110628",
+      "kind": "box-art",
+      "alt": {
+        "ar": "غلاف Enotria: The Last Song",
+        "en": "Enotria: The Last Song cover art",
+        "ckb": "وێنەی بەرگی Enotria: The Last Song"
+      },
+      "credit": "Jyamma Games",
+      "width": 1440,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "enotria-the-last-song--2",
+      "file": ".cache/product-images/enotria-the-last-song/2.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202403/2115/78b402b46bffbb850cfd5e921427f676a873f9bf8293265c.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP7780-PPSA20515_00-0232483321110628",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Enotria: The Last Song",
+        "en": "Enotria: The Last Song screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Enotria: The Last Song"
+      },
+      "credit": "Jyamma Games",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "enotria-the-last-song--3",
+      "file": ".cache/product-images/enotria-the-last-song/3.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202403/2115/b17e03671d06a2f662a31f012330f925941665b7a302f0de.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP7780-PPSA20515_00-0232483321110628",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Enotria: The Last Song",
+        "en": "Enotria: The Last Song screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Enotria: The Last Song"
+      },
+      "credit": "Jyamma Games",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://store.playstation.com/en-gb/product/EP7780-PPSA20515_00-0232483321110628",
+      "title": "Enotria: The Last Song Standard Edition — PlayStation Store (UK)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "PS5, Jyamma Games, release 19 Sep 2024, PEGI 16, voice EN/IT/JA, screen languages without Arabic, cover art and screenshots",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://store.playstation.com/en-ae/concept/10008826",
+      "title": "Enotria: The Last Song — PlayStation Store (UAE)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "fact-check: same languages in the Middle East listing, Standard and Deluxe editions",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/",
+      "title": "Disc Drive for PS5 Digital Edition consoles",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "the add-on drive works only with PS5 Pro and the slim PS5 Digital Edition, so the original 2020 Digital Edition cannot play discs"
+    }
+  ],
+  "verification": {
+    "checkedBy": "games-ps5-xbox research 2026-11-18",
+    "secondSource": true,
+    "unverified": [
+      "Arabic support is taken from the PlayStation Store language list; the languages on a given disc depend on its region.",
+      "No EAN/UPC barcode recorded.",
+      "Who distributes the physical PS5 disc was not confirmed on an official page."
+    ]
+  }
+}

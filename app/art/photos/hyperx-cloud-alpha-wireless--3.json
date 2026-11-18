@@ -1,0 +1,56 @@
+{
+  "key": "hyperx-cloud-alpha-wireless--3",
+  "view": "hero",
+  "width": 1267,
+  "height": 1445,
+  "aspect": 0.8768,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-alpha-wireless/3-240.6c61a33a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-alpha-wireless/3-480.9d34bb34.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-alpha-wireless/3-720.25f248d3.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-alpha-wireless/3-960.ff333e46.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-alpha-wireless/3-240.a1629075.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-alpha-wireless/3-480.e47fdf9b.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-alpha-wireless/3-720.49fc1d21.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-alpha-wireless/3-960.b2abdfcc.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRmwBAABXRUJQVlA4WAoAAAAQAAAAEQAAEwAAQUxQSJMAAAART6CgbRs2VBTdvxERcN6PbASg2Na2rDq/148kza39JEagza0Robk1uR5xnvnexRgi+j8BvBt+/04cwDz/tq+9BfOGhblF4W4DiRGmAcDNCuMAnJ1xAMDBn/03C0InDZRCJ9GeAo+snXjKJqG9bV7yaerP4qkiR+3hphF3NeAkRV6KQVOqSB6Yl3b6s4BlL9Ur8y4AVlA4ILIAAACwBACdASoSABQAPxF6r1MsJ6QiqA1RgCIJQBkcv/7uAILMHR8BlEhnDZ949YKkAP7jaGFYh0HxnsY8b1Ts0R/d8vfCpZkkP1YxeKcDVfzMER0qLbocjPE76nLWS+aKBsovlBuY/8d/kflYkrE8jBFeyFT8xAuXhQwOd9Qd2AuRpZMqs4hW6K7AWVrNN1t//lH0Mn/+UfTq+A+Wpd8+I7RF5Phe+VA+kIP96Bv510Z4CAAA",
+  "dominant": "#040404",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "HyperX (HP Inc.)",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_alpha_wireless_4_front.jpg",
+    "page": "https://hyperx.com/products/hyperx-cloud-alpha-wireless"
+  },
+  "input": "c83ec28526376136"
+}

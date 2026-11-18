@@ -1,0 +1,62 @@
+{
+  "key": "one-piece-odyssey--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/one-piece-odyssey/1-240.5b0e8c3d.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/one-piece-odyssey/1-480.b5a23f26.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/one-piece-odyssey/1-720.9f80a3e7.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/one-piece-odyssey/1-960.65b1e96d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/one-piece-odyssey/1-240.5838fcca.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/one-piece-odyssey/1-480.90ebc506.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/one-piece-odyssey/1-720.2e2b950e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/one-piece-odyssey/1-960.51ee03cc.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/one-piece-odyssey/1-1067.576c09bd.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADQAwCdASoNABQAPxFysFAsJqSisAgBgCIJagCw7A3yMmQeYlS+EWAA/Zhav4pnESUKhuk67WWmrfu2Qz4WSQfSzPCEa4klVky1+qPfmEXBqGlu+xZnsWJOvkOp4m04Jw1BHrDbjaDVY4AA",
+  "dominant": "#171817",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Bandai Namco Entertainment",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202209/1913/kYYtcJWbEglqdCXUGYk2UcMz.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP0700-PPSA04995_00-KIZOKAPPLI000000"
+  },
+  "input": "d42e7c2d1aea3e7e"
+}

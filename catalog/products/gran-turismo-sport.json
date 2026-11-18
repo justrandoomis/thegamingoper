@@ -1,0 +1,384 @@
+{
+  "slug": "gran-turismo-sport",
+  "group": "ps4",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "PlayStation Studios",
+  "status": "available",
+  "releaseDate": "2017-10-17",
+  "name": {
+    "ar": "Gran Turismo Sport",
+    "en": "Gran Turismo Sport",
+    "ckb": "Gran Turismo Sport"
+  },
+  "short": {
+    "ar": "PS4 · قرص · يدعم PlayStation VR · الأونلاين متوقف",
+    "en": "PS4 · disc · PlayStation VR compatible · online closed",
+    "ckb": "PS4 · دیسک · گونجاو لەگەڵ PlayStation VR · ئۆنلاین داخراوە"
+  },
+  "description": {
+    "ar": "محاكي سباقات من Polyphony Digital لجهاز PS4، يدعم نظارة PlayStation VR الأولى. بُنيت اللعبة أصلاً حول السباقات أونلاين، لكن خدماتها الأونلاين توقفت في 31 كانون الثاني 2024؛ ما بقي هو الأجزاء التي تعمل بدون إنترنت مثل Arcade وVR Tour.",
+    "en": "Polyphony Digital's racing simulator for PS4, compatible with the original PlayStation VR headset. It was built around online racing, but its online services closed on 31 January 2024; what remains are the offline parts such as Arcade and VR Tour.",
+    "ckb": "سیمولەیتەری پێشبڕکێی Polyphony Digital بۆ PS4، گونجاو لەگەڵ PlayStation VR ی یەکەم. یارییەکە لە بنەڕەتدا بۆ پێشبڕکێی ئۆنلاین دروستکراوە، بەڵام خزمەتگوزارییە ئۆنلاینەکانی لە 31ی کانوونی دووەمی 2024 داخران؛ ئەوەی ماوە بەشە بێ ئینتەرنێتەکانە وەک Arcade و VR Tour."
+  },
+  "highlights": [
+    {
+      "ar": "الخدمات الأونلاين (Sport وLobby والفعاليات) متوقفة منذ 31 كانون الثاني 2024.",
+      "en": "Online services (Sport mode, lobbies, events) closed on 31 January 2024.",
+      "ckb": "خزمەتگوزارییە ئۆنلاینەکان (Sport، Lobby، چالاکییەکان) لە 31ی کانوونی دووەمی 2024 ەوە داخراون."
+    },
+    {
+      "ar": "طور VR يحتاج نظارة PlayStation VR الأولى وكاميرا PlayStation Camera.",
+      "en": "VR mode needs the original PlayStation VR and PlayStation Camera.",
+      "ckb": "شێوازی VR پێویستی بە PlayStation VR ی یەکەم و PlayStation Camera هەیە."
+    },
+    {
+      "ar": "لاعبان على الجهاز نفسه بشاشة مقسومة.",
+      "en": "2 players split-screen on one console.",
+      "ckb": "2 یاریزان بە شاشەی دابەشکراو لەسەر یەک ئامێر."
+    },
+    {
+      "ar": "التصنيف PEGI 3 — لكل الأعمار.",
+      "en": "Rated PEGI 3 — for all ages.",
+      "ckb": "پۆلێنی PEGI 3 — بۆ هەموو تەمەنەکان."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": {
+        "ar": "تاريخ الإصدار",
+        "en": "Release date",
+        "ckb": "بەرواری دەرچوون"
+      },
+      "value": {
+        "ar": "17 تشرين الأول 2017",
+        "en": "17 October 2017",
+        "ckb": "17ی تشرینی یەکەمی 2017"
+      }
+    },
+    {
+      "key": "format",
+      "label": {
+        "ar": "نوع النسخة الفيزيائية",
+        "en": "Physical format",
+        "ckb": "جۆری وەشانی فیزیکی"
+      },
+      "value": {
+        "ar": "قرص PS4",
+        "en": "PS4 disc",
+        "ckb": "دیسکی PS4"
+      }
+    },
+    {
+      "key": "players",
+      "label": {
+        "ar": "عدد اللاعبين",
+        "en": "Players",
+        "ckb": "ژمارەی یاریزان"
+      },
+      "value": {
+        "ar": "1–2 لاعبين على الجهاز نفسه",
+        "en": "1–2 players on one console",
+        "ckb": "1–2 یاریزان لەسەر یەک ئامێر"
+      }
+    },
+    {
+      "key": "online",
+      "label": {
+        "ar": "الإنترنت والاشتراكات",
+        "en": "Internet and subscriptions",
+        "ckb": "ئینتەرنێت و بەشداریکردن"
+      },
+      "value": {
+        "ar": "الخدمات الأونلاين متوقفة منذ 31 كانون الثاني 2024؛ تعمل الأجزاء غير المتصلة فقط",
+        "en": "Online services closed on 31 January 2024; only the offline parts work",
+        "ckb": "خزمەتگوزاریی ئۆنلاین لە 31ی کانوونی دووەمی 2024 ەوە داخراوە؛ تەنها بەشە بێ ئینتەرنێتەکان کار دەکەن"
+      }
+    },
+    {
+      "key": "vr",
+      "label": {
+        "ar": "الواقع الافتراضي",
+        "en": "Virtual reality",
+        "ckb": "ڕاستیی مەجازی"
+      },
+      "value": {
+        "ar": "PlayStation VR (الأولى) + PlayStation Camera، اختياري",
+        "en": "PlayStation VR (original) + PlayStation Camera, optional",
+        "ckb": "PlayStation VR (یەکەم) + PlayStation Camera، ئارەزوومەندانە"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": {
+        "ar": "اللغة العربية",
+        "en": "Arabic",
+        "ckb": "زمانی عەرەبی"
+      },
+      "value": {
+        "ar": "غير معروف",
+        "en": "Unknown",
+        "ckb": "نەزانراو"
+      }
+    },
+    {
+      "key": "age",
+      "label": {
+        "ar": "التصنيف العمري",
+        "en": "Age rating",
+        "ckb": "پۆلێنی تەمەن"
+      },
+      "value": {
+        "ar": "PEGI 3",
+        "en": "PEGI 3",
+        "ckb": "PEGI 3"
+      }
+    },
+    {
+      "key": "developer",
+      "label": {
+        "ar": "المطوّر والناشر",
+        "en": "Developer and publisher",
+        "ckb": "گەشەپێدەر و بڵاوکەرەوە"
+      },
+      "value": {
+        "ar": "Polyphony Digital / Sony Interactive Entertainment",
+        "en": "Polyphony Digital / Sony Interactive Entertainment",
+        "ckb": "Polyphony Digital / Sony Interactive Entertainment"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة لجهاز PS4",
+      "en": "PS4 game disc",
+      "ckb": "دیسکی یارییەکە بۆ PS4"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "GTS-PS4",
+      "sheetRow": 77,
+      "title": {
+        "ar": "لجهاز PS4",
+        "en": "PS4 edition",
+        "ckb": "بۆ PS4"
+      },
+      "options": {
+        "platform": "PS4",
+        "format": "Disc"
+      },
+      "isDefault": true,
+      "images": [
+        "gran-turismo-sport--1",
+        "gran-turismo-sport--2",
+        "gran-turismo-sport--3"
+      ],
+      "notes": {
+        "ar": "قرص PS4. يعمل على PS5 بقارئ أقراص عبر التوافق مع ألعاب PS4؛ PS5 Pro وPS5 Slim Digital Edition يحتاجان قارئ الأقراص الإضافي. وجهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS4 disc. Plays on a PS5 with a disc drive through backward compatibility; PS5 Pro and PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "دیسکی PS4. لەسەر PS5 ی خاوەن دیسک خوێنەر کار دەکات لە ڕێگەی گونجانی یارییەکانی PS4؛ PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": [
+      "ps4"
+    ],
+    "genres": [
+      {
+        "ar": "سباقات",
+        "en": "Racing",
+        "ckb": "پێشبڕکێ"
+      },
+      {
+        "ar": "محاكاة قيادة",
+        "en": "Driving simulator",
+        "ckb": "سیمولەیتەری لێخوڕین"
+      }
+    ],
+    "players": "1-2 local",
+    "online": {
+      "ar": "الخدمات الأونلاين متوقفة منذ 31 كانون الثاني 2024.",
+      "en": "Online services closed on 31 January 2024.",
+      "ckb": "خزمەتگوزاریی ئۆنلاین لە 31ی کانوونی دووەمی 2024 ەوە داخراوە."
+    },
+    "ageRating": {
+      "pegi": 3
+    },
+    "arabic": "unknown",
+    "physicalFormat": "disc",
+    "developer": "Polyphony Digital",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps4",
+      "status": "verified",
+      "note": {
+        "ar": "قرص PS4.",
+        "en": "PS4 disc.",
+        "ckb": "دیسکی PS4."
+      },
+      "source": "https://www.playstation.com/en-gb/games/gran-turismo-sport/"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "يعمل قرص PS4 على PS5 عبر التوافق مع ألعاب PS4.",
+        "en": "The PS4 disc runs on PS5 through backward compatibility.",
+        "ckb": "دیسکی PS4 لەسەر PS5 کار دەکات لە ڕێگەی گونجانی یارییەکانی PS4."
+      },
+      "source": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "على الموديل الذي فيه قارئ أقراص، عبر التوافق مع ألعاب PS4.",
+        "en": "On the model with a disc drive, through backward compatibility.",
+        "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە، لە ڕێگەی گونجانی یارییەکانی PS4."
+      },
+      "source": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": {
+        "ar": "جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      },
+      "source": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "gran-turismo-7",
+      "kind": "upsell"
+    },
+    {
+      "slug": "dualshock-4",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "gran-turismo-sport--1",
+      "file": ".cache/product-images/gran-turismo-sport/1.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/gran-turismo-sport-bd-packshot-01-ps4-08nov21$en?$1600px--t$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/gran-turismo-sport/",
+      "kind": "box-art",
+      "alt": {
+        "ar": "علبة Gran Turismo Sport لجهاز PS4 (PlayStation Hits)",
+        "en": "Gran Turismo Sport PS4 box (PlayStation Hits)",
+        "ckb": "قوتووی Gran Turismo Sport بۆ PS4 (PlayStation Hits)"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    },
+    {
+      "key": "gran-turismo-sport--2",
+      "file": ".cache/product-images/gran-turismo-sport/2.jpg",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/gran-turismo-sport-screen-01-ps4-eu-28oct15?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/gran-turismo-sport/",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Gran Turismo Sport",
+        "en": "Gran Turismo Sport screenshot",
+        "ckb": "وێنەیەک لە Gran Turismo Sport"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600,
+      "height": 900,
+      "transparent": false
+    },
+    {
+      "key": "gran-turismo-sport--3",
+      "file": ".cache/product-images/gran-turismo-sport/3.webp",
+      "sourceUrl": "https://gmedia.playstation.com/is/image/SIEPDC/gran-turismo-sport-screen-03-ps4-eu-28oct15?$1600px$",
+      "sourcePage": "https://www.playstation.com/en-gb/games/gran-turismo-sport/",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "سباق في Gran Turismo Sport",
+        "en": "A race in Gran Turismo Sport",
+        "ckb": "پێشبڕکێیەک لە Gran Turismo Sport"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1600,
+      "height": 900,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/games/gran-turismo-sport/",
+      "title": "Gran Turismo Sport",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK)",
+      "retrieved": "2026-11-18",
+      "supports": "1-2 players, PlayStation VR compatible (PS VR and PS Camera required), PEGI 3, PlayStation Hits pack shot, online end-of-service notice"
+    },
+    {
+      "url": "https://www.gran-turismo.com/gb/news/00_3090440.html",
+      "title": "Gran Turismo Sport – online service end notice",
+      "publisher": "Polyphony Digital",
+      "retrieved": "2026-11-18",
+      "supports": "online services (Community, Open Lobby, Sport mode, events) ended 31 January 2024; offline parts and saved progress remain"
+    },
+    {
+      "url": "https://www.gamespot.com/articles/gran-turismo-sport-online-services-will-end-in-january-2024/1100-6518066/",
+      "title": "Gran Turismo Sport Online Services Will End In January 2024",
+      "publisher": "GameSpot",
+      "retrieved": "2026-11-18",
+      "supports": "confirmation of the 31 January 2024 shutdown"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Gran_Turismo_Sport",
+      "title": "Gran Turismo Sport",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-18",
+      "supports": "release 17 October 2017 (NA), developer Polyphony Digital"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/",
+      "title": "Backward compatibility: PS4 games playable on PS5 consoles",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "PS4 discs play on PS5 consoles with a disc drive; PS4 discs cannot be used on the PS5 Digital Edition"
+    }
+  ],
+  "verification": {
+    "checkedBy": "ps4-research",
+    "secondSource": true,
+    "unverified": [
+      "The sheet says 'GRAND TURISMOR2 VR': read as Gran Turismo Sport, the PS4 Gran Turismo whose box carries the PlayStation VR badge (Gran Turismo 7 on PS4 has no VR); 'R2' read as region 2.",
+      "Whether the owner's copy is the PlayStation Hits print shown in the picture or the first print.",
+      "Arabic language support is not listed on the official pages we read.",
+      "PlayStation VR on PS5 needs the PlayStation Camera adaptor; not checked for this game."
+    ]
+  }
+}

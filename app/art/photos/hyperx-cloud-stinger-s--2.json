@@ -1,0 +1,56 @@
+{
+  "key": "hyperx-cloud-stinger-s--2",
+  "view": "hero",
+  "width": 1164,
+  "height": 1600,
+  "aspect": 0.7275,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-stinger-s/2-240.6c99a16e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-stinger-s/2-480.5671c7d9.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-stinger-s/2-720.4159b214.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-stinger-s/2-960.6f5859b3.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-stinger-s/2-240.30506eb8.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-stinger-s/2-480.52f041bf.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-stinger-s/2-720.0421148a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-stinger-s/2-960.b3628482.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRv4AAABXRUJQVlA4WAoAAAAQAAAADgAAEwAAQUxQSHYAAAART6CgbRs2VRLt/omIgO/s82vhxLZtN7np9svI4uJi45qKS+g4cODaCHqRHe5431uMIaL/E4C/5wtL+Z4CUeSzVNy9fS5eW07F58slgIxUdiQbFN6TZAgz+JA3G0D0HduQUQzdUkySWGLnGlvEqC2Bdgp15WsqVlA4IGIAAADQAwCdASoPABQAPxFysFAsJqSisAgBgCIJaQAD4qIE9o5ursFFHQAA/uvziibwdVSqz4Xz97n8qooFj++oHkCFE32Wk6KmuqCmLSIidnCPz7z/Tgkkd3pEjRL7VgYZ53QAAA==",
+  "dominant": "#181818",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "HyperX (HP Inc.), via Icecat",
+  "source": {
+    "url": "https://images.icecat.biz/img/gallery/c018f9ebb1d007504792cdabc53e56bb6de85749.jpg",
+    "page": "https://icecat.biz/en/p/hyperx/hhss1s-aa-bk-g/cloud-stinger-s-80427488.html"
+  },
+  "input": "433aee8bd3f97144"
+}

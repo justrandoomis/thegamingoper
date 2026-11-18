@@ -1,0 +1,48 @@
+{
+  "key": "dxracer-prince-series--5",
+  "view": "hero",
+  "width": 722,
+  "height": 1228,
+  "aspect": 0.5879,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-prince-series/5-240.cab1353d.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-prince-series/5-480.0a9ffcea.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dxracer-prince-series/5-720.4481b197.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-prince-series/5-240.4ea71c92.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-prince-series/5-480.a5d708d0.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dxracer-prince-series/5-720.d940bafb.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRgYBAABXRUJQVlA4WAoAAAAQAAAACwAAEwAAQUxQSG8AAAART6CmbSM4WQqdev/deBER2OVNvgxuY9tWlf01VuhAM22ADDK3DvgZLgVo6HDq/bweIvo/ARhX7cznZkFV8uApzeAtHeEudWAhVQzBSUqd4JzhKx1tflLq0BjkQwuqHhhau3nR6kqFkV9t9t3A4S8AVlA4IHAAAADQAwCdASoMABQAPxFysFAsJqSisAgBgCIJaQAD40mO1QFlMnoMDTQA/RmTYt4xQ5TOaX57Buxiw+Xsv3ATF0emIpb+LIAyUihe8jSVWhp8P8gIGz9L7KP6jwsu4wkHE4XzFev/XVR0w5BLoyiAgAAA",
+  "dominant": "#181819",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "DXRacer (product render, via MaxGaming)",
+  "source": {
+    "url": "https://www.maxgaming.com/bilder/artiklar/zoom/31145_1.jpg",
+    "page": "https://www.maxgaming.com/en/dxracer-prince/prince-l-grey-fabric"
+  },
+  "input": "4ec677fe7e4dc4b6"
+}

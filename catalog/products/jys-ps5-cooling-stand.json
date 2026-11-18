@@ -1,0 +1,110 @@
+{
+  "slug": "jys-ps5-cooling-stand",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة تبريد JYS لجهاز PS5",
+    "en": "JYS Cooling Stand for PS5",
+    "ckb": "ستاندی ساردکەرەوەی JYS بۆ PS5"
+  },
+  "short": {
+    "ar": "قاعدة عمودية بمراوح تبريد وشحن لليدين",
+    "en": "Upright stand with cooling fans and controller charging",
+    "ckb": "ستاندی ستوونی لەگەڵ پانکە و شەحنی کۆنتڕۆڵەر"
+  },
+  "description": {
+    "ar": "قاعدة عمودية من JYS تحمل جهاز PS5 وفيها مراوح تبريد ومكان لشحن اليدين. هذا النوع من القواعد يعمل من منفذ USB في الجهاز.",
+    "en": "A JYS upright stand that holds the PS5, with cooling fans and controller charging spots. Stands of this type run from a console USB port.",
+    "ckb": "ستاندێکی ستوونیی JYS کە PS5 هەڵدەگرێت، لەگەڵ پانکەی ساردکردنەوە و شوێنی شەحنی کۆنتڕۆڵەر."
+  },
+  "highlights": [
+    {
+      "ar": "مراوح تبريد",
+      "en": "Cooling fans",
+      "ckb": "پانکەی ساردکردنەوە"
+    },
+    {
+      "ar": "شحن يدَي DualSense",
+      "en": "DualSense charging",
+      "ckb": "شەحنی DualSense"
+    },
+    {
+      "ar": "يقف الجهاز عمودياً بثبات",
+      "en": "Holds the console upright",
+      "ckb": "کۆنسۆڵ بە ستوونی ڕادەگرێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "cooling",
+      "label": {
+        "ar": "التبريد",
+        "en": "Cooling",
+        "ckb": "ساردکردنەوە"
+      },
+      "value": {
+        "ar": "مراوح مدمجة",
+        "en": "Built‑in fans",
+        "ckb": "پانکەی ناوەکی"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-PS5-COOLING-STAND",
+      "title": {
+        "ar": "قاعدة تبريد JYS لجهاز PS5",
+        "en": "JYS Cooling Stand for PS5",
+        "ckb": "ستاندی ساردکەرەوەی JYS بۆ PS5"
+      },
+      "sheetRow": 151,
+      "isDefault": true
+    }
+  ],
+  "related": [
+    {
+      "slug": "dobe-tp5-3536b-cooling-stand",
+      "kind": "alternative"
+    },
+    {
+      "slug": "dualsense",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-edge",
+      "kind": "setup"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.walmart.com/ip/555513285",
+      "title": "PS5 cooling stand with fan and dual controller charging",
+      "publisher": "Walmart (marketplace listing)",
+      "retrieved": "2026-11-18",
+      "supports": "how this type of stand works: built-in fans with speed levels, dual controller charging"
+    },
+    {
+      "url": "https://www.newegg.com/p/3ED-0008-00004",
+      "title": "Vertical cooling stand for PS5",
+      "publisher": "Newegg (marketplace listing)",
+      "retrieved": "2026-11-18",
+      "supports": "type reference: USB-powered fans, charging stops when the console is off or in sleep on some stands"
+    }
+  ],
+  "notes": {
+    "ar": "الجهاز واليدان غير مرفقة.",
+    "en": "Console and controllers not included.",
+    "ckb": "کۆنسۆڵ و کۆنتڕۆڵەرەکان لەگەڵیدا نین."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "The owner's sheet writes 'IYS'; read as the JYS accessory brand",
+      "Exact JYS model, number of fans, PS5 models it fits (original or Slim) — no JYS page was found"
+    ]
+  }
+}

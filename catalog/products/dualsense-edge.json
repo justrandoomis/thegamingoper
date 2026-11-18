@@ -86,6 +86,7 @@
   "variants": [
     {
       "sku": "DSEDGE-WHITE",
+      "sheetRow": 110,
       "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "modelNumber": "CFI-ZCP1",
@@ -115,6 +116,7 @@
   ],
   "related": [
     { "slug": "dualsense", "kind": "alternative" },
+    { "slug": "dualsense-edge-stick-module", "kind": "accessory" },
     { "slug": "dualsense-charging-station", "kind": "accessory" },
     { "slug": "playstation-5-pro", "kind": "setup" }
   ],

@@ -1,0 +1,64 @@
+{
+  "key": "clair-obscur-expedition-33--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/clair-obscur-expedition-33/2-240.4076c0d0.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/clair-obscur-expedition-33/2-480.97575437.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/clair-obscur-expedition-33/2-720.f1be8720.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/clair-obscur-expedition-33/2-960.a96eb38c.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/clair-obscur-expedition-33/2-1440.e9b74446.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/clair-obscur-expedition-33/2-240.ee1be1ed.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/clair-obscur-expedition-33/2-480.78f58667.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/clair-obscur-expedition-33/2-720.9b2b24c4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/clair-obscur-expedition-33/2-960.4273df49.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/clair-obscur-expedition-33/2-1440.076a818a.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJaACdIIjCIORxYir3OAD+6dfhgHILYxmKf3CdUOekqXIdXcWpiTcARxqXA+b+njeFLlHivisRJb5qIiJBqV7n/L31yO1eVz1bAAAA",
+  "dominant": "#080502",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Kepler Interactive / Sandfall Interactive",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202406/0917/579b7631b1c274b411a82acdd7610148530da6a3bef83c78.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP7579-PPSA17599_00-EXP33000000PS5EU"
+  },
+  "input": "6e1b03fada49752f"
+}

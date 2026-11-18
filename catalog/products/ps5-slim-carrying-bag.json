@@ -1,0 +1,91 @@
+{
+  "slug": "ps5-slim-carrying-bag",
+  "group": "ps5-bags-cases-skins",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "حقيبة حمل لجهاز PS5 Slim",
+    "en": "PS5 Slim Carrying Bag",
+    "ckb": "جانتای هەڵگرتنی PS5 Slim"
+  },
+  "short": {
+    "ar": "حقيبة سفر مبطّنة لجهاز PS5 Slim مع مكان للأذرع والكابلات",
+    "en": "Padded travel bag for the PS5 Slim with room for controllers and cables",
+    "ckb": "جانتای گەشتی پەڕۆدار بۆ PS5 Slim بە شوێنی دەسک و کێبڵ"
+  },
+  "description": {
+    "ar": "حقيبة بمقاس جهاز PS5 Slim لنقله بأمان، بنسختي الأقراص والرقمية. الداخل مبطّن ليحمي الجهاز من الصدمات، وفيه مكان للأذرع والكابلات. الجهاز والأذرع غير مرفقة.",
+    "en": "A bag sized for the PS5 Slim, disc or Digital, to move it safely. The padded inside protects the console from knocks and leaves room for controllers and cables. Console and controllers are not included.",
+    "ckb": "جانتایەک بە قەبارەی PS5 Slim، دیسک یان دیجیتاڵ، بۆ گواستنەوەی بە سەلامەتی. ناوە پەڕۆدارەکەی کۆنسۆڵەکە لە لێدان دەپارێزێت و شوێنی دەسک و کێبڵی تێدایە. کۆنسۆڵ و دەسکەکان لەگەڵیدا نین."
+  },
+  "highlights": [
+    { "ar": "بمقاس PS5 Slim بنسختي الأقراص والرقمية", "en": "Sized for the PS5 Slim, disc and Digital", "ckb": "بە قەبارەی PS5 Slim، دیسک و دیجیتاڵ" },
+    { "ar": "داخل مبطّن يحمي من الصدمات", "en": "Padded inside against knocks", "ckb": "ناوەوەی پەڕۆدار دژی لێدان" },
+    { "ar": "مكان للأذرع والكابلات", "en": "Room for controllers and cables", "ckb": "شوێن بۆ دەسک و کێبڵ" }
+  ],
+  "specs": [
+    { "key": "fits", "label": { "ar": "يناسب", "en": "Fits", "ckb": "گونجاوە بۆ" }, "value": { "ar": "PS5 Slim (الأقراص والرقمية)", "en": "PS5 Slim (disc and Digital)", "ckb": "PS5 Slim (دیسک و دیجیتاڵ)" } }
+  ],
+  "inTheBox": [
+    { "ar": "الحقيبة", "en": "Bag", "ckb": "جانتا" }
+  ],
+  "variants": [
+    {
+      "sku": "PS5SLIM-BAG-1",
+      "sheetRow": 146,
+      "title": { "ar": "الطراز 1", "en": "Model 1", "ckb": "مۆدێلی 1" },
+      "options": { "edition": "Model 1" },
+      "isDefault": true
+    },
+    {
+      "sku": "PS5SLIM-BAG-PRINT",
+      "sheetRow": 147,
+      "title": { "ar": "بتصميم مطبوع", "en": "Printed design", "ckb": "دیزاینی چاپکراو" },
+      "options": { "edition": "Printed design" },
+      "isDefault": false,
+      "notes": { "ar": "حقيبة بصورة مطبوعة على الوجه؛ اسأل المتجر عن شكل التصميم.", "en": "A bag with a printed picture on the front; ask the shop to see the design.", "ckb": "جانتایەک بە وێنەی چاپکراو لەسەر ڕووەکەی؛ داوای بینینی دیزاینەکە لە فرۆشگا بکە." }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5-slim", "status": "verified", "source": "https://www.fruugo.co.nz/hard-travel-carrying-case-for-ps5-slim-shockproof-storage-bag-for-slim-controllersdisk-digital-editioncords-gray/p-445552773-935727437" },
+    { "deviceModel": "ps5-slim-digital", "status": "verified", "source": "https://www.fruugo.co.nz/hard-travel-carrying-case-for-ps5-slim-shockproof-storage-bag-for-slim-controllersdisk-digital-editioncords-gray/p-445552773-935727437" }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "playstation-5-slim-digital-edition", "kind": "setup" },
+    { "slug": "ps5-slim-faceplates", "kind": "accessory" },
+    { "slug": "ps5-pro-carrying-bag", "kind": "alternative" }
+  ],
+  "sources": [
+    {
+      "url": "https://www.fruugo.co.nz/hard-travel-carrying-case-for-ps5-slim-shockproof-storage-bag-for-slim-controllersdisk-digital-editioncords-gray/p-445552773-935727437",
+      "title": "Hard Travel Carrying Case for PS5 Slim, Shockproof Storage Bag for Slim Controllers/Disk Digital Edition/Cords",
+      "publisher": "Fruugo",
+      "retrieved": "2026-11-18",
+      "supports": "PS5 Slim travel bags fit disc and Digital editions and hold controllers and cables"
+    },
+    {
+      "url": "https://www.technolife.com/product-123189/",
+      "title": "PlayStation 5 Slim console bag, printed design code 2",
+      "publisher": "Technolife",
+      "retrieved": "2026-11-18",
+      "supports": "PS5 Slim console bags are sold in plain and printed-design versions"
+    }
+  ],
+  "notes": {
+    "ar": "حقيبة من صنع طرف ثالث (ليست من Sony).",
+    "en": "A third-party bag (not made by Sony).",
+    "ckb": "جانتایەکی لایەنی سێیەمە (هی Sony نییە)."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Maker, model, colour and dimensions of the two bags the shop stocks (sheet: 'PS5 SLIM BAG 1' and 'PS5 SLIM BAG PHOTO')",
+      "What picture the printed bag shows",
+      "No clean product image of these exact bags was found"
+    ]
+  }
+}

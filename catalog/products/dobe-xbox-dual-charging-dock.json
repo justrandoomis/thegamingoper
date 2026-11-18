@@ -1,0 +1,90 @@
+{
+  "slug": "dobe-xbox-dual-charging-dock",
+  "group": "xbox-vr",
+  "kind": "accessory",
+  "platform": "xbox",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "شاحن DOBE مع بطاريتين ليدي Xbox",
+    "en": "DOBE Dual Charging Dock with Batteries for Xbox Controllers",
+    "ckb": "شەحنکەری DOBE لەگەڵ دوو پاتری بۆ دەسکەکانی Xbox"
+  },
+  "short": {
+    "ar": "قاعدة تشحن يدين معاً · بطاريتان قابلتان للشحن بدل بطاريات AA",
+    "en": "Dock that charges two controllers · two rechargeable packs instead of AA cells",
+    "ckb": "بنکەیەک کە دوو دەسک شەحن دەکات · دوو پاتریی شەحنکراوە لە جیاتی AA"
+  },
+  "description": {
+    "ar": "قاعدة شحن من DOBE تأتي مع بطاريتين قابلتين للشحن تُركّبان في يدي Xbox بدل بطاريات AA العادية. توضع اليدان على القاعدة فتُشحن البطاريتان داخلهما، وتبيّن الأضواء حالة الشحن. تناسب يدي Xbox Series X|S وXbox One.",
+    "en": "A DOBE charging dock that comes with two rechargeable battery packs, which go in Xbox controllers instead of disposable AA cells. You stand the controllers on the dock and the packs charge inside them, with lights showing the charging status. It suits Xbox Series X|S and Xbox One controllers.",
+    "ckb": "بنکەیەکی شەحنی DOBE کە لەگەڵ دوو پاتریی شەحنکراوە دێت، کە لە جیاتی پاتریی AA ـی ئاسایی لە دەسکەکانی Xbox دادەنرێن. دەسکەکان لەسەر بنکەکە دادەنێیت و پاترییەکان لەناویاندا شەحن دەبن، و ڕووناکی دۆخی شەحن پیشان دەدات. بۆ دەسکەکانی Xbox Series X|S و Xbox One دەگونجێت."
+  },
+  "highlights": [
+    { "ar": "تشحن يدين في الوقت نفسه", "en": "Charges two controllers at once", "ckb": "دوو دەسک هاوکات شەحن دەکات" },
+    { "ar": "بطاريتان قابلتان للشحن مرفقتان", "en": "Two rechargeable battery packs included", "ckb": "دوو پاتریی شەحنکراوە لەگەڵیەتی" },
+    { "ar": "لأيدي Xbox Series X|S وXbox One", "en": "For Xbox Series X|S and Xbox One controllers", "ckb": "بۆ دەسکەکانی Xbox Series X|S و Xbox One" },
+    { "ar": "أضواء لحالة الشحن", "en": "Charging status lights", "ckb": "ڕووناکیی دۆخی شەحن" }
+  ],
+  "specs": [
+    { "key": "compatibility", "label": { "ar": "متوافق مع", "en": "Compatible with", "ckb": "گونجاوە لەگەڵ" }, "value": { "ar": "أيدي Xbox Series X|S وXbox One", "en": "Xbox Series X|S and Xbox One controllers", "ckb": "دەسکەکانی Xbox Series X|S و Xbox One" } }
+  ],
+  "inTheBox": [
+    { "ar": "قاعدة الشحن", "en": "Charging dock", "ckb": "بنکەی شەحن" },
+    { "ar": "بطاريتان قابلتان للشحن", "en": "Two rechargeable battery packs", "ckb": "دوو پاتریی شەحنکراوە" },
+    { "ar": "كابل USB", "en": "USB cable", "ckb": "کێبڵی USB" }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-XBX-DOCK",
+      "sheetRow": 15,
+      "title": {
+        "ar": "شاحن DOBE مع بطاريتين ليدي Xbox",
+        "en": "DOBE Dual Charging Dock with Batteries for Xbox Controllers",
+        "ckb": "شەحنکەری DOBE لەگەڵ دوو پاتری بۆ دەسکەکانی Xbox"
+      },
+      "options": { "color": "Black" },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "xbox-series-x", "status": "verified", "note": { "ar": "لليد المرفقة مع الجهاز", "en": "For the controller that comes with the console", "ckb": "بۆ ئەو دەسکەی لەگەڵ کۆنسۆڵەکە دێت" }, "source": "https://ecommerce.datablitz.com.ph/products/xboxsx-dobe-charging-kit-for-x-series-s-x-x-one-s-x-tyx-1623" },
+    { "deviceModel": "xbox-series-x-digital", "status": "verified", "note": { "ar": "لليد المرفقة مع الجهاز", "en": "For the controller that comes with the console", "ckb": "بۆ ئەو دەسکەی لەگەڵ کۆنسۆڵەکە دێت" }, "source": "https://ecommerce.datablitz.com.ph/products/xboxsx-dobe-charging-kit-for-x-series-s-x-x-one-s-x-tyx-1623" },
+    { "deviceModel": "xbox-series-s", "status": "verified", "note": { "ar": "لليد المرفقة مع الجهاز", "en": "For the controller that comes with the console", "ckb": "بۆ ئەو دەسکەی لەگەڵ کۆنسۆڵەکە دێت" }, "source": "https://ecommerce.datablitz.com.ph/products/xboxsx-dobe-charging-kit-for-x-series-s-x-x-one-s-x-tyx-1623" }
+  ],
+  "related": [
+    { "slug": "xbox-wireless-controller", "kind": "setup" },
+    { "slug": "xbox-rechargeable-battery-usb-c", "kind": "alternative" },
+    { "slug": "xbox-controller-silicone-cover", "kind": "accessory" }
+  ],
+  "sources": [
+    {
+      "url": "https://ecommerce.datablitz.com.ph/products/xboxsx-dobe-charging-kit-for-x-series-s-x-x-one-s-x-tyx-1623",
+      "title": "XBOXSX DOBE Charging Kit For X-Series S/X / X-ONE S/X TYX-1623",
+      "publisher": "DataBlitz",
+      "retrieved": "2026-11-18",
+      "supports": "DOBE dual charging kit with two battery packs, compatible with Xbox One, One S/X and Series S/X controllers"
+    },
+    {
+      "url": "https://www.target.com/p/dobe-tyx-1623x-xbox-battery-pack-glow-dual-charger/-/A-1004291428",
+      "title": "DOBE TYX-1623X Xbox Battery Pack Glow Dual Charger",
+      "publisher": "Target",
+      "retrieved": "2026-11-18",
+      "supports": "second source: DOBE dual charger with battery packs for Xbox controllers"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع DOBE وليس من Microsoft. يد Xbox Elite Series 2 فيها بطارية مدمجة فلا تحتاج هذه البطاريات.",
+    "en": "Made by DOBE, not by Microsoft. The Xbox Elite Series 2 has a built-in battery, so it does not use these packs.",
+    "ckb": "دروستکراوی DOBE ـیە، نەک Microsoft. دەسکی Xbox Elite Series 2 پاتریی ناوەکیی هەیە، بۆیە ئەم پاتریانە بەکارناهێنێت."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Exact DOBE model of the shop's 'DOBE XBOX BATTERY CHARCER': DOBE sells several Xbox dual docks with batteries (TYX-1623/1623X, TYX-532X, TYX-0645S); the most common, TYX-1623X, is the likely one",
+      "Battery capacity, charging time and colour depend on the model",
+      "No clean product image could be downloaded"
+    ]
+  }
+}

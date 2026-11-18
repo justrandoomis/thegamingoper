@@ -1,0 +1,54 @@
+{
+  "key": "redragon-k1ng-m724--1",
+  "view": "hero",
+  "width": 782,
+  "height": 1600,
+  "aspect": 0.4888,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/redragon-k1ng-m724/1-240.e1b84434.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-k1ng-m724/1-480.b59d4532.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-k1ng-m724/1-720.3f031118.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/redragon-k1ng-m724/1-240.2cee759e.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-k1ng-m724/1-480.93942fea.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-k1ng-m724/1-720.b2082d77.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/redragon-k1ng-m724/1-782.6d906b28.png",
+    "width": 782,
+    "height": 1600,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtAAAABXRUJQVlA4WAoAAAAQAAAACQAAEwAAQUxQSFoAAAART6AmkhQ2iYQMFUMVIyKgsSO9XsAmsm0nh2wgKqB+JSUSkEDH0CUV3wAzx+8XEdH/CSBfAvQAK/ClhdBUhFqH2oTaZTa129XuUNtbbW61OjQVoRf8zrCdBVlWUDggUAAAANADAJ0BKgoAFAA/EXSxUKwmpKKwCAGAIglpAABKRumxWeNDSUmIAAD+zNTHSWWpVYvpZwJZHj/fcY/N8ydIix5Sk9OGjNKNLcs19YWMgAAA",
+  "dominant": "#272727",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Redragon",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/RedragonK1INGM7241KHzWiredGamingMouse_1.png",
+    "page": "https://redragonshop.com/products/k1ng-m724-1k-hz"
+  },
+  "input": "5d0446ed5bd08c6b"
+}

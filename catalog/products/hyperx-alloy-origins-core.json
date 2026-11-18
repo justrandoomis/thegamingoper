@@ -1,0 +1,329 @@
+{
+  "slug": "hyperx-alloy-origins-core",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "HyperX",
+  "category": "keyboards",
+  "status": "available",
+  "name": {
+    "ar": "كيبورد HyperX Alloy Origins Core",
+    "en": "HyperX Alloy Origins Core",
+    "ckb": "کیبۆردی HyperX Alloy Origins Core"
+  },
+  "short": {
+    "ar": "كيبورد ميكانيكي TKL · هيكل ألمنيوم · RGB",
+    "en": "Mechanical TKL keyboard · aluminium body · RGB",
+    "ckb": "کیبۆردی میکانیکی TKL · لەشی ئەلەمنیۆم · RGB"
+  },
+  "description": {
+    "ar": "كيبورد ألعاب ميكانيكي من HyperX بتصميم TKL بدون لوحة أرقام، فيوفر مساحة أكبر لحركة الماوس. هيكله من الألمنيوم، وكابله USB‑C قابل للفصل، وإضاءته RGB لكل زر تُضبط من برنامج HyperX NGENUITY.",
+    "en": "A HyperX mechanical gaming keyboard in a tenkeyless (no numpad) layout that leaves more room for the mouse. It has a full aluminium body, a detachable USB-C cable and per-key RGB set up in HyperX NGENUITY.",
+    "ckb": "کیبۆردێکی میکانیکی یاری HyperX بە شێوەی TKL (بێ بەشی ژمارە) کە شوێنی زیاتر بۆ ماوس دەهێڵێتەوە. لەشی تەواو ئەلەمنیۆمە، کێبڵی USB‑Cی جیاکراوەی هەیە و ڕووناکی RGB بۆ هەر دوگمەیەک لە HyperX NGENUITY ڕێکدەخرێت."
+  },
+  "highlights": [
+    {
+      "ar": "تصميم TKL مدمج بدون لوحة أرقام",
+      "en": "Compact tenkeyless layout",
+      "ckb": "شێوەی TKLی بچووک بێ بەشی ژمارە"
+    },
+    {
+      "ar": "هيكل كامل من الألمنيوم",
+      "en": "Full aluminium body",
+      "ckb": "لەشی تەواو ئەلەمنیۆم"
+    },
+    {
+      "ar": "كابل USB‑C قابل للفصل",
+      "en": "Detachable USB-C cable",
+      "ckb": "کێبڵی USB‑Cی جیاکراوە"
+    },
+    {
+      "ar": "ذاكرة داخلية لثلاثة ملفات إعداد",
+      "en": "Onboard memory for 3 profiles",
+      "ckb": "بیرگەی ناوخۆ بۆ 3 پرۆفایل"
+    },
+    {
+      "ar": "يعمل مع الكمبيوتر وPS5 وPS4 وXbox",
+      "en": "Works with PC, PS5, PS4 and Xbox",
+      "ckb": "لەگەڵ PC و PS5 و PS4 و Xbox کار دەکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "layout",
+      "label": {
+        "ar": "التصميم",
+        "en": "Layout",
+        "ckb": "شێوە"
+      },
+      "value": {
+        "ar": "TKL (بدون لوحة أرقام)، تخطيط أمريكي",
+        "en": "Tenkeyless, US layout",
+        "ckb": "TKL، ڕیزبەندی ئەمریکی"
+      }
+    },
+    {
+      "key": "switches",
+      "label": {
+        "ar": "المفاتيح",
+        "en": "Switches",
+        "ckb": "سویچەکان"
+      },
+      "value": {
+        "ar": "مفاتيح HyperX الميكانيكية (Red خطية أو Aqua لمسية حسب النسخة)",
+        "en": "HyperX mechanical (Red linear or Aqua tactile, by version)",
+        "ckb": "سویچی میکانیکی HyperX (Red یان Aqua بەپێی وەشان)"
+      }
+    },
+    {
+      "key": "lighting",
+      "label": {
+        "ar": "الإضاءة",
+        "en": "Lighting",
+        "ckb": "ڕووناکی"
+      },
+      "value": {
+        "ar": "RGB لكل زر، 5 مستويات سطوع",
+        "en": "Per-key RGB, 5 brightness levels",
+        "ckb": "RGB بۆ هەر دوگمەیەک، 5 ئاستی ڕووناکی"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "سلكي، كابل USB‑C إلى USB‑A مضفّر بطول 1.8 م",
+        "en": "Wired, braided USB-C to USB-A cable, 1.8 m",
+        "ckb": "وایەری، کێبڵی USB‑C بۆ USB‑Aی هۆنراو، 1.8 م"
+      }
+    },
+    {
+      "key": "features",
+      "label": {
+        "ar": "مزايا",
+        "en": "Features",
+        "ckb": "تایبەتمەندی"
+      },
+      "value": {
+        "ar": "وضع الألعاب، مقاومة التداخل 100%، N‑key rollover، ثلاث زوايا ميل",
+        "en": "Game Mode, 100% anti-ghosting, N-key rollover, 3 tilt angles",
+        "ckb": "Game Mode، دژە تێکچوونی 100%، N‑key rollover، 3 گۆشەی لاربوونەوە"
+      }
+    },
+    {
+      "key": "dims",
+      "label": {
+        "ar": "الأبعاد",
+        "en": "Dimensions",
+        "ckb": "پێوانەکان"
+      },
+      "value": {
+        "ar": "360 × 132.5 × 34.5 ملم",
+        "en": "360 × 132.5 × 34.5 mm",
+        "ckb": "360 × 132.5 × 34.5 ملم"
+      }
+    },
+    {
+      "key": "weight",
+      "label": {
+        "ar": "الوزن",
+        "en": "Weight",
+        "ckb": "کێش"
+      },
+      "value": {
+        "ar": "نحو 900 غرام مع الكابل",
+        "en": "About 900 g with cable",
+        "ckb": "نزیکەی 900 گرام لەگەڵ کێبڵ"
+      }
+    },
+    {
+      "key": "warranty",
+      "label": {
+        "ar": "الضمان",
+        "en": "Warranty",
+        "ckb": "گەرەنتی"
+      },
+      "value": {
+        "ar": "سنتان حسب HyperX",
+        "en": "2 years per HyperX",
+        "ckb": "2 ساڵ بەپێی HyperX"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "الكيبورد",
+      "en": "Keyboard",
+      "ckb": "کیبۆرد"
+    },
+    {
+      "ar": "كابل USB قابل للفصل",
+      "en": "Detachable USB cable",
+      "ckb": "کێبڵی USBی جیاکراوە"
+    },
+    {
+      "ar": "دليل التشغيل السريع",
+      "en": "Quick start guide",
+      "ckb": "ڕێبەری خێرا"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "HX-ALLOY-ORIGINS-CORE",
+      "title": {
+        "ar": "كيبورد HyperX Alloy Origins Core",
+        "en": "HyperX Alloy Origins Core",
+        "ckb": "کیبۆردی HyperX Alloy Origins Core"
+      },
+      "options": {
+        "layout": "US"
+      },
+      "isDefault": true,
+      "images": [
+        "hyperx-alloy-origins-core--1",
+        "hyperx-alloy-origins-core--2",
+        "hyperx-alloy-origins-core--3"
+      ],
+      "sheetRow": 24,
+      "notes": {
+        "ar": "نوع المفاتيح (Red أو Aqua) مكتوب على علبة القطعة.",
+        "en": "The switch type (Red or Aqua) is printed on the unit's box.",
+        "ckb": "جۆری سویچ (Red یان Aqua) لەسەر قوتووی یەکەکە نووسراوە."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "سلكي عبر USB.",
+        "en": "Wired over USB.",
+        "ckb": "وایەری بە USB."
+      },
+      "source": "https://hyperx.com/products/hyperx-alloy-origins-core-mechanical-gaming-keyboard"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "تذكره HyperX ضمن الأجهزة المتوافقة.",
+        "en": "Listed by HyperX as compatible.",
+        "ckb": "HyperX وەک گونجاو ناوی دەبات."
+      },
+      "source": "https://hyperx.com/products/hyperx-alloy-origins-core-mechanical-gaming-keyboard"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": {
+        "ar": "تذكره HyperX ضمن الأجهزة المتوافقة.",
+        "en": "Listed by HyperX as compatible.",
+        "ckb": "HyperX وەک گونجاو ناوی دەبات."
+      },
+      "source": "https://hyperx.com/products/hyperx-alloy-origins-core-mechanical-gaming-keyboard"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "verified",
+      "note": {
+        "ar": "تذكره HyperX ضمن الأجهزة المتوافقة.",
+        "en": "Listed by HyperX as compatible.",
+        "ckb": "HyperX وەک گونجاو ناوی دەبات."
+      },
+      "source": "https://hyperx.com/products/hyperx-alloy-origins-core-mechanical-gaming-keyboard"
+    }
+  ],
+  "related": [
+    {
+      "slug": "hyperx-pulsefire-surge",
+      "kind": "accessory"
+    },
+    {
+      "slug": "razer-pbt-keycap-upgrade-set",
+      "kind": "upsell"
+    },
+    {
+      "slug": "redragon-p032-flick-xl",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "hyperx-alloy-origins-core--1",
+      "file": ".cache/product-images/hyperx-alloy-origins-core/1.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_alloy_origins_core_us_1_top_down_renamed_0.jpg",
+      "sourcePage": "https://hyperx.com/products/hyperx-alloy-origins-core-mechanical-gaming-keyboard",
+      "kind": "hero",
+      "alt": {
+        "ar": "كيبورد HyperX Alloy Origins Core من الأعلى بإضاءة RGB",
+        "en": "HyperX Alloy Origins Core from above with RGB lit",
+        "ckb": "HyperX Alloy Origins Core لە سەرەوە بە ڕووناکی RGB"
+      },
+      "credit": "HyperX",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    },
+    {
+      "key": "hyperx-alloy-origins-core--2",
+      "file": ".cache/product-images/hyperx-alloy-origins-core/2.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_alloy_origins_core_us_2_angled_left_renamed_1.jpg",
+      "sourcePage": "https://hyperx.com/products/hyperx-alloy-origins-core-mechanical-gaming-keyboard",
+      "kind": "angle",
+      "alt": {
+        "ar": "الكيبورد بزاوية من اليسار",
+        "en": "Keyboard angled from the left",
+        "ckb": "کیبۆردەکە لە لای چەپەوە"
+      },
+      "credit": "HyperX",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    },
+    {
+      "key": "hyperx-alloy-origins-core--3",
+      "file": ".cache/product-images/hyperx-alloy-origins-core/3.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_alloy_origins_core_us_4_side_renamed_3.jpg",
+      "sourcePage": "https://hyperx.com/products/hyperx-alloy-origins-core-mechanical-gaming-keyboard",
+      "kind": "angle",
+      "alt": {
+        "ar": "الكيبورد من الجانب",
+        "en": "Keyboard from the side",
+        "ckb": "کیبۆردەکە لە تەنیشتەوە"
+      },
+      "credit": "HyperX",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://hyperx.com/products/hyperx-alloy-origins-core-mechanical-gaming-keyboard",
+      "title": "HyperX Alloy Origins Core - Mechanical Gaming Keyboard",
+      "publisher": "HyperX",
+      "retrieved": "2026-11-18",
+      "supports": "TKL, aluminium body, detachable USB-C, per-key RGB, NGENUITY, 3 tilt angles, 3 onboard profiles, Game Mode, anti-ghosting, N-key, switch specs, compatibility (PC, PS5, PS4, Xbox Series X|S, Xbox One), dimensions, weight 1.98 lb, cable 5.9 ft, box contents, 2-year warranty, Red/Aqua versions, images"
+    },
+    {
+      "url": "https://specpicks.com/products/B07YMHGP86",
+      "title": "HyperX Alloy Origins Core",
+      "publisher": "SpecPicks",
+      "retrieved": "2026-11-18",
+      "supports": "independent confirmation: aluminium body, three tilt levels, tenkeyless"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Switch type of the unit in stock (Red linear or Aqua tactile; the sheet does not say)",
+      "Release date"
+    ]
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "slug": "redragon-gm306",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Redragon",
+  "category": "microphones",
+  "status": "available",
+  "name": {
+    "ar": "مايكروفون Redragon GM306",
+    "en": "Redragon GM306",
+    "ckb": "مایکرۆفۆنی Redragon GM306"
+  },
+  "short": {
+    "ar": "مايكروفون USB مكثف · عدة أنماط التقاط · RGB",
+    "en": "USB condenser mic · multi-pattern · RGB",
+    "ckb": "مایکی USBی کۆندێنسەر · چەند شێواز · RGB"
+  },
+  "description": {
+    "ar": "مايكروفون USB مكثف من Redragon للبث والألعاب والبودكاست، مع أكثر من نمط التقاط حسب طريقة التسجيل. فيه أزرار لمس للكتم والصوت وإضاءة RGB تتفاعل مع الصوت، ويتصل بالكمبيوتر بكابل USB دون تعريفات.",
+    "en": "A Redragon USB condenser microphone for streaming, gaming and podcasts, with several pickup patterns for different recording setups. It has touch controls for mute and volume, sound-reactive RGB, and plugs into a PC over USB with no drivers.",
+    "ckb": "مایکرۆفۆنێکی USBی کۆندێنسەری Redragon بۆ پەخش و یاری و پۆدکاست، بە چەند شێوازی وەرگرتن. کۆنترۆڵی دەستلێدانی بۆ بێدەنگکردن و دەنگ و ڕووناکی RGBی کاردانەوە بە دەنگ هەیە، و بە USB بێ پێناسە دەبەسترێت."
+  },
+  "highlights": [
+    {
+      "ar": "عدة أنماط التقاط",
+      "en": "Multiple pickup patterns",
+      "ckb": "چەند شێوازی وەرگرتن"
+    },
+    {
+      "ar": "أزرار لمس للكتم والصوت",
+      "en": "Touch controls for mute and volume",
+      "ckb": "کۆنترۆڵی دەستلێدان بۆ بێدەنگ و دەنگ"
+    },
+    {
+      "ar": "إضاءة RGB تتفاعل مع الصوت",
+      "en": "Sound-reactive RGB lighting",
+      "ckb": "ڕووناکی RGBی کاردانەوە بە دەنگ"
+    },
+    {
+      "ar": "USB بدون تعريفات",
+      "en": "USB plug-and-play",
+      "ckb": "USB بێ پێناسە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "type",
+      "label": {
+        "ar": "النوع",
+        "en": "Type",
+        "ckb": "جۆر"
+      },
+      "value": {
+        "ar": "مايكروفون USB مكثف",
+        "en": "USB condenser microphone",
+        "ckb": "مایکرۆفۆنی USBی کۆندێنسەر"
+      }
+    },
+    {
+      "key": "pattern",
+      "label": {
+        "ar": "نمط الالتقاط",
+        "en": "Pickup pattern",
+        "ckb": "شێوازی وەرگرتن"
+      },
+      "value": {
+        "ar": "متعدد الأنماط",
+        "en": "Multi-pattern",
+        "ckb": "چەند شێواز"
+      }
+    },
+    {
+      "key": "controls",
+      "label": {
+        "ar": "التحكم",
+        "en": "Controls",
+        "ckb": "کۆنترۆڵ"
+      },
+      "value": {
+        "ar": "لمس للكتم والصوت",
+        "en": "Touch mute and volume",
+        "ckb": "دەستلێدان بۆ بێدەنگ و دەنگ"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "USB",
+        "en": "USB",
+        "ckb": "USB"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RD-GM306",
+      "title": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "GM306",
+      "barcodes": [
+        "6950376723598"
+      ],
+      "isDefault": true,
+      "images": [
+        "redragon-gm306--1"
+      ],
+      "sheetRow": 51
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "USB بدون تعريفات.",
+        "en": "USB, no drivers.",
+        "ckb": "USB بێ پێناسە."
+      },
+      "source": "https://dangerfield.com.au/products/gm306-stellar-is-microphone"
+    }
+  ],
+  "related": [
+    {
+      "slug": "maono-dm30",
+      "kind": "alternative"
+    },
+    {
+      "slug": "hyperx-quadcast",
+      "kind": "upsell"
+    }
+  ],
+  "images": [
+    {
+      "key": "redragon-gm306--1",
+      "file": ".cache/product-images/redragon-gm306/1.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0644/1618/6586/files/ERRXA705_001_11.jpg",
+      "sourcePage": "https://dangerfield.com.au/products/gm306-stellar-is-microphone",
+      "kind": "hero",
+      "alt": {
+        "ar": "مايكروفون Redragon GM306 على قاعدته بإضاءة RGB",
+        "en": "Redragon GM306 on its base with RGB lit",
+        "ckb": "Redragon GM306 لەسەر بنکەکەی بە ڕووناکی RGB"
+      },
+      "credit": "Redragon",
+      "width": 1060,
+      "height": 1590,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://dangerfield.com.au/products/gm306-stellar-is-microphone",
+      "title": "Redragon GM306 Stellar Is Black USB RGB Multi-Pattern Condenser Microphone",
+      "publisher": "Dangerfield (Redragon reseller, Australia)",
+      "retrieved": "2026-11-18",
+      "supports": "USB condenser, multiple pickup patterns, touch controls, reactive RGB, barcode 6950376723598, image"
+    },
+    {
+      "url": "https://alfrensia.com/en/product/redragon-gm306-stellaris-omnidirectional-microphone",
+      "title": "Redragon GM306 Stellaris Omnidirectional Microphone",
+      "publisher": "Alfrensia (retailer, Egypt)",
+      "retrieved": "2026-11-18",
+      "supports": "confirmation: GM306 USB condenser mic with USB-B to USB-A cable, 20 Hz–20 kHz"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "No Redragon page found for the GM306; facts from two resellers",
+      "Capsule size, sample rate and weight (resellers disagree)",
+      "Exact pickup patterns offered"
+    ]
+  }
+}

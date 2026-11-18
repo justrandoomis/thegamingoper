@@ -1,0 +1,365 @@
+{
+  "slug": "mafia-the-old-country",
+  "group": "games-ps5-xbox",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "2K",
+  "status": "available",
+  "releaseDate": "2025-08-08",
+  "name": {
+    "ar": "Mafia: The Old Country",
+    "en": "Mafia: The Old Country",
+    "ckb": "Mafia: The Old Country"
+  },
+  "short": {
+    "ar": "PS5 · قرص · قصة مافيا في صقلية 1900",
+    "en": "PS5 · disc · mafia story in 1900s Sicily",
+    "ckb": "PS5 · دیسک · چیرۆکی مافیا لە سیسیلی 1900"
+  },
+  "description": {
+    "ar": "قصة جريمة من Hangar 13 تعود إلى أصول المافيا في صقلية مطلع القرن العشرين. تتابع Enzo Favara وهو يصعد داخل عائلة Torrisi الإجرامية، في لعبة قصصية خطية للاعب واحد.",
+    "en": "A crime story from Hangar 13 that goes back to the roots of the Mafia in early-1900s Sicily. You follow Enzo Favara as he rises in the Torrisi crime family, in a story-driven, linear single-player game.",
+    "ckb": "چیرۆکێکی تاوان لە Hangar 13 کە دەگەڕێتەوە بۆ سەرەتای مافیا لە سیسیلی سەرەتای سەدەی بیستەم. شوێن Enzo Favara دەکەویت لە کاتی بەرزبوونەوەی لە ناو بنەماڵەی تاوانکاری Torrisi، لە یارییەکی چیرۆکی تاکەکەسیدا."
+  },
+  "highlights": [
+    {
+      "ar": "قصة سينمائية للاعب واحد في صقلية مطلع القرن العشرين.",
+      "en": "Cinematic single-player story in early-1900s Sicily.",
+      "ckb": "چیرۆکی سینەمایی تاکەکەسی لە سیسیلی سەرەتای سەدەی بیستەم."
+    },
+    {
+      "ar": "تعمل بدون إنترنت.",
+      "en": "Plays offline.",
+      "ckb": "بێ ئینتەرنێت کار دەکات."
+    },
+    {
+      "ar": "لا تدعم العربية: اللغة العربية غير موجودة في قائمة لغات اللعبة على PlayStation Store.",
+      "en": "No Arabic: it is not in the game's PlayStation Store language list.",
+      "ckb": "عەرەبی تێدا نییە: لە لیستی زمانەکانی یارییەکە لە PlayStation Store دا نییە."
+    },
+    {
+      "ar": "التصنيف PEGI 18.",
+      "en": "Rated PEGI 18.",
+      "ckb": "پۆلێنی PEGI 18."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": {
+        "ar": "تاريخ الإصدار",
+        "en": "Release date",
+        "ckb": "بەرواری دەرچوون"
+      },
+      "value": {
+        "ar": "8 آب 2025",
+        "en": "8 August 2025",
+        "ckb": "8ی ئابی 2025"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": {
+        "ar": "الأجهزة",
+        "en": "Platforms",
+        "ckb": "ئامێرەکان"
+      },
+      "value": {
+        "ar": "PS5 (هذه النسخة)",
+        "en": "PS5 (this version)",
+        "ckb": "PS5 (ئەم وەشانە)"
+      }
+    },
+    {
+      "key": "format",
+      "label": {
+        "ar": "نوع النسخة الفيزيائية",
+        "en": "Physical format",
+        "ckb": "جۆری وەشانی فیزیکی"
+      },
+      "value": {
+        "ar": "قرص PS5",
+        "en": "PS5 disc",
+        "ckb": "دیسکی PS5"
+      }
+    },
+    {
+      "key": "players",
+      "label": {
+        "ar": "عدد اللاعبين",
+        "en": "Players",
+        "ckb": "ژمارەی یاریزان"
+      },
+      "value": {
+        "ar": "لاعب واحد",
+        "en": "1 player",
+        "ckb": "1 یاریزان"
+      }
+    },
+    {
+      "key": "online",
+      "label": {
+        "ar": "الإنترنت والاشتراكات",
+        "en": "Internet and subscriptions",
+        "ckb": "ئینتەرنێت و بەشداریکردن"
+      },
+      "value": {
+        "ar": "تعمل بدون إنترنت ولا تحتاج اشتراكاً؛ التحديثات تحتاج إنترنت.",
+        "en": "Plays offline with no subscription; updates need internet.",
+        "ckb": "بێ ئینتەرنێت و بێ بەشداریکردن کار دەکات؛ نوێکردنەوەکان ئینتەرنێتیان پێویستە."
+      }
+    },
+    {
+      "key": "arabic",
+      "label": {
+        "ar": "اللغة العربية",
+        "en": "Arabic",
+        "ckb": "زمانی عەرەبی"
+      },
+      "value": {
+        "ar": "لا توجد العربية في قائمة لغات PlayStation Store",
+        "en": "No Arabic in the PlayStation Store language list",
+        "ckb": "عەرەبی لە لیستی زمانەکانی PlayStation Store دا نییە"
+      }
+    },
+    {
+      "key": "age",
+      "label": {
+        "ar": "التصنيف العمري",
+        "en": "Age rating",
+        "ckb": "پۆلێنی تەمەن"
+      },
+      "value": {
+        "ar": "PEGI 18",
+        "en": "PEGI 18",
+        "ckb": "PEGI 18"
+      }
+    },
+    {
+      "key": "developer",
+      "label": {
+        "ar": "المطوّر والناشر",
+        "en": "Developer and publisher",
+        "ckb": "گەشەپێدەر و بڵاوکەرەوە"
+      },
+      "value": {
+        "ar": "Hangar 13 / 2K",
+        "en": "Hangar 13 / 2K",
+        "ckb": "Hangar 13 / 2K"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة لجهاز PS5",
+      "en": "PS5 game disc",
+      "ckb": "دیسکی یارییەکە بۆ PS5"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "MAFIATOC-PS5-STD",
+      "title": {
+        "ar": "لجهاز PS5 · Standard Edition",
+        "en": "PS5 · Standard Edition",
+        "ckb": "بۆ PS5 · Standard Edition"
+      },
+      "options": {
+        "platform": "PS5",
+        "edition": "Standard",
+        "format": "Disc"
+      },
+      "isDefault": true,
+      "sheetRow": 132,
+      "images": [
+        "mafia-the-old-country--1",
+        "mafia-the-old-country--2",
+        "mafia-the-old-country--3"
+      ],
+      "notes": {
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": [
+      "ps5",
+      "ps5-slim",
+      "ps5-pro",
+      "ps5-slim-digital"
+    ],
+    "genres": [
+      {
+        "ar": "أكشن ومغامرة",
+        "en": "Action-adventure",
+        "ckb": "ئاکشن و سەرکێشی"
+      }
+    ],
+    "players": "1",
+    "online": {
+      "ar": "تعمل بدون إنترنت ولا تحتاج اشتراكاً؛ التحديثات تحتاج إنترنت.",
+      "en": "Plays offline with no subscription; updates need internet.",
+      "ckb": "بێ ئینتەرنێت و بێ بەشداریکردن کار دەکات؛ نوێکردنەوەکان ئینتەرنێتیان پێویستە."
+    },
+    "ageRating": {
+      "pegi": 18
+    },
+    "arabic": "none",
+    "physicalFormat": "disc",
+    "developer": "Hangar 13",
+    "publisher": "2K"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "قرص PS5.",
+        "en": "PS5 disc.",
+        "ckb": "دیسکی PS5."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP1001-PPSA14299_00-00000NEROPS5SIEE"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "يعمل على الموديل الذي فيه قارئ أقراص.",
+        "en": "Works on the model with a disc drive.",
+        "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP1001-PPSA14299_00-00000NEROPS5SIEE"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": {
+        "ar": "القرص يحتاج قارئ الأقراص الإضافي.",
+        "en": "The disc needs the add-on Disc Drive.",
+        "ckb": "دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": {
+        "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.",
+        "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "red-dead-redemption-2",
+      "kind": "alternative"
+    },
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense",
+      "kind": "accessory"
+    },
+    {
+      "slug": "ps5-disc-drive",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "mafia-the-old-country--1",
+      "file": ".cache/product-images/mafia-the-old-country/1.png",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202504/2416/3a17cd4420cb18ae2dd25416fb25653afb8cbffc0ad5808b.png",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP1001-PPSA14299_00-00000NEROPS5SIEE",
+      "kind": "box-art",
+      "alt": {
+        "ar": "غلاف Mafia: The Old Country",
+        "en": "Mafia: The Old Country cover art",
+        "ckb": "وێنەی بەرگی Mafia: The Old Country"
+      },
+      "credit": "2K",
+      "width": 1440,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "mafia-the-old-country--2",
+      "file": ".cache/product-images/mafia-the-old-country/2.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202505/0616/ce687bad837b4ec325c5e3dccf5272c45db72cdddb5a2ac1.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP1001-PPSA14299_00-00000NEROPS5SIEE",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Mafia: The Old Country",
+        "en": "Mafia: The Old Country screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Mafia: The Old Country"
+      },
+      "credit": "2K",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "mafia-the-old-country--3",
+      "file": ".cache/product-images/mafia-the-old-country/3.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202505/0616/4ab90956369c08652df2e9286f791426433566c2551ebced.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP1001-PPSA14299_00-00000NEROPS5SIEE",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Mafia: The Old Country",
+        "en": "Mafia: The Old Country screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Mafia: The Old Country"
+      },
+      "credit": "2K",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://store.playstation.com/en-gb/product/EP1001-PPSA14299_00-00000NEROPS5SIEE",
+      "title": "Mafia: The Old Country — PlayStation Store (UK)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "PS5, 2K, release 8 Aug 2025, PEGI 18, voice and screen languages without Arabic, cover art and screenshots",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/games/mafia-the-old-country/",
+      "title": "Mafia: The Old Country — PlayStation (UAE)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "game overview: Sicily, Enzo Favara, Torrisi family, editions",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/",
+      "title": "Disc Drive for PS5 Digital Edition consoles",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "the add-on drive works only with PS5 Pro and the slim PS5 Digital Edition, so the original 2020 Digital Edition cannot play discs"
+    }
+  ],
+  "verification": {
+    "checkedBy": "games-ps5-xbox research 2026-11-18",
+    "secondSource": true,
+    "unverified": [
+      "Arabic support is taken from the PlayStation Store language list; the languages on a given disc depend on its region.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

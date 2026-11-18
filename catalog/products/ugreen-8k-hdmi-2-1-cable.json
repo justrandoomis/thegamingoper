@@ -1,0 +1,103 @@
+{
+  "slug": "ugreen-8k-hdmi-2-1-cable",
+  "group": "power-cables-storage-misc",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "cables",
+  "brand": "UGREEN",
+  "status": "available",
+  "name": {
+    "ar": "كابل UGREEN 8K HDMI 2.1",
+    "en": "UGREEN 8K HDMI 2.1 Cable",
+    "ckb": "کێبڵی UGREEN 8K HDMI 2.1"
+  },
+  "qualifier": { "ar": "مضفّر", "en": "Braided", "ckb": "هۆنراو" },
+  "short": {
+    "ar": "HDMI 2.1 · 48Gbps · 4K@120Hz و8K@60Hz · طول 2 متر",
+    "en": "HDMI 2.1 · 48Gbps · 4K@120Hz and 8K@60Hz · 2 m long",
+    "ckb": "HDMI 2.1 · 48Gbps · 4K@120Hz و 8K@60Hz · درێژی 2 مەتر"
+  },
+  "description": {
+    "ar": "كابل HDMI 2.1 من UGREEN (الطراز HD140) بطول مترين وغلاف مضفّر. ينقل حتى 48 جيجابت في الثانية، فيدعم 4K بتردد 120Hz و8K بتردد 60Hz، إضافة إلى VRR وALLM وeARC. مناسب لربط PS5 أو Xbox Series X بتلفزيون أو شاشة تدعم HDMI 2.1 للحصول على 120 إطاراً في الثانية.",
+    "en": "UGREEN's HDMI 2.1 cable (model HD140), 2 metres long with a braided jacket. It carries up to 48Gbps, so it handles 4K at 120Hz and 8K at 60Hz, plus VRR, ALLM and eARC. A good match for connecting a PS5 or Xbox Series X to an HDMI 2.1 TV or monitor for 120 frames per second.",
+    "ckb": "کێبڵی HDMI 2.1ی UGREEN (مۆدێلی HD140)، بە درێژی 2 مەتر و بەرگی هۆنراو. تا 48 گیگابیت لە چرکەیەکدا دەگوازێتەوە، بۆیە 4K بە 120Hz و 8K بە 60Hz پشتگیری دەکات، لەگەڵ VRR و ALLM و eARC. گونجاوە بۆ بەستنەوەی PS5 یان Xbox Series X بە تەلەفزیۆن یان شاشەیەکی HDMI 2.1 بۆ 120 وێنە لە چرکەیەکدا."
+  },
+  "highlights": [
+    { "ar": "HDMI 2.1 بعرض نطاق 48Gbps", "en": "HDMI 2.1 with 48Gbps bandwidth", "ckb": "HDMI 2.1 بە پانیی 48Gbps" },
+    { "ar": "يدعم 4K@120Hz و8K@60Hz", "en": "Supports 4K@120Hz and 8K@60Hz", "ckb": "پشتگیریی 4K@120Hz و 8K@60Hz" },
+    { "ar": "يدعم HDR وVRR وALLM وeARC", "en": "Supports HDR, VRR, ALLM and eARC", "ckb": "پشتگیریی HDR و VRR و ALLM و eARC" },
+    { "ar": "غلاف مضفّر يتحمّل أكثر من 25,000 ثنية حسب UGREEN", "en": "Braided jacket rated for 25,000+ bends by UGREEN", "ckb": "بەرگی هۆنراو کە بەپێی UGREEN زیاتر لە 25,000 جار چەماندنەوە بەرگە دەگرێت" },
+    { "ar": "ميزات HDMI 2.1 تحتاج منفذ HDMI 2.1 في الجهازين", "en": "HDMI 2.1 features need HDMI 2.1 ports at both ends", "ckb": "تایبەتمەندییەکانی HDMI 2.1 پێویستیان بە دەرچەی HDMI 2.1 لە هەردوو لا هەیە" }
+  ],
+  "specs": [
+    { "key": "standard", "label": { "ar": "المعيار", "en": "Standard", "ckb": "ستاندارد" }, "value": { "ar": "HDMI 2.1، حتى 48Gbps", "en": "HDMI 2.1, up to 48Gbps", "ckb": "HDMI 2.1، تا 48Gbps" } },
+    { "key": "resolution", "label": { "ar": "الدقة", "en": "Resolution", "ckb": "ڕوونی" }, "value": { "ar": "8K@60Hz، 4K@120Hz", "en": "8K@60Hz, 4K@120Hz", "ckb": "8K@60Hz، 4K@120Hz" } },
+    { "key": "features", "label": { "ar": "الميزات", "en": "Features", "ckb": "تایبەتمەندییەکان" }, "value": { "ar": "HDR، 3D، VRR، QMS، ALLM، eARC", "en": "HDR, 3D, VRR, QMS, ALLM, eARC", "ckb": "HDR، 3D، VRR، QMS، ALLM، eARC" } },
+    { "key": "length", "label": { "ar": "الطول", "en": "Length", "ckb": "درێژی" }, "value": { "ar": "2 متر", "en": "2 m", "ckb": "2 مەتر" } },
+    { "key": "build", "label": { "ar": "البنية", "en": "Build", "ckb": "پێکهاتە" }, "value": { "ar": "نحاس مطلي بالقصدير 30AWG، غلاف PVC مع ضفيرة، قطر 7 ملم", "en": "30AWG tin-plated copper, PVC with braid, 7 mm thick", "ckb": "مسی قەڵایی 30AWG، PVC لەگەڵ هۆنینەوە، ئەستووری 7 ملم" } },
+    { "key": "model", "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" }, "value": { "ar": "HD140 (80403)", "en": "HD140 (80403)", "ckb": "HD140 (80403)" } }
+  ],
+  "variants": [
+    {
+      "sku": "UGREEN-HD140-2M",
+      "sheetRow": 215,
+      "title": { "ar": "2 متر", "en": "2 m", "ckb": "2 مەتر" },
+      "options": { "length": "2m" },
+      "modelNumber": "80403",
+      "barcodes": ["6957303884032"],
+      "isDefault": true,
+      "notes": {
+        "ar": "الباركود من موزّع أوروبي (Home Screen)، ورقم 80403 هو رمز UGREEN لطول مترين.",
+        "en": "Barcode from a European distributor (Home Screen); 80403 is UGREEN's code for the 2 m length.",
+        "ckb": "بارکۆدەکە لە دابەشکەرێکی ئەوروپییەوەیە (Home Screen)؛ 80403 کۆدی UGREENە بۆ درێژیی 2 مەتر."
+      }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5", "status": "verified", "note": { "ar": "يكفي لـ 4K@120Hz على PS5 مع تلفزيون HDMI 2.1.", "en": "Enough for 4K@120Hz on PS5 with an HDMI 2.1 TV.", "ckb": "بۆ 4K@120Hz لەسەر PS5 لەگەڵ تەلەفزیۆنی HDMI 2.1 بەسە." }, "source": "https://media.offix.ch/datasheets/6957303884056_Datenblatt_01_en.pdf" },
+    { "deviceModel": "ps5-slim", "status": "verified", "source": "https://media.offix.ch/datasheets/6957303884056_Datenblatt_01_en.pdf" },
+    { "deviceModel": "ps5-pro", "status": "verified", "source": "https://media.offix.ch/datasheets/6957303884056_Datenblatt_01_en.pdf" },
+    { "deviceModel": "xbox-series-x", "status": "verified", "source": "https://media.offix.ch/datasheets/6957303884056_Datenblatt_01_en.pdf" },
+    { "deviceModel": "xbox-series-s", "status": "verified", "source": "https://media.offix.ch/datasheets/6957303884056_Datenblatt_01_en.pdf" },
+    { "deviceModel": "switch-2", "status": "verified", "source": "https://media.offix.ch/datasheets/6957303884056_Datenblatt_01_en.pdf" },
+    { "deviceModel": "switch-oled", "status": "verified", "source": "https://media.offix.ch/datasheets/6957303884056_Datenblatt_01_en.pdf" }
+  ],
+  "related": [
+    { "slug": "hdmi-cable", "kind": "alternative" },
+    { "slug": "playstation-5-pro", "kind": "setup" },
+    { "slug": "xbox-series-x", "kind": "setup" }
+  ],
+  "images": [],
+  "sources": [
+    {
+      "url": "https://media.offix.ch/datasheets/6957303884056_Datenblatt_01_en.pdf",
+      "title": "UGREEN HD140 80401/80403/80405 HDMI 2.1 Male To Male Cable 1m/2m/5m (datasheet)",
+      "publisher": "UGREEN (datasheet hosted by Offix)",
+      "retrieved": "2026-11-18",
+      "supports": "model HD140, 80403 = 2 m, HDMI 2.1 48Gbps, 8K@60Hz/4K@120Hz, HDR/3D/VRR/QMS/ALLM/eARC, 30AWG tin-plated copper, 7 mm OD, PVC + braid, 25,000+ bends"
+    },
+    {
+      "url": "https://nz.ugreen.com/products/80403",
+      "title": "UG-80403 UGREEN HDMI 2.1 Cable 2M",
+      "publisher": "UGREEN (New Zealand store)",
+      "retrieved": "2026-11-18",
+      "supports": "80403 is UGREEN's 2 m HDMI 2.1 48Gbps cable (search listing; the page itself was rate-limited)"
+    },
+    {
+      "url": "https://homescreen.pl/en/video/16485-ugreen-hd140-hdmi-21-8k-60hz-2m-cable-6957303884032.html",
+      "title": "UGREEN HD140 HDMI 2.1, 8K 60Hz, 2m cable",
+      "publisher": "Home Screen (distributor)",
+      "retrieved": "2026-11-18",
+      "supports": "EAN 6957303884032 for the 2 m HD140, 8K 60Hz / 4K 120Hz, 48Gbps"
+    }
+  ],
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": true,
+    "unverified": [
+      "Owner sheet row \"UGREEN HDMI 8K 2M\" read as the HD140 (80403); UGREEN also sells other 8K 2 m cables (e.g. 25910, 70321)",
+      "Release date",
+      "Official UGREEN product images (UGREEN's stores rate-limited every request during research)"
+    ]
+  }
+}

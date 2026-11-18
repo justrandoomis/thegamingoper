@@ -1,0 +1,112 @@
+{
+  "slug": "switch-2-joy-con-charging-dock-8-in-1",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة شحن 8 في 1 لأيادي Joy‑Con 2",
+    "en": "8‑in‑1 Charging Dock for Joy‑Con 2",
+    "ckb": "بنکەی بارگاویکردنی 8 لە 1 بۆ Joy‑Con 2"
+  },
+  "short": {
+    "ar": "قاعدة شحن متعددة لأيادي Switch 2",
+    "en": "Multi charging dock for Switch 2 controllers",
+    "ckb": "بنکەی بارگاویکردنی فرە بۆ دەسکەکانی Switch 2"
+  },
+  "description": {
+    "ar": "قاعدة شحن غير رسمية «8 في 1» لأيادي تحكم Nintendo Switch 2، تشحن عدة أيادي Joy-Con 2 في وقت واحد. مسجلة في المخزن باسم «SW CHARGING 2 8IN1» دون ماركة.",
+    "en": "An unofficial \"8-in-1\" charging dock for Nintendo Switch 2 controllers that charges several Joy-Con 2 at once. Listed in stock as \"SW CHARGING 2 8IN1\" with no brand.",
+    "ckb": "بنکەیەکی بارگاویکردنی نافەرمیی «8 لە 1» بۆ دەسکەکانی Nintendo Switch 2 کە چەند Joy-Con 2 یەک پێکەوە بارگاوی دەکات. لە کۆگادا بە «SW CHARGING 2 8IN1» بێ مارکە تۆمارکراوە."
+  },
+  "highlights": [
+    {
+      "ar": "يشحن عدة أيادي Joy-Con 2 معًا",
+      "en": "Charges several Joy-Con 2 together",
+      "ckb": "چەند Joy-Con 2 پێکەوە بارگاوی دەکات"
+    },
+    {
+      "ar": "ليست منتجًا رسميًا من Nintendo",
+      "en": "Not an official Nintendo product",
+      "ckb": "بەرهەمی فەرمیی Nintendo نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "أيادي Joy-Con 2",
+        "en": "Joy-Con 2 controllers",
+        "ckb": "دەسکەکانی Joy-Con 2"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-CHARGE-8IN1",
+      "sheetRow": 193,
+      "title": {
+        "ar": "قاعدة شحن 8 في 1 لأيادي Joy‑Con 2",
+        "en": "8‑in‑1 Charging Dock for Joy‑Con 2",
+        "ckb": "بنکەی بارگاویکردنی 8 لە 1 بۆ Joy‑Con 2"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "unverified",
+      "note": {
+        "ar": "لأيادي Switch 2 حسب ورقة المخزن",
+        "en": "For Switch 2 controllers per the stock sheet",
+        "ckb": "بۆ دەسکەکانی Switch 2 بەپێی لیستی کۆگا"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "joy-con-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "ipega-switch-2-charging-station",
+      "kind": "alternative"
+    },
+    {
+      "slug": "hbs-switch-2-charging-stand",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ipega.hk/switch2series/102-699.html",
+      "title": "PG-SW2081 switch2 eight charge",
+      "publisher": "Shenzhen Ipega Electronic Technology",
+      "retrieved": "2026-11-18",
+      "supports": "eight-slot Switch 2 controller chargers exist as a product type"
+    },
+    {
+      "url": "https://jsaux.com/products/multi-controller-energy-station-for-switch-2",
+      "title": "Multi Controller Energy Station for Switch 2",
+      "publisher": "JSAUX",
+      "retrieved": "2026-11-18",
+      "supports": "second example of multi-controller Switch 2 chargers"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Maker and model (no brand on the stock sheet)",
+      "What the \"8 in 1\" counts (controller slots or slots plus storage)",
+      "Power input"
+    ]
+  }
+}

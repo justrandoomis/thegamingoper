@@ -1,0 +1,155 @@
+{
+  "slug": "ps5-controller-dual-charging-dock",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة شحن ليدَي PS5",
+    "en": "Dual Charging Dock for PS5 Controllers",
+    "ckb": "بنکەی شەحن بۆ دوو کۆنتڕۆڵەری PS5"
+  },
+  "short": {
+    "ar": "تشحن يدَي DualSense معاً · بكابل USB",
+    "en": "Charges two DualSense controllers · USB powered",
+    "ckb": "دوو DualSense پێکەوە شەحن دەکات · بە USB"
+  },
+  "description": {
+    "ar": "قاعدة شحن اقتصادية بدون علامة معروفة تحمل يدَي DualSense وتشحنهما معاً عبر منفذ USB‑C في كل يد. توصل القاعدة بمنفذ USB في الجهاز أو بشاحن هاتف.",
+    "en": "A budget unbranded dock that holds two DualSense controllers and charges both through each controller's USB‑C port. The dock plugs into a console USB port or a phone charger.",
+    "ckb": "بنکەیەکی هەرزانی بێ براند کە دوو DualSense هەڵدەگرێت و لە ڕێگەی دەروازەی USB‑Cی هەر یەکێکیان شەحنیان دەکات. بنکەکە بە دەروازەی USBی کۆنسۆڵ یان شەحنەری مۆبایل دەبەسترێت."
+  },
+  "highlights": [
+    {
+      "ar": "يدان في وقت واحد",
+      "en": "Two controllers at a time",
+      "ckb": "دوو کۆنتڕۆڵەر لە یەک کاتدا"
+    },
+    {
+      "ar": "تعمل من منفذ USB في PS5 أو من شاحن",
+      "en": "Runs from a PS5 USB port or a charger",
+      "ckb": "لە دەروازەی USBی PS5 یان شەحنەرێک کار دەکات"
+    },
+    {
+      "ar": "خيار اقتصادي بدل القاعدة الرسمية",
+      "en": "Budget alternative to the official station",
+      "ckb": "جێگرەوەیەکی هەرزان بۆ وێستگە فەرمییەکە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "controllers",
+      "label": {
+        "ar": "عدد الأيدي",
+        "en": "Controllers",
+        "ckb": "ژمارەی کۆنتڕۆڵەر"
+      },
+      "value": {
+        "ar": "2 × DualSense",
+        "en": "2 × DualSense",
+        "ckb": "2 × DualSense"
+      }
+    },
+    {
+      "key": "connector",
+      "label": {
+        "ar": "طريقة الشحن",
+        "en": "Charging contact",
+        "ckb": "شێوازی شەحن"
+      },
+      "value": {
+        "ar": "منفذ USB‑C في اليد",
+        "en": "The controller's USB‑C port",
+        "ckb": "دەروازەی USB‑Cی کۆنتڕۆڵەر"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-DUAL-DOCK",
+      "title": {
+        "ar": "قاعدة لليدين",
+        "en": "Two‑controller dock",
+        "ckb": "بنکەی دوو کۆنتڕۆڵەر"
+      },
+      "options": {
+        "version": "Dock 2"
+      },
+      "sheetRow": 97,
+      "isDefault": true
+    },
+    {
+      "sku": "PS5-DUAL-DOCK-LUCKY",
+      "title": {
+        "ar": "Lucky",
+        "en": "Lucky",
+        "ckb": "Lucky"
+      },
+      "options": {
+        "version": "Lucky"
+      },
+      "sheetRow": 98,
+      "notes": {
+        "ar": "قاعدة شحن ليد PS5 تُباع باسم Lucky.",
+        "en": "A PS5 controller charger sold under the name Lucky.",
+        "ckb": "شەحنەری کۆنتڕۆڵەری PS5 کە بە ناوی Lucky دەفرۆشرێت."
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "dualsense",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-edge",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-charging-station",
+      "kind": "alternative"
+    },
+    {
+      "slug": "powera-twin-charging-station-dualsense",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ipega-pg-p5003-charging-station",
+      "kind": "alternative"
+    },
+    {
+      "slug": "dobe-ps5-dual-charging-dock",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-us/accessories/dualsense-wireless-controller/",
+      "title": "DualSense wireless controller",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "DualSense charges over its USB-C port"
+    },
+    {
+      "url": "https://pixelzones.com/products/dobe-charging-dock-for-ps5-tp5-0505",
+      "title": "Dobe Charging Dock For PS5 - TP5-0505",
+      "publisher": "PixelZones (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "how this type of USB-powered dual dock works (adapters, 5V/2A source)"
+    }
+  ],
+  "notes": {
+    "ar": "منتج بدون علامة تجارية معروفة؛ اليدان غير مرفقتين.",
+    "en": "Unbranded product; controllers not included.",
+    "ckb": "بەرهەمی بێ براندی ناسراو؛ کۆنتڕۆڵەرەکان لەگەڵیدا نین."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "Maker, model and exact specs of both docks (the owner's sheet says only 'PS5 CHARGING DOCK 2' and 'PS5 CHARGING LUCKY')",
+      "Whether 'Lucky' is a brand or a shop nickname"
+    ]
+  }
+}

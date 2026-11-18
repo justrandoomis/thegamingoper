@@ -1,0 +1,56 @@
+{
+  "key": "pokemon-brilliant-diamond--2",
+  "view": "hero",
+  "width": 1280,
+  "height": 720,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/pokemon-brilliant-diamond/2-240.00b4cb86.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/pokemon-brilliant-diamond/2-480.dcaefc55.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/pokemon-brilliant-diamond/2-720.1b267cc2.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/pokemon-brilliant-diamond/2-960.74cbc3b1.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/pokemon-brilliant-diamond/2-240.af436ba1.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/pokemon-brilliant-diamond/2-480.6fc29cd4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/pokemon-brilliant-diamond/2-720.56bf9472.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/pokemon-brilliant-diamond/2-960.f538de04.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAACwAwCdASoUAAsAPxFysFCsJqSisAgBgCIJbACdAB5eFeyXFFfEAAD7kpqxtUjOmCssKVS0uYv5mC+CutFnzM/RiQEa0YK25jhwADx3aBJfar4J5iNBVvaP723jscAA",
+  "dominant": "#370d07",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/en_US/games/switch/p/pokemon-brilliant-diamond-switch/screenshot-gallery/screenshot01",
+    "page": "https://www.nintendo.com/us/store/products/pokemon-brilliant-diamond-us-114287/"
+  },
+  "input": "83694cf0e5775716"
+}

@@ -1,0 +1,122 @@
+{
+  "slug": "jys-switch-2-grip",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "مقبض JYS‑NS2290 لجهاز Nintendo Switch 2",
+    "en": "JYS‑NS2290 Grip for Nintendo Switch 2",
+    "ckb": "دەسگرەی JYS‑NS2290 بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "مقبض مريح للعب المحمول على Switch 2",
+    "en": "Comfort grip for handheld play on Switch 2",
+    "ckb": "دەسگرەی ئاسوودە بۆ یاریی دەستی لەسەر Switch 2"
+  },
+  "description": {
+    "ar": "مقبض من JYS برمز NS2290 يُركّب على Nintendo Switch 2 ليعطي اليدين قبضة أعرض وأريح في اللعب المحمول. لم نجد صفحة رسمية لهذا الرمز، لذلك نذكر فقط ما هو مؤكد.",
+    "en": "A JYS grip, code NS2290, that fits Nintendo Switch 2 to give your hands a fuller, more comfortable hold in handheld play. We found no official page for this code, so only confirmed facts are listed.",
+    "ckb": "دەسگرەیەکی JYS بە کۆدی NS2290 کە لەسەر Nintendo Switch 2 دادەنرێت بۆ گرتنێکی پانتر و ئاسوودەتر لە یاریی دەستیدا. پەڕەیەکی فەرمیمان بۆ ئەم کۆدە نەدۆزییەوە، بۆیە تەنها ڕاستییە دڵنیاکان دەنووسین."
+  },
+  "highlights": [
+    {
+      "ar": "قبضة أريح في الجلسات الطويلة",
+      "en": "More comfortable hold in long sessions",
+      "ckb": "گرتنی ئاسوودەتر لە یارییە درێژەکاندا"
+    },
+    {
+      "ar": "من سلسلة JYS NS22xx الخاصة بـ Switch 2",
+      "en": "From the JYS NS22xx Switch 2 range",
+      "ckb": "لە زنجیرەی JYS NS22xx ی Switch 2"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Nintendo Switch 2",
+        "en": "Nintendo Switch 2",
+        "ckb": "Nintendo Switch 2"
+      }
+    },
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "JYS-NS2290",
+        "en": "JYS-NS2290",
+        "ckb": "JYS-NS2290"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-NS2290",
+      "sheetRow": 197,
+      "title": {
+        "ar": "مقبض JYS‑NS2290 لجهاز Nintendo Switch 2",
+        "en": "JYS‑NS2290 Grip for Nintendo Switch 2",
+        "ckb": "دەسگرەی JYS‑NS2290 بۆ Nintendo Switch 2"
+      },
+      "modelNumber": "JYS-NS2290",
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "unverified",
+      "note": {
+        "ar": "سلسلة NS22xx من JYS مخصصة لـ Switch 2",
+        "en": "JYS NS22xx range is for Switch 2",
+        "ckb": "زنجیرەی NS22xx ی JYS بۆ Switch 2 ـە"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "jys-switch-2-pc-case",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://gamextreme.ph/products/jys-ns2297-comfortable-grip-for-nintendo-switch-2-switch-switch-oled",
+      "title": "JYS-NS2297 Comfortable Grip For Nintendo Switch 2/Switch/Switch OLED",
+      "publisher": "GameXtreme",
+      "retrieved": "2026-11-18",
+      "supports": "JYS grips for Switch 2 in the NS22xx series"
+    },
+    {
+      "url": "https://www.fruugo.co.nz/jys-ns2263-2pcs-for-nintendo-switch-2-joy-con-grip-handle-ergonomic-controller-attachment-with-wrist/p-384331114",
+      "title": "JYS-NS2263 For Nintendo Switch 2 Joy-Con Grip Handle",
+      "publisher": "Fruugo",
+      "retrieved": "2026-11-18",
+      "supports": "JYS NS22xx model codes for Switch 2 grips"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "JYS-NS2290 itself: no listing found",
+      "Whether it is a console grip or a Joy-Con 2 grip",
+      "Colour, also works with Switch / OLED or not"
+    ]
+  }
+}

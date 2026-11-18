@@ -1,0 +1,163 @@
+{
+  "slug": "ipega-pg-p5p25-portal-charging-stand",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "iPega",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة شحن صغيرة iPega PG‑P5P25 لـ PlayStation Portal",
+    "en": "iPega PG‑P5P25 Mini Charging Stand for PlayStation Portal",
+    "ckb": "ستاندی شەحنی بچووکی iPega PG‑P5P25 بۆ PlayStation Portal"
+  },
+  "short": {
+    "ar": "محوّل USB‑C مغناطيسي · 12 نمط إضاءة RGB · لـ PlayStation Portal",
+    "en": "Magnetic USB‑C adapter · 12 RGB effects · For PlayStation Portal",
+    "ckb": "ئەداپتەری USB‑Cی موگناتیسی · 12 جۆر ڕووناکی RGB · بۆ PlayStation Portal"
+  },
+  "description": {
+    "ar": "حامل صغير يقف عليه جهاز PlayStation Portal ويشحنه. تضع محوّلاً مغناطيسياً في منفذ USB‑C خلف الجهاز فيلتصق بالقاعدة ويبدأ الشحن، مع إضاءة RGB ومؤشر يبين حالة الشحن.",
+    "en": "A small stand that holds and charges the PlayStation Portal. A magnetic adapter goes into the USB‑C port on the back of the Portal and snaps onto the stand to charge, with RGB lighting and a charging indicator.",
+    "ckb": "ستاندێکی بچووک کە PlayStation Portal هەڵدەگرێت و شەحنی دەکات. ئەداپتەرێکی موگناتیسی دەخرێتە دەروازەی USB‑Cی پشتی ئامێرەکە و بە ستاندەکەوە دەلکێت، لەگەڵ ڕووناکی RGB و نیشاندەری شەحن."
+  },
+  "highlights": [
+    {
+      "ar": "محوّل USB‑C مغناطيسي يحمي منفذ الجهاز",
+      "en": "Magnetic USB‑C adapter spares the Portal's port",
+      "ckb": "ئەداپتەری موگناتیسی دەروازەی ئامێرەکە دەپارێزێت"
+    },
+    {
+      "ar": "12 نمط إضاءة RGB",
+      "en": "12 RGB lighting effects",
+      "ckb": "12 جۆر ڕووناکی RGB"
+    },
+    {
+      "ar": "مؤشر LED لحالة الشحن",
+      "en": "LED charging indicator",
+      "ckb": "نیشاندەری LED بۆ شەحن"
+    },
+    {
+      "ar": "كابل USB‑C مرفق",
+      "en": "USB‑C cable included",
+      "ckb": "وایەری USB‑C لەگەڵیدایە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "PG‑P5P25",
+        "en": "PG‑P5P25",
+        "ckb": "PG‑P5P25"
+      }
+    },
+    {
+      "key": "device",
+      "label": {
+        "ar": "يتوافق مع",
+        "en": "Works with",
+        "ckb": "گونجاوە لەگەڵ"
+      },
+      "value": {
+        "ar": "PlayStation Portal",
+        "en": "PlayStation Portal",
+        "ckb": "PlayStation Portal"
+      }
+    },
+    {
+      "key": "connector",
+      "label": {
+        "ar": "طريقة الشحن",
+        "en": "Charging contact",
+        "ckb": "شێوازی شەحن"
+      },
+      "value": {
+        "ar": "محوّل USB‑C مغناطيسي",
+        "en": "Magnetic USB‑C adapter",
+        "ckb": "ئەداپتەری USB‑Cی موگناتیسی"
+      }
+    },
+    {
+      "key": "color",
+      "label": {
+        "ar": "اللون",
+        "en": "Colour",
+        "ckb": "ڕەنگ"
+      },
+      "value": {
+        "ar": "أبيض",
+        "en": "White",
+        "ckb": "سپی"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "IPEGA-PG-P5P25",
+      "title": {
+        "ar": "قاعدة شحن صغيرة iPega PG‑P5P25 لـ PlayStation Portal",
+        "en": "iPega PG‑P5P25 Mini Charging Stand for PlayStation Portal",
+        "ckb": "ستاندی شەحنی بچووکی iPega PG‑P5P25 بۆ PlayStation Portal"
+      },
+      "options": {
+        "color": "White"
+      },
+      "modelNumber": "PG-P5P25",
+      "sheetRow": 99,
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps-portal",
+      "status": "verified",
+      "note": {
+        "ar": "انزع غطاء الحماية عن الجهاز قبل الشحن إن كان يمنع المحوّل.",
+        "en": "Remove a protective case if it blocks the adapter.",
+        "ckb": "ئەگەر قاپی پاراستن ڕێگری لە ئەداپتەرەکە کرد لای ببە."
+      },
+      "source": "https://www.mytrendyphone.eu/shop/ipega-pg-p5p25-rgb-348765p.html"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-portal",
+      "kind": "setup"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.mytrendyphone.eu/shop/ipega-pg-p5p25-rgb-348765p.html",
+      "title": "iPega PG-P5P25 RGB Mini Magnetic Charging Stand for Playstation Portal Remote Player - White",
+      "publisher": "MyTrendyPhone (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "model, magnetic USB-C adapter, 12 RGB effects, LED indicator, USB-C cable included, white"
+    },
+    {
+      "url": "https://manuals.plus/ae/1005007997940437",
+      "title": "IPEGA PG-P5P25",
+      "publisher": "manuals.plus",
+      "retrieved": "2026-11-18",
+      "supports": "fact-check: magnetic adapter goes into the Portal's rear USB-C port; red indicator while charging"
+    }
+  ],
+  "notes": {
+    "ar": "جهاز PlayStation Portal غير مرفق.",
+    "en": "PlayStation Portal not included.",
+    "ckb": "PlayStation Portal لەگەڵیدا نییە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "The owner's sheet says 'PS5 CHARGING PORTAL MINI IPEGA'; read as iPega's mini Portal stand PG-P5P25 (iPega also sells the larger PG-P5P02 dock)",
+      "Power input rating",
+      "No clean large product picture found (retailer pictures are 360 px)"
+    ]
+  }
+}

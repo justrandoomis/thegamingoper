@@ -1,0 +1,40 @@
+{
+  "key": "gulikit-tmr-electromagnetic-joystick--4",
+  "view": "hero",
+  "width": 683,
+  "height": 359,
+  "aspect": 1.9025,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/gulikit-tmr-electromagnetic-joystick/4-240.b7f56d85.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/gulikit-tmr-electromagnetic-joystick/4-480.d3bd9ff9.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/gulikit-tmr-electromagnetic-joystick/4-240.6ec96483.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/gulikit-tmr-electromagnetic-joystick/4-480.dc836233.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRioBAABXRUJQVlA4WAoAAAAQAAAAEwAACgAAQUxQSFQAAAART6A2AMg264LOZCQ9ERGQawhGxQej2raVnC/I9DeABmRgUYE5FZyxZfiS1zJE9H8VKBoLby+8H+ADNn+r+DQ2hDZ5Q8jf4vPHOs2SJ74eAx2GAgBWUDggsAAAAHAEAJ0BKhQACwA/EXCwUCwmJKKwCAGAIglsAJ0gTXAAOUOUo1NlGELeiu4AAP4XN/nKPABOIZPY+MpGQXHBmqRiRpIXzbuIjNcqH84IgsSi+hWLI9gYUUpcnnn+few6BTsVOo3yIz/+7O+8iRT60owJqvseks4iRFsBWT8YSZQOjMMa3obb/eH3B9ob2ETY3zWiBFZwpxbT/15QzAh7cz9DdCf9xVnYCtok4h4gV2wA",
+  "dominant": "#1c9cd6",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "GuliKit",
+  "source": {
+    "url": "https://img.website.xin/contents/sitefiles3604/18023503/images/9415923.jpg",
+    "page": "https://gulikit.com/productinfo/1251251.html"
+  },
+  "input": "bea1b05e69ccc483"
+}

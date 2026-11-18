@@ -1,0 +1,93 @@
+{
+  "slug": "hyperx-cloud-earbuds-ii",
+  "group": "controllers-audio",
+  "kind": "headset",
+  "platform": "multi",
+  "brand": "HyperX",
+  "status": "available",
+  "releaseDate": "2023-06-06",
+  "name": { "ar": "سماعات أذن HyperX Cloud Earbuds II", "en": "HyperX Cloud Earbuds II", "ckb": "گوێکەی HyperX Cloud Earbuds II" },
+  "short": {
+    "ar": "سلكية 3.5 ملم · مايكروفون على الكابل · Switch وSteam Deck والهاتف",
+    "en": "Wired 3.5 mm · In-line mic · Switch, Steam Deck, phones",
+    "ckb": "وایەری 3.5 ملم · مایک لەسەر کێبڵ · Switch، Steam Deck، مۆبایل"
+  },
+  "description": {
+    "ar": "سماعات أذن سلكية للألعاب من HyperX بمنفذ 3.5 ملم، تعمل مع Nintendo Switch وSteam Deck والكمبيوتر والهواتف. فيها سماعات 14 ملم، ومايكروفون على الكابل مع زر متعدد الوظائف للرد على المكالمات وإيقاف الصوت. تأتي مع أربعة مقاسات من الأطراف المطاطية وعلبة صلبة للحمل، والقابس بزاوية 90 درجة ليقلّ الشد عند اللعب.",
+    "en": "Wired gaming earbuds from HyperX with a 3.5 mm plug, for Nintendo Switch, Steam Deck, PC and phones. They have 14 mm drivers and an in-line mic with a multi-function button for calls and pausing. Four ear-tip sizes and a hard carrying case are included, and the 90° plug sits flat so it snags less while you play.",
+    "ckb": "گوێکەی وایەری یاریی HyperX بە کونی 3.5 ملم، بۆ Nintendo Switch، Steam Deck، PC و مۆبایل. دەنگدەری 14 ملم و مایکی سەر کێبڵیان هەیە لەگەڵ دوگمەی فرە-ئەرک بۆ پەیوەندی و ڕاگرتنی دەنگ. چوار قەبارەی سەری لاستیکی و قاپێکی ڕەق بۆ هەڵگرتن لەگەڵیدایە، و پلەگە 90 پلەییەکە لە کاتی یاریدا کەمتر ڕادەکێشرێت."
+  },
+  "highlights": [
+    { "ar": "مايكروفون على الكابل مع زر للمكالمات والتحكم", "en": "In-line mic with a multi-function button", "ckb": "مایکی سەر کێبڵ لەگەڵ دوگمەی فرە-ئەرک" },
+    { "ar": "تعمل مع Nintendo Switch وSteam Deck والكمبيوتر والهواتف بمنفذ 3.5 ملم", "en": "Works with Nintendo Switch, Steam Deck, PC and phones with a 3.5 mm jack", "ckb": "لەگەڵ Nintendo Switch، Steam Deck، PC و مۆبایلی خاوەن کونی 3.5 ملم کار دەکات" },
+    { "ar": "أربعة مقاسات من الأطراف المطاطية وعلبة حمل صلبة", "en": "Four ear-tip sizes and a hard carrying case", "ckb": "چوار قەبارەی سەری لاستیکی و قاپی ڕەقی هەڵگرتن" },
+    { "ar": "قابس بزاوية 90 درجة وكابل مسطح لا يتشابك", "en": "90° plug and flat, tangle-resistant cable", "ckb": "پلەگی 90 پلە و کێبڵی تەخت کە کەمتر تێکدەچێت" }
+  ],
+  "specs": [
+    { "key": "connection", "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" }, "value": { "ar": "سلكي، قابس 3.5 ملم (4 أقطاب CTIA) بزاوية 90 درجة", "en": "Wired, 3.5 mm 4-pole (CTIA) plug, 90° angled", "ckb": "وایەری، پلەگی 3.5 ملمی 4 جەمسەر (CTIA)، 90 پلە" } },
+    { "key": "drivers", "label": { "ar": "السماعات الداخلية", "en": "Drivers", "ckb": "دەنگدەرەکان" }, "value": { "ar": "ديناميكية 14 ملم، 20 هرتز حتى 20 كيلوهرتز", "en": "Dynamic 14 mm, 20 Hz–20 kHz", "ckb": "داینامیکی 14 ملم، 20 هێرتز تا 20 کیلۆهێرتز" } },
+    { "key": "microphone", "label": { "ar": "المايكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" }, "value": { "ar": "على الكابل مع زر متعدد الوظائف", "en": "In-line, with multi-function button", "ckb": "لەسەر کێبڵ، لەگەڵ دوگمەی فرە-ئەرک" } },
+    { "key": "weight", "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" }, "value": { "ar": "نحو 20 غرام", "en": "About 20 g", "ckb": "نزیکەی 20 گرام" } }
+  ],
+  "inTheBox": [
+    { "ar": "سماعات الأذن", "en": "Earbuds", "ckb": "گوێکەکان" },
+    { "ar": "أطراف مطاطية بأربعة مقاسات", "en": "Ear tips in four sizes", "ckb": "سەری لاستیکی بە چوار قەبارە" },
+    { "ar": "علبة حمل صلبة", "en": "Hard carrying case", "ckb": "قاپی ڕەقی هەڵگرتن" }
+  ],
+  "variants": [
+    {
+      "sku": "HX-EARBUDS2-BLK",
+      "sheetRow": 25,
+      "title": { "ar": "أسود", "en": "Black", "ckb": "ڕەش" },
+      "options": { "color": "Black" },
+      "modelNumber": "70N24AA",
+      "barcodes": ["196786923265"],
+      "isDefault": true,
+      "images": ["hyperx-cloud-earbuds-ii--1", "hyperx-cloud-earbuds-ii--2", "hyperx-cloud-earbuds-ii--3"]
+    },
+    {
+      "sku": "HX-EARBUDS2-RED",
+      "sheetRow": 26,
+      "title": { "ar": "أحمر", "en": "Red", "ckb": "سوور" },
+      "options": { "color": "Red" },
+      "modelNumber": "705L8AA",
+      "barcodes": ["196786890161"],
+      "isDefault": false,
+      "images": ["hyperx-cloud-earbuds-ii--4", "hyperx-cloud-earbuds-ii--5"]
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "switch", "status": "verified", "source": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii" },
+    { "deviceModel": "switch-oled", "status": "verified", "source": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii" },
+    { "deviceModel": "switch-lite", "status": "verified", "source": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii" },
+    { "deviceModel": "steam-deck-oled", "status": "verified", "source": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii" },
+    { "deviceModel": "steam-deck-lcd", "status": "verified", "source": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii" },
+    { "deviceModel": "windows-pc", "status": "verified", "source": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii" },
+    { "deviceModel": "switch-2", "status": "unverified", "note": { "ar": "فيه منفذ 3.5 ملم، لكن HyperX لا تذكره.", "en": "Has a 3.5 mm jack, but HyperX does not list it.", "ckb": "کونی 3.5 ملمی هەیە، بەڵام HyperX ناوی ناهێنێت." } }
+  ],
+  "related": [
+    { "slug": "hyperx-cloud-alpha-wireless", "kind": "upsell" },
+    { "slug": "sony-wi-c200", "kind": "alternative" },
+    { "slug": "nintendo-switch-oled", "kind": "setup" }
+  ],
+  "images": [
+    { "key": "hyperx-cloud-earbuds-ii--1", "file": ".cache/product-images/hyperx-cloud-earbuds-ii/1.jpg", "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_earbuds_ii_black_1_main.jpg", "sourcePage": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii", "kind": "hero", "alt": { "ar": "سماعات HyperX Cloud Earbuds II السوداء", "en": "Black HyperX Cloud Earbuds II", "ckb": "HyperX Cloud Earbuds IIی ڕەش" }, "credit": "HyperX (HP Inc.)", "width": 1600, "height": 1600, "transparent": false },
+    { "key": "hyperx-cloud-earbuds-ii--2", "file": ".cache/product-images/hyperx-cloud-earbuds-ii/2.jpg", "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_earbuds_ii_black_3_microphone.jpg", "sourcePage": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii", "kind": "detail", "alt": { "ar": "المايكروفون على الكابل والقابس بزاوية 90 درجة", "en": "The in-line mic and the 90° plug", "ckb": "مایکی سەر کێبڵ و پلەگی 90 پلە" }, "credit": "HyperX (HP Inc.)", "width": 1600, "height": 1600, "transparent": false },
+    { "key": "hyperx-cloud-earbuds-ii--3", "file": ".cache/product-images/hyperx-cloud-earbuds-ii/3.jpg", "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_earbuds_ii_black_5_accessories.jpg", "sourcePage": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii", "kind": "in-box", "alt": { "ar": "السماعات مع العلبة والأطراف المطاطية", "en": "The earbuds with case and ear tips", "ckb": "گوێکەکان لەگەڵ قاپ و سەرە لاستیکییەکان" }, "credit": "HyperX (HP Inc.)", "width": 1600, "height": 1600, "transparent": false },
+    { "key": "hyperx-cloud-earbuds-ii--4", "file": ".cache/product-images/hyperx-cloud-earbuds-ii/4.jpg", "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_earbuds_ii_red_1_main.jpg", "sourcePage": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii", "kind": "angle", "alt": { "ar": "سماعات HyperX Cloud Earbuds II الحمراء", "en": "Red HyperX Cloud Earbuds II", "ckb": "HyperX Cloud Earbuds IIی سوور" }, "credit": "HyperX (HP Inc.)", "width": 1600, "height": 1600, "transparent": false },
+    { "key": "hyperx-cloud-earbuds-ii--5", "file": ".cache/product-images/hyperx-cloud-earbuds-ii/5.jpg", "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_earbuds_ii_red_2_closeup.jpg", "sourcePage": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii", "kind": "detail", "alt": { "ar": "السماعات الحمراء عن قرب", "en": "Close-up of the red earbuds", "ckb": "گوێکە سوورەکان لە نزیکەوە" }, "credit": "HyperX (HP Inc.)", "width": 1600, "height": 1600, "transparent": false }
+  ],
+  "sources": [
+    { "url": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii", "title": "HyperX Cloud Earbuds II", "publisher": "HyperX (HP Inc.)", "retrieved": "2026-11-18", "supports": "colours and part numbers 70N24AA / 705L8AA, UPCs, 14 mm drivers, in-line mic, four ear tips, hard case, 90° plug, compatibility list, images" },
+    { "url": "https://hyperx.com/blogs/press/new-hyperx-cloud-earbuds-ii-with-mic-support-convenient-and-immersive-mobile-gaming", "title": "New HyperX Cloud Earbuds II with Mic Support", "publisher": "HyperX press release", "retrieved": "2026-11-18", "supports": "launch in June 2023, $39.99 price, black and red colours" },
+    { "url": "https://www.hp.com/ie-en/products/accessories/product-details/product-specifications/2101455770", "title": "HyperX Cloud Earbuds II Black (70N24AA) specifications", "publisher": "HP", "retrieved": "2026-11-18", "supports": "frequency response, 3.5 mm 4-pole plug, weight" }
+  ],
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Exact launch day (press release dated June 2023)",
+      "Driver size: HyperX's page says 14 mm, HP's spec sheet 14.3 mm"
+    ]
+  }
+}

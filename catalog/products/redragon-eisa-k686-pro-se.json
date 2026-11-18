@@ -1,0 +1,222 @@
+{
+  "slug": "redragon-eisa-k686-pro-se",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Redragon",
+  "category": "keyboards",
+  "status": "available",
+  "name": {
+    "ar": "كيبورد Redragon EISA K686 PRO SE",
+    "en": "Redragon EISA K686 PRO SE",
+    "ckb": "کیبۆردی Redragon EISA K686 PRO SE"
+  },
+  "short": {
+    "ar": "98 زراً · لاسلكي 3 أوضاع · Gasket · طابع أنمي",
+    "en": "98 keys · 3-mode wireless · gasket · anime theme",
+    "ckb": "98 دوگمە · بێتەلی 3 شێواز · Gasket · ڕووکاری ئەنیمێ"
+  },
+  "description": {
+    "ar": "كيبورد ميكانيكي من Redragon بتصميم 98 زراً يحتفظ بلوحة الأرقام في حجم أصغر، بطابع أنمي لشخصية Eisa على أغطية PBT مطبوعة بالتسامي. يتصل بكابل USB‑C أو 2.4 غيغاهرتز أو بلوتوث، وبنيته Gasket مع خمس طبقات عزل للصوت ومقبض للتحكم بالإضاءة والصوت.",
+    "en": "A Redragon 98-key mechanical keyboard that keeps the number pad in a smaller body, themed around the anime character Eisa on dye-sub PBT keycaps. It connects by USB-C, 2.4 GHz or Bluetooth, uses a gasket mount with five dampening layers and has a knob for lighting and volume.",
+    "ckb": "کیبۆردێکی میکانیکی 98 دوگمەی Redragon کە بەشی ژمارە لە قەبارەیەکی بچووکتردا دەهێڵێتەوە، بە ڕووکاری کەسایەتی ئەنیمێی Eisa لەسەر سەری دوگمەی PBT. بە USB‑C یان 2.4 گیگاهێرتز یان بلووتوز دەبەسترێت، پێکهاتەی Gasket و پێنج چینی دەنگ‌کەمکەرەوە و دوگمەی بازنەیی بۆ ڕووناکی و دەنگی هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "ثلاثة أوضاع: USB‑C و2.4 غيغاهرتز وبلوتوث",
+      "en": "3 modes: USB-C, 2.4 GHz and Bluetooth",
+      "ckb": "3 شێواز: USB‑C و 2.4 گیگاهێرتز و بلووتوز"
+    },
+    {
+      "ar": "98 زراً مع لوحة أرقام بحجم أصغر بـ 20%",
+      "en": "98 keys with numpad, 20% smaller than full size",
+      "ckb": "98 دوگمە لەگەڵ بەشی ژمارە، 20% بچووکتر"
+    },
+    {
+      "ar": "أغطية PBT مطبوعة على 5 جهات بتصميم Eisa",
+      "en": "5-sided dye-sub PBT keycaps with Eisa artwork",
+      "ckb": "سەری دوگمەی PBTی 5 لا بە وێنەی Eisa"
+    },
+    {
+      "ar": "مفاتيح خطية مزيتة قابلة للتبديل (3/5 دبابيس)",
+      "en": "Lubed linear switches, hot-swap (3/5-pin)",
+      "ckb": "سویچی هێڵی چەورکراو، گۆڕینی گەرم (3/5 پین)"
+    },
+    {
+      "ar": "بنية Gasket وخمس طبقات عزل صوت",
+      "en": "Gasket mount, 5 dampening layers",
+      "ckb": "Gasket و 5 چینی دەنگ‌کەمکەرەوە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "layout",
+      "label": {
+        "ar": "التصميم",
+        "en": "Layout",
+        "ckb": "شێوە"
+      },
+      "value": {
+        "ar": "98 زراً (98+1 مع المقبض)، تخطيط أمريكي",
+        "en": "98 keys (98+1 with knob), US layout",
+        "ckb": "98 دوگمە (98+1 لەگەڵ دوگمەی بازنەیی)، ئەمریکی"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "USB‑C سلكي، 2.4 غيغاهرتز، بلوتوث 3.0/5.0",
+        "en": "Wired USB-C, 2.4 GHz, Bluetooth 3.0/5.0",
+        "ckb": "USB‑Cی وایەری، 2.4 گیگاهێرتز، بلووتوز 3.0/5.0"
+      }
+    },
+    {
+      "key": "switches",
+      "label": {
+        "ar": "المفاتيح",
+        "en": "Switches",
+        "ckb": "سویچەکان"
+      },
+      "value": {
+        "ar": "خطية مخصصة، قابلة للتبديل دون لحام",
+        "en": "Custom linear, hot-swappable",
+        "ckb": "هێڵی تایبەت، گۆڕینی گەرم"
+      }
+    },
+    {
+      "key": "keycaps",
+      "label": {
+        "ar": "أغطية الأزرار",
+        "en": "Keycaps",
+        "ckb": "سەری دوگمەکان"
+      },
+      "value": {
+        "ar": "PBT مطبوعة بالتسامي على 5 جهات",
+        "en": "5-sided dye-sub PBT",
+        "ckb": "PBTی 5 لا"
+      }
+    },
+    {
+      "key": "lighting",
+      "label": {
+        "ar": "الإضاءة",
+        "en": "Lighting",
+        "ckb": "ڕووناکی"
+      },
+      "value": {
+        "ar": "RGB",
+        "en": "RGB",
+        "ckb": "RGB"
+      }
+    },
+    {
+      "key": "software",
+      "label": {
+        "ar": "البرنامج",
+        "en": "Software",
+        "ckb": "بەرنامە"
+      },
+      "value": {
+        "ar": "برنامج Redragon لتغيير الإضاءة والماكرو؛ زر للتبديل بين Windows وMac",
+        "en": "Redragon software for lighting and macros; Win/Mac switch",
+        "ckb": "بەرنامەی Redragon بۆ ڕووناکی و ماکرۆ؛ گۆڕین لە نێوان Windows و Mac"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RD-K686AK-PRO-SE",
+      "title": {
+        "ar": "كحلي وأبيض (Eisa)",
+        "en": "Navy/White (Eisa)",
+        "ckb": "شینی تۆخ و سپی (Eisa)"
+      },
+      "options": {
+        "color": "Navy/White"
+      },
+      "modelNumber": "K686AK-RGB-PRO",
+      "barcodes": [
+        "6950376722836"
+      ],
+      "isDefault": true,
+      "images": [
+        "redragon-eisa-k686-pro-se--1"
+      ],
+      "sheetRow": 45
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "سلكي أو لاسلكي؛ يعمل أيضاً مع Mac.",
+        "en": "Wired or wireless; also works with Mac.",
+        "ckb": "وایەری یان بێتەل؛ لەگەڵ Macیش کار دەکات."
+      },
+      "source": "https://redragonshop.com/products/eisa-k686-pro-se"
+    }
+  ],
+  "related": [
+    {
+      "slug": "redragon-ucal-k673-pro",
+      "kind": "alternative"
+    },
+    {
+      "slug": "redragon-k1ng-m724",
+      "kind": "accessory"
+    },
+    {
+      "slug": "redragon-p041-xeon-xl",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "redragon-eisa-k686-pro-se--1",
+      "file": ".cache/product-images/redragon-eisa-k686-pro-se/1.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/RedragonEISAK686PRO98KeysWirelessGasketRGBGamingKeyboard_1.png",
+      "sourcePage": "https://redragonshop.com/products/eisa-k686-pro-se",
+      "kind": "hero",
+      "alt": {
+        "ar": "كيبورد Redragon EISA K686 PRO SE بطابع Eisa مع اللوحة الخلفية",
+        "en": "Redragon EISA K686 PRO SE with Eisa artwork and its back plate",
+        "ckb": "Redragon EISA K686 PRO SE بە وێنەی Eisa لەگەڵ پشتەکەی"
+      },
+      "credit": "Redragon",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://redragonshop.com/products/eisa-k686-pro-se",
+      "title": "EISA K686 PRO SE Anime Keyboard",
+      "publisher": "Redragon (official store)",
+      "retrieved": "2026-11-18",
+      "supports": "anime Eisa theme, 5-sided dye-sub PBT, gasket mount, tri-mode USB-C / BT 3.0/5.0 / 2.4 GHz, custom linear hot-swap 3/5-pin, 5-layer dampening, 98 keys, knob, Redragon software, image"
+    },
+    {
+      "url": "https://dangerfield.com.au/products/k686ak-rgb-pro-eisa-98-1-kb",
+      "title": "Redragon K686AK RGB Pro EISA Navy White 98+1 Gasket Wireless Mechanical Keyboard",
+      "publisher": "Dangerfield (Redragon reseller, Australia)",
+      "retrieved": "2026-11-18",
+      "supports": "model code K686AK, Navy/White colour, barcode 6950376722836, gasket and tri-mode confirmation"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "That the K686AK code is the PRO SE anime edition (matched by the Navy/White Eisa artwork on the reseller page and Redragon's PRO SE page)",
+      "Battery capacity",
+      "Release date"
+    ]
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "slug": "dobe-quest-charging-kit-ty-3867",
+  "group": "xbox-vr",
+  "kind": "vr",
+  "platform": "multi",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة شحن DOBE لنظارات Meta Quest 2 و3 و3S",
+    "en": "DOBE Charging Kit for Meta Quest 2, 3 and 3S",
+    "ckb": "بنکەی شەحنی DOBE بۆ چاویلکەکانی Meta Quest 2 و 3 و 3S"
+  },
+  "short": {
+    "ar": "تشحن النظارة وبطاريتين للأيدي معاً · بطاريتان 2000mAh مرفقتان",
+    "en": "Charges the headset and two controller batteries together · two 2000 mAh batteries included",
+    "ckb": "چاویلکە و دوو پاتریی دەسک پێکەوە شەحن دەکات · دوو پاتریی 2000mAh لەگەڵیەتی"
+  },
+  "description": {
+    "ar": "قاعدة شحن من DOBE (الموديل TY-3867) توضع عليها نظارة Meta Quest 2 أو 3 أو 3S مع اليدين. تشحن النظارة بقدرة 5 فولت 3 أمبير، وتشحن معها بطاريتين من نوع NiMH بسعة 2000mAh تأتيان معها لتُستعمل في الأيدي بدل البطاريات العادية. أضواء بألوان مختلفة تبيّن حالة الشحن، ويمكن إطفاؤها بزر لمس.",
+    "en": "A DOBE charging dock (model TY-3867) that holds a Meta Quest 2, 3 or 3S headset with its controllers. It charges the headset at 5 V 3 A and, at the same time, the two 2000 mAh NiMH batteries it comes with, which go in the controllers instead of disposable AA cells. Coloured lights show the charging status and can be turned off with a touch button.",
+    "ckb": "بنکەیەکی شەحنی DOBE (مۆدێلی TY-3867) کە چاویلکەی Meta Quest 2 یان 3 یان 3S لەگەڵ دەسکەکانی لەسەر دادەنرێت. چاویلکەکە بە 5 ڤۆڵت 3 ئەمپێر شەحن دەکات و هاوکات دوو پاتریی NiMH ـی 2000mAh کە لەگەڵیدا دێن و لە جیاتی پاتریی ئاسایی لە دەسکەکاندا دادەنرێن. ڕووناکیی ڕەنگاوڕەنگ دۆخی شەحن پیشان دەدات و بە دوگمەیەکی دەستلێدان دەکوژێنرێتەوە."
+  },
+  "highlights": [
+    {
+      "ar": "لنظارات Meta Quest 2 و3 و3S",
+      "en": "For Meta Quest 2, 3 and 3S",
+      "ckb": "بۆ Meta Quest 2 و 3 و 3S"
+    },
+    {
+      "ar": "بطاريتان قابلتان للشحن 2000mAh للأيدي",
+      "en": "Two rechargeable 2000 mAh controller batteries",
+      "ckb": "دوو پاتریی شەحنکراوەی 2000mAh بۆ دەسکەکان"
+    },
+    {
+      "ar": "شحن النظارة بقدرة 5 فولت 3 أمبير",
+      "en": "Headset charging at 5 V 3 A",
+      "ckb": "شەحنی چاویلکە بە 5 ڤۆڵت 3 ئەمپێر"
+    },
+    {
+      "ar": "أضواء لحالة الشحن مع زر لمس لإطفائها",
+      "en": "Status lights with a touch button to turn them off",
+      "ckb": "ڕووناکیی دۆخی شەحن لەگەڵ دوگمەی دەستلێدان بۆ کوژاندنەوەیان"
+    },
+    {
+      "ar": "حماية من زيادة التيار",
+      "en": "Over-current protection",
+      "ckb": "پاراستن لە زیادبوونی تەزوو"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "DOBE TY-3867",
+        "en": "DOBE TY-3867",
+        "ckb": "DOBE TY-3867"
+      }
+    },
+    {
+      "key": "headset-charging",
+      "label": {
+        "ar": "شحن النظارة",
+        "en": "Headset charging",
+        "ckb": "شەحنی چاویلکە"
+      },
+      "value": {
+        "ar": "5 فولت 3 أمبير (حتى 2.8 أمبير للنظارة)",
+        "en": "5 V 3 A (up to 2.8 A to the headset)",
+        "ckb": "5 ڤۆڵت 3 ئەمپێر (تا 2.8 ئەمپێر بۆ چاویلکە)"
+      }
+    },
+    {
+      "key": "batteries",
+      "label": {
+        "ar": "البطاريات",
+        "en": "Batteries",
+        "ckb": "پاتری"
+      },
+      "value": {
+        "ar": "2 × NiMH بسعة 2000mAh، تُشحن بتيار 350mA لكل بطارية",
+        "en": "2 × NiMH 2000 mAh, charged at 350 mA each",
+        "ckb": "2 × NiMH ـی 2000mAh، هەر یەکەیان بە 350mA شەحن دەکرێت"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "متوافق مع",
+        "en": "Compatible with",
+        "ckb": "گونجاوە لەگەڵ"
+      },
+      "value": {
+        "ar": "Meta Quest 2 وQuest 3 وQuest 3S",
+        "en": "Meta Quest 2, Quest 3 and Quest 3S",
+        "ckb": "Meta Quest 2 و Quest 3 و Quest 3S"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قاعدة الشحن",
+      "en": "Charging dock",
+      "ckb": "بنکەی شەحن"
+    },
+    {
+      "ar": "بطاريتان 2000mAh",
+      "en": "Two 2000 mAh batteries",
+      "ckb": "دوو پاتریی 2000mAh"
+    },
+    {
+      "ar": "كابل USB-C",
+      "en": "USB-C cable",
+      "ckb": "کێبڵی USB-C"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TY3867",
+      "sheetRow": 59,
+      "title": {
+        "ar": "قاعدة شحن DOBE لنظارات Meta Quest 2 و3 و3S",
+        "en": "DOBE Charging Kit for Meta Quest 2, 3 and 3S",
+        "ckb": "بنکەی شەحنی DOBE بۆ چاویلکەکانی Meta Quest 2 و 3 و 3S"
+      },
+      "options": {
+        "color": "White"
+      },
+      "modelNumber": "TY-3867",
+      "isDefault": true
+    }
+  ],
+  "related": [
+    {
+      "slug": "dobe-quest-3-3s-charging-dock-ty-3868",
+      "kind": "alternative"
+    },
+    {
+      "slug": "dobe-quest-3-charging-stand-ty-3835",
+      "kind": "alternative"
+    },
+    {
+      "slug": "meta-quest-link-cable",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.amazon.com/dp/B0DN9P48T5",
+      "title": "Dobe - Charging Kit Designed for Quest2, Quest3, Quest3S VR Headset ... TY-3867",
+      "publisher": "Amazon (DOBE listing)",
+      "retrieved": "2026-11-18",
+      "supports": "model TY-3867, Quest 2/3/3S, two 2000 mAh NiMH batteries, 5 V 3 A headset charging up to 2.8 A, 350 mA battery charging, status lights, touch button, over-current protection, images"
+    },
+    {
+      "url": "https://www.bestbuy.com/product/dobe-charging-kit-designed-for-quest2-quest3-quest3s-vr-headset-equipped-with-two-2000ma-capacity-rechargeable-batteries-black/CZTYSJ4676",
+      "title": "DOBE Charging Kit for Quest2/Quest3/Quest3S with two 2000mA batteries",
+      "publisher": "Best Buy",
+      "retrieved": "2026-11-18",
+      "supports": "second source: model TY-3867, two 2000 mAh batteries"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع DOBE وليس من Meta. البطاريتان للأيدي التي تعمل ببطارية AA (أيدي Quest 2 وQuest 3 وQuest 3S).",
+    "en": "Made by DOBE, not by Meta. The batteries are for the AA-powered Touch controllers of Quest 2, Quest 3 and Quest 3S.",
+    "ckb": "دروستکراوی DOBE ـیە، نەک Meta. پاترییەکان بۆ ئەو دەسکانەن کە بە پاتریی AA کار دەکەن (دەسکەکانی Quest 2 و Quest 3 و Quest 3S)."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "No DOBE-run website was found; facts come from DOBE's marketplace listing and a major retailer",
+      "Exact box contents (cable type, battery covers) not confirmed",
+      "Barcode not found",
+      "Clean DOBE photos exist (white product on white, DOBE marketplace listing) but none passes the cut-out/opaque-photo gate, so no image is recorded"
+    ]
+  }
+}

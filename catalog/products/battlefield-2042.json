@@ -1,0 +1,221 @@
+{
+  "slug": "battlefield-2042",
+  "group": "xbox-vr",
+  "kind": "game",
+  "platform": "xbox",
+  "brand": "Electronic Arts",
+  "status": "available",
+  "releaseDate": "2021-11-19",
+  "name": { "ar": "Battlefield 2042", "en": "Battlefield 2042", "ckb": "Battlefield 2042" },
+  "short": {
+    "ar": "Xbox · قرص · لعب جماعي أونلاين حتى 128 لاعباً على Xbox Series X|S",
+    "en": "Xbox · disc · online battles for up to 128 players on Xbox Series X|S",
+    "ckb": "Xbox · دیسک · شەڕی ئۆنلاین تا 128 یاریزان لەسەر Xbox Series X|S"
+  },
+  "description": {
+    "ar": "لعبة تصويب من منظور الشخص الأول من DICE وElectronic Arts صدرت في 19 تشرين الثاني 2021. تقوم على معارك أونلاين كبيرة بأطوار Conquest وBreakthrough، وفيها منصة Battlefield Portal لصنع معارك من خرائط وأسلحة أجزاء Battlefield السابقة. لا توجد فيها حملة قصصية للاعب الواحد، فهي لعبة أونلاين بالأساس.",
+    "en": "A first-person shooter from DICE and Electronic Arts, released on 19 November 2021. It is built around large online battles in Conquest and Breakthrough, plus Battlefield Portal, where players build battles from the maps and weapons of earlier Battlefield games. There is no single-player story campaign: it is an online game first.",
+    "ckb": "یارییەکی تەقەکردن لە ڕوانگەی کەسی یەکەم لە DICE و Electronic Arts، کە لە 19ی تشرینی دووەمی 2021 دەرچوو. لەسەر شەڕە گەورە ئۆنلاینەکان بە شێوازەکانی Conquest و Breakthrough دامەزراوە، لەگەڵ Battlefield Portal کە یاریزانان شەڕ لە نەخشە و چەکەکانی بەشە کۆنەکانی Battlefield دروست دەکەن. حەملەی چیرۆکی تاکەکەسی تێدا نییە: پێش هەموو شتێک یارییەکی ئۆنلاینە."
+  },
+  "highlights": [
+    {
+      "ar": "حتى 128 لاعباً في المعركة الواحدة على Xbox Series X|S (و64 على Xbox One)",
+      "en": "Up to 128 players per battle on Xbox Series X|S (64 on Xbox One)",
+      "ckb": "تا 128 یاریزان لە هەر شەڕێکدا لەسەر Xbox Series X|S (و 64 لەسەر Xbox One)"
+    },
+    {
+      "ar": "أطوار Conquest وBreakthrough ومنصة Battlefield Portal",
+      "en": "Conquest, Breakthrough and Battlefield Portal",
+      "ckb": "شێوازەکانی Conquest و Breakthrough و Battlefield Portal"
+    },
+    {
+      "ar": "لعب تعاوني أونلاين ولعب مشترك مع أجهزة أخرى",
+      "en": "Online co-op and cross-platform play",
+      "ckb": "یاری هاوکاری ئۆنلاین و یاری لەگەڵ ئامێرەکانی تر"
+    },
+    {
+      "ar": "تحتاج إنترنت دائماً؛ اللعب الجماعي على Xbox يحتاج اشتراك Game Pass مناسب",
+      "en": "Always needs the internet; online play on Xbox needs a suitable Game Pass membership",
+      "ckb": "هەمیشە پێویستی بە ئینتەرنێتە؛ یاری ئۆنلاین لەسەر Xbox پێویستی بە بەشداریی گونجاوی Game Pass هەیە"
+    },
+    {
+      "ar": "صوت وواجهة باللغة العربية حسب متجر Xbox",
+      "en": "Arabic voice-over and interface according to the Xbox Store",
+      "ckb": "دەنگ و ڕووکاری عەرەبی بەپێی فرۆشگای Xbox"
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "بەرواری دەرچوون" },
+      "value": { "ar": "19 تشرين الثاني 2021", "en": "19 November 2021", "ckb": "19ی تشرینی دووەمی 2021" }
+    },
+    {
+      "key": "format",
+      "label": { "ar": "نوع النسخة", "en": "Format", "ckb": "جۆری وەشان" },
+      "value": { "ar": "قرص Xbox", "en": "Xbox disc", "ckb": "دیسکی Xbox" }
+    },
+    {
+      "key": "players",
+      "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" },
+      "value": {
+        "ar": "أونلاين 2–128 على Xbox Series X|S، وتعاوني أونلاين 2–4",
+        "en": "Online 2–128 on Xbox Series X|S; online co-op 2–4",
+        "ckb": "ئۆنلاین 2–128 لەسەر Xbox Series X|S؛ هاوکاریی ئۆنلاین 2–4"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": { "ar": "اللغة العربية", "en": "Arabic", "ckb": "زمانی عەرەبی" },
+      "value": {
+        "ar": "صوت وواجهة (متجر Xbox لا يذكر ترجمة نصية عربية)",
+        "en": "Voice and interface (the Xbox Store does not list Arabic subtitles)",
+        "ckb": "دەنگ و ڕووکار (فرۆشگای Xbox ژێرنووسی عەرەبی ناو نابات)"
+      }
+    },
+    {
+      "key": "rating",
+      "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" },
+      "value": { "ar": "ESRB M (17+)", "en": "ESRB M (17+)", "ckb": "ESRB M (17+)" }
+    },
+    {
+      "key": "developer",
+      "label": { "ar": "المطوّر والناشر", "en": "Developer and publisher", "ckb": "پەرەپێدەر و بڵاوکەرەوە" },
+      "value": { "ar": "DICE · Electronic Arts", "en": "DICE · Electronic Arts", "ckb": "DICE · Electronic Arts" }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "BF2042-XBX",
+      "sheetRow": 224,
+      "title": { "ar": "قرص Xbox", "en": "Xbox disc", "ckb": "دیسکی Xbox" },
+      "options": { "platform": "Xbox", "edition": "Standard", "format": "Disc" },
+      "isDefault": true,
+      "images": ["battlefield-2042--1", "battlefield-2042--2", "battlefield-2042--3"],
+      "notes": {
+        "ar": "قرص، فيعمل على Xbox Series X (نسخة الأقراص)، ولا يعمل على Xbox Series S أو Xbox Series X Digital Edition لأنهما بلا قارئ أقراص. يعمل على Xbox One فقط إذا كان القرص نسخة Xbox One.",
+        "en": "A disc, so it plays on the Xbox Series X (disc model), not on the Xbox Series S or the Xbox Series X Digital Edition, which have no disc drive. It plays on an Xbox One only if the disc is the Xbox One version.",
+        "ckb": "دیسکە، بۆیە لەسەر Xbox Series X (مۆدێلی دیسک) کار دەکات، نەک لەسەر Xbox Series S یان Xbox Series X Digital Edition کە خوێنەری دیسکیان نییە. لەسەر Xbox One تەنها کار دەکات ئەگەر دیسکەکە وەشانی Xbox One بێت."
+      }
+    }
+  ],
+  "game": {
+    "platforms": ["xbox-series-x"],
+    "genres": [
+      { "ar": "تصويب من منظور الشخص الأول", "en": "First-person shooter", "ckb": "تەقەکردن لە ڕوانگەی کەسی یەکەم" }
+    ],
+    "players": "2-128 online",
+    "online": {
+      "ar": "تحتاج اتصال إنترنت وحساب EA؛ اللعب الجماعي على Xbox يحتاج اشتراك Game Pass يشمل اللعب أونلاين.",
+      "en": "Needs an internet connection and an EA account; multiplayer on Xbox needs a Game Pass membership that includes online play.",
+      "ckb": "پێویستی بە ئینتەرنێت و هەژماری EA هەیە؛ یاری بەکۆمەڵ لەسەر Xbox پێویستی بە بەشداریی Game Pass هەیە کە یاری ئۆنلاینی تێدابێت."
+    },
+    "ageRating": { "esrb": "M" },
+    "arabic": "voice+subtitles+interface",
+    "physicalFormat": "disc",
+    "developer": "DICE",
+    "publisher": "Electronic Arts"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": { "ar": "يعمل من القرص", "en": "Plays from the disc", "ckb": "لە دیسکەوە کار دەکات" },
+      "source": "https://www.xbox.com/en-US/games/store/battlefield-2042-xbox-one-xbox-series-x-s/9NMGP6S6NJPR"
+    },
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "incompatible",
+      "note": { "ar": "بلا قارئ أقراص", "en": "No disc drive", "ckb": "خوێنەری دیسکی نییە" },
+      "source": "https://www.xbox.com/en-US/consoles/xbox-series-s"
+    },
+    {
+      "deviceModel": "xbox-series-x-digital",
+      "status": "incompatible",
+      "note": { "ar": "بلا قارئ أقراص", "en": "No disc drive", "ckb": "خوێنەری دیسکی نییە" },
+      "source": "https://www.xbox.com/en-US/consoles/xbox-series-x"
+    }
+  ],
+  "related": [
+    { "slug": "battlefield-6", "kind": "alternative" },
+    { "slug": "xbox-series-x", "kind": "setup" },
+    { "slug": "xbox-wireless-controller", "kind": "accessory" },
+    { "slug": "xbox-game-pass", "kind": "accessory" }
+  ],
+  "images": [
+    {
+      "key": "battlefield-2042--1",
+      "file": ".cache/product-images/battlefield-2042/1.jpg",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.38194.14524595367279766.cf1e9796-ca30-403f-8373-36da51dafac7.f98212b5-9c47-475e-a5bf-3530608585ca",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/battlefield-2042-xbox-series-xs/9P0T51BDDWVT",
+      "kind": "box-art",
+      "alt": { "ar": "غلاف Battlefield 2042", "en": "Battlefield 2042 cover art", "ckb": "بەرگی Battlefield 2042" },
+      "credit": "Electronic Arts",
+      "width": 1440,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "battlefield-2042--2",
+      "file": ".cache/product-images/battlefield-2042/2.jpg",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.64407.13688248615848426.f8c77e38-18b5-4ba9-9c32-8691e34a6773.e1af01e5-6473-4799-8d93-c005774aa6f3",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/battlefield-2042-xbox-one-xbox-series-x-s/9NMGP6S6NJPR",
+      "kind": "screenshot",
+      "alt": { "ar": "لقطة من معركة في Battlefield 2042", "en": "A battle in Battlefield 2042", "ckb": "وێنەیەک لە شەڕێکی Battlefield 2042" },
+      "credit": "Electronic Arts",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "battlefield-2042--3",
+      "file": ".cache/product-images/battlefield-2042/3.jpg",
+      "sourceUrl": "https://store-images.s-microsoft.com/image/apps.42661.13688248615848426.f8c77e38-18b5-4ba9-9c32-8691e34a6773.5b2252d0-ba0e-47a5-8f7b-2dff7d3d08f4",
+      "sourcePage": "https://www.xbox.com/en-US/games/store/battlefield-2042-xbox-one-xbox-series-x-s/9NMGP6S6NJPR",
+      "kind": "screenshot",
+      "alt": { "ar": "لقطة أخرى من اللعبة", "en": "Another in-game scene", "ckb": "وێنەیەکی تر لە یارییەکە" },
+      "credit": "Electronic Arts",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.xbox.com/en-US/games/store/battlefield-2042-xbox-one-xbox-series-x-s/9NMGP6S6NJPR",
+      "title": "Battlefield 2042 Xbox One & Xbox Series X|S",
+      "publisher": "Microsoft (Xbox Store)",
+      "retrieved": "2026-11-18",
+      "supports": "release date 19 Nov 2021, developer DICE, publisher EA, online multiplayer 2-128, online co-op 2-4, cross-platform play, ESRB M 17+, Arabic audio and interface (subtitles not listed), modes, screenshots"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/games/store/battlefield-2042-xbox-series-xs/9P0T51BDDWVT",
+      "title": "Battlefield 2042 Xbox Series X|S",
+      "publisher": "Microsoft (Xbox Store)",
+      "retrieved": "2026-11-18",
+      "supports": "Xbox Series X|S version, cover art"
+    },
+    {
+      "url": "https://news.xbox.com/en-us/2021/11/11/battlefield-2042-gold-and-ultimate-editions-are-now-available-for-xbox-one-and-xbox-series-xs/",
+      "title": "Battlefield 2042 Gold And Ultimate Editions Are Now Available For Xbox One And Xbox Series X|S",
+      "publisher": "Xbox Wire",
+      "retrieved": "2026-11-18",
+      "supports": "second source: Xbox One and Xbox Series X|S release, 128 players on Xbox Series X|S and 64 on Xbox One"
+    }
+  ],
+  "notes": {
+    "ar": "خوادم اللعبة ما زالت تعمل حتى تاريخ هذا البحث، لكن اللعبة كلها أونلاين: إذا أُغلقت الخوادم مستقبلاً فلن تكون قابلة للعب.",
+    "en": "The game's servers are still running as of this research, but the whole game is online: if the servers close in future it will not be playable.",
+    "ckb": "سێرڤەرەکانی یارییەکە تا کاتی ئەم لێکۆڵینەوەیە کار دەکەن، بەڵام هەموو یارییەکە ئۆنلاینە: ئەگەر لە داهاتوودا سێرڤەرەکان دابخرێن، یاری پێناکرێت."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Whether the shop's disc is the Xbox One or the Xbox Series X case, and whether that disc includes the other generation's version",
+      "PEGI rating not confirmed on an official page",
+      "Arabic subtitles: the Xbox Store lists Arabic audio and interface only",
+      "Install size of the disc version"
+    ]
+  }
+}

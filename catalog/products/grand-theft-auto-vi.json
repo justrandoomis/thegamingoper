@@ -135,6 +135,7 @@
   "variants": [
     {
       "sku": "GTA6-PS5-STD",
+      "sheetRow": 122,
       "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Code in box" },
       "isDefault": true,
@@ -147,6 +148,7 @@
     },
     {
       "sku": "GTA6-XBS-STD",
+      "sheetRow": 226,
       "title": { "ar": "لجهاز Xbox Series X|S · Standard Edition", "en": "Xbox Series X|S · Standard Edition", "ckb": "بۆ Xbox Series X|S · Standard Edition" },
       "options": { "platform": "Xbox Series X|S", "edition": "Standard", "format": "Code in box" },
       "isDefault": false,

@@ -1,0 +1,64 @@
+{
+  "key": "one-piece-odyssey--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/one-piece-odyssey/2-240.dbfb4bc8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/one-piece-odyssey/2-480.4c09337d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/one-piece-odyssey/2-720.d4470449.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/one-piece-odyssey/2-960.09bb9e9a.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/one-piece-odyssey/2-1440.1f6e0d98.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/one-piece-odyssey/2-240.f0baca61.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/one-piece-odyssey/2-480.dd1d4015.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/one-piece-odyssey/2-720.31841fe7.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/one-piece-odyssey/2-960.8f5ecf2b.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/one-piece-odyssey/2-1440.18c5fefd.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAACwAwCdASoUAAsAPxFwsFAsJiSisAgBgCIJZACw7CEbuSXI2NPMAAD+7UhFLSa8V0zI/yuLMLXWRiE9VsID1S7amLGqmr39PfmHiNfwvhoc3iBQTCoAAA==",
+  "dominant": "#fafbfc",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Bandai Namco Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/one-piece-odyssey-screen-01-ps5-ps4-en-07sep22?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/one-piece-odyssey/"
+  },
+  "input": "02b3e6ddca1a9bf5"
+}

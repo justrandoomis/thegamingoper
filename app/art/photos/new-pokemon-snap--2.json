@@ -1,0 +1,56 @@
+{
+  "key": "new-pokemon-snap--2",
+  "view": "hero",
+  "width": 1280,
+  "height": 720,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/new-pokemon-snap/2-240.db09865c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/new-pokemon-snap/2-480.2783f24a.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/new-pokemon-snap/2-720.1b302982.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/new-pokemon-snap/2-960.ccc45552.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/new-pokemon-snap/2-240.a4a3aaea.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/new-pokemon-snap/2-480.9a2c68b8.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/new-pokemon-snap/2-720.021f20cd.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/new-pokemon-snap/2-960.efdf96ac.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADQAwCdASoUAAsAPxFysVAsJqSisAgBgCIJagAAUQWvelYHbtITzAAA/h+c2d6D6W0Iw2vQp5/NEpjSgOvoDLHiWmufz8RhpYXlAZJu6oLCePw4fos79zXyCT3G3JjU5Ucza+ocbOVETnhAAAA=",
+  "dominant": "#38275a",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/en_US/games/switch/n/new-pokemon-snap-switch/screenshot-gallery/screenshot01",
+    "page": "https://www.nintendo.com/us/store/products/new-pokemon-snap-110735/"
+  },
+  "input": "802ff63595c7de02"
+}

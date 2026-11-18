@@ -1,0 +1,168 @@
+{
+  "slug": "xbox-series-console-skin",
+  "group": "xbox-vr",
+  "kind": "accessory",
+  "platform": "xbox",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "ملصق سكن لأجهزة Xbox Series",
+    "en": "Xbox Series Console Skin",
+    "ckb": "ستیکەری سکین بۆ Xbox Series"
+  },
+  "short": {
+    "ar": "ملصق فينيل يغيّر شكل الجهاز ويحميه من الخدوش · Series S أو Series X",
+    "en": "Vinyl wrap that changes the look and guards against scratches · Series S or Series X",
+    "ckb": "ستیکەری ڤینایل کە شێوە دەگۆڕێت و لە خەت دەپارێزێت · Series S یان Series X"
+  },
+  "description": {
+    "ar": "ملصق من الفينيل مقصوص على شكل جهاز Xbox، يُلصق على الجهاز ليغيّر شكله ويحميه من الخدوش الخفيفة، ويُنزع عادة دون أن يترك أثراً. لكل جهاز نسخته: نسخة لـ Xbox Series S ونسخة لـ Xbox Series X، لأن شكل الجهازين ومقاسهما مختلفان.",
+    "en": "A vinyl sticker cut to the shape of an Xbox console. It goes on the console to change its look and guard against light scratches, and usually peels off without residue. Each console has its own version, one for the Xbox Series S and one for the Xbox Series X, because the two differ in shape and size.",
+    "ckb": "ستیکەرێکی ڤینایل کە بە شێوەی کۆنسۆڵی Xbox بڕاوە. لەسەر کۆنسۆڵەکە دەلکێنرێت بۆ گۆڕینی شێوەی و پاراستنی لە خەتی سووک، و زۆرجار بێ شوێنەوار لادەبرێت. هەر کۆنسۆڵێک وەشانی خۆی هەیە، یەکێک بۆ Xbox Series S و یەکێک بۆ Xbox Series X، چونکە شێوە و قەبارەیان جیاوازە."
+  },
+  "highlights": [
+    {
+      "ar": "نسخة لـ Series S ونسخة لـ Series X",
+      "en": "One version for Series S, one for Series X",
+      "ckb": "وەشانێک بۆ Series S و یەکێک بۆ Series X"
+    },
+    {
+      "ar": "يحمي من الخدوش الخفيفة",
+      "en": "Guards against light scratches",
+      "ckb": "لە خەتی سووک دەپارێزێت"
+    },
+    {
+      "ar": "يُنزع عادة دون أثر",
+      "en": "Usually peels off without residue",
+      "ckb": "زۆرجار بێ شوێنەوار لادەبرێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "material",
+      "label": {
+        "ar": "المادة",
+        "en": "Material",
+        "ckb": "ماددە"
+      },
+      "value": {
+        "ar": "فينيل لاصق",
+        "en": "Adhesive vinyl",
+        "ckb": "ڤینایلی لکاو"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "ملصق الجهاز",
+      "en": "Console skin",
+      "ckb": "ستیکەری کۆنسۆڵ"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "XBS-SKIN-S",
+      "sheetRow": 227,
+      "title": {
+        "ar": "لجهاز Xbox Series S",
+        "en": "Xbox Series S",
+        "ckb": "بۆ Xbox Series S"
+      },
+      "options": {
+        "fits": "Xbox Series S"
+      },
+      "isDefault": true
+    },
+    {
+      "sku": "XBS-SKIN-X",
+      "sheetRow": 230,
+      "title": {
+        "ar": "لجهاز Xbox Series X",
+        "en": "Xbox Series X",
+        "ckb": "بۆ Xbox Series X"
+      },
+      "options": {
+        "fits": "Xbox Series X"
+      },
+      "isDefault": false
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "unverified",
+      "note": {
+        "ar": "نسخة Series S فقط",
+        "en": "Series S version only",
+        "ckb": "تەنها وەشانی Series S"
+      }
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "unverified",
+      "note": {
+        "ar": "نسخة Series X فقط",
+        "en": "Series X version only",
+        "ckb": "تەنها وەشانی Series X"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "xbox-series-s",
+      "kind": "setup"
+    },
+    {
+      "slug": "xbox-series-x",
+      "kind": "setup"
+    },
+    {
+      "slug": "xbox-controller-silicone-cover",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.fruugo.us/vinyl-skin-decal-cover-for-xbox-series-s-console-with-2-wireless-controller-stickers/p-386677182",
+      "title": "Vinyl Skin Decal Cover for Xbox Series S Console with 2 Wireless Controller Stickers",
+      "publisher": "Fruugo",
+      "retrieved": "2026-11-18",
+      "supports": "vinyl skins are sold cut for the Xbox Series S console, often with controller stickers"
+    },
+    {
+      "url": "https://www.newegg.com/p/0X6-0F9S-00099",
+      "title": "Xbox Series S console skin with two controller skins",
+      "publisher": "Newegg",
+      "retrieved": "2026-11-18",
+      "supports": "Series S skin cut to leave ports and buttons accessible; applied after cleaning the surface"
+    },
+    {
+      "url": "https://www.target.com/p/aghana-digitals-full-set-skin-decal-for-ps5-console-disc-edition/-/A-1002835229",
+      "title": "Full Set Skin Decal for console",
+      "publisher": "Target",
+      "retrieved": "2026-11-18",
+      "supports": "console skins are vinyl decals cut per console model"
+    },
+    {
+      "url": "https://www.fruugo.ca/for-ps5-disc-edition-superhero-skin-for-playstation-5-premium-3m-vinyl-cover-skins-wraps-for-ps5-disc-edition-console-and-controller-stickers/p-320985817",
+      "title": "Vinyl console skin",
+      "publisher": "Fruugo",
+      "retrieved": "2026-11-18",
+      "supports": "second source: vinyl material, scratch protection, residue-free removal"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع طرف ثالث وليس من Microsoft.",
+    "en": "A third-party product, not made by Microsoft.",
+    "ckb": "بەرهەمێکی لایەنی سێیەمە، هی Microsoft نییە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Design, maker and whether controller skins are included",
+      "Whether the Series X skin is for the disc or Digital model (same body)",
+      "No clean product image of the exact skins"
+    ]
+  }
+}

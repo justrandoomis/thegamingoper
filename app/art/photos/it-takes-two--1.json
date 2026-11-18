@@ -1,0 +1,62 @@
+{
+  "key": "it-takes-two--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/it-takes-two/1-240.eb3501f5.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/it-takes-two/1-480.e3b4a4f0.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/it-takes-two/1-720.5618c31e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/it-takes-two/1-960.88b40c2b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/it-takes-two/1-240.5cd20aea.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/it-takes-two/1-480.375652f0.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/it-takes-two/1-720.c167d14a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/it-takes-two/1-960.0e2f841a.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/it-takes-two/1-1067.f17242a9.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAwBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoADgg6aaWa1v9udKAAAy0wHv/amfw0IevfpXCUqkZ5HC6e6Pc9hX71KrGwQNR5mWJd+0A5Jok7L3izdcE6FyVOo40xJXbTWSuDRpDKnHHZTayzklz99j0GpC2tZuA+fQYKzTujnIMa6JpHxTAA=",
+  "dominant": "#fee5aa",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Electronic Arts",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202012/0815/IjqyQi0J2PL7GdEo3K8jKWMh.png",
+    "page": "https://store.playstation.com/en-us/product/UP0006-PPSA02342_00-ITTAKESTWORETAIL"
+  },
+  "input": "796a9da82a8a8130"
+}

@@ -1,0 +1,143 @@
+{
+  "slug": "onikuma-k8",
+  "group": "ps4",
+  "kind": "headset",
+  "platform": "multi",
+  "brand": "ONIKUMA",
+  "status": "available",
+  "name": {
+    "ar": "سماعة ONIKUMA K8 للألعاب",
+    "en": "ONIKUMA K8 Gaming Headset",
+    "ckb": "هێدسێتی یاریی ONIKUMA K8"
+  },
+  "short": {
+    "ar": "سلكية 3.5 ملم · سماعات 50 ملم · ميكروفون · إضاءة LED عبر USB",
+    "en": "Wired 3.5mm · 50mm drivers · Mic · USB-powered LED lights",
+    "ckb": "وایەر 3.5 ملم · بڵندگۆی 50 ملم · مایک · ڕووناکیی LED بە USB"
+  },
+  "description": {
+    "ar": "سماعة رأس سلكية للألعاب من ONIKUMA، تغطي الأذن بالكامل، بسماعات قطرها 50 ملم وميكروفون قابل للتحريك. الصوت والميكروفون عبر قابس 3.5 ملم واحد يركّب في يد PS4، وقابس USB منفصل لتشغيل الإضاءة فقط. تعمل أيضاً مع الكمبيوتر والهاتف وأجهزة الألعاب الأخرى بمنفذ 3.5 ملم.",
+    "en": "A wired over-ear gaming headset from ONIKUMA with 50mm drivers and an adjustable microphone. Sound and mic go through one 3.5mm plug that fits the PS4 controller, and a separate USB plug only powers the lights. It also works with PCs, phones and other consoles that have a 3.5mm jack.",
+    "ckb": "هێدسێتێکی وایەری یاریی ONIKUMA کە هەموو گوێ دادەپۆشێت، بە بڵندگۆی 50 ملم و مایکرۆفۆنی جووڵاو. دەنگ و مایک بە یەک پلاگی 3.5 ملم دەڕۆن کە لە کۆنتڕۆڵەری PS4 دەچێت، و پلاگێکی USB ی جیا تەنها ڕووناکییەکان هەڵدەکات. لەگەڵ کۆمپیوتەر، مۆبایل و کۆنسۆڵی تری خاوەن دەروازەی 3.5 ملم یش کار دەکات."
+  },
+  "highlights": [
+    {
+      "ar": "سماعات 50 ملم وميكروفون بقابس 3.5 ملم",
+      "en": "50mm drivers and a microphone on a 3.5mm plug",
+      "ckb": "بڵندگۆی 50 ملم و مایکرۆفۆن بە پلاگی 3.5 ملم"
+    },
+    {
+      "ar": "تُركّب في منفذ السماعة في يد PS4 مباشرة",
+      "en": "Plugs straight into the PS4 controller's headset jack",
+      "ckb": "ڕاستەوخۆ لە دەروازەی گوێگری کۆنتڕۆڵەری PS4 دەچێت"
+    },
+    {
+      "ar": "قابس USB منفصل لإضاءة LED فقط (لا ينقل الصوت)",
+      "en": "Separate USB plug for the LED lights only (no audio over USB)",
+      "ckb": "پلاگی USB ی جیا تەنها بۆ ڕووناکیی LED (دەنگ بە USB ناڕوات)"
+    },
+    {
+      "ar": "كابل بطول نحو 2.2 متر",
+      "en": "About 2.2 m of cable",
+      "ckb": "نزیکەی 2.2 مەتر کێبڵ"
+    }
+  ],
+  "specs": [
+    {
+      "key": "drivers",
+      "label": { "ar": "قطر السماعات", "en": "Drivers", "ckb": "بڵندگۆکان" },
+      "value": { "ar": "50 ملم", "en": "50mm", "ckb": "50 ملم" }
+    },
+    {
+      "key": "impedance",
+      "label": { "ar": "المقاومة", "en": "Impedance", "ckb": "بەرگری" },
+      "value": { "ar": "32 أوم ±15%", "en": "32 Ω ±15%", "ckb": "32 ئۆم ±15%" }
+    },
+    {
+      "key": "sensitivity",
+      "label": { "ar": "الحساسية", "en": "Sensitivity", "ckb": "هەستیاری" },
+      "value": { "ar": "105 ±3 ديسيبل", "en": "105 ±3 dB", "ckb": "105 ±3 دێسیبڵ" }
+    },
+    {
+      "key": "frequency",
+      "label": { "ar": "الاستجابة الترددية", "en": "Frequency response", "ckb": "مەودای لەرەلەر" },
+      "value": { "ar": "20 – 20000 هرتز", "en": "20 – 20,000 Hz", "ckb": "20 – 20000 هێرتز" }
+    },
+    {
+      "key": "mic",
+      "label": { "ar": "الميكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" },
+      "value": { "ar": "حساسية ‎-42 ±3 ديسيبل", "en": "−42 ±3 dB sensitivity", "ckb": "هەستیاری ‎-42 ±3 دێسیبڵ" }
+    },
+    {
+      "key": "connection",
+      "label": { "ar": "التوصيل", "en": "Connection", "ckb": "پەیوەستکردن" },
+      "value": { "ar": "قابس 3.5 ملم للصوت والميكروفون، USB للإضاءة، كابل نحو 2.2 م", "en": "3.5mm plug for audio and mic, USB for the lights, about 2.2 m cable", "ckb": "پلاگی 3.5 ملم بۆ دەنگ و مایک، USB بۆ ڕووناکی، کێبڵی نزیکەی 2.2 م" }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "ONIKUMA-K8",
+      "sheetRow": 79,
+      "title": { "ar": "K8", "en": "K8", "ckb": "K8" },
+      "options": { "model": "K8" },
+      "modelNumber": "K8",
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps4",
+      "status": "verified",
+      "note": { "ar": "عبر منفذ 3.5 ملم في يد DualShock 4.", "en": "Through the DualShock 4's 3.5mm jack.", "ckb": "لە ڕێگەی دەروازەی 3.5 ملمی DualShock 4." },
+      "source": "https://www.onikuma.com/products/onikuma-k8-stereo-giming-headset"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "unverified",
+      "note": { "ar": "يد DualSense فيها منفذ 3.5 ملم، لكن الصانع لا يذكر PS5.", "en": "The DualSense has a 3.5mm jack, but the maker does not list PS5.", "ckb": "DualSense دەروازەی 3.5 ملمی هەیە، بەڵام دروستکەر PS5 ناو نابات." },
+      "source": "https://www.startech.com.bd/onikuma-k8-gaming-headphone"
+    },
+    {
+      "deviceModel": "windows-pc",
+      "status": "unverified",
+      "note": { "ar": "قد يحتاج الكمبيوتر محوّلاً لفصل منفذي الصوت والميكروفون.", "en": "A PC may need a splitter for separate audio and mic jacks.", "ckb": "لەوانەیە کۆمپیوتەر پێویستی بە دابەشکەر هەبێت بۆ دەروازەی جیای دەنگ و مایک." },
+      "source": "https://www.startech.com.bd/onikuma-k8-gaming-headphone"
+    }
+  ],
+  "related": [
+    { "slug": "dualshock-4", "kind": "setup" }
+  ],
+  "sources": [
+    {
+      "url": "https://www.onikuma.com/products/onikuma-k8-stereo-giming-headset",
+      "title": "ONIKUMA K8 Wired Stereo Gaming Headphones With Mic LED Lights",
+      "publisher": "ONIKUMA (maker)",
+      "retrieved": "2026-11-18",
+      "supports": "maker's product page: 50mm driver, 32 Ω, 20-20,000 Hz, about 2.2 m cable, USB powers the LEDs, 3.5mm for audio and mic, works with PS4, Xbox One, Nintendo and phones (read through a search summary; the site rate-limited direct reads)"
+    },
+    {
+      "url": "https://www.startech.com.bd/onikuma-k8-gaming-headphone",
+      "title": "Onikuma K8 Gaming Headphone",
+      "publisher": "Star Tech (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "50mm drivers, 105±3 dB, mic −42±3 dB, 32 Ω ±15%, 2.2 m cable, 3.5mm and USB plugs, 20-20,000 Hz"
+    },
+    {
+      "url": "https://www.alza.cz/EN/onikuma-k8-black-d12363430.htm",
+      "title": "ONIKUMA K8 Black",
+      "publisher": "Alza (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "K8 sold in several colours (black, camo grey and others)"
+    }
+  ],
+  "verification": {
+    "checkedBy": "ps4-research",
+    "secondSource": true,
+    "unverified": [
+      "Sheet row 79 'PS4 HEADSET K8' is read as the ONIKUMA K8, the best-known 'K8' gaming headset sold for PS4 at this price.",
+      "Colour of the owner's unit is not in the sheet (the K8 comes in several colours).",
+      "The maker's page could not be read directly (HTTP 429); its facts come from a search summary and retailer pages.",
+      "No product picture: maker images could not be downloaded."
+    ]
+  }
+}

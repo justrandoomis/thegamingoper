@@ -1002,7 +1002,7 @@ describe("getProductDetail — prices, stock and release dates", () => {
         for (const text of shown) expect(claimsPreorder(text), `${slug} ${locale}: «${text.slice(0, 80)}»`).toBe(false);
       }
     }
-  });
+  }, 180_000); // walks every live product in every language; the full catalogue takes longer than the 30 s default
 
   it("delivery and returns come from settings", async () => {
     const fee = await rows<{ value: string }>("SELECT value FROM settings WHERE key = 'shipping.flat_fee_iqd'");

@@ -1,0 +1,85 @@
+{
+  "slug": "hyperx-cloud-stinger-s",
+  "group": "controllers-audio",
+  "kind": "headset",
+  "platform": "multi",
+  "brand": "HyperX",
+  "status": "discontinued",
+  "releaseDate": "2020-08-31",
+  "name": { "ar": "سماعة HyperX Cloud Stinger S", "en": "HyperX Cloud Stinger S", "ckb": "هێدسێتی HyperX Cloud Stinger S" },
+  "short": {
+    "ar": "سلكية 3.5 ملم + محوّل USB لصوت 7.1 افتراضي · 275 غرام",
+    "en": "Wired 3.5 mm + USB adapter for virtual 7.1 · 275 g",
+    "ckb": "وایەری 3.5 ملم + ئەداپتەری USB بۆ دەنگی 7.1ی مەجازی · 275 گرام"
+  },
+  "description": {
+    "ar": "سماعة ألعاب سلكية خفيفة من HyperX بوزن 275 غراماً، تأتي مع محوّل USB يضيف الصوت المحيطي الافتراضي 7.1 على الكمبيوتر عبر برنامج NGENUITY. يمكن أيضاً وصلها مباشرة بمنفذ 3.5 ملم في ذراع التحكم أو الهاتف لكن الصوت يكون ستيريو عادياً. فيها سماعات 50 ملم ومايكروفون لإلغاء الضوضاء يُكتم بتدويره للأعلى، وأكواب تدور 90 درجة.",
+    "en": "A light 275 g wired gaming headset from HyperX that comes with a USB adapter adding virtual 7.1 surround on PC through the NGENUITY software. It can also plug straight into a 3.5 mm jack on a controller or phone, in plain stereo. It has 50 mm drivers, a noise-cancelling mic that mutes when you swivel it up, and earcups that rotate 90°.",
+    "ckb": "هێدسێتێکی وایەری سووکی 275 گرامی HyperX کە ئەداپتەرێکی USBی لەگەڵدایە بۆ دەنگی دەوروبەری مەجازی 7.1 لەسەر PC لە ڕێگەی بەرنامەی NGENUITY. دەشتوانرێت ڕاستەوخۆ بە کونی 3.5 ملمی دەسک یان مۆبایل ببەسترێت، بە دەنگی ستیریۆی ئاسایی. دەنگدەری 50 ملم، مایکی لابردنی ژاوەژاو کە بە سووڕاندنی بۆ سەرەوە بێدەنگ دەبێت، و گوێگری 90 پلە دەسووڕێت."
+  },
+  "highlights": [
+    { "ar": "صوت محيطي افتراضي 7.1 على الكمبيوتر عبر محوّل USB المرفق", "en": "Virtual 7.1 surround on PC through the included USB adapter", "ckb": "دەنگی دەوروبەری مەجازی 7.1 لەسەر PC بە ئەداپتەری USBی لەگەڵدا" },
+    { "ar": "منفذ 3.5 ملم يعمل مع ذراع PS5 وXbox والهاتف (ستيريو)", "en": "3.5 mm plug works with PS5 and Xbox controllers and phones (stereo)", "ckb": "کونی 3.5 ملم لەگەڵ دەسکی PS5 و Xbox و مۆبایل کار دەکات (ستیریۆ)" },
+    { "ar": "خفيفة بوزن 275 غرام مع وسائد إسفنج ذكي", "en": "Light at 275 g with memory-foam cushions", "ckb": "سووک بە 275 گرام لەگەڵ بالیشتی فۆمی یادەوەری" },
+    { "ar": "مايكروفون لإلغاء الضوضاء يُكتم بتدويره للأعلى", "en": "Noise-cancelling mic, swivel up to mute", "ckb": "مایکی لابردنی ژاوەژاو، بۆ بێدەنگکردن بیسووڕێنە سەرەوە" },
+    { "ar": "سماعات 50 ملم وكابل 2.5 متر", "en": "50 mm drivers and a 2.5 m cable", "ckb": "دەنگدەری 50 ملم و کێبڵی 2.5 مەتر" }
+  ],
+  "specs": [
+    { "key": "model", "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" }, "value": { "ar": "HHSS1S-AA-BK/G (رقم القطعة 4P4F1AA)", "en": "HHSS1S-AA-BK/G (part 4P4F1AA)", "ckb": "HHSS1S-AA-BK/G (ژمارەی پارچە 4P4F1AA)" } },
+    { "key": "connection", "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" }, "value": { "ar": "سلكي 3.5 ملم (4 أقطاب) مع محوّل USB، كابل 2.5 متر", "en": "Wired 3.5 mm (4-pole) plus USB adapter, 2.5 m cable", "ckb": "وایەری 3.5 ملم (4 جەمسەر) لەگەڵ ئەداپتەری USB، کێبڵی 2.5 مەتر" } },
+    { "key": "drivers", "label": { "ar": "السماعات الداخلية", "en": "Drivers", "ckb": "دەنگدەرەکان" }, "value": { "ar": "50 ملم، 18 هرتز حتى 23 كيلوهرتز، 32 أوم", "en": "50 mm, 18 Hz–23 kHz, 32 ohms", "ckb": "50 ملم، 18 هێرتز تا 23 کیلۆهێرتز، 32 ئۆم" } },
+    { "key": "microphone", "label": { "ar": "المايكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" }, "value": { "ar": "أحادي الاتجاه مع إلغاء ضوضاء، كتم بالتدوير، 50 هرتز حتى 18 كيلوهرتز", "en": "Unidirectional, noise-cancelling, swivel-to-mute, 50 Hz–18 kHz", "ckb": "یەک ئاڕاستە، لابردنی ژاوەژاو، بێدەنگکردن بە سووڕاندن، 50 هێرتز تا 18 کیلۆهێرتز" } },
+    { "key": "surround", "label": { "ar": "الصوت المحيطي", "en": "Surround sound", "ckb": "دەنگی دەوروبەر" }, "value": { "ar": "7.1 افتراضي عبر محوّل USB وبرنامج NGENUITY على الكمبيوتر", "en": "Virtual 7.1 through the USB adapter and NGENUITY on PC", "ckb": "7.1ی مەجازی بە ئەداپتەری USB و NGENUITY لەسەر PC" } },
+    { "key": "weight", "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" }, "value": { "ar": "275 غرام", "en": "275 g", "ckb": "275 گرام" } }
+  ],
+  "inTheBox": [
+    { "ar": "السماعة", "en": "Headset", "ckb": "هێدسێت" },
+    { "ar": "محوّل USB للصوت", "en": "USB audio adapter", "ckb": "ئەداپتەری دەنگی USB" }
+  ],
+  "variants": [
+    {
+      "sku": "HX-STINGER-S-BLK",
+      "sheetRow": 23,
+      "title": { "ar": "سماعة HyperX Cloud Stinger S", "en": "HyperX Cloud Stinger S", "ckb": "هێدسێتی HyperX Cloud Stinger S" },
+      "options": { "color": "Black" },
+      "modelNumber": "HHSS1S-AA-BK/G",
+      "barcodes": ["0740617302240"],
+      "isDefault": true,
+      "images": ["hyperx-cloud-stinger-s--1", "hyperx-cloud-stinger-s--2", "hyperx-cloud-stinger-s--3", "hyperx-cloud-stinger-s--4"]
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "windows-pc", "status": "verified", "note": { "ar": "7.1 الافتراضي عبر محوّل USB.", "en": "Virtual 7.1 through the USB adapter.", "ckb": "7.1ی مەجازی بە ئەداپتەری USB." }, "source": "https://www.businesswire.com/news/home/20200831005036/en/HyperX-Expands-Award-Winning-Headset-Lineup-Cloud-Stinger" },
+    { "deviceModel": "ps5", "status": "partial", "note": { "ar": "ستيريو عبر منفذ 3.5 ملم في ذراع التحكم، دون 7.1.", "en": "Stereo through the controller's 3.5 mm jack, no 7.1.", "ckb": "ستیریۆ لە ڕێگەی کونی 3.5 ملمی دەسکەکە، بێ 7.1." }, "source": "https://www.rtings.com/headphones/reviews/hyperx/cloud-stinger-s" },
+    { "deviceModel": "ps5-slim", "status": "partial", "note": { "ar": "ستيريو عبر منفذ 3.5 ملم في ذراع التحكم، دون 7.1.", "en": "Stereo through the controller's 3.5 mm jack, no 7.1.", "ckb": "ستیریۆ لە ڕێگەی کونی 3.5 ملمی دەسکەکە، بێ 7.1." }, "source": "https://www.rtings.com/headphones/reviews/hyperx/cloud-stinger-s" }
+  ],
+  "related": [
+    { "slug": "hyperx-cloud-alpha-wireless", "kind": "upsell" },
+    { "slug": "razer-blackshark-v2-x", "kind": "alternative" },
+    { "slug": "twisted-minds-tm-md07", "kind": "alternative" }
+  ],
+  "images": [
+    { "key": "hyperx-cloud-stinger-s--1", "file": ".cache/product-images/hyperx-cloud-stinger-s/1.jpg", "sourceUrl": "https://images.icecat.biz/img/gallery/4a8bac03ce9d5814c0a03e94f0ecb4e36f3fa648.jpg", "sourcePage": "https://icecat.biz/en/p/hyperx/hhss1s-aa-bk-g/cloud-stinger-s-80427488.html", "kind": "hero", "alt": { "ar": "سماعة HyperX Cloud Stinger S السوداء مع المايكروفون", "en": "Black HyperX Cloud Stinger S with its mic", "ckb": "HyperX Cloud Stinger Sی ڕەش لەگەڵ مایکەکەی" }, "credit": "HyperX (HP Inc.), via Icecat", "width": 2060, "height": 2060, "transparent": false },
+    { "key": "hyperx-cloud-stinger-s--2", "file": ".cache/product-images/hyperx-cloud-stinger-s/2.jpg", "sourceUrl": "https://images.icecat.biz/img/gallery/c018f9ebb1d007504792cdabc53e56bb6de85749.jpg", "sourcePage": "https://icecat.biz/en/p/hyperx/hhss1s-aa-bk-g/cloud-stinger-s-80427488.html", "kind": "angle", "alt": { "ar": "السماعة من الأمام", "en": "The headset from the front", "ckb": "هێدسێتەکە لە پێشەوە" }, "credit": "HyperX (HP Inc.), via Icecat", "width": 2060, "height": 2060, "transparent": false },
+    { "key": "hyperx-cloud-stinger-s--3", "file": ".cache/product-images/hyperx-cloud-stinger-s/3.jpg", "sourceUrl": "https://images.icecat.biz/img/gallery/ce9b526031b8c61896c3fc43f29b4ed2d2ae70b1.jpg", "sourcePage": "https://icecat.biz/en/p/hyperx/hhss1s-aa-bk-g/cloud-stinger-s-80427488.html", "kind": "angle", "alt": { "ar": "السماعة من زاوية جانبية", "en": "The headset from an angle", "ckb": "هێدسێتەکە لە گۆشەیەکی لاوە" }, "credit": "HyperX (HP Inc.), via Icecat", "width": 2048, "height": 2048, "transparent": false },
+    { "key": "hyperx-cloud-stinger-s--4", "file": ".cache/product-images/hyperx-cloud-stinger-s/4.jpg", "sourceUrl": "https://images.icecat.biz/img/gallery/f6f418fad7a926333a343e8a7c82971111cfa1d5.jpg", "sourcePage": "https://icecat.biz/en/p/hyperx/hhss1s-aa-bk-g/cloud-stinger-s-80427488.html", "kind": "in-box", "alt": { "ar": "السماعة مع محوّل USB للصوت", "en": "The headset with its USB audio adapter", "ckb": "هێدسێتەکە لەگەڵ ئەداپتەری دەنگی USB" }, "credit": "HyperX (HP Inc.), via Icecat", "width": 2060, "height": 2060, "transparent": false }
+  ],
+  "sources": [
+    { "url": "https://www.businesswire.com/news/home/20200831005036/en/HyperX-Expands-Award-Winning-Headset-Lineup-Cloud-Stinger", "title": "HyperX Expands Award-Winning Headset Lineup: Cloud Stinger S", "publisher": "HyperX press release (Business Wire)", "retrieved": "2026-11-18", "supports": "announcement 31 August 2020, virtual 7.1 surround via NGENUITY, 50 mm drivers, swivel-to-mute mic, 275 g" },
+    { "url": "https://icecat.biz/en/p/hyperx/hhss1s-aa-bk-g/cloud-stinger-s-80427488.html", "title": "HyperX Cloud Stinger S (HHSS1S-AA-BK/G) data-sheet", "publisher": "Icecat (manufacturer-supplied data)", "retrieved": "2026-11-18", "supports": "model number, EAN, cable 2.5 m, 18–23,000 Hz, 32 ohms, mic specs, 275 g, USB adapter included, images" },
+    { "url": "https://www.rtings.com/headphones/reviews/hyperx/cloud-stinger-s", "title": "HyperX Cloud Stinger S review", "publisher": "RTINGS.com", "retrieved": "2026-11-18", "supports": "3.5 mm use on consoles in stereo, USB adapter needed for 7.1" }
+  ],
+  "notes": {
+    "ar": "لم تعد HyperX تعرض هذا الطراز في متجرها (حلّ محله Cloud Stinger 2)، لكنه ما زال يُباع لدى المتاجر.",
+    "en": "HyperX no longer lists this model in its own store (the Cloud Stinger 2 replaced it), but shops still sell it.",
+    "ckb": "HyperX ئیتر ئەم مۆدێلە لە فرۆشگای خۆیدا نیشان نادات (Cloud Stinger 2 شوێنی گرتەوە)، بەڵام فرۆشگاکان هێشتا دەیفرۆشن."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "HyperX's own product page now redirects (model retired); facts come from the 2020 press release, the Icecat data-sheet and reviews",
+      "Box contents beyond headset and USB adapter"
+    ]
+  }
+}

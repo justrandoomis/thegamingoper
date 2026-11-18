@@ -1,0 +1,289 @@
+{
+  "slug": "ipega-pg-p5042-battery-pack",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "iPega",
+  "status": "available",
+  "name": {
+    "ar": "بطارية إضافية iPega PG‑P5042 ليد DualSense",
+    "en": "iPega PG‑P5042 Battery Pack for DualSense",
+    "ckb": "پاتری زیادەی iPega PG‑P5042 بۆ DualSense"
+  },
+  "short": {
+    "ar": "2000mAh · شاشة رقمية لمستوى الشحن · لـ DualSense وDualSense Edge",
+    "en": "2000mAh · Digital charge display · For DualSense and DualSense Edge",
+    "ckb": "2000mAh · شاشەی ژمارەیی بۆ ئاستی شەحن · بۆ DualSense و DualSense Edge"
+  },
+  "description": {
+    "ar": "بطارية خارجية تُركّب خلف يد PS5 وتشحنها أثناء اللعب، فتطيل وقت اللعب بين الشحنات. فيها شاشة صغيرة تعرض النسبة المتبقية، وتشحن اليد أولاً ثم نفسها عند وصلها بكابل USB‑C.",
+    "en": "An external battery that clips onto the back of a PS5 controller and charges it while you play, stretching play time between charges. A small display shows the remaining percentage; on a USB‑C cable it charges the controller first, then itself.",
+    "ckb": "پاترییەکی دەرەکی کە لە پشتی کۆنتڕۆڵەری PS5 دەبەسترێت و لە کاتی یاریدا شەحنی دەکات. شاشەیەکی بچووک ڕێژەی ماوە پیشان دەدات؛ کاتێک بە وایەری USB‑C دەبەسترێت سەرەتا کۆنتڕۆڵەر و پاشان خۆی شەحن دەکات."
+  },
+  "highlights": [
+    {
+      "ar": "سعة 2000mAh تضيف نحو 4–8 ساعات لعب حسب iPega",
+      "en": "2000mAh, adds about 4–8 hours of play according to iPega",
+      "ckb": "2000mAh، بەپێی iPega نزیکەی 4–8 کاتژمێر یاری زیاد دەکات"
+    },
+    {
+      "ar": "شاشة LED تعرض نسبة الشحن",
+      "en": "LED display shows the charge level",
+      "ckb": "شاشەی LED ئاستی شەحن پیشان دەدات"
+    },
+    {
+      "ar": "تناسب DualSense وDualSense Edge (مع قطعة EVA المرفقة)",
+      "en": "Fits DualSense and DualSense Edge (with the included EVA pad)",
+      "ckb": "بۆ DualSense و DualSense Edge (لەگەڵ پارچەی EVA)"
+    },
+    {
+      "ar": "حماية من الشحن الزائد والتيار الزائد والحرارة",
+      "en": "Overcharge, overcurrent and over‑temperature protection",
+      "ckb": "پاراستن لە شەحنی زیاد، تەوژمی زیاد و گەرمی"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "PG‑P5042",
+        "en": "PG‑P5042",
+        "ckb": "PG‑P5042"
+      }
+    },
+    {
+      "key": "capacity",
+      "label": {
+        "ar": "سعة البطارية",
+        "en": "Battery capacity",
+        "ckb": "توانای پاتری"
+      },
+      "value": {
+        "ar": "2000mAh",
+        "en": "2000mAh",
+        "ckb": "2000mAh"
+      }
+    },
+    {
+      "key": "input",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "وزە"
+      },
+      "value": {
+        "ar": "DC 5V، أقل من 1.2A عبر USB‑C",
+        "en": "DC 5V, under 1.2A via USB‑C",
+        "ckb": "DC 5V، کەمتر لە 1.2A لە ڕێگەی USB‑C"
+      }
+    },
+    {
+      "key": "charging-time",
+      "label": {
+        "ar": "مدة الشحن",
+        "en": "Charging time",
+        "ckb": "ماوەی شەحن"
+      },
+      "value": {
+        "ar": "نحو 3 ساعات",
+        "en": "About 3 hours",
+        "ckb": "نزیکەی 3 کاتژمێر"
+      }
+    },
+    {
+      "key": "color",
+      "label": {
+        "ar": "اللون",
+        "en": "Colour",
+        "ckb": "ڕەنگ"
+      },
+      "value": {
+        "ar": "أبيض",
+        "en": "White",
+        "ckb": "سپی"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "البطارية",
+      "en": "Battery pack",
+      "ckb": "پاتری"
+    },
+    {
+      "ar": "قطعة EVA (لـ DualSense Edge)",
+      "en": "EVA foam pad (for DualSense Edge)",
+      "ckb": "پارچەی EVA (بۆ DualSense Edge)"
+    },
+    {
+      "ar": "كابل USB",
+      "en": "USB cable",
+      "ckb": "وایەری USB"
+    },
+    {
+      "ar": "دليل الاستخدام",
+      "en": "User manual",
+      "ckb": "ڕێبەری بەکارهێنان"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "IPEGA-PG-P5042",
+      "title": {
+        "ar": "بطارية إضافية iPega PG‑P5042 ليد DualSense",
+        "en": "iPega PG‑P5042 Battery Pack for DualSense",
+        "ckb": "پاتری زیادەی iPega PG‑P5042 بۆ DualSense"
+      },
+      "options": {
+        "color": "White"
+      },
+      "modelNumber": "PG-P5042",
+      "sheetRow": 89,
+      "isDefault": true,
+      "images": [
+        "ipega-pg-p5042-battery-pack--1",
+        "ipega-pg-p5042-battery-pack--2",
+        "ipega-pg-p5042-battery-pack--3",
+        "ipega-pg-p5042-battery-pack--4",
+        "ipega-pg-p5042-battery-pack--5"
+      ]
+    }
+  ],
+  "related": [
+    {
+      "slug": "dualsense",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-edge",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-charging-station",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "ipega-pg-p5042-battery-pack--1",
+      "file": ".cache/product-images/ipega-pg-p5042-battery-pack/1.jpg",
+      "sourceUrl": "https://ipega.hk/uploads/202508/689c386c1274f.jpg",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-722.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "بطارية PG‑P5042 بشاشتها الرقمية",
+        "en": "The PG‑P5042 battery pack with its digital display",
+        "ckb": "پاتری PG‑P5042 لەگەڵ شاشە ژمارەییەکەی"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5042-battery-pack--2",
+      "file": ".cache/product-images/ipega-pg-p5042-battery-pack/2.jpg",
+      "sourceUrl": "https://ipega.hk/uploads/202508/689c3872397fb.jpg",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-722.html",
+      "kind": "angle",
+      "alt": {
+        "ar": "البطارية مركّبة على يد DualSense بيضاء",
+        "en": "The pack fitted to a white DualSense",
+        "ckb": "پاترییەکە لەسەر DualSenseی سپی"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5042-battery-pack--3",
+      "file": ".cache/product-images/ipega-pg-p5042-battery-pack/3.jpg",
+      "sourceUrl": "https://ipega.hk/uploads/202508/689c38725bb51.jpg",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-722.html",
+      "kind": "angle",
+      "alt": {
+        "ar": "البطارية مركّبة على يد DualSense سوداء",
+        "en": "The pack fitted to a black DualSense",
+        "ckb": "پاترییەکە لەسەر DualSenseی ڕەش"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5042-battery-pack--4",
+      "file": ".cache/product-images/ipega-pg-p5042-battery-pack/4.jpg",
+      "sourceUrl": "https://ipega.hk/uploads/202508/689c3871ab669.jpg",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-722.html",
+      "kind": "in-box",
+      "alt": {
+        "ar": "محتويات العلبة: البطارية والقطعة والكابل",
+        "en": "Box contents: pack, pad and cable",
+        "ckb": "ناوەڕۆکی قوتوو: پاتری، پارچە و وایەر"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5042-battery-pack--5",
+      "file": ".cache/product-images/ipega-pg-p5042-battery-pack/5.jpg",
+      "sourceUrl": "https://ipega.hk/uploads/202508/689c387279189.jpg",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-722.html",
+      "kind": "in-box",
+      "alt": {
+        "ar": "علبة البطارية",
+        "en": "The retail box",
+        "ckb": "قوتووی پاترییەکە"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ipega.hk/ps3ps4series/76-722.html",
+      "title": "PG-P5042 PS5 controller digital display battery pack",
+      "publisher": "iPega (official site)",
+      "retrieved": "2026-11-18",
+      "supports": "model, product pictures, user manual"
+    },
+    {
+      "url": "https://ipega.hk/uploads/202508/689c3862a9976.pdf",
+      "title": "User Manual (PG-P5042)",
+      "publisher": "iPega",
+      "retrieved": "2026-11-18",
+      "supports": "2000mAh, DC 5V input under 1.2A, about 3 hours charging, 4-8 hours battery life, DualSense and Edge fit, protections, box contents"
+    },
+    {
+      "url": "https://www.galaxus.de/en/s1/product/ipega-other-computer-accessory-ilike-p5042-portable-rechargeable-battery-for-ps5-controller-white-ps-53688572",
+      "title": "iPega P5042 portable rechargeable battery for PS5 controller, white",
+      "publisher": "Galaxus (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "fact-check: model PG-P5042, white, for the PS5 controller"
+    }
+  ],
+  "notes": {
+    "ar": "اليد غير مرفقة. تزيد البطارية وزن اليد قليلاً.",
+    "en": "Controller not included. The pack adds some weight to the controller.",
+    "ckb": "کۆنتڕۆڵەر لەگەڵیدا نییە. پاترییەکە کەمێک قورسایی زیاد دەکات."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "The owner's sheet says only 'PS5 BATTERY PACK IPEGA'; PG-P5042 is iPega's current DualSense battery pack (iPega also lists PG-P5060)",
+      "Weight"
+    ]
+  }
+}

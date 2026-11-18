@@ -1,0 +1,181 @@
+{
+  "slug": "hyperx-pulsefire-surge",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "HyperX",
+  "category": "mice",
+  "status": "discontinued",
+  "name": {
+    "ar": "ماوس HyperX Pulsefire Surge",
+    "en": "HyperX Pulsefire Surge",
+    "ckb": "ماوسی HyperX Pulsefire Surge"
+  },
+  "short": {
+    "ar": "ماوس سلكي · Pixart 3389 · حتى 16000 DPI · حلقة RGB",
+    "en": "Wired mouse · Pixart 3389 · up to 16,000 DPI · RGB ring",
+    "ckb": "ماوسی وایەری · Pixart 3389 · تا 16000 DPI · ئەڵقەی RGB"
+  },
+  "description": {
+    "ar": "ماوس ألعاب سلكي من HyperX بحساس Pixart 3389 بدقة حتى 16000 DPI وحلقة إضاءة RGB حول الماوس بزاوية 360°. فيه ستة أزرار ومفاتيح Omron، ويحفظ ثلاثة ملفات إعداد داخله تُضبط من برنامج HyperX NGENUITY.",
+    "en": "A wired HyperX gaming mouse with a Pixart 3389 sensor up to 16,000 DPI and a 360° RGB light ring. It has six buttons with Omron switches and stores three profiles onboard, set up in HyperX NGENUITY.",
+    "ckb": "ماوسێکی یاری وایەری HyperX بە هەستەوەری Pixart 3389 تا 16000 DPI و ئەڵقەی ڕووناکی RGBی 360°. شەش دوگمەی هەیە بە سویچی Omron و سێ پرۆفایل لە ناو خۆیدا هەڵدەگرێت کە لە HyperX NGENUITY ڕێکدەخرێن."
+  },
+  "highlights": [
+    {
+      "ar": "حساس Pixart 3389 حتى 16000 DPI",
+      "en": "Pixart 3389 sensor, up to 16,000 DPI",
+      "ckb": "هەستەوەری Pixart 3389، تا 16000 DPI"
+    },
+    {
+      "ar": "حلقة إضاءة RGB بزاوية 360°",
+      "en": "360° RGB light ring",
+      "ckb": "ئەڵقەی ڕووناکی RGBی 360°"
+    },
+    {
+      "ar": "مفاتيح Omron بعمر 50 مليون نقرة",
+      "en": "Omron switches rated for 50 million clicks",
+      "ckb": "سویچی Omron بۆ 50 ملیۆن کرتە"
+    },
+    {
+      "ar": "ذاكرة داخلية لثلاثة ملفات إعداد",
+      "en": "Onboard memory for 3 profiles",
+      "ckb": "بیرگەی ناوخۆ بۆ 3 پرۆفایل"
+    }
+  ],
+  "specs": [
+    {
+      "key": "sensor",
+      "label": {
+        "ar": "الحساس",
+        "en": "Sensor",
+        "ckb": "هەستەوەر"
+      },
+      "value": {
+        "ar": "Pixart PMW3389",
+        "en": "Pixart PMW3389",
+        "ckb": "Pixart PMW3389"
+      }
+    },
+    {
+      "key": "dpi",
+      "label": {
+        "ar": "الدقة DPI",
+        "en": "DPI",
+        "ckb": "وردی DPI"
+      },
+      "value": {
+        "ar": "حتى 16000؛ الإعدادات المسبقة 800 / 1600 / 3200",
+        "en": "Up to 16,000; presets 800 / 1600 / 3200",
+        "ckb": "تا 16000؛ ئامادەکراو 800 / 1600 / 3200"
+      }
+    },
+    {
+      "key": "buttons",
+      "label": {
+        "ar": "الأزرار",
+        "en": "Buttons",
+        "ckb": "دوگمەکان"
+      },
+      "value": {
+        "ar": "6 أزرار",
+        "en": "6 buttons",
+        "ckb": "6 دوگمە"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "سلكي USB، معدل استجابة 1000 هرتز",
+        "en": "Wired USB, 1000 Hz polling",
+        "ckb": "وایەری USB، ‏1000 هێرتز"
+      }
+    },
+    {
+      "key": "weight",
+      "label": {
+        "ar": "الوزن",
+        "en": "Weight",
+        "ckb": "کێش"
+      },
+      "value": {
+        "ar": "100 غرام بدون الكابل",
+        "en": "100 g without cable",
+        "ckb": "100 گرام بێ کێبڵ"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "HX-PULSEFIRE-SURGE",
+      "title": {
+        "ar": "ماوس HyperX Pulsefire Surge",
+        "en": "HyperX Pulsefire Surge",
+        "ckb": "ماوسی HyperX Pulsefire Surge"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "HX-MC002B",
+      "isDefault": true,
+      "sheetRow": 27
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "سلكي عبر USB؛ الإعداد عبر NGENUITY على Windows.",
+        "en": "Wired USB; set up with NGENUITY on Windows.",
+        "ckb": "وایەری USB؛ ڕێکخستن بە NGENUITY لەسەر Windows."
+      },
+      "source": "https://www.memoryexpress.com/Products/MX00120826"
+    }
+  ],
+  "related": [
+    {
+      "slug": "hyperx-alloy-origins-core",
+      "kind": "accessory"
+    },
+    {
+      "slug": "redragon-p041-xeon-xl",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.memoryexpress.com/Products/MX00120826",
+      "title": "HyperX Pulsefire Surge RGB Gaming Mouse, Black (HX-MC002B)",
+      "publisher": "Memory Express",
+      "retrieved": "2026-11-18",
+      "supports": "Pixart 3389, up to 16,000 DPI, 6 buttons, weight 100 g without cable / 130 g with cable, 360° RGB, model HX-MC002B"
+    },
+    {
+      "url": "https://www.comx-computers.co.za/HX-MC002B-specifications-220917.htm",
+      "title": "HX-MC002B specification sheet",
+      "publisher": "ComX Computers",
+      "retrieved": "2026-11-18",
+      "supports": "DPI presets 800/1600/3200, Omron switches 50 million clicks, onboard memory 3 profiles, 1000 Hz polling"
+    }
+  ],
+  "notes": {
+    "ar": "توقفت HyperX عن بيع هذا الموديل في متجرها الرسمي، والقطعة المتوفرة لدينا جديدة من المخزون.",
+    "en": "HyperX no longer sells this model in its own store; our unit is new old stock.",
+    "ckb": "HyperX ئیتر ئەم مۆدێلە لە فرۆشگای خۆی نافرۆشێت؛ یەکەکەی ئێمە نوێیە لە کۆگا."
+  },
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "No current official HyperX product page (model discontinued); facts come from two retailer spec sheets",
+      "Release date",
+      "No clean official image found"
+    ]
+  }
+}

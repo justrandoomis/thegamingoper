@@ -1,0 +1,182 @@
+{
+  "slug": "redragon-stentor-gs500",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Redragon",
+  "category": "speakers",
+  "status": "available",
+  "name": {
+    "ar": "سماعات Redragon Stentor GS500",
+    "en": "Redragon Stentor GS500",
+    "ckb": "بڵندگۆی Redragon Stentor GS500"
+  },
+  "short": {
+    "ar": "سماعات مكتب 2.0 · تغذية USB · إضاءة حمراء",
+    "en": "2.0 desktop speakers · USB powered · red LED",
+    "ckb": "بڵندگۆی مێزی 2.0 · کارەبای USB · LEDی سوور"
+  },
+  "description": {
+    "ar": "زوج سماعات مكتب ستيريو 2.0 صغيرة من Redragon، تأخذ الكهرباء من منفذ USB والصوت من كابل 3.5 ملم، فتعمل مع الكمبيوتر واللابتوب والتلفزيون والهاتف. فيها مقبض للصوت مع زر التشغيل، وإضاءة حمراء، ومنفذ إضافي لسماعة الرأس والمايكروفون.",
+    "en": "A compact pair of Redragon 2.0 stereo desktop speakers powered over USB with sound through a 3.5 mm cable, so they work with PCs, laptops, TVs and phones. They have a volume knob with power switch, red backlight and an extra headphone and mic port.",
+    "ckb": "جووتێک بڵندگۆی ستێریۆی 2.0ی بچووکی Redragon کە کارەبا لە USB و دەنگ لە کێبڵی 3.5 ملم وەردەگرن، بۆیە لەگەڵ PC و لاپتۆپ و تەلەفزیۆن و مۆبایل کار دەکەن. دوگمەی دەنگ لەگەڵ کوژاندنەوە، ڕووناکی سوور و دەرچەی زیادەی هێدفۆن و مایکیان هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "ستيريو 2.0 بحجم صغير للمكتب",
+      "en": "Compact 2.0 stereo for the desk",
+      "ckb": "ستێریۆی 2.0ی بچووک بۆ مێز"
+    },
+    {
+      "ar": "تغذية USB وصوت 3.5 ملم",
+      "en": "USB power, 3.5 mm audio",
+      "ckb": "کارەبای USB، دەنگی 3.5 ملم"
+    },
+    {
+      "ar": "مقبض صوت مع زر تشغيل",
+      "en": "Volume knob with on/off",
+      "ckb": "دوگمەی دەنگ لەگەڵ کوژاندنەوە"
+    },
+    {
+      "ar": "منفذ سماعة رأس ومايكروفون في الأمام",
+      "en": "Front headphone and mic ports",
+      "ckb": "دەرچەی هێدفۆن و مایک"
+    }
+  ],
+  "specs": [
+    {
+      "key": "channels",
+      "label": {
+        "ar": "القنوات",
+        "en": "Channels",
+        "ckb": "کەناڵ"
+      },
+      "value": {
+        "ar": "2.0 ستيريو",
+        "en": "2.0 stereo",
+        "ckb": "2.0 ستێریۆ"
+      }
+    },
+    {
+      "key": "power",
+      "label": {
+        "ar": "التغذية",
+        "en": "Power",
+        "ckb": "کارەبا"
+      },
+      "value": {
+        "ar": "USB",
+        "en": "USB",
+        "ckb": "USB"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "كابل صوت 3.5 ملم",
+        "en": "3.5 mm audio cable",
+        "ckb": "کێبڵی دەنگی 3.5 ملم"
+      }
+    },
+    {
+      "key": "lighting",
+      "label": {
+        "ar": "الإضاءة",
+        "en": "Lighting",
+        "ckb": "ڕووناکی"
+      },
+      "value": {
+        "ar": "إضاءة حمراء",
+        "en": "Red LED",
+        "ckb": "LEDی سوور"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RD-GS500",
+      "title": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "GS500",
+      "barcodes": [
+        "6950376776006"
+      ],
+      "isDefault": true,
+      "images": [
+        "redragon-stentor-gs500--1"
+      ],
+      "sheetRow": 174
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "عبر 3.5 ملم مع تغذية USB.",
+        "en": "Over 3.5 mm with USB power.",
+        "ckb": "بە 3.5 ملم لەگەڵ کارەبای USB."
+      },
+      "source": "https://redragonshop.com/products/stentor-gs500"
+    }
+  ],
+  "related": [
+    {
+      "slug": "redragon-yorick-gs511",
+      "kind": "upsell"
+    }
+  ],
+  "images": [
+    {
+      "key": "redragon-stentor-gs500--1",
+      "file": ".cache/product-images/redragon-stentor-gs500/1.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/RedragonSTENTORGS500BestBudgetGamingSpeaker_2.png",
+      "sourcePage": "https://redragonshop.com/products/stentor-gs500",
+      "kind": "hero",
+      "alt": {
+        "ar": "سماعتا Redragon Stentor GS500 بإضاءة حمراء",
+        "en": "Redragon Stentor GS500 pair with red light",
+        "ckb": "جووتە بڵندگۆی Redragon Stentor GS500 بە ڕووناکی سوور"
+      },
+      "credit": "Redragon",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://redragonshop.com/products/stentor-gs500",
+      "title": "STENTOR GS500",
+      "publisher": "Redragon (official store)",
+      "retrieved": "2026-11-18",
+      "supports": "compact 2.0 stereo, USB power, 3.5 mm audio and mic cables, PC/TV/laptop/phone, red LED, volume knob with on/off, extra audio and mic port, image"
+    },
+    {
+      "url": "https://dangerfield.com.au/products/gs500-stentor-gaming-speaker",
+      "title": "Redragon GS500 Stentor Gaming Speaker",
+      "publisher": "Dangerfield (Redragon reseller, Australia)",
+      "retrieved": "2026-11-18",
+      "supports": "confirmation: USB-powered desktop stereo speakers, barcode 6950376776006"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Output power (Redragon states 5 W × 2 but buyers report 3 W on the box)",
+      "Dimensions"
+    ]
+  }
+}

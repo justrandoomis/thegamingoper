@@ -1,0 +1,40 @@
+{
+  "key": "dxracer-master-series--3",
+  "view": "hero",
+  "width": 692,
+  "height": 1210,
+  "aspect": 0.5719,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-master-series/3-240.bd35403e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-master-series/3-480.74d088cd.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-master-series/3-240.ada9215c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-master-series/3-480.dc7e5a1f.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRuQAAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSGoAAAART6CgbRsWF8bbjYhAnp06N9zGtq0qG0/dMkpwKeGHuGQQkrk1YKmzC6aHiP4HAJC8doCuZ+ChMfhoCd6agKfG4aVxKl8NqKhLyurs//a7B1B7tyMQWoVDwDwMye3lmGMx2g73oSoLKgAAVlA4IFQAAACQAwCdASoLABQAPxFysFAsJqSisAgBgCIJaQAAUrf6olg/ndoAAP7p18S6pSXkXVzg9+bUZeeTzN8EqT7z78Z1cVvsSywVL9R9uEHKmVHeAcAAAAA=",
+  "dominant": "#181818",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "DXRacer (product render, via MaxGaming)",
+  "source": {
+    "url": "https://www.maxgaming.com/bilder/artiklar/zoom/31700_1.jpg",
+    "page": "https://www.maxgaming.com/en/dxracer-master/dxracer-master-xl-black-fabric"
+  },
+  "input": "4bfffdbb3a4b6d6e"
+}

@@ -1,0 +1,325 @@
+{
+  "slug": "asus-rog-strix-go-core",
+  "group": "handheld-pc-accessories",
+  "kind": "headset",
+  "platform": "multi",
+  "brand": "ASUS ROG",
+  "status": "available",
+  "name": {
+    "ar": "سماعة ASUS ROG Strix Go Core",
+    "en": "ASUS ROG Strix Go Core",
+    "ckb": "هێدسێتی ASUS ROG Strix Go Core"
+  },
+  "short": {
+    "ar": "سلكية 3.5 ملم · سماعات 40 ملم · 252 غرام · مايك قابل للفصل",
+    "en": "Wired 3.5 mm · 40 mm drivers · 252 g · Detachable mic",
+    "ckb": "وایەری 3.5 ملم · سپیکەری 40 ملم · 252 گرام · مایکی جیاکراوە"
+  },
+  "description": {
+    "ar": "سماعة ألعاب سلكية خفيفة من ASUS ROG تتصل بمقبس 3.5 ملم، فتعمل مع الحاسوب وPS5 وPS4 وNintendo Switch وأجهزة Xbox والهاتف والأجهزة المحمولة مثل ROG Ally. فيها سماعات 40 ملم في حجرات محكمة، ومايك قابل للفصل معتمد من Discord وTeamSpeak، وأزرار للصوت وكتم المايك على الأذن، وتنطوي لتسهل حملها.",
+    "en": "A light wired gaming headset from ASUS ROG on a 3.5 mm plug, so it works with PC, PS5, PS4, Nintendo Switch, Xbox consoles, phones and handhelds such as the ROG Ally. It has 40 mm drivers in sealed chambers, a detachable Discord- and TeamSpeak-certified mic, volume and mic-mute controls on the ear cup, and it folds for carrying.",
+    "ckb": "هێدسێتێکی یاریی وایەریی سووکی ASUS ROG بە پلاگی 3.5 ملم، بۆیە لەگەڵ کۆمپیوتەر، PS5، PS4، Nintendo Switch، کۆنسۆڵەکانی Xbox، مۆبایل و ئامێرە دەستییەکانی وەک ROG Ally کار دەکات. سپیکەری 40 ملمی لە ژووری داخراودایە، مایکێکی جیاکراوەی پەسەندکراو لەلایەن Discord و TeamSpeak، دوگمەی دەنگ و بێدەنگکردنی مایک لەسەر گوێ، و دەنووشتێتەوە بۆ هەڵگرتن."
+  },
+  "highlights": [
+    {
+      "ar": "مقبس 3.5 ملم يعمل مع الحاسوب وPS5 وSwitch وXbox والهاتف",
+      "en": "3.5 mm plug for PC, PS5, Switch, Xbox and phones",
+      "ckb": "پلاگی 3.5 ملم بۆ کۆمپیوتەر، PS5، Switch، Xbox و مۆبایل"
+    },
+    {
+      "ar": "سماعات ASUS Essence بقطر 40 ملم",
+      "en": "40 mm ASUS Essence drivers",
+      "ckb": "سپیکەری ASUS Essence بە 40 ملم"
+    },
+    {
+      "ar": "وزنها 252 غراماً فقط وتنطوي للحمل",
+      "en": "Only 252 g and folds flat for travel",
+      "ckb": "تەنها 252 گرام و دەنووشتێتەوە بۆ گەشت"
+    },
+    {
+      "ar": "مايك أحادي الاتجاه قابل للفصل، معتمد من Discord وTeamSpeak",
+      "en": "Detachable unidirectional mic, Discord and TeamSpeak certified",
+      "ckb": "مایکی یەک‌ئاراستەی جیاکراوە، پەسەندکراوی Discord و TeamSpeak"
+    },
+    {
+      "ar": "صوت محيطي افتراضي 7.1 على Windows عبر Windows Sonic",
+      "en": "Virtual 7.1 surround on Windows via Windows Sonic",
+      "ckb": "دەنگی دەوروبەری مەجازی 7.1 لەسەر Windows بە Windows Sonic"
+    }
+  ],
+  "specs": [
+    {
+      "key": "connector",
+      "label": {
+        "ar": "التوصيل",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "سلكي، مقبس 3.5 ملم",
+        "en": "Wired, 3.5 mm jack",
+        "ckb": "وایەری، پلاگی 3.5 ملم"
+      }
+    },
+    {
+      "key": "drivers",
+      "label": {
+        "ar": "السماعات",
+        "en": "Drivers",
+        "ckb": "سپیکەرەکان"
+      },
+      "value": {
+        "ar": "40 ملم، مغناطيس نيوديميوم",
+        "en": "40 mm, neodymium magnet",
+        "ckb": "40 ملم، موگناتیسی نیۆدیمیۆم"
+      }
+    },
+    {
+      "key": "impedance",
+      "label": {
+        "ar": "الممانعة",
+        "en": "Impedance",
+        "ckb": "بەرگری"
+      },
+      "value": {
+        "ar": "32 Ω",
+        "en": "32 Ω",
+        "ckb": "32 Ω"
+      }
+    },
+    {
+      "key": "mic",
+      "label": {
+        "ar": "المايك",
+        "en": "Microphone",
+        "ckb": "مایک"
+      },
+      "value": {
+        "ar": "أحادي الاتجاه، قابل للفصل، حساسية ‎-45 dB، 100 Hz – 10 kHz",
+        "en": "Unidirectional, detachable, -45 dB sensitivity, 100 Hz – 10 kHz",
+        "ckb": "یەک‌ئاراستە، جیاکراوە، هەستیاری ‎-45 dB، 100 Hz – 10 kHz"
+      }
+    },
+    {
+      "key": "cable",
+      "label": {
+        "ar": "الكابل",
+        "en": "Cable",
+        "ckb": "وایەر"
+      },
+      "value": {
+        "ar": "1.2 م + كابل Y بطول 1.2 م (فاصل صوت/مايك)",
+        "en": "1.2 m + 1.2 m Y-splitter cable",
+        "ckb": "1.2 م + وایەری Y بە درێژی 1.2 م"
+      }
+    },
+    {
+      "key": "weight",
+      "label": {
+        "ar": "الوزن",
+        "en": "Weight",
+        "ckb": "کێش"
+      },
+      "value": {
+        "ar": "252 غرام",
+        "en": "252 g",
+        "ckb": "252 گرام"
+      }
+    },
+    {
+      "key": "color",
+      "label": {
+        "ar": "اللون",
+        "en": "Colour",
+        "ckb": "ڕەنگ"
+      },
+      "value": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "PC وMac وPS5 وPS4 وNintendo Switch وXbox One وXbox Series X|S",
+        "en": "PC, Mac, PS5, PS4, Nintendo Switch, Xbox One, Xbox Series X|S",
+        "ckb": "PC، Mac، PS5، PS4، Nintendo Switch، Xbox One، Xbox Series X|S"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "سماعة ROG Strix Go Core",
+      "en": "ROG Strix Go Core headset",
+      "ckb": "هێدسێتی ROG Strix Go Core"
+    },
+    {
+      "ar": "مايك قابل للفصل",
+      "en": "Detachable microphone boom",
+      "ckb": "مایکی جیاکراوە"
+    },
+    {
+      "ar": "كابل فاصل 3.5 ملم للصوت والمايك",
+      "en": "3.5 mm mic/audio splitter cable",
+      "ckb": "وایەری جیاکەرەوەی 3.5 ملم بۆ دەنگ و مایک"
+    },
+    {
+      "ar": "دليل التشغيل السريع",
+      "en": "Quick start guide",
+      "ckb": "ڕێبەری خێرا"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "ROG-STRIX-GO-CORE",
+      "sheetRow": 2,
+      "title": {
+        "ar": "سماعة ASUS ROG Strix Go Core",
+        "en": "ASUS ROG Strix Go Core",
+        "ckb": "هێدسێتی ASUS ROG Strix Go Core"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "isDefault": true,
+      "images": [
+        "asus-rog-strix-go-core--1"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "عبر مقبس 3.5 ملم أو الكابل الفاصل",
+        "en": "Via the 3.5 mm jack or the splitter cable",
+        "ckb": "بە پلاگی 3.5 ملم یان وایەری جیاکەرەوە"
+      },
+      "source": "https://rog.asus.com/headsets-audio/headsets/3-5mm-headsets/rog-strix-go-core-model/spec/"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "بالتوصيل بمقبس 3.5 ملم في يد DualSense",
+        "en": "Plugged into the DualSense 3.5 mm jack",
+        "ckb": "بە بەستنەوە بە پلاگی 3.5 ملمی DualSense"
+      },
+      "source": "https://rog.asus.com/headsets-audio/headsets/3-5mm-headsets/rog-strix-go-core-model/spec/"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "بالتوصيل بمقبس 3.5 ملم في يد DualSense",
+        "en": "Plugged into the DualSense 3.5 mm jack",
+        "ckb": "بە بەستنەوە بە پلاگی 3.5 ملمی DualSense"
+      },
+      "source": "https://rog.asus.com/headsets-audio/headsets/3-5mm-headsets/rog-strix-go-core-model/spec/"
+    },
+    {
+      "deviceModel": "switch",
+      "status": "verified",
+      "note": {
+        "ar": "بمقبس 3.5 ملم في الجهاز",
+        "en": "Through the console's 3.5 mm jack",
+        "ckb": "بە پلاگی 3.5 ملمی کۆنسۆڵ"
+      },
+      "source": "https://rog.asus.com/headsets-audio/headsets/3-5mm-headsets/rog-strix-go-core-model/spec/"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "verified",
+      "note": {
+        "ar": "بمقبس 3.5 ملم في يد Xbox",
+        "en": "Through the Xbox controller's 3.5 mm jack",
+        "ckb": "بە پلاگی 3.5 ملمی کۆنتڕۆڵەری Xbox"
+      },
+      "source": "https://rog.asus.com/headsets-audio/headsets/3-5mm-headsets/rog-strix-go-core-model/spec/"
+    },
+    {
+      "deviceModel": "rog-ally-x",
+      "status": "unverified",
+      "note": {
+        "ar": "للجهاز مقبس 3.5 ملم، لكن ASUS لا تذكره في قائمة التوافق",
+        "en": "The handheld has a 3.5 mm jack, but ASUS does not list it",
+        "ckb": "ئامێرەکە پلاگی 3.5 ملمی هەیە، بەڵام ASUS ناوی نابات"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "rog-ally-x",
+      "kind": "setup"
+    },
+    {
+      "slug": "rog-ally",
+      "kind": "setup"
+    },
+    {
+      "slug": "razer-blackshark-v2-x",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "asus-rog-strix-go-core--1",
+      "file": ".cache/product-images/asus-rog-strix-go-core/1.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/FFCD4964-8379-4484-9077-4C592D999386",
+      "sourcePage": "https://rog.asus.com/headsets-audio/headsets/3-5mm-headsets/rog-strix-go-core-model/gallery/",
+      "kind": "hero",
+      "alt": {
+        "ar": "سماعة ROG Strix Go Core مطوية",
+        "en": "The ROG Strix Go Core folded flat",
+        "ckb": "هێدسێتی ROG Strix Go Core نووشتێنراوە"
+      },
+      "credit": "ASUSTeK Computer Inc.",
+      "width": 2000,
+      "height": 1470,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://rog.asus.com/headsets-audio/headsets/3-5mm-headsets/rog-strix-go-core-model/spec/",
+      "title": "ROG STRIX GO CORE Gaming Headset – Tech Specs",
+      "publisher": "ASUSTeK Computer Inc. (ROG)",
+      "retrieved": "2026-11-18",
+      "supports": "interface, 3.5 mm connector, platforms, 40 mm drivers, 32 Ω, mic specs, virtual 7.1 (Windows Sonic), 252 g, colour, cables, accessories"
+    },
+    {
+      "url": "https://rog.asus.com/headsets-audio/headsets/3-5mm-headsets/rog-strix-go-core-model/",
+      "title": "ROG STRIX GO CORE Gaming Headset – Features",
+      "publisher": "ASUSTeK Computer Inc. (ROG)",
+      "retrieved": "2026-11-18",
+      "supports": "airtight chambers, ASUS Essence drivers, foldable design, ear-cup controls, Discord and TeamSpeak certification, cross-platform support"
+    },
+    {
+      "url": "https://www.bhphotovideo.com/c/product/1663641-REG/asus_rog_strix_go_core_ml_rog_strix_go_core.html",
+      "title": "ASUS ROG Strix Go Core Gaming Headset (Moonlight White)",
+      "publisher": "B&H Photo Video",
+      "retrieved": "2026-11-18",
+      "supports": "second source: wired 3.5 mm headset, still sold; a Moonlight White edition exists"
+    }
+  ],
+  "notes": {
+    "ar": "هناك أيضاً نسخة بيضاء (Moonlight White) ونسخة Electro Punk؛ القطعة في المتجر هي الأصلية السوداء.",
+    "en": "ASUS also makes a Moonlight White and an Electro Punk edition; the unit in stock is the original black one.",
+    "ckb": "ASUS وەشانی سپی (Moonlight White) و Electro Punkیشی هەیە؛ ئەوەی لە کۆگادایە ڕەشە ئەسڵییەکەیە."
+  },
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "Release date",
+      "Colour of the stocked unit (sheet says only \"ASUS ROG STRIX GO CORE\"; assumed the standard black model)"
+    ]
+  }
+}

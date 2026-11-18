@@ -1,0 +1,198 @@
+{
+  "slug": "gameon-aerox-gomk60-rs",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "GameOn",
+  "category": "keyboards",
+  "status": "available",
+  "name": {
+    "ar": "كيبورد GameOn Aerox GOMK60‑RS",
+    "en": "GameOn Aerox GOMK60‑RS",
+    "ckb": "کیبۆردی GameOn Aerox GOMK60‑RS"
+  },
+  "short": {
+    "ar": "كيبورد ميكانيكي 60% · مفاتيح Red · عربي/إنجليزي",
+    "en": "60% mechanical · Red switches · Arabic/English",
+    "ckb": "میکانیکی 60% · سویچی Red · عەرەبی/ئینگلیزی"
+  },
+  "description": {
+    "ar": "كيبورد ألعاب ميكانيكي صغير بحجم 60% من GameOn، فيه 61 زراً بأحرف عربية وإنجليزية ومفاتيح Red خطية. يتصل بكابل USB‑C قابل للفصل ويعمل مباشرة دون تعريفات، مع 17 وضع إضاءة RGB.",
+    "en": "A compact 60% mechanical gaming keyboard from GameOn with 61 keys printed in Arabic and English and linear Red switches. It connects with a detachable USB-C cable, works plug-and-play and has 17 RGB lighting modes.",
+    "ckb": "کیبۆردێکی میکانیکی بچووکی 60%ی GameOn بە 61 دوگمە بە پیتی عەرەبی و ئینگلیزی و سویچی Redی هێڵی. بە کێبڵی USB‑Cی جیاکراوە دەبەسترێت، بێ پێناسە کار دەکات و 17 شێوازی ڕووناکی RGBی هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "حجم 60% بـ 61 زراً",
+      "en": "60% size, 61 keys",
+      "ckb": "قەبارەی 60%، ‏61 دوگمە"
+    },
+    {
+      "ar": "أحرف عربية وإنجليزية على الأزرار",
+      "en": "Arabic and English legends",
+      "ckb": "پیتی عەرەبی و ئینگلیزی"
+    },
+    {
+      "ar": "مفاتيح Red خطية بعمر 20 مليون ضغطة",
+      "en": "Linear Red switches, 20 million presses",
+      "ckb": "سویچی Redی هێڵی، 20 ملیۆن پەستان"
+    },
+    {
+      "ar": "كابل USB‑C قابل للفصل بطول 1.5 م",
+      "en": "Detachable 1.5 m USB-C cable",
+      "ckb": "کێبڵی USB‑Cی جیاکراوەی 1.5 م"
+    }
+  ],
+  "specs": [
+    {
+      "key": "layout",
+      "label": {
+        "ar": "التصميم",
+        "en": "Layout",
+        "ckb": "شێوە"
+      },
+      "value": {
+        "ar": "60%، ‏61 زراً، عربي/إنجليزي",
+        "en": "60%, 61 keys, Arabic/English",
+        "ckb": "60%، ‏61 دوگمە، عەرەبی/ئینگلیزی"
+      }
+    },
+    {
+      "key": "switches",
+      "label": {
+        "ar": "المفاتيح",
+        "en": "Switches",
+        "ckb": "سویچەکان"
+      },
+      "value": {
+        "ar": "Red ميكانيكية خطية، قوة 60±10 غ، مسافة 4.0±0.5 ملم",
+        "en": "Linear Red mechanical, 60±10 g, 4.0±0.5 mm travel",
+        "ckb": "Redی میکانیکی هێڵی، 60±10 گ، 4.0±0.5 ملم"
+      }
+    },
+    {
+      "key": "lighting",
+      "label": {
+        "ar": "الإضاءة",
+        "en": "Lighting",
+        "ckb": "ڕووناکی"
+      },
+      "value": {
+        "ar": "RGB بـ 17 وضعاً",
+        "en": "RGB, 17 modes",
+        "ckb": "RGB بە 17 شێواز"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "سلكي، USB‑C قابل للفصل، 1.5 م",
+        "en": "Wired, detachable USB-C, 1.5 m",
+        "ckb": "وایەری، USB‑Cی جیاکراوە، 1.5 م"
+      }
+    },
+    {
+      "key": "features",
+      "label": {
+        "ar": "مزايا",
+        "en": "Features",
+        "ckb": "تایبەتمەندی"
+      },
+      "value": {
+        "ar": "مقاومة تداخل لـ 22 زراً، 12 اختصار وسائط، هيكل Gasket",
+        "en": "22-key rollover, 12 media shortcuts, gasket structure",
+        "ckb": "22‑key rollover، 12 کورتە ڕێگای میدیا، پێکهاتەی Gasket"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "GAMEON-GOMK60-RS",
+      "title": {
+        "ar": "كيبورد GameOn Aerox GOMK60‑RS",
+        "en": "GameOn Aerox GOMK60‑RS",
+        "ckb": "کیبۆردی GameOn Aerox GOMK60‑RS"
+      },
+      "options": {
+        "switch": "Red",
+        "layout": "Arabic/English"
+      },
+      "modelNumber": "GOMK60-RS",
+      "isDefault": true,
+      "images": [
+        "gameon-aerox-gomk60-rs--1"
+      ],
+      "sheetRow": 44
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "سلكي عبر USB‑C، بدون تعريفات.",
+        "en": "Wired USB-C, plug-and-play.",
+        "ckb": "وایەری USB‑C، بێ پێناسە."
+      },
+      "source": "https://gameon.store/products/gameon-aerox-series-gomk60-rs-60-rgb-mechanical-wired-gaming-keyboard-red-switch-english-arabic"
+    }
+  ],
+  "related": [
+    {
+      "slug": "redragon-fizz-k617-he",
+      "kind": "alternative"
+    },
+    {
+      "slug": "razer-blackwidow-v3-mini-hyperspeed",
+      "kind": "upsell"
+    }
+  ],
+  "images": [
+    {
+      "key": "gameon-aerox-gomk60-rs--1",
+      "file": ".cache/product-images/gameon-aerox-gomk60-rs/1.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0700/1505/8226/files/GOMK60-RS_img_1.png",
+      "sourcePage": "https://gameon.store/products/gameon-aerox-series-gomk60-rs-60-rgb-mechanical-wired-gaming-keyboard-red-switch-english-arabic",
+      "kind": "hero",
+      "alt": {
+        "ar": "كيبورد GameOn Aerox من الأعلى بإضاءة RGB",
+        "en": "GameOn Aerox keyboard from above with RGB lit",
+        "ckb": "کیبۆردی GameOn Aerox لە سەرەوە بە ڕووناکی RGB"
+      },
+      "credit": "GameOn",
+      "width": 1200,
+      "height": 1200,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://gameon.store/products/gameon-aerox-series-gomk60-rs-60-rgb-mechanical-wired-gaming-keyboard-red-switch-english-arabic",
+      "title": "GAMEON AEROX Series GOMK60-RS 60% RGB Mechanical Wired Gaming Keyboard, Red Switch - English/Arabic",
+      "publisher": "GameOn (official store)",
+      "retrieved": "2026-11-18",
+      "supports": "model GOMK60-RS, 61 keys, Red switch specs, 17 RGB modes, 22-key rollover, 12 media shortcuts, gasket structure, 1.5 m USB-C cable, Arabic/English, image"
+    },
+    {
+      "url": "https://digitalzone.qa/products/gameon-kenora-gomk87-rs-80-rgb-mechanical-keyboard-en-ar-qatar",
+      "title": "GameOn Kenora GOMK87-RS (same GOMK line, Arabic/English)",
+      "publisher": "Digital Zone Qatar",
+      "retrieved": "2026-11-18",
+      "supports": "confirmation that GameOn GOMK keyboards are sold in the Gulf with Arabic/English legends and Red switches"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Release date",
+      "Weight and dimensions (not published)",
+      "That \"GOMK 60-RS\" on the sheet is the Aerox GOMK60-RS (the closest GameOn model code; the Primex GO-MK260-RS is a different board)"
+    ]
+  }
+}

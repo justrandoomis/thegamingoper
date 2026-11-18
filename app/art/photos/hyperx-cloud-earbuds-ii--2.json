@@ -1,0 +1,48 @@
+{
+  "key": "hyperx-cloud-earbuds-ii--2",
+  "view": "hero",
+  "width": 955,
+  "height": 1600,
+  "aspect": 0.5969,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-earbuds-ii/2-240.e2c3632b.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-earbuds-ii/2-480.d5822088.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-earbuds-ii/2-720.9ef60773.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-earbuds-ii/2-240.1872bc31.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-earbuds-ii/2-480.42c4e221.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-earbuds-ii/2-720.88457483.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRsgAAABXRUJQVlA4WAoAAAAQAAAACwAAEwAAQUxQSEwAAAART6CokSQ1uBKYD35n4CIi4NYTjB8DVbGtRA/3TyJgAyMQgRQWMI159wgR/Z8AXLJfJH5Li5bFDq1PZ4Xr8FYA9VoAcZIAJom/2GMLVlA4IFYAAAAwAwCdASoMABQAPxFysVCsJqSisAgBgCIJZQAAWp8F755gAP7uiE8UJldt4/rPkMn8s85UoTvonhtrKJM7zYJs+ioZdqBLy9vSgFiT0PIb/cp+99IAAA==",
+  "dominant": "#292929",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "HyperX (HP Inc.)",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_earbuds_ii_black_3_microphone.jpg",
+    "page": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii"
+  },
+  "input": "7c384329ae25796f"
+}

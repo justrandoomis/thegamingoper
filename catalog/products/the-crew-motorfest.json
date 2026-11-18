@@ -1,0 +1,376 @@
+{
+  "slug": "the-crew-motorfest",
+  "group": "games-ps5-xbox",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "Ubisoft",
+  "status": "available",
+  "releaseDate": "2023-09-14",
+  "name": {
+    "ar": "The Crew Motorfest",
+    "en": "The Crew Motorfest",
+    "ckb": "The Crew Motorfest"
+  },
+  "short": {
+    "ar": "PS5 · قرص · سباقات عالم مفتوح في هاواي · تحتاج إنترنت دائماً",
+    "en": "PS5 · disc · open-world racing in Hawaii · always online",
+    "ckb": "PS5 · دیسک · پێشبڕکێی جیهانی کراوە لە هاوای · هەمیشە ئینتەرنێت"
+  },
+  "description": {
+    "ar": "لعبة سباقات في عالم مفتوح على جزيرة O'ahu في هاواي، من Ivory Tower وUbisoft. تقود سيارات ودراجات وقوارب وطائرات في مهرجان سباقات بقوائم مواضيعية. اللعبة تحتاج اتصالاً دائماً بالإنترنت.",
+    "en": "An open-world racing game on the Hawaiian island of O'ahu, from Ivory Tower and Ubisoft. Drive cars and bikes, plus boats and planes, through a racing festival of themed playlists. The game needs a permanent internet connection.",
+    "ckb": "یارییەکی پێشبڕکێ لە جیهانی کراوەدا لە دوورگەی O'ahu لە هاوای، لە Ivory Tower و Ubisoft. ئۆتۆمبێل، ماتۆڕ، بەلەم و فڕۆکە لێدەخوڕیت لە فێستیڤاڵێکی پێشبڕکێدا بە لیستی بابەتی. یارییەکە پێویستی بە پەیوەندی هەمیشەیی ئینتەرنێت هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "تحتاج اتصالاً دائماً بالإنترنت حتى في اللعب الفردي.",
+      "en": "Needs a permanent internet connection, even for solo play.",
+      "ckb": "پەیوەندی هەمیشەیی ئینتەرنێتی پێویستە، تەنانەت بۆ یاریی تاکەکەسی."
+    },
+    {
+      "ar": "سيارات ودراجات وقوارب وطائرات في عالم مفتوح.",
+      "en": "Cars, bikes, boats and planes in an open world.",
+      "ckb": "ئۆتۆمبێل، ماتۆڕ، بەلەم و فڕۆکە لە جیهانێکی کراوەدا."
+    },
+    {
+      "ar": "ترجمة وقوائم بالعربية (بدون دبلجة عربية)، حسب قائمة لغات PlayStation Store.",
+      "en": "Arabic subtitles and menus (no Arabic voice), per the PlayStation Store language list.",
+      "ckb": "ژێرنووس و مێنیوی عەرەبی (بێ دەنگی عەرەبی)، بەپێی لیستی زمانەکانی PlayStation Store."
+    },
+    {
+      "ar": "التصنيف PEGI 12.",
+      "en": "Rated PEGI 12.",
+      "ckb": "پۆلێنی PEGI 12."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": {
+        "ar": "تاريخ الإصدار",
+        "en": "Release date",
+        "ckb": "بەرواری دەرچوون"
+      },
+      "value": {
+        "ar": "14 أيلول 2023",
+        "en": "14 September 2023",
+        "ckb": "14ی ئەیلوولی 2023"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": {
+        "ar": "الأجهزة",
+        "en": "Platforms",
+        "ckb": "ئامێرەکان"
+      },
+      "value": {
+        "ar": "PS5 (اللعبة متوفرة أيضاً على PS4)",
+        "en": "PS5 (the game is also on PS4)",
+        "ckb": "PS5 (یارییەکە لەسەر PS4 یش هەیە)"
+      }
+    },
+    {
+      "key": "format",
+      "label": {
+        "ar": "نوع النسخة الفيزيائية",
+        "en": "Physical format",
+        "ckb": "جۆری وەشانی فیزیکی"
+      },
+      "value": {
+        "ar": "قرص PS5",
+        "en": "PS5 disc",
+        "ckb": "دیسکی PS5"
+      }
+    },
+    {
+      "key": "players",
+      "label": {
+        "ar": "عدد اللاعبين",
+        "en": "Players",
+        "ckb": "ژمارەی یاریزان"
+      },
+      "value": {
+        "ar": "لاعب واحد، مع لعب جماعي أونلاين",
+        "en": "1 player, with online multiplayer",
+        "ckb": "1 یاریزان، لەگەڵ فرەیاریزانی ئۆنلاین"
+      }
+    },
+    {
+      "key": "online",
+      "label": {
+        "ar": "الإنترنت والاشتراكات",
+        "en": "Internet and subscriptions",
+        "ckb": "ئینتەرنێت و بەشداریکردن"
+      },
+      "value": {
+        "ar": "تحتاج اتصالاً دائماً بالإنترنت؛ اللعب الجماعي أونلاين يحتاج PlayStation Plus.",
+        "en": "Needs a permanent internet connection; online multiplayer needs PlayStation Plus.",
+        "ckb": "پەیوەندی هەمیشەیی ئینتەرنێتی پێویستە؛ فرەیاریزانی ئۆنلاین PlayStation Plus ی پێویستە."
+      }
+    },
+    {
+      "key": "arabic",
+      "label": {
+        "ar": "اللغة العربية",
+        "en": "Arabic",
+        "ckb": "زمانی عەرەبی"
+      },
+      "value": {
+        "ar": "ترجمة وقوائم بالعربية بدون دبلجة (حسب منطقة النسخة)",
+        "en": "Arabic subtitles and menus, no Arabic voice (depends on the region of the copy)",
+        "ckb": "ژێرنووس و مێنیوی عەرەبی، بێ دەنگی عەرەبی (بەپێی ناوچەی وەشانەکە)"
+      }
+    },
+    {
+      "key": "age",
+      "label": {
+        "ar": "التصنيف العمري",
+        "en": "Age rating",
+        "ckb": "پۆلێنی تەمەن"
+      },
+      "value": {
+        "ar": "PEGI 12",
+        "en": "PEGI 12",
+        "ckb": "PEGI 12"
+      }
+    },
+    {
+      "key": "developer",
+      "label": {
+        "ar": "المطوّر والناشر",
+        "en": "Developer and publisher",
+        "ckb": "گەشەپێدەر و بڵاوکەرەوە"
+      },
+      "value": {
+        "ar": "Ivory Tower / Ubisoft",
+        "en": "Ivory Tower / Ubisoft",
+        "ckb": "Ivory Tower / Ubisoft"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة لجهاز PS5",
+      "en": "PS5 game disc",
+      "ckb": "دیسکی یارییەکە بۆ PS5"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "CREWMF-PS5-STD",
+      "title": {
+        "ar": "لجهاز PS5 · Standard Edition",
+        "en": "PS5 · Standard Edition",
+        "ckb": "بۆ PS5 · Standard Edition"
+      },
+      "options": {
+        "platform": "PS5",
+        "edition": "Standard",
+        "format": "Disc"
+      },
+      "isDefault": true,
+      "sheetRow": 157,
+      "images": [
+        "the-crew-motorfest--1",
+        "the-crew-motorfest--2",
+        "the-crew-motorfest--3"
+      ],
+      "notes": {
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": [
+      "ps5",
+      "ps5-slim",
+      "ps5-pro",
+      "ps5-slim-digital"
+    ],
+    "genres": [
+      {
+        "ar": "سباقات",
+        "en": "Racing",
+        "ckb": "پێشبڕکێی ئۆتۆمبێل"
+      },
+      {
+        "ar": "عالم مفتوح",
+        "en": "Open world",
+        "ckb": "جیهانی کراوە"
+      }
+    ],
+    "players": "1 (online multiplayer)",
+    "online": {
+      "ar": "تحتاج اتصالاً دائماً بالإنترنت؛ اللعب الجماعي أونلاين يحتاج PlayStation Plus.",
+      "en": "Needs a permanent internet connection; online multiplayer needs PlayStation Plus.",
+      "ckb": "پەیوەندی هەمیشەیی ئینتەرنێتی پێویستە؛ فرەیاریزانی ئۆنلاین PlayStation Plus ی پێویستە."
+    },
+    "ageRating": {
+      "pegi": 12
+    },
+    "arabic": "subtitles+interface",
+    "physicalFormat": "disc",
+    "developer": "Ivory Tower",
+    "publisher": "Ubisoft"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "قرص PS5.",
+        "en": "PS5 disc.",
+        "ckb": "دیسکی PS5."
+      },
+      "source": "https://store.playstation.com/en-ae/product/EP0001-PPSA14723_00-THECREWORL000000"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "يعمل على الموديل الذي فيه قارئ أقراص.",
+        "en": "Works on the model with a disc drive.",
+        "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات."
+      },
+      "source": "https://store.playstation.com/en-ae/product/EP0001-PPSA14723_00-THECREWORL000000"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": {
+        "ar": "القرص يحتاج قارئ الأقراص الإضافي.",
+        "en": "The disc needs the add-on Disc Drive.",
+        "ckb": "دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": {
+        "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.",
+        "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "gran-turismo-7",
+      "kind": "alternative"
+    },
+    {
+      "slug": "forza-horizon-6",
+      "kind": "alternative"
+    },
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense",
+      "kind": "accessory"
+    },
+    {
+      "slug": "ps5-disc-drive",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "the-crew-motorfest--1",
+      "file": ".cache/product-images/the-crew-motorfest/1.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202305/2315/dad1086dcb9113fda41fd623b6ea54f1e181190a53fb9d37.jpg",
+      "sourcePage": "https://store.playstation.com/en-ae/product/EP0001-PPSA14723_00-THECREWORL000000",
+      "kind": "box-art",
+      "alt": {
+        "ar": "غلاف The Crew Motorfest",
+        "en": "The Crew Motorfest cover art",
+        "ckb": "وێنەی بەرگی The Crew Motorfest"
+      },
+      "credit": "Ubisoft",
+      "width": 1440,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "the-crew-motorfest--2",
+      "file": ".cache/product-images/the-crew-motorfest/2.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202602/1713/373d8dabcd307512034ec694ca9d635c633d851c44c6a7be.jpg",
+      "sourcePage": "https://store.playstation.com/en-ae/product/EP0001-PPSA14723_00-THECREWORL000000",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من The Crew Motorfest",
+        "en": "The Crew Motorfest screenshot",
+        "ckb": "وێنەیەک لە ناو یاری The Crew Motorfest"
+      },
+      "credit": "Ubisoft",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "the-crew-motorfest--3",
+      "file": ".cache/product-images/the-crew-motorfest/3.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202602/1713/825c5d479568c230e448cc33b7aecc2ba9a92f68eeb3a790.jpg",
+      "sourcePage": "https://store.playstation.com/en-ae/product/EP0001-PPSA14723_00-THECREWORL000000",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من The Crew Motorfest",
+        "en": "The Crew Motorfest screenshot",
+        "ckb": "وێنەیەک لە ناو یاری The Crew Motorfest"
+      },
+      "credit": "Ubisoft",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://store.playstation.com/en-ae/product/EP0001-PPSA14723_00-THECREWORL000000",
+      "title": "The Crew Motorfest — PlayStation Store (UAE)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "PS4/PS5, Ubisoft, release 14 Sep 2023, Arabic screen language, English voice, editions, cover art and screenshots",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/games/the-crew-motorfest/",
+      "title": "The Crew Motorfest — PlayStation (UAE)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "game overview: O'ahu, playlists, vehicles, Year passes",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/",
+      "title": "Disc Drive for PS5 Digital Edition consoles",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "the add-on drive works only with PS5 Pro and the slim PS5 Digital Edition, so the original 2020 Digital Edition cannot play discs"
+    }
+  ],
+  "verification": {
+    "checkedBy": "games-ps5-xbox research 2026-11-18",
+    "secondSource": true,
+    "unverified": [
+      "Arabic support is taken from the PlayStation Store language list; the languages on a given disc depend on its region.",
+      "No EAN/UPC barcode recorded.",
+      "PEGI 12 is the known European rating; the UAE store shows the local MRO 12.",
+      "'Always online' and the PS Plus rule for multiplayer follow Ubisoft's usual requirements for this game and were not quoted from the pages read."
+    ]
+  }
+}

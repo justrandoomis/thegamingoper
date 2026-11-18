@@ -1,0 +1,222 @@
+{
+  "slug": "dobe-rog-ally-tempered-glass-ty-3836",
+  "group": "handheld-pc-accessories",
+  "kind": "accessory",
+  "platform": "pc_handheld",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "زجاج حماية DOBE TY‑3836 لجهاز ROG Ally",
+    "en": "DOBE TY‑3836 Tempered Glass for ROG Ally",
+    "ckb": "شیشەی پارێزەری DOBE TY‑3836 بۆ ROG Ally"
+  },
+  "short": {
+    "ar": "قطعتان · زجاج مقسّى 9H · لشاشة ROG Ally مقاس 7 بوصات",
+    "en": "2 pieces · 9H tempered glass · For the 7-inch ROG Ally screen",
+    "ckb": "2 پارچە · شیشەی ڕەقکراوی 9H · بۆ شاشەی 7 ئینجی ROG Ally"
+  },
+  "description": {
+    "ar": "واقي شاشة من الزجاج المقسّى من DOBE لشاشة ROG Ally مقاس 7 بوصات. صلابته 9H ويقاوم الخدوش وبصمات الأصابع ولا يتشظى عند الكسر، ولا يؤثر على اللمس. في العلبة قطعتان مع مناديل التنظيف وملصقات الغبار والتوجيه.",
+    "en": "A DOBE tempered-glass protector for the 7-inch ROG Ally screen. It is rated 9H, resists scratches and fingerprints, is shatterproof and keeps touch responsive. The pack has two sheets plus cleaning wipes, dust-removal and guide stickers.",
+    "ckb": "پارێزەری شاشەی شیشەی ڕەقکراوی DOBE بۆ شاشەی 7 ئینجی ROG Ally. ڕەقییەکەی 9Hە، دژی خەت و شوێنپەنجەیە، کە شکا پرژ نابێتەوە و کاریگەری لەسەر دەستلێدان نییە. قوتووەکە دوو پارچەی تێدایە لەگەڵ دەسماڵی پاککردنەوە و لکێنەری تۆز و ڕێنمایی."
+  },
+  "highlights": [
+    {
+      "ar": "قطعتا زجاج في العلبة",
+      "en": "Two glass sheets per pack",
+      "ckb": "دوو پارچە شیشە لە قوتووەکەدا"
+    },
+    {
+      "ar": "صلابة 9H ومقاوم للخدوش",
+      "en": "9H hardness, scratch-resistant",
+      "ckb": "ڕەقیی 9H، دژی خەت"
+    },
+    {
+      "ar": "مقاوم للبصمات ولا يتشظى",
+      "en": "Anti-fingerprint and shatterproof",
+      "ckb": "دژی شوێنپەنجە و پرژ نابێتەوە"
+    },
+    {
+      "ar": "لا يؤثر على اللمس",
+      "en": "Keeps touch responsive",
+      "ckb": "کاریگەری لەسەر دەستلێدان نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "TY‑3836",
+        "en": "TY‑3836",
+        "ckb": "TY‑3836"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "ASUS ROG Ally (7\")",
+        "en": "ASUS ROG Ally (7\")",
+        "ckb": "ASUS ROG Ally (7\")"
+      }
+    },
+    {
+      "key": "hardness",
+      "label": {
+        "ar": "الصلابة",
+        "en": "Hardness",
+        "ckb": "ڕەقی"
+      },
+      "value": {
+        "ar": "9H",
+        "en": "9H",
+        "ckb": "9H"
+      }
+    },
+    {
+      "key": "pieces",
+      "label": {
+        "ar": "عدد القطع",
+        "en": "Pieces",
+        "ckb": "ژمارەی پارچە"
+      },
+      "value": {
+        "ar": "2",
+        "en": "2",
+        "ckb": "2"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "2 × واقي شاشة زجاجي",
+      "en": "2 × glass screen protector",
+      "ckb": "2 × پارێزەری شاشەی شیشە"
+    },
+    {
+      "ar": "2 × مناديل تنظيف (مبللة وجافة)",
+      "en": "2 × cleaning wipe sets (wet and dry)",
+      "ckb": "2 × دەسماڵی پاککردنەوە (تەڕ و وشک)"
+    },
+    {
+      "ar": "2 × ملصقات إزالة الغبار والتوجيه",
+      "en": "2 × dust-removal and guide sticker sets",
+      "ckb": "2 × لکێنەری لابردنی تۆز و ڕێنمایی"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TY-3836",
+      "sheetRow": 166,
+      "title": {
+        "ar": "زجاج حماية DOBE TY‑3836 لجهاز ROG Ally",
+        "en": "DOBE TY‑3836 Tempered Glass for ROG Ally",
+        "ckb": "شیشەی پارێزەری DOBE TY‑3836 بۆ ROG Ally"
+      },
+      "modelNumber": "TY-3836",
+      "isDefault": true,
+      "images": [
+        "dobe-rog-ally-tempered-glass-ty-3836--1"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "rog-ally",
+      "status": "verified",
+      "note": {
+        "ar": "مقصوص لشاشة ROG Ally مقاس 7 بوصات",
+        "en": "Cut for the 7-inch ROG Ally screen",
+        "ckb": "بۆ شاشەی 7 ئینجی ROG Ally بڕدراوە"
+      },
+      "source": "https://www.dobe-game.com/en/productshow-52-1260.html"
+    },
+    {
+      "deviceModel": "rog-ally-x",
+      "status": "unverified",
+      "note": {
+        "ar": "لـAlly X شاشة 7 بوصات مماثلة، لكن DOBE تذكر ROG Ally فقط",
+        "en": "The Ally X has a similar 7-inch screen, but DOBE lists only the ROG Ally",
+        "ckb": "Ally X شاشەی 7 ئینجی هاوشێوەی هەیە، بەڵام DOBE تەنها ROG Ally ناو دەبات"
+      }
+    },
+    {
+      "deviceModel": "rog-xbox-ally-x",
+      "status": "unverified",
+      "note": {
+        "ar": "DOBE لا تذكر أجهزة ROG Xbox Ally",
+        "en": "DOBE does not list the ROG Xbox Ally models",
+        "ckb": "DOBE ناوی ROG Xbox Ally نابات"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "rog-ally",
+      "kind": "setup"
+    },
+    {
+      "slug": "rog-ally-x",
+      "kind": "setup"
+    },
+    {
+      "slug": "jys-rog-ally-x-carrying-case-rax011",
+      "kind": "accessory"
+    },
+    {
+      "slug": "jys-rog-ally-carrying-case-x152",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "dobe-rog-ally-tempered-glass-ty-3836--1",
+      "file": ".cache/product-images/dobe-rog-ally-tempered-glass-ty-3836/1.jpg",
+      "sourceUrl": "https://www.dobe-game.com/uploads/image/20240321/1711010511.jpg",
+      "sourcePage": "https://www.dobe-game.com/en/productshow-52-1260.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "قطعتا زجاج DOBE TY‑3836",
+        "en": "The two DOBE TY‑3836 glass sheets",
+        "ckb": "دوو پارچە شیشەی DOBE TY‑3836"
+      },
+      "credit": "DOBE (Shenzhen Yuyuanxin Electronic Technology)",
+      "width": 1000,
+      "height": 1000,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dobe-game.com/en/productshow-52-1260.html",
+      "title": "TY-3836 Rog Ally Tempered Glass For ASUS ROG Ally 7 inch Screen Protector",
+      "publisher": "DOBE (Shenzhen Yuyuanxin Electronic Technology Co., Ltd.)",
+      "retrieved": "2026-11-18",
+      "supports": "model TY-3836, for ASUS ROG Ally 7-inch, tempered glass, scratch/fingerprint resistance, shatterproof, touch unaffected, product images (2 sheets, wipes, stickers, 9H)"
+    },
+    {
+      "url": "https://gamextreme.ph/products/dobe-rog-ally-glass-film-ty-3836",
+      "title": "Dobe ROG Ally Glass Film TY-3836",
+      "publisher": "GameXtremePH (retailer, Philippines)",
+      "retrieved": "2026-11-18",
+      "supports": "second source: DOBE TY-3836 is a ROG Ally glass film, still sold"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "Fit on the ROG Ally X and ROG Xbox Ally models",
+      "Glass thickness"
+    ]
+  }
+}

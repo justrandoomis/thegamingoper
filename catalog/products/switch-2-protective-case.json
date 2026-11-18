@@ -1,0 +1,110 @@
+{
+  "slug": "switch-2-protective-case",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "غطاء حماية لجهاز Nintendo Switch 2",
+    "en": "Protective Case for Nintendo Switch 2",
+    "ckb": "بەرگی پاراستن بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "غطاء يحمي جسم Switch 2 في اللعب المحمول",
+    "en": "Case that protects the Switch 2 body in handheld play",
+    "ckb": "بەرگێک کە لەشی Switch 2 لە یاریی دەستیدا دەپارێزێت"
+  },
+  "description": {
+    "ar": "غطاء حماية غير رسمي لجهاز Nintendo Switch 2 يركّب على الجهاز ويحميه من الخدوش أثناء اللعب المحمول. مسجل في المخزن باسم «SW 2 CASE» دون ماركة.",
+    "en": "An unofficial protective case for Nintendo Switch 2 that fits on the console and guards it against scratches in handheld play. Listed in stock as \"SW 2 CASE\" with no brand.",
+    "ckb": "بەرگێکی پاراستنی نافەرمی بۆ Nintendo Switch 2 کە لەسەر ئامێرەکە دادەنرێت و لە کاتی یاریی دەستیدا لە خەت دەیپارێزێت. لە کۆگادا بە «SW 2 CASE» بێ مارکە تۆمارکراوە."
+  },
+  "highlights": [
+    {
+      "ar": "مقاس Nintendo Switch 2",
+      "en": "Sized for Nintendo Switch 2",
+      "ckb": "بە قەبارەی Nintendo Switch 2"
+    },
+    {
+      "ar": "يحمي من الخدوش",
+      "en": "Guards against scratches",
+      "ckb": "لە خەت دەپارێزێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Nintendo Switch 2",
+        "en": "Nintendo Switch 2",
+        "ckb": "Nintendo Switch 2"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "NS2-CASE",
+      "sheetRow": 185,
+      "title": {
+        "ar": "غطاء حماية لجهاز Nintendo Switch 2",
+        "en": "Protective Case for Nintendo Switch 2",
+        "ckb": "بەرگی پاراستن بۆ Nintendo Switch 2"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "unverified",
+      "note": {
+        "ar": "غطاء لـ Switch 2 حسب ورقة المخزن",
+        "en": "Switch 2 case per the stock sheet",
+        "ckb": "بەرگی Switch 2 بەپێی لیستی کۆگا"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "jys-switch-2-pc-case",
+      "kind": "alternative"
+    },
+    {
+      "slug": "jys-switch-2-silicone-case",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://gorillacasestore.com/products/switch-2-silicone-case-full-body-anti-slip-soft-cover-black",
+      "title": "Switch 2 Silicone Case – Full-Body Anti-Slip Soft Cover",
+      "publisher": "Gorilla Cases",
+      "retrieved": "2026-11-18",
+      "supports": "typical third-party Switch 2 protective case"
+    },
+    {
+      "url": "https://us.maxgaming.com/us/case-nintendo-switch/silicone-case-with-joy-con-protection-for-nintendo-switch-2",
+      "title": "Deltaco Gaming Silicone Case with Joy-Con Protection for Nintendo Switch 2",
+      "publisher": "MaxGaming",
+      "retrieved": "2026-11-18",
+      "supports": "second example of Switch 2 protective cases"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Maker, material and colour (no brand on the stock sheet)"
+    ]
+  }
+}

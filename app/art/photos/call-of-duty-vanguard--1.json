@@ -1,0 +1,62 @@
+{
+  "key": "call-of-duty-vanguard--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/call-of-duty-vanguard/1-240.01632d85.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/call-of-duty-vanguard/1-480.ad5176c6.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/call-of-duty-vanguard/1-720.e67c7e23.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/call-of-duty-vanguard/1-960.c2c7ba7e.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/call-of-duty-vanguard/1-240.d30e949e.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/call-of-duty-vanguard/1-480.6314251c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/call-of-duty-vanguard/1-720.65928949.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/call-of-duty-vanguard/1-960.ddecc649.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/call-of-duty-vanguard/1-1067.2d175514.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAAAwBACdASoNABQAPxFysFAsJqSisAgBgCIJYgCw7CBXiArJtdCHVqYlAsAA/ulOn9ALNN+MEOSdiukFlZL8rb4ll/5G289JZWCfg2qP24vbGf/C/I4rMOFdEMSwoPywAl+RUHBNI4oWp3AA",
+  "dominant": "#080607",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Activision",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202208/2402/k33zweM7tNp3m1djjMHWk2Vw.png",
+    "page": "https://store.playstation.com/en-gb/product/EP0002-CUSA29092_00-CODVSTANDARD0001"
+  },
+  "input": "61dd4e0ba5a095c3"
+}

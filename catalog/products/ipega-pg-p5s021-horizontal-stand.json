@@ -1,0 +1,264 @@
+{
+  "slug": "ipega-pg-p5s021-horizontal-stand",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "iPega",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة أفقية RGB مع موزّع USB من iPega PG‑P5S021 لجهاز PS5 Slim",
+    "en": "iPega PG‑P5S021 RGB Horizontal Stand with USB Hub for PS5 Slim",
+    "ckb": "ستاندی ئاسۆیی RGB لەگەڵ دابەشکەری USBی iPega PG‑P5S021 بۆ PS5 Slim"
+  },
+  "short": {
+    "ar": "4 منافذ USB · ‏14 نمط إضاءة RGB · لنسختي الأقراص والرقمية",
+    "en": "4 USB ports · 14 RGB modes · Disc and digital models",
+    "ckb": "4 دەروازەی USB · 14 جۆر RGB · دیسک و دیجیتاڵ"
+  },
+  "description": {
+    "ar": "قاعدة من قطعتين من iPega يوضع عليها جهاز PS5 Slim أفقياً، فيها موزّع بأربعة منافذ USB في الأمام أحدها يشحن اليد بسرعة، وشريطا إضاءة RGB بـ 14 نمطاً. تعمل من منفذ USB الخلفي في الجهاز.",
+    "en": "A two‑piece iPega base for the PS5 Slim lying flat, with a four‑port USB hub at the front (one port fast‑charges a controller) and RGB light strips with 14 modes. It runs from the console's rear USB port.",
+    "ckb": "بنکەیەکی دوو پارچەیی iPega بۆ PS5 Slim بە ئاسۆیی، لەگەڵ دابەشکەری چوار دەروازەی USB لە پێشەوە (یەکێکیان کۆنتڕۆڵەر بە خێرایی شەحن دەکات) و شریتی ڕووناکی RGB بە 14 جۆر."
+  },
+  "highlights": [
+    {
+      "ar": "4 منافذ USB 2.0 في الأمام",
+      "en": "4 front USB 2.0 ports",
+      "ckb": "4 دەروازەی USB 2.0 لە پێشەوە"
+    },
+    {
+      "ar": "منفذ 1 يشحن اليد بسرعة (1A)",
+      "en": "Port 1 fast‑charges a controller (1A)",
+      "ckb": "دەروازەی 1 کۆنتڕۆڵەر بە خێرایی شەحن دەکات (1A)"
+    },
+    {
+      "ar": "14 نمط إضاءة RGB",
+      "en": "14 RGB lighting modes",
+      "ckb": "14 جۆر ڕووناکی RGB"
+    },
+    {
+      "ar": "لنسختي PS5 Slim الأقراص والرقمية",
+      "en": "For PS5 Slim disc and digital",
+      "ckb": "بۆ PS5 Slimی دیسک و دیجیتاڵ"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "PG‑P5S021 (أبيض) / PG‑P5S021A (أسود)",
+        "en": "PG‑P5S021 (white) / PG‑P5S021A (black)",
+        "ckb": "PG‑P5S021 (سپی) / PG‑P5S021A (ڕەش)"
+      }
+    },
+    {
+      "key": "ports",
+      "label": {
+        "ar": "المنافذ",
+        "en": "Ports",
+        "ckb": "دەروازەکان"
+      },
+      "value": {
+        "ar": "4 × USB 2.0؛ المنفذ 1 حتى 1A، والبقية 200mA",
+        "en": "4 × USB 2.0; port 1 up to 1A, others 200mA",
+        "ckb": "4 × USB 2.0؛ دەروازەی 1 تا 1A، ئەوانی تر 200mA"
+      }
+    },
+    {
+      "key": "power",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "وزە"
+      },
+      "value": {
+        "ar": "دخل 5V/2A من منفذ USB الخلفي؛ خرج 5V/1.8A",
+        "en": "5V/2A in from the rear USB port; 5V/1.8A out",
+        "ckb": "5V/2A لە دەروازەی USBی پشتەوە؛ 5V/1.8A دەرچوون"
+      }
+    },
+    {
+      "key": "lighting",
+      "label": {
+        "ar": "الإضاءة",
+        "en": "Lighting",
+        "ckb": "ڕووناکی"
+      },
+      "value": {
+        "ar": "RGB، ‏14 نمطاً",
+        "en": "RGB, 14 modes",
+        "ckb": "RGB، 14 جۆر"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "القاعدة الأفقية",
+      "en": "Horizontal base",
+      "ckb": "بنکەی ئاسۆیی"
+    },
+    {
+      "ar": "قطعة EVA",
+      "en": "EVA pad",
+      "ckb": "پارچەی EVA"
+    },
+    {
+      "ar": "دليل الاستخدام",
+      "en": "User manual",
+      "ckb": "ڕێبەری بەکارهێنان"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "IPEGA-PG-P5S021",
+      "title": {
+        "ar": "قاعدة أفقية RGB مع موزّع USB من iPega PG‑P5S021 لجهاز PS5 Slim",
+        "en": "iPega PG‑P5S021 RGB Horizontal Stand with USB Hub for PS5 Slim",
+        "ckb": "ستاندی ئاسۆیی RGB لەگەڵ دابەشکەری USBی iPega PG‑P5S021 بۆ PS5 Slim"
+      },
+      "modelNumber": "PG-P5S021",
+      "sheetRow": 154,
+      "isDefault": true,
+      "images": [
+        "ipega-pg-p5s021-horizontal-stand--1",
+        "ipega-pg-p5s021-horizontal-stand--2",
+        "ipega-pg-p5s021-horizontal-stand--3"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "source": "https://ipega.hk/uploads/202403/65e95f89ace61.pdf"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "verified",
+      "source": "https://ipega.hk/uploads/202403/65e95f89ace61.pdf"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "unverified",
+      "note": {
+        "ar": "الشركة تكتب P5 Pro على العلبة، والدليل يذكر Slim فقط.",
+        "en": "The box mentions P5 Pro; the manual names only the Slim.",
+        "ckb": "قوتووەکە P5 Pro دەنووسێت؛ ڕێبەرەکە تەنها Slim."
+      },
+      "source": "https://www.games2egypt.com/Product/45184/ipega-pg-p5s021-horizontal-stand-holder-for-ps5-slim--and-pro"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-slim-digital-edition",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-pro",
+      "kind": "setup"
+    },
+    {
+      "slug": "ipega-pg-p5s007-horizontal-stand",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ipega-pg-p5s039-horizontal-stand",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "ipega-pg-p5s021-horizontal-stand--1",
+      "file": ".cache/product-images/ipega-pg-p5s021-horizontal-stand/1.png",
+      "sourceUrl": "https://ipega.hk/uploads/202403/65e95f7b03031.png",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-598.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "جهاز PS5 Slim على القاعدة البيضاء بإضاءة RGB",
+        "en": "A PS5 Slim on the white stand with RGB glow",
+        "ckb": "PS5 Slim لەسەر ستاندی سپی بە ڕووناکی RGB"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5s021-horizontal-stand--2",
+      "file": ".cache/product-images/ipega-pg-p5s021-horizontal-stand/2.png",
+      "sourceUrl": "https://ipega.hk/uploads/202403/65e95f7b5bcb5.png",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-598.html",
+      "kind": "angle",
+      "alt": {
+        "ar": "الجهاز على النسخة السوداء من القاعدة",
+        "en": "The console on the black version",
+        "ckb": "کۆنسۆڵ لەسەر وەشانی ڕەش"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5s021-horizontal-stand--3",
+      "file": ".cache/product-images/ipega-pg-p5s021-horizontal-stand/3.png",
+      "sourceUrl": "https://ipega.hk/uploads/202403/65e95f7b3342b.png",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-598.html",
+      "kind": "detail",
+      "alt": {
+        "ar": "قطعتا القاعدة بالأبيض والأسود مع منافذ USB",
+        "en": "The two pieces in white and black with the USB ports",
+        "ckb": "دوو پارچەکە بە سپی و ڕەش لەگەڵ دەروازەکانی USB"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ipega.hk/ps3ps4series/76-598.html",
+      "title": "PG-P5S021/A PS5 SLIM/P5pro Horizontal Support",
+      "publisher": "iPega (official site)",
+      "retrieved": "2026-11-18",
+      "supports": "model, white/black versions, pictures, box"
+    },
+    {
+      "url": "https://ipega.hk/uploads/202403/65e95f89ace61.pdf",
+      "title": "Instruction Manual (PG-P5S021)",
+      "publisher": "iPega",
+      "retrieved": "2026-11-18",
+      "supports": "Slim disc and digital fit, 4 USB 2.0 ports, port 1 fast charging 1A, others 200mA, 14 RGB modes, 5V/2A in, 5V/1.8A out, box contents"
+    },
+    {
+      "url": "https://www.games2egypt.com/Product/45184/ipega-pg-p5s021-horizontal-stand-holder-for-ps5-slim--and-pro",
+      "title": "iPega PG-P5S021 Horizontal Stand Holder for PS5 Slim and Pro",
+      "publisher": "Games2Egypt (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "fact-check: 14 RGB modes, 4-port USB hub, Slim and Pro"
+    }
+  ],
+  "notes": {
+    "ar": "الجهاز غير مرفق. إذا وُصلت عدة أجهزة تسحب تياراً عالياً معاً قد لا تعمل القاعدة جيداً (حسب الدليل).",
+    "en": "Console not included. With several high‑current devices plugged in at once the hub may stop working properly (per the manual).",
+    "ckb": "کۆنسۆڵ لەگەڵیدا نییە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Colour of the unit in stock (white PG-P5S021 or black PG-P5S021A)",
+      "PS5 Pro fit"
+    ]
+  }
+}

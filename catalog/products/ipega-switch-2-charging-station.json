@@ -1,0 +1,238 @@
+{
+  "slug": "ipega-switch-2-charging-station",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "iPega",
+  "status": "available",
+  "name": {
+    "ar": "محطة شحن متعددة iPega PG‑SW2210 لجهاز Nintendo Switch 2",
+    "en": "iPega PG‑SW2210 Multifunctional Charging Station for Nintendo Switch 2",
+    "ckb": "وێستگەی بارگاویکردنی iPega PG‑SW2210 بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "تشحن 4 أيادي Joy-Con 2 · مكان لقاعدة Switch 2 و12 بطاقة لعبة",
+    "en": "Charges 4 Joy-Con 2 · holds the Switch 2 dock and 12 game cards",
+    "ckb": "4 Joy-Con 2 بارگاوی دەکات · شوێنی دۆکی Switch 2 و 12 کارتی یاری"
+  },
+  "description": {
+    "ar": "قاعدة من iPega تضع فيها قاعدة Nintendo Switch 2 الأصلية، وتأخذ الطاقة منها عبر كابل USB‑C لتشحن حتى أربع أيادي Joy-Con 2 معًا، لكل منفذ مؤشر شحن. فيها 12 مكانًا لبطاقات الألعاب وإضاءة بتسعة أوضاع.",
+    "en": "An iPega stand that holds the original Nintendo Switch 2 dock and takes power from it through a USB-C cable to charge up to four Joy-Con 2 at once, each slot with its own charge light. It stores 12 game cards and has lighting with nine modes.",
+    "ckb": "بنکەیەکی iPega کە دۆکی ڕەسەنی Nintendo Switch 2 لەسەری دادەنرێت و بە کێبڵی USB-C وزە لێی وەردەگرێت بۆ بارگاویکردنی تا چوار Joy-Con 2 پێکەوە، هەر شوێنێک نیشاندەری خۆی هەیە. 12 شوێنی کارتی یاری و ڕووناکی بە نۆ دۆخ هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "يشحن حتى 4 أيادي Joy-Con 2 مع مؤشر لكل منفذ",
+      "en": "Charges up to 4 Joy-Con 2, a light per slot",
+      "ckb": "تا 4 Joy-Con 2 بارگاوی دەکات، نیشاندەر بۆ هەر شوێنێک"
+    },
+    {
+      "ar": "مكان لقاعدة Switch 2 الأصلية",
+      "en": "Holds the original Switch 2 dock",
+      "ckb": "شوێنی دۆکی ڕەسەنی Switch 2"
+    },
+    {
+      "ar": "12 مكانًا لبطاقات الألعاب",
+      "en": "12 game card slots",
+      "ckb": "12 شوێنی کارتی یاری"
+    },
+    {
+      "ar": "إضاءة بتسعة أوضاع وزر لمس",
+      "en": "Nine lighting modes with a touch switch",
+      "ckb": "ڕووناکی بە نۆ دۆخ و دوگمەی دەستلێدان"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Nintendo Switch 2 ويدا Joy-Con 2 الأصليتان",
+        "en": "Nintendo Switch 2 and original Joy-Con 2",
+        "ckb": "Nintendo Switch 2 و Joy-Con 2 ی ڕەسەن"
+      }
+    },
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "PG-SW2210",
+        "en": "PG-SW2210",
+        "ckb": "PG-SW2210"
+      }
+    },
+    {
+      "key": "input",
+      "label": {
+        "ar": "الدخل",
+        "en": "Input",
+        "ckb": "تێچوون"
+      },
+      "value": {
+        "ar": "DC 5V عبر USB‑C من قاعدة Switch 2",
+        "en": "DC 5V over USB-C from the Switch 2 dock",
+        "ckb": "DC 5V بە USB-C لە دۆکی Switch 2"
+      }
+    },
+    {
+      "key": "charging",
+      "label": {
+        "ar": "الشحن",
+        "en": "Charging",
+        "ckb": "بارگاویکردن"
+      },
+      "value": {
+        "ar": "200mA لكل يد · نحو 2.5–3.5 ساعة",
+        "en": "200 mA per controller · about 2.5–3.5 hours",
+        "ckb": "200mA بۆ هەر دەسکێک · نزیکەی 2.5–3.5 کاتژمێر"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "محطة الشحن",
+      "en": "Charging station",
+      "ckb": "وێستگەی بارگاویکردن"
+    },
+    {
+      "ar": "كابل USB",
+      "en": "USB cable",
+      "ckb": "کێبڵی USB"
+    },
+    {
+      "ar": "دليل الاستخدام",
+      "en": "User manual",
+      "ckb": "ڕێنمایی بەکارهێنان"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "IPEGA-PG-SW2210",
+      "sheetRow": 194,
+      "title": {
+        "ar": "محطة شحن متعددة iPega PG‑SW2210 لجهاز Nintendo Switch 2",
+        "en": "iPega PG‑SW2210 Multifunctional Charging Station for Nintendo Switch 2",
+        "ckb": "وێستگەی بارگاویکردنی iPega PG‑SW2210 بۆ Nintendo Switch 2"
+      },
+      "modelNumber": "PG-SW2210",
+      "isDefault": true,
+      "images": [
+        "ipega-switch-2-charging-station--1",
+        "ipega-switch-2-charging-station--2",
+        "ipega-switch-2-charging-station--4"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": {
+        "ar": "للقاعدة الأصلية ويدي Joy-Con 2 الأصليتين فقط",
+        "en": "For the original dock and original Joy-Con 2 only",
+        "ckb": "تەنها بۆ دۆکی ڕەسەن و Joy-Con 2 ی ڕەسەن"
+      },
+      "source": "https://ipega.hk/uploads/202507/6888866c34436.pdf"
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "joy-con-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "joy-con-2-charging-grip",
+      "kind": "alternative"
+    },
+    {
+      "slug": "hbs-switch-2-charging-stand",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "ipega-switch-2-charging-station--1",
+      "file": ".cache/product-images/ipega-switch-2-charging-station/1.jpg",
+      "sourceUrl": "https://ipega.hk/uploads/202507/6888864c8cb1c.jpg",
+      "sourcePage": "https://ipega.hk/switch2series/102-682.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "المحطة مع الجهاز وأربع أيادي Joy-Con 2",
+        "en": "The station with the console and four Joy-Con 2",
+        "ckb": "وێستگەکە لەگەڵ ئامێر و چوار Joy-Con 2"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "ipega-switch-2-charging-station--2",
+      "file": ".cache/product-images/ipega-switch-2-charging-station/2.jpg",
+      "sourceUrl": "https://ipega.hk/uploads/202507/68888651b8fda.jpg",
+      "sourcePage": "https://ipega.hk/switch2series/102-682.html",
+      "kind": "angle",
+      "alt": {
+        "ar": "المحطة من الأمام مع بطاقات الألعاب",
+        "en": "The station from the front with game cards",
+        "ckb": "وێستگەکە لە پێشەوە لەگەڵ کارتی یاری"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "ipega-switch-2-charging-station--4",
+      "file": ".cache/product-images/ipega-switch-2-charging-station/4.jpg",
+      "sourceUrl": "https://ipega.hk/uploads/202507/68888652637c3.jpg",
+      "sourcePage": "https://ipega.hk/switch2series/102-682.html",
+      "kind": "detail",
+      "alt": {
+        "ar": "الإضاءة ومؤشرات الشحن",
+        "en": "Lighting and charge indicators",
+        "ckb": "ڕووناکی و نیشاندەرەکانی بارگاویکردن"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ipega.hk/switch2series/102-682.html",
+      "title": "PG-SW2210 switch2 multifunctional charging dock",
+      "publisher": "Shenzhen Ipega Electronic Technology",
+      "retrieved": "2026-11-18",
+      "supports": "model, product images, manual download"
+    },
+    {
+      "url": "https://ipega.hk/uploads/202507/6888866c34436.pdf",
+      "title": "Multifunctional Charging Station for NS 2 – Product Manual (PG-SW2210)",
+      "publisher": "Shenzhen Ipega Electronic Technology",
+      "retrieved": "2026-11-18",
+      "supports": "DC 5V input, 200 mA per controller, 2.5–3.5 h charge, 4 Joy-Con 2, 12 game card slots, 9 light modes, USB-C power from the NS 2 dock, contents, original Joy-Con 2 only"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Which iPega multi-charger the sheet's \"SW CHARGING 2 MULT IPEGE\" is: PG-SW2210 assumed (iPega also sells PG-SW2048 and PG-SW2065 multifunctional docks)",
+      "No independent retailer page for PG-SW2210"
+    ]
+  }
+}

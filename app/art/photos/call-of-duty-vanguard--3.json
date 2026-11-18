@@ -1,0 +1,64 @@
+{
+  "key": "call-of-duty-vanguard--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/call-of-duty-vanguard/3-240.6e886efc.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/call-of-duty-vanguard/3-480.5cd1abe0.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/call-of-duty-vanguard/3-720.25116144.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/call-of-duty-vanguard/3-960.3ad14144.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/call-of-duty-vanguard/3-1440.d7e7e428.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/call-of-duty-vanguard/3-240.c7da19f4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/call-of-duty-vanguard/3-480.3ef8e5fd.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/call-of-duty-vanguard/3-720.f4b74bea.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/call-of-duty-vanguard/3-960.a56bab12.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/call-of-duty-vanguard/3-1440.90fb5919.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAABQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQBYdgx04IP2vwAD+6O4KPEFIzGm5CjB2ndd/1j/3Ghr/xt3in37b2YHoAAAA",
+  "dominant": "#080706",
+  "transparent": false,
+  "background": "#0a0907",
+  "kind": "screenshot",
+  "credit": "Activision",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/COD-vanguard-screenshot-02-en-8sep21?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/call-of-duty-vanguard/"
+  },
+  "input": "e3c2243e1420cdd0"
+}

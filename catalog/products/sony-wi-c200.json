@@ -1,0 +1,69 @@
+{
+  "slug": "sony-wi-c200",
+  "group": "controllers-audio",
+  "kind": "headset",
+  "platform": "multi",
+  "brand": "Sony",
+  "status": "available",
+  "name": { "ar": "سماعات Sony WI‑C200 اللاسلكية", "en": "Sony WI‑C200 Wireless In‑ear Headphones", "ckb": "گوێکەی بێتەلی Sony WI‑C200" },
+  "short": {
+    "ar": "Bluetooth · بطارية حتى 15 ساعة · تصميم حول الرقبة مع مايكروفون",
+    "en": "Bluetooth · Up to 15 h battery · Neckband with mic",
+    "ckb": "Bluetooth · پاتری تا 15 کاتژمێر · دیزاینی دەوری مل لەگەڵ مایک"
+  },
+  "description": {
+    "ar": "سماعات أذن لاسلكية من Sony بتصميم حول الرقبة، تتصل بالهاتف عبر Bluetooth وتدوم بطاريتها حتى 15 ساعة. شحن 10 دقائق يعطي ساعة استماع، والشحن الكامل نحو 3 ساعات عبر USB‑C. فيها سماعات 9 ملم، وزر للرد على المكالمات وتشغيل Siri أو Google Assistant، وقطع مغناطيسية تجمع السماعتين عند عدم الاستخدام. مناسبة للهاتف والاستماع اليومي أكثر من ألعاب المنصات.",
+    "en": "Sony's neckband wireless earbuds that connect to a phone over Bluetooth and last up to 15 hours. A 10-minute charge gives an hour of listening, and a full charge takes about 3 hours over USB‑C. They have 9 mm drivers, a button for calls and Siri or Google Assistant, and magnetic buds that clip together when not in use. Made for phones and everyday listening rather than console gaming.",
+    "ckb": "گوێکەی بێتەلی Sony بە دیزاینی دەوری مل، بە Bluetooth بە مۆبایل دەبەسترێت و پاترییەکەی تا 15 کاتژمێر دەمێنێت. 10 خولەک شەحن یەک کاتژمێر گوێگرتن دەدات، و شەحنی تەواو نزیکەی 3 کاتژمێرە بە USB‑C. دەنگدەری 9 ملم، دوگمەیەک بۆ پەیوەندی و Siri یان Google Assistant، و گوێکەی موگناتیسی کە بە یەکەوە دەلکێن. بۆ مۆبایل و گوێگرتنی ڕۆژانە باشترە نەک یاریی کۆنسۆڵ."
+  },
+  "highlights": [
+    { "ar": "بطارية حتى 15 ساعة؛ 10 دقائق شحن = ساعة استماع", "en": "Up to 15 hours of battery; 10 minutes of charge = 1 hour", "ckb": "پاتری تا 15 کاتژمێر؛ 10 خولەک شەحن = 1 کاتژمێر" },
+    { "ar": "اتصال Bluetooth مع مايكروفون للمكالمات", "en": "Bluetooth with a mic for calls", "ckb": "Bluetooth لەگەڵ مایک بۆ پەیوەندی" },
+    { "ar": "زر واحد لـ Siri أو Google Assistant", "en": "One button for Siri or Google Assistant", "ckb": "یەک دوگمە بۆ Siri یان Google Assistant" },
+    { "ar": "سماعات مغناطيسية وتصميم خفيف حول الرقبة", "en": "Magnetic buds and a light neckband design", "ckb": "گوێکەی موگناتیسی و دیزاینی سووکی دەوری مل" }
+  ],
+  "specs": [
+    { "key": "connection", "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" }, "value": { "ar": "Bluetooth 5.0، مدى نحو 10 أمتار", "en": "Bluetooth 5.0, about 10 m range", "ckb": "Bluetooth 5.0، مەودای نزیکەی 10 مەتر" } },
+    { "key": "drivers", "label": { "ar": "السماعات الداخلية", "en": "Drivers", "ckb": "دەنگدەرەکان" }, "value": { "ar": "ديناميكية 9 ملم", "en": "Dynamic 9 mm", "ckb": "داینامیکی 9 ملم" } },
+    { "key": "battery", "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" }, "value": { "ar": "حتى 15 ساعة؛ شحن كامل نحو 3 ساعات عبر USB‑C", "en": "Up to 15 hours; about 3 hours to full over USB‑C", "ckb": "تا 15 کاتژمێر؛ نزیکەی 3 کاتژمێر بۆ شەحنی تەواو بە USB‑C" } },
+    { "key": "weight", "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" }, "value": { "ar": "نحو 19 غرام", "en": "About 19 g", "ckb": "نزیکەی 19 گرام" } }
+  ],
+  "inTheBox": [
+    { "ar": "السماعات", "en": "Headphones", "ckb": "گوێکەکان" },
+    { "ar": "كابل USB‑C (نحو 20 سم)", "en": "USB‑C cable (about 20 cm)", "ckb": "کێبڵی USB‑C (نزیکەی 20 سم)" }
+  ],
+  "variants": [
+    {
+      "sku": "SONY-WIC200",
+      "sheetRow": 20,
+      "title": { "ar": "سماعات Sony WI‑C200 اللاسلكية", "en": "Sony WI‑C200 Wireless In‑ear Headphones", "ckb": "گوێکەی بێتەلی Sony WI‑C200" },
+      "options": {},
+      "modelNumber": "WI-C200",
+      "isDefault": true,
+      "notes": { "ar": "اللون كما هو متوفر في المخزن (أسود أو أبيض).", "en": "Colour as in stock (black or white).", "ckb": "ڕەنگ بەپێی ئەوەی لە کۆگادا هەیە (ڕەش یان سپی)." }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "windows-pc", "status": "unverified", "note": { "ar": "عبر Bluetooth إذا كان الكمبيوتر يدعمه.", "en": "Over Bluetooth if the PC has it.", "ckb": "بە Bluetooth ئەگەر PCەکە هەیبێت." } },
+    { "deviceModel": "ps5", "status": "unverified", "note": { "ar": "سماعات PlayStation اللاسلكية تتصل عبر محوّل USB؛ لم نجد تأكيداً رسمياً لعمل سماعات Bluetooth العادية مع PS5.", "en": "PlayStation's own wireless headsets connect through a USB adapter; we found no official confirmation that ordinary Bluetooth headphones work with a PS5.", "ckb": "هێدسێتە بێتەلەکانی PlayStation بە ئەداپتەری USB دەبەسترێن؛ هیچ پشتڕاستکردنەوەیەکی فەرمیمان نەدۆزییەوە کە گوێکەی Bluetoothی ئاسایی لەگەڵ PS5 کار بکات." } }
+  ],
+  "related": [
+    { "slug": "hyperx-cloud-earbuds-ii", "kind": "alternative" }
+  ],
+  "sources": [
+    { "url": "https://www.sony.ie/electronics/in-ear-headphones/wi-c200", "title": "WI-C200 Wireless In-ear Headphones", "publisher": "Sony Europe (Ireland)", "retrieved": "2026-11-18", "supports": "Bluetooth, 15-hour battery, 10 min = 60 min quick charge, 3-hour full charge, magnetic buds, neckband, 9 mm drivers, voice assistant, black or white" },
+    { "url": "https://store.sony.com.sg/blogs/5282858467483_35299417456795", "title": "WI-C200 specifications", "publisher": "Sony Store Singapore", "retrieved": "2026-11-18", "supports": "USB‑C cable about 20 cm, charge time about 3 hours, 15-hour communication time" },
+    { "url": "https://audio46.com/products/sony-wi-c200-wireless-in-ear-headphones", "title": "Sony WI-C200 Wireless In-Ear Headphones", "publisher": "Audio46", "retrieved": "2026-11-18", "supports": "retail listing confirming the model, 15-hour battery and quick charge" }
+  ],
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "That 'HEADSET SONY WI-200' is the WI-C200 (no Sony product is called WI-200; the WI-C200 matches name and price)",
+      "Colour of the unit in stock",
+      "Release date (on sale since 2020; exact day not published)",
+      "Bluetooth version and weight come from regional spec listings, not the Irish page",
+      "No clean official image could be downloaded (Sony's image server refuses scripted downloads)"
+    ]
+  }
+}

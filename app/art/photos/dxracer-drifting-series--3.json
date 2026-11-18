@@ -1,0 +1,40 @@
+{
+  "key": "dxracer-drifting-series--3",
+  "view": "hero",
+  "width": 563,
+  "height": 996,
+  "aspect": 0.5653,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-drifting-series/3-240.028de5d4.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-drifting-series/3-480.0c392b06.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-drifting-series/3-240.b571d73b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-drifting-series/3-480.4f3aa261.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRgABAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSGsAAAART6CgjSQ1dhIYnz18RARg119Wb8KJbdtuctLtl5E9sRUPMo6icB3PGDoTCNz58ucQ0f85AAOQvGtgrhG46eNhflJsYZJC+EqRlZWkLbs/S0mjpblMlxlwdYD20Dkk9/e7YJWvs41jWGAAAABWUDggbgAAABAEAJ0BKgsAFAA/EXKwUCwmpKKwCAGAIglpAAPksi6ir/pmNrCKHzqAAP6mUyW+/FyjkyUMWLCAUEmG7cXHjCdRt/Iw8XGip0Qoec/FBi2eBBCOtfQw0eTaa+KE3hNjUXFHaqltexUTG5cgwAAA",
+  "dominant": "#383838",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "DXRacer / Square Enix",
+  "source": {
+    "url": "https://nex-img.dxracer.cc/20001/faa7d195-667f-4f9c-8fb1-8815f8fdfb7f-1.png",
+    "page": "https://www.dxracer.com/products/gaming-chairs/drifting?sku=GC/LDC23LTA/FINALFANTASYVIIR"
+  },
+  "input": "84f25d2ab2a5c607"
+}

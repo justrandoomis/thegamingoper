@@ -1,0 +1,194 @@
+{
+  "slug": "jys-rog-ally-protective-case-set-x153",
+  "group": "handheld-pc-accessories",
+  "kind": "accessory",
+  "platform": "pc_handheld",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "طقم حماية JYS‑X153 لأجهزة ROG Xbox Ally",
+    "en": "JYS‑X153 Protective Case Set for ROG Xbox Ally",
+    "ckb": "سێتی پاراستنی JYS‑X153 بۆ ROG Xbox Ally"
+  },
+  "short": {
+    "ar": "قاعدة TPU مرنة + غطاء ABS صلب · حامل خلفي قابل للتعديل",
+    "en": "Flexible TPU shell + hard ABS cover · Adjustable kickstand",
+    "ckb": "بنکەی TPUی نەرم + سەرپۆشی ABSی ڕەق · وەستێنەری پشتەوە"
+  },
+  "description": {
+    "ar": "طقم حماية من JYS لجهاز ROG Xbox Ally وROG Xbox Ally X: غطاء خلفي من TPU مرن يمتص الصدمات ويبقى على الجهاز أثناء اللعب، وغطاء علوي صلب من ABS يحمي الواجهة أثناء الحمل. في الظهر حامل بزوايا قابلة للتعديل، والفتحات تترك المنافذ والأزرار وفتحات التهوية والسماعات مكشوفة.",
+    "en": "A JYS protection set for the ROG Xbox Ally and ROG Xbox Ally X: a flexible TPU back shell that absorbs knocks and stays on while you play, and a hard ABS top cover that shields the front when you carry it. An adjustable kickstand sits on the back, and the cut-outs leave the ports, buttons, vents and speakers clear.",
+    "ckb": "سێتێکی پاراستنی JYS بۆ ROG Xbox Ally و ROG Xbox Ally X: پشتێکی TPUی نەرم کە لێدان دەمژێت و لە کاتی یاریدا دەمێنێتەوە، و سەرپۆشێکی ABSی ڕەق کە ڕووی پێشەوە لە کاتی هەڵگرتندا دەپارێزێت. وەستێنەرێکی گۆڕاو لە پشتەوەیە و کونەکان دەروازە، دوگمە، کونی هەوا و سپیکەرەکان ئاشکرا دەهێڵنەوە."
+  },
+  "highlights": [
+    {
+      "ar": "غطاء خلفي TPU مرن يمتص الصدمات",
+      "en": "Flexible shock-absorbing TPU back shell",
+      "ckb": "پشتی TPUی نەرمی کەمکەرەوەی لێدان"
+    },
+    {
+      "ar": "غطاء علوي ABS صلب ضد الخدوش",
+      "en": "Hard, scratch-resistant ABS top cover",
+      "ckb": "سەرپۆشی ABSی ڕەقی دژە خەت"
+    },
+    {
+      "ar": "حامل خلفي بزوايا قابلة للتعديل",
+      "en": "Rear kickstand with adjustable angles",
+      "ckb": "وەستێنەری پشتەوە بە گۆشەی گۆڕاو"
+    },
+    {
+      "ar": "لا يغطي فتحات التهوية ولا المنافذ",
+      "en": "Leaves vents and ports uncovered",
+      "ckb": "کونی هەوا و دەروازەکان دانادات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "JYS‑X153",
+        "en": "JYS‑X153",
+        "ckb": "JYS‑X153"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "ROG Xbox Ally · ROG Xbox Ally X",
+        "en": "ROG Xbox Ally · ROG Xbox Ally X",
+        "ckb": "ROG Xbox Ally · ROG Xbox Ally X"
+      }
+    },
+    {
+      "key": "material",
+      "label": {
+        "ar": "الخامة",
+        "en": "Material",
+        "ckb": "کەرەستە"
+      },
+      "value": {
+        "ar": "قاعدة TPU + غطاء علوي ABS",
+        "en": "TPU base + ABS top cover",
+        "ckb": "بنکەی TPU + سەرپۆشی ABS"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "غطاء خلفي TPU مع حامل",
+      "en": "TPU back shell with kickstand",
+      "ckb": "پشتی TPU لەگەڵ وەستێنەر"
+    },
+    {
+      "ar": "غطاء علوي ABS",
+      "en": "ABS top cover",
+      "ckb": "سەرپۆشی ABS"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-X153",
+      "sheetRow": 68,
+      "title": {
+        "ar": "طقم حماية JYS‑X153 لأجهزة ROG Xbox Ally",
+        "en": "JYS‑X153 Protective Case Set for ROG Xbox Ally",
+        "ckb": "سێتی پاراستنی JYS‑X153 بۆ ROG Xbox Ally"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "JYS-X153",
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "rog-xbox-ally",
+      "status": "verified",
+      "note": {
+        "ar": "حسب نسخة X153‑V3",
+        "en": "Per the X153‑V3 listing",
+        "ckb": "بەپێی وەشانی X153‑V3"
+      },
+      "source": "https://gameone.ph/jys-protective-case-set-with-kickstand-for-rog-xbox-ally-ally-x-console-x153-v3.html"
+    },
+    {
+      "deviceModel": "rog-xbox-ally-x",
+      "status": "verified",
+      "note": {
+        "ar": "حسب نسخة X153‑V3",
+        "en": "Per the X153‑V3 listing",
+        "ckb": "بەپێی وەشانی X153‑V3"
+      },
+      "source": "https://gameone.ph/jys-protective-case-set-with-kickstand-for-rog-xbox-ally-ally-x-console-x153-v3.html"
+    },
+    {
+      "deviceModel": "rog-ally",
+      "status": "unverified",
+      "note": {
+        "ar": "بعض المتاجر تذكر ROG Ally وAlly X للنسخة الأولى من X153",
+        "en": "Some shops list ROG Ally and Ally X for the first X153 version",
+        "ckb": "هەندێک فرۆشگا ROG Ally و Ally X بۆ وەشانی یەکەمی X153 دەڵێن"
+      }
+    },
+    {
+      "deviceModel": "rog-ally-x",
+      "status": "unverified",
+      "note": {
+        "ar": "بعض المتاجر تذكر ROG Ally وAlly X للنسخة الأولى من X153",
+        "en": "Some shops list ROG Ally and Ally X for the first X153 version",
+        "ckb": "هەندێک فرۆشگا ROG Ally و Ally X بۆ وەشانی یەکەمی X153 دەڵێن"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "rog-xbox-ally-x",
+      "kind": "setup"
+    },
+    {
+      "slug": "rog-xbox-ally",
+      "kind": "setup"
+    },
+    {
+      "slug": "jys-rog-ally-carrying-case-x152",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://gameone.ph/jys-protective-case-set-with-kickstand-for-rog-xbox-ally-ally-x-console-x153-v3.html",
+      "title": "JYS Protective Case Set with Kickstand for ROG Xbox Ally & Ally X Console (X153-V3)",
+      "publisher": "Game One (retailer, Philippines)",
+      "retrieved": "2026-11-18",
+      "supports": "model X153-V3, for ROG Xbox Ally / Ally X, TPU bottom shell, hard ABS top cover, adjustable kickstand, full port and vent access"
+    },
+    {
+      "url": "https://www.skroutz.mt/s/65847222/tpu-case-asus-rog-ally-ally-x-front-cover-stand-jys-x153-black.html",
+      "title": "TPU Case Asus ROG Ally / Ally X Front Cover Stand JYS-X153 Black",
+      "publisher": "Skroutz (price comparison)",
+      "retrieved": "2026-11-18",
+      "supports": "second source: JYS-X153 is a black TPU case with a front cover and kickstand (lists ROG Ally / Ally X)"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "No JYS web page found",
+      "Exact revision of the stocked unit (X153 vs X153-V3 / V5) and so which ROG models it fits",
+      "Colour (assumed black)",
+      "No clean product image reachable (retailer pages blocked downloads)"
+    ]
+  }
+}

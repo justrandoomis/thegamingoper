@@ -1,0 +1,62 @@
+{
+  "key": "gran-turismo-sport--1",
+  "view": "hero",
+  "width": 1302,
+  "height": 1600,
+  "aspect": 0.8137,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/gran-turismo-sport/1-240.6d6dbbd7.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/gran-turismo-sport/1-480.43a3097b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/gran-turismo-sport/1-720.6e47076b.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/gran-turismo-sport/1-960.5d9cca14.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/gran-turismo-sport/1-240.914753d4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/gran-turismo-sport/1-480.3ba5e5ac.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/gran-turismo-sport/1-720.a878bd51.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/gran-turismo-sport/1-960.3aeea310.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/gran-turismo-sport/1-1200.9e9d81c8.png",
+    "width": 1200,
+    "height": 1475,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtwAAABXRUJQVlA4WAoAAAAQAAAADwAAEwAAQUxQSDAAAAARJ6CQjSRoBdcf4T2H04iIwOsINQGQMFRwJCADCbR/Kzz9I/o/AThFux12/hLt4gRWUDgghgAAADAEAJ0BKhAAFAA/EXCwUCwmJKKwCAGAIglmAJ0ygANVDVr5sRCw7FW1IAD11xD3Hi4Nkr7Bw7w9HM7cXv0k0vIF+tA+2zUEB6HGLOuXHuryxCzVTRVTsKXjQaKRo+4Uf+Mq/vsY0FVOT6/rJzaz77jgytd4QVDM2LOT680M0MI41GncMkAA",
+  "dominant": "#090306",
+  "transparent": true,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/gran-turismo-sport-bd-packshot-01-ps4-08nov21$en?$1600px--t$",
+    "page": "https://www.playstation.com/en-gb/games/gran-turismo-sport/"
+  },
+  "input": "5962d811c2a7d0b9"
+}

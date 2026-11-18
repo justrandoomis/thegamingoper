@@ -1,0 +1,234 @@
+{
+  "slug": "jys-rog-ally-x-carrying-case-rax011",
+  "group": "handheld-pc-accessories",
+  "kind": "accessory",
+  "platform": "pc_handheld",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "حقيبة JYS‑RAX011 لجهاز ROG Ally X",
+    "en": "JYS‑RAX011 Carrying Case for ROG Ally X",
+    "ckb": "جانتای JYS‑RAX011 بۆ ROG Ally X"
+  },
+  "short": {
+    "ar": "حقيبة صلبة · ROG Ally وAlly X · 5 بطاقات ألعاب · حزام كتف",
+    "en": "Hard case · ROG Ally and Ally X · 5 game cards · Shoulder strap",
+    "ckb": "جانتای ڕەق · ROG Ally و Ally X · 5 کارتی یاری · قایشی شان"
+  },
+  "description": {
+    "ar": "حقيبة حمل صلبة من JYS لجهاز ROG Ally وROG Ally X بتصميم ثلاثي الأبعاد وسحاب مزدوج ومقبض مانع للانزلاق. في الداخل جيبان شبكيان وحامل لخمس بطاقات، وقاعدة تسند الجهاز، ومعها حزام للكتف. لا تناسب ROG Xbox Ally ولا ROG Xbox Ally X.",
+    "en": "A hard carrying case from JYS for the ROG Ally and ROG Ally X, with a moulded 3D shell, double zip and non-slip handle. Inside are two mesh pockets, a holder for five cards and a support that props the console up; a shoulder strap is included. It does not fit the ROG Xbox Ally or ROG Xbox Ally X.",
+    "ckb": "جانتایەکی ڕەقی JYS بۆ ROG Ally و ROG Ally X، بە ڕووکاری سێ‌ڕەهەندی، زنجیرەی دووانە و دەسکی نەخلیسک. لەناوەوە دوو گیرفانی تۆڕی، شوێنی پێنج کارت و پاڵپشتێک بۆ وەستاندنی ئامێرەکە هەیە؛ قایشی شانیشی لەگەڵدایە. بۆ ROG Xbox Ally و ROG Xbox Ally X ناگونجێت."
+  },
+  "highlights": [
+    {
+      "ar": "لجهاز ROG Ally وROG Ally X",
+      "en": "For ROG Ally and ROG Ally X",
+      "ckb": "بۆ ROG Ally و ROG Ally X"
+    },
+    {
+      "ar": "مكان لـ5 بطاقات ألعاب وجيبان شبكيان",
+      "en": "Holds 5 game cards, plus two mesh pockets",
+      "ckb": "شوێنی 5 کارتی یاری و دوو گیرفانی تۆڕی"
+    },
+    {
+      "ar": "حزام كتف مرفق",
+      "en": "Shoulder strap included",
+      "ckb": "قایشی شان لەگەڵیدایە"
+    },
+    {
+      "ar": "هيكل صلب من 3 طبقات",
+      "en": "Stiff 3-layer shell",
+      "ckb": "ڕووکاری ڕەقی 3 چین"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "JYS‑RAX011",
+        "en": "JYS‑RAX011",
+        "ckb": "JYS‑RAX011"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "ROG Ally · ROG Ally X",
+        "en": "ROG Ally · ROG Ally X",
+        "ckb": "ROG Ally · ROG Ally X"
+      }
+    },
+    {
+      "key": "size",
+      "label": {
+        "ar": "الأبعاد",
+        "en": "Dimensions",
+        "ckb": "قەبارە"
+      },
+      "value": {
+        "ar": "310 × 148 × 82 ملم",
+        "en": "310 × 148 × 82 mm",
+        "ckb": "310 × 148 × 82 ملم"
+      }
+    },
+    {
+      "key": "weight",
+      "label": {
+        "ar": "الوزن",
+        "en": "Weight",
+        "ckb": "کێش"
+      },
+      "value": {
+        "ar": "490 غرام",
+        "en": "490 g",
+        "ckb": "490 گرام"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "حقيبة الحمل",
+      "en": "Carrying case",
+      "ckb": "جانتای هەڵگرتن"
+    },
+    {
+      "ar": "حزام كتف",
+      "en": "Shoulder strap",
+      "ckb": "قایشی شان"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-RAX011",
+      "sheetRow": 163,
+      "title": {
+        "ar": "حقيبة JYS‑RAX011 لجهاز ROG Ally X",
+        "en": "JYS‑RAX011 Carrying Case for ROG Ally X",
+        "ckb": "جانتای JYS‑RAX011 بۆ ROG Ally X"
+      },
+      "modelNumber": "JYS-RAX011",
+      "isDefault": true,
+      "images": [
+        "jys-rog-ally-x-carrying-case-rax011--1"
+      ],
+      "notes": {
+        "ar": "تباع بلونين: أسود، وأسود متدرج إلى الأبيض (B&W).",
+        "en": "Sold in two colours: black, and a black-to-white fade (B&W).",
+        "ckb": "بە دوو ڕەنگ دەفرۆشرێت: ڕەش، و ڕەش بۆ سپی (B&W)."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "rog-ally",
+      "status": "verified",
+      "note": {
+        "ar": "مصممة لهذا الجهاز حسب موزع JYS",
+        "en": "Made for this handheld, per JYS's distributor",
+        "ckb": "بۆ ئەم ئامێرە دروستکراوە بەپێی دابەشکەری JYS"
+      },
+      "source": "https://www.systembank.pl/futeral-etui-walizka-pokrowiec-case-oslona-torba-do-konsoli-asus-rog-ally-x-jys-rax011-bw-p10201.html"
+    },
+    {
+      "deviceModel": "rog-ally-x",
+      "status": "verified",
+      "note": {
+        "ar": "مصممة لهذا الجهاز حسب موزع JYS",
+        "en": "Made for this handheld, per JYS's distributor",
+        "ckb": "بۆ ئەم ئامێرە دروستکراوە بەپێی دابەشکەری JYS"
+      },
+      "source": "https://www.systembank.pl/futeral-etui-walizka-pokrowiec-case-oslona-torba-do-konsoli-asus-rog-ally-x-jys-rax011-bw-p10201.html"
+    },
+    {
+      "deviceModel": "rog-xbox-ally",
+      "status": "incompatible",
+      "note": {
+        "ar": "لا تناسب سلسلة ROG Xbox Ally حسب موزع JYS",
+        "en": "Does not fit the ROG Xbox Ally series, per JYS's distributor",
+        "ckb": "بۆ زنجیرەی ROG Xbox Ally ناگونجێت بەپێی دابەشکەری JYS"
+      },
+      "source": "https://www.systembank.pl/futeral-etui-walizka-pokrowiec-case-oslona-torba-do-konsoli-asus-rog-ally-x-jys-rax011-bw-p10201.html"
+    },
+    {
+      "deviceModel": "rog-xbox-ally-x",
+      "status": "incompatible",
+      "note": {
+        "ar": "لا تناسب سلسلة ROG Xbox Ally حسب موزع JYS",
+        "en": "Does not fit the ROG Xbox Ally series, per JYS's distributor",
+        "ckb": "بۆ زنجیرەی ROG Xbox Ally ناگونجێت بەپێی دابەشکەری JYS"
+      },
+      "source": "https://www.systembank.pl/futeral-etui-walizka-pokrowiec-case-oslona-torba-do-konsoli-asus-rog-ally-x-jys-rax011-bw-p10201.html"
+    }
+  ],
+  "related": [
+    {
+      "slug": "rog-ally-x",
+      "kind": "setup"
+    },
+    {
+      "slug": "rog-ally",
+      "kind": "setup"
+    },
+    {
+      "slug": "jys-rog-ally-carrying-case-x152",
+      "kind": "alternative"
+    },
+    {
+      "slug": "dobe-rog-ally-tempered-glass-ty-3836",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "jys-rog-ally-x-carrying-case-rax011--1",
+      "file": ".cache/product-images/jys-rog-ally-x-carrying-case-rax011/1.jpg",
+      "sourceUrl": "https://www.systembank.pl/img/opis/10201/futeral-etui-walizka-pokrowiec-case-oslona-torba-do-konsoli-asus-rog-ally-x-jys-rax011-bw_o10201_2.jpg",
+      "sourcePage": "https://www.systembank.pl/futeral-etui-walizka-pokrowiec-case-oslona-torba-do-konsoli-asus-rog-ally-x-jys-rax011-bw-p10201.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "حقيبة JYS RAX011 بلون أسود وأبيض، مغلقة ومفتوحة",
+        "en": "The black-and-white JYS RAX011 case, closed and open",
+        "ckb": "جانتای ڕەش و سپیی JYS RAX011، داخراو و کراوە"
+      },
+      "credit": "JYS Electronics",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.systembank.pl/futeral-etui-walizka-pokrowiec-case-oslona-torba-do-konsoli-asus-rog-ally-x-jys-rax011-bw-p10201.html",
+      "title": "Futerał Etui Walizka Pokrowiec Case Osłona Torba do Konsoli ASUS ROG Ally X / JYS-RAX011 B&W",
+      "publisher": "SystemBank (JYS distributor, Poland)",
+      "retrieved": "2026-11-18",
+      "supports": "model JYS-RAX011, fits ROG Ally / Ally X, not ROG Xbox Ally series, 310 × 148 × 82 mm, 490 g, two mesh pockets, 5 game-card holder, stand, shoulder strap, EAN 5904647828926 (B&W), product image"
+    },
+    {
+      "url": "https://www.morele.net/jys-etui-asus-rog-ally-x-jys-rax011-15359320/",
+      "title": "JYS Etui Asus ROG Ally X (JYS-RAX011)",
+      "publisher": "Morele.net (retailer, Poland)",
+      "retrieved": "2026-11-18",
+      "supports": "second source: JYS-RAX011 case for ROG Ally X, black and B&W versions"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "No JYS web page found",
+      "Colour of the stocked unit (sheet says \"RAX11 ROG ALLY X\"; black or B&W)"
+    ]
+  }
+}

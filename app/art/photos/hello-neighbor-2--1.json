@@ -1,0 +1,62 @@
+{
+  "key": "hello-neighbor-2--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hello-neighbor-2/1-240.64e3b34c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hello-neighbor-2/1-480.dc0568ee.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hello-neighbor-2/1-720.ee8bb6e8.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hello-neighbor-2/1-960.26ac781e.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hello-neighbor-2/1-240.6f6e39eb.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hello-neighbor-2/1-480.1f5bb942.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hello-neighbor-2/1-720.1dc55357.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hello-neighbor-2/1-960.7f14544d.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/hello-neighbor-2/1-1067.f5bc8306.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAACwAwCdASoNABQAPxFysFAsJqSisAgBgCIJbACdH8ACvXHbDaReIAD9Rs9ag3nVOtEQybBGpw+UG11macFyz2rl3s0yEdXs4En9KS163WrEW1obEMeK4UoHdxSk3CqlXIjDHrQntU0AYrlX+nh2QSgA",
+  "dominant": "#020203",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "tinyBuild",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202312/0613/01a40ddbd5b8867c541f15c05b6e35eea207818fb63f861d.png",
+    "page": "https://store.playstation.com/en-gb/product/EP0096-PPSA07426_00-2365742178691030"
+  },
+  "input": "72c3c10ccd4f4912"
+}

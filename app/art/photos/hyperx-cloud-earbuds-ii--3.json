@@ -1,0 +1,64 @@
+{
+  "key": "hyperx-cloud-earbuds-ii--3",
+  "view": "hero",
+  "width": 1598,
+  "height": 1302,
+  "aspect": 1.2273,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-earbuds-ii/3-240.2fa89a1a.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-earbuds-ii/3-480.bef306f6.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-earbuds-ii/3-720.056cf7a2.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-earbuds-ii/3-960.45094974.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyperx-cloud-earbuds-ii/3-1440.a93f60f4.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-earbuds-ii/3-240.bb679e41.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-earbuds-ii/3-480.17217032.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-earbuds-ii/3-720.c72ccffc.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-earbuds-ii/3-960.97ad9837.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyperx-cloud-earbuds-ii/3-1440.979b658d.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRh4BAABXRUJQVlA4WAoAAAAQAAAAEwAADwAAQUxQSIEAAAART6CobSM2VRJ9rRsREWD2G3HhxLZttTkfktgUNVdzNdMQokmXwTFMgP54S1OI6P8EADFwYwCtl1xcb8O3bcsYY3SrRHL35kzGGbX/UJZl0XrTyDL4UdQEWeGrzP2RSfgWsgiXu2cc4mnodhI1Qc4GEGVFTkNw8l4OcQHhvBgpfgQAVlA4IHYAAACwAwCdASoUABAAPxFysFAsJqSisAgBgCIJaQAD5hnU5FwHNI4uoAD+wVOZCOUqu/NynohwDnGDzYHv3zk73F4B5j8BYwvCCMK/wvketyUGPkzFaRgcZaIlQ70yybaPsCnaQS6+AX6PJJ7yD9VKk2z7dQ/oAAAA",
+  "dominant": "#151515",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "HyperX (HP Inc.)",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_earbuds_ii_black_5_accessories.jpg",
+    "page": "https://hyperx.com/products/hyperx-cloud-gaming-earbuds-ii"
+  },
+  "input": "f8b53af9e074d0ec"
+}

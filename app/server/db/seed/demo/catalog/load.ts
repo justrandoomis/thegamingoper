@@ -10,7 +10,7 @@
  * `process.getBuiltinModule` so this file needs no Node type declarations and type-checks with the
  * Worker's tsconfig; in a Worker there is no `process`, and the call fails with a clear message.
  */
-import type { CatalogProduct, DemoCatalog } from "./types";
+import { OWNER_SHEET_FILE, type CatalogProduct, type DemoCatalog, type OwnerSheetRow } from "./types";
 
 type NodeFs = {
   readdirSync(path: URL): string[];
@@ -50,7 +50,8 @@ export function loadDemoCatalog(options: LoadCatalogOptions = {}): DemoCatalog {
     } catch (error) {
       throw new Error(`Demo catalogue: catalog/products/${file} is not valid JSON (${error instanceof Error ? error.message : String(error)})`);
     }
-    products.push(product);
+    // A product with no clean official picture (or no relation, spec or highlight) may leave the list out.
+    products.push({ ...product, images: product.images ?? [], related: product.related ?? [], specs: product.specs ?? [], highlights: product.highlights ?? [] });
   }
   const photoKeys = new Set(
     fs
@@ -58,5 +59,21 @@ export function loadDemoCatalog(options: LoadCatalogOptions = {}): DemoCatalog {
       .filter((name) => name.endsWith(".json"))
       .map((name) => name.slice(0, -".json".length)),
   );
-  return { products, photoKeys };
+  // The owner's price sheet: read when it is there (a checkout without it imports the catalogue without sheet rows).
+  let ownerSheet: OwnerSheetRow[] | undefined;
+  const sheetUrl = new URL(OWNER_SHEET_FILE, root);
+  let sheetText: string | null = null;
+  try {
+    sheetText = fs.readFileSync(sheetUrl, "utf8");
+  } catch {
+    sheetText = null;
+  }
+  if (sheetText !== null) {
+    try {
+      ownerSheet = JSON.parse(sheetText) as OwnerSheetRow[];
+    } catch (error) {
+      throw new Error(`Demo catalogue: ${OWNER_SHEET_FILE} is not valid JSON (${error instanceof Error ? error.message : String(error)})`);
+    }
+  }
+  return ownerSheet ? { products, photoKeys, ownerSheet } : { products, photoKeys };
 }

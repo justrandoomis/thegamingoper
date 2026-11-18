@@ -1,0 +1,64 @@
+{
+  "key": "hyperx-cloud-stinger-s--4",
+  "view": "hero",
+  "width": 1600,
+  "height": 1600,
+  "aspect": 1,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-stinger-s/4-240.55de8a73.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-stinger-s/4-480.268b7c81.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-stinger-s/4-720.31a3fa6b.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-stinger-s/4-960.1a624480.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyperx-cloud-stinger-s/4-1440.788357e6.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-stinger-s/4-240.42afc804.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-stinger-s/4-480.b836985b.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-stinger-s/4-720.abec758b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-stinger-s/4-960.99bca026.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyperx-cloud-stinger-s/4-1440.84589d01.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRioBAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSIcAAAART6CobSM2VRK39/MiImA33vRBcGLbtpvc9MgXlUgc2F7cXzgcLpY2gN5GkIXscMf7XhZTiOj/BODvQ+lbc3Jsvabzq6fkF2IN7a6QylebMRqM1KOAY6zu0e7HRD06pPWuSKYA5EeSCQBHHc8CbIzAtawrsBu0VQ5gff7xVnoAINmkiVrx60wAVlA4IHwAAABwBACdASoUABQAPxF0s1EsJqSiqA1RgCIJaQAD5PkGmV7sWCqWp8hDJJcIAAD+8MucF2nbljtnXw8QjqS9V17YBcm3t0nf+3lrFiihNhgVMeQo+a+T77YNW83vllVOIZ8XAzX+fhfMqUV+pJoHqNeiQW0OnTtxNYWAAAAA",
+  "dominant": "#272727",
+  "transparent": true,
+  "background": null,
+  "kind": "in-box",
+  "credit": "HyperX (HP Inc.), via Icecat",
+  "source": {
+    "url": "https://images.icecat.biz/img/gallery/f6f418fad7a926333a343e8a7c82971111cfa1d5.jpg",
+    "page": "https://icecat.biz/en/p/hyperx/hhss1s-aa-bk-g/cloud-stinger-s-80427488.html"
+  },
+  "input": "c73092e05e30a290"
+}

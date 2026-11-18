@@ -1,0 +1,46 @@
+{
+  "key": "dxracer-drifting-series--1",
+  "view": "hero",
+  "width": 564,
+  "height": 1000,
+  "aspect": 0.564,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-drifting-series/1-240.f783562b.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-drifting-series/1-480.05939ca0.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-drifting-series/1-240.81136bc5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-drifting-series/1-480.b0106556.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/dxracer-drifting-series/1-564.6f141c33.png",
+    "width": 564,
+    "height": 1000,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgQBAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSG4AAAART6CgbSM3dxj2vnsQHxEBGPYz5gWc2LbtJidU+2UkHdt9bFxwxNE9Y+hMAP6Z72cOEf2fANK91xQoLIGbnyYhav6Hr3bgp11C1JxKrbNd1C2VWiZqZpfnZQ1cM2B+mGf07u/3iM3wMDhmgYJAGlZQOCBwAAAAsAMAnQEqCwAUAD8RcrBQLCakorAIAYAiCWkAA+UpBmGzskn2/sAA+ppvIzGPCvuk6W4qj3ikEk2ktT/Dn7ZYQA+spquolPnuT21Qf1WKyc1kKsKUd/ldj/C0CFrE7Bf170ynLWQ3V556bDovhwAAAA==",
+  "dominant": "#383939",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "DXRacer",
+  "source": {
+    "url": "https://nex-img.dxracer.cc/20001/f5fe4c5b-63e2-4acd-bcdf-82d6cddc5ce4-1.png",
+    "page": "https://www.dxracer.com/products/gaming-chairs/drifting?sku=GC/LDC23LTA/SPEED.NW"
+  },
+  "input": "3bc10cb30d7a1e78"
+}

@@ -1,0 +1,77 @@
+{
+  "slug": "linyuvo-game-disc-tower",
+  "group": "ps5-bags-cases-skins",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Linyuvo",
+  "status": "available",
+  "name": {
+    "ar": "برج تخزين أقراص الألعاب Linyuvo",
+    "en": "Linyuvo Game Disc Storage Tower",
+    "ckb": "تاوەری هەڵگرتنی دیسکی یاری Linyuvo"
+  },
+  "short": {
+    "ar": "حامل عمودي يرتّب علب ألعاب PS5 وPS4 وXbox على الطاولة",
+    "en": "Upright rack that keeps PS5, PS4 and Xbox game cases tidy on a desk",
+    "ckb": "ڕەفێکی ستوونی کە قوتووی یارییەکانی PS5، PS4 و Xbox ڕێک دەخات"
+  },
+  "description": {
+    "ar": "برج صغير يقف بجانب الجهاز ويحمل علب الألعاب واقفة بحيث ترى أسماءها. يناسب علب أقراص PS5 وPS4 وXbox وأقراص Blu‑ray بالمقاس القياسي.",
+    "en": "A small tower that stands next to the console and holds game cases upright so you can read their spines. It fits standard PS5, PS4, Xbox and Blu‑ray cases.",
+    "ckb": "تاوەرێکی بچووک کە لە تەنیشت کۆنسۆڵ دەوەستێت و قوتووی یارییەکان بە ستوونی ڕادەگرێت تا ناوەکانیان ببینیت. بۆ قوتووی ستانداردی PS5، PS4، Xbox و Blu‑ray دەگونجێت."
+  },
+  "highlights": [
+    { "ar": "يرتّب علب الألعاب عمودياً", "en": "Keeps game cases upright and tidy", "ckb": "قوتووی یارییەکان بە ستوونی ڕێک دەخات" },
+    { "ar": "يناسب علب PS5 وPS4 وXbox وBlu‑ray", "en": "Fits PS5, PS4, Xbox and Blu‑ray cases", "ckb": "بۆ قوتووی PS5، PS4، Xbox و Blu‑ray" }
+  ],
+  "specs": [
+    { "key": "fits", "label": { "ar": "يناسب", "en": "Fits", "ckb": "گونجاوە بۆ" }, "value": { "ar": "علب أقراص الألعاب القياسية", "en": "Standard game disc cases", "ckb": "قوتووی ستانداردی دیسکی یاری" } }
+  ],
+  "inTheBox": [
+    { "ar": "برج التخزين", "en": "Storage tower", "ckb": "تاوەری هەڵگرتن" }
+  ],
+  "variants": [
+    {
+      "sku": "LINYUVO-DISC-TOWER",
+      "sheetRow": 106,
+      "title": { "ar": "برج تخزين أقراص الألعاب Linyuvo", "en": "Linyuvo Game Disc Storage Tower", "ckb": "تاوەری هەڵگرتنی دیسکی یاری Linyuvo" },
+      "options": {},
+      "isDefault": true
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    { "slug": "ps5-vertical-stand", "kind": "accessory" },
+    { "slug": "ps5-console-dust-cover", "kind": "accessory" }
+  ],
+  "sources": [
+    {
+      "url": "https://www.kohls.com/product/prd-6382023/game-storage-tower-24-disc-rack-stand-holder-for-ps5-ps4-xbox-pc-switch-games.jsp",
+      "title": "Game Storage Tower 24 Disc Rack Stand Holder for PS5 PS4 Xbox PC Switch Games",
+      "publisher": "Kohl's",
+      "retrieved": "2026-11-18",
+      "supports": "what a game disc tower is: an upright rack for PS5, PS4 and Xbox game cases"
+    },
+    {
+      "url": "https://www.fruugo.us/video-game-storage-tower-with-disc-holder-and-dual-rack-for-ps5-xbox-switch-controllers-headsets/p-440992166",
+      "title": "Video Game Storage Tower with Disc Holder for PS5 Xbox Switch",
+      "publisher": "Fruugo",
+      "retrieved": "2026-11-18",
+      "supports": "second listing of a game disc storage tower for PS5 and Xbox cases"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع طرف ثالث.",
+    "en": "A third-party product.",
+    "ckb": "بەرهەمێکی لایەنی سێیەمە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "No Linyuvo maker or store page was found: capacity, size, colour and material are unknown",
+      "Sources describe similar towers from other makers, not this exact item",
+      "No clean product image was found"
+    ]
+  }
+}

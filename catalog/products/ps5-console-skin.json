@@ -1,0 +1,160 @@
+{
+  "slug": "ps5-console-skin",
+  "group": "ps5-bags-cases-skins",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "ملصق سكن لجهاز PS5 الأصلي",
+    "en": "PS5 Console Skin",
+    "ckb": "ستیکەری سکین بۆ PS5ی ڕەسەن"
+  },
+  "short": {
+    "ar": "ملصق فينيل يغيّر شكل الجهاز ويحميه من الخدوش · لـ PS5 الأصلي",
+    "en": "Vinyl wrap that changes the look and guards against scratches · original PS5",
+    "ckb": "ستیکەری ڤینایل کە شێوە دەگۆڕێت و لە خەت دەپارێزێت · بۆ PS5ی ڕەسەن"
+  },
+  "description": {
+    "ar": "ملصق من الفينيل مقصوص على شكل جهاز PS5 الأصلي (الطراز الكبير)، يُلصق على الأغطية ليغيّر شكلها ويحميها من الخدوش الخفيفة. يُنزع عادة دون أن يترك أثراً. لا يناسب PS5 Slim أو Pro.",
+    "en": "A vinyl sticker cut to the shape of the original (large) PS5. It goes on the covers to change their look and guard against light scratches, and usually peels off without residue. It does not fit the PS5 Slim or Pro.",
+    "ckb": "ستیکەرێکی ڤینایل کە بە شێوەی PS5ی ڕەسەن (مۆدێلی گەورە) بڕاوە. لەسەر بەرگەکان دەلکێنرێت بۆ گۆڕینی شێوەیان و پاراستنیان لە خەتی سووک، و زۆرجار بێ شوێنەوار لادەبرێت. بۆ PS5 Slim یان Pro ناگونجێت."
+  },
+  "highlights": [
+    {
+      "ar": "مقصوص على مقاس PS5 الأصلي",
+      "en": "Cut for the original PS5",
+      "ckb": "بە قەبارەی PS5ی ڕەسەن بڕاوە"
+    },
+    {
+      "ar": "يحمي من الخدوش الخفيفة",
+      "en": "Guards against light scratches",
+      "ckb": "لە خەتی سووک دەپارێزێت"
+    },
+    {
+      "ar": "لا يناسب PS5 Slim أو Pro",
+      "en": "Does not fit PS5 Slim or Pro",
+      "ckb": "بۆ PS5 Slim یان Pro ناگونجێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "material",
+      "label": {
+        "ar": "المادة",
+        "en": "Material",
+        "ckb": "ماددە"
+      },
+      "value": {
+        "ar": "فينيل لاصق",
+        "en": "Adhesive vinyl",
+        "ckb": "ڤینایلی لکاو"
+      }
+    },
+    {
+      "key": "fits",
+      "label": {
+        "ar": "يناسب",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "PS5 الأصلي (CFI-1000/1100/1200)",
+        "en": "Original PS5 (CFI-1000/1100/1200)",
+        "ckb": "PS5ی ڕەسەن (CFI-1000/1100/1200)"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "ملصق الجهاز",
+      "en": "Console skin",
+      "ckb": "ستیکەری کۆنسۆڵ"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-SKIN-FAT",
+      "sheetRow": 145,
+      "title": {
+        "ar": "لجهاز PS5 الأصلي",
+        "en": "Original PS5",
+        "ckb": "بۆ PS5ی ڕەسەن"
+      },
+      "options": {
+        "fits": "Original PS5"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "unverified",
+      "note": {
+        "ar": "تأكد أن الملصق لنسخة الأقراص",
+        "en": "Check the skin is for the disc version",
+        "ckb": "دڵنیابە ستیکەرەکە بۆ وەشانی دیسکە"
+      }
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "unverified",
+      "note": {
+        "ar": "تأكد أن الملصق للنسخة الرقمية",
+        "en": "Check the skin is for the Digital version",
+        "ckb": "دڵنیابە ستیکەرەکە بۆ وەشانی دیجیتاڵە"
+      }
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "incompatible",
+      "source": "https://www.target.com/p/aghana-digitals-full-set-skin-decal-for-ps5-console-disc-edition/-/A-1002835229"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "incompatible",
+      "source": "https://www.target.com/p/aghana-digitals-full-set-skin-decal-for-ps5-console-disc-edition/-/A-1002835229"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-5",
+      "kind": "setup"
+    },
+    {
+      "slug": "ps5-console-dust-cover",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.target.com/p/aghana-digitals-full-set-skin-decal-for-ps5-console-disc-edition/-/A-1002835229",
+      "title": "Aghana Digitals Full Set Skin Decal for PS5 Console Disc Edition",
+      "publisher": "Target",
+      "retrieved": "2026-11-18",
+      "supports": "PS5 skins are cut per console model and edition; a disc-edition skin does not fit other models"
+    },
+    {
+      "url": "https://www.fruugo.ca/for-ps5-disc-edition-superhero-skin-for-playstation-5-premium-3m-vinyl-cover-skins-wraps-for-ps5-disc-edition-console-and-controller-stickers/p-320985817",
+      "title": "PS5 Disc Edition vinyl skin for console and controller",
+      "publisher": "Fruugo",
+      "retrieved": "2026-11-18",
+      "supports": "vinyl material, scratch protection, residue-free removal"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع طرف ثالث (ليس من Sony).",
+    "en": "A third-party product (not made by Sony).",
+    "ckb": "بەرهەمێکی لایەنی سێیەمە (هی Sony نییە)."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Design, maker, and whether controller skins are included in the shop's 'PS5 SKIN FAT'",
+      "Whether it is cut for the disc or the Digital original PS5",
+      "No clean product image of this exact skin was found"
+    ]
+  }
+}

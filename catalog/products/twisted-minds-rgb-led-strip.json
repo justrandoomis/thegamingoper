@@ -1,0 +1,71 @@
+{
+  "slug": "twisted-minds-rgb-led-strip",
+  "group": "power-cables-storage-misc",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "lighting",
+  "brand": "Twisted Minds",
+  "status": "available",
+  "name": {
+    "ar": "شريط إضاءة RGB من Twisted Minds",
+    "en": "Twisted Minds RGB LED Strip",
+    "ckb": "شریتی ڕووناکیی RGBی Twisted Minds"
+  },
+  "short": {
+    "ar": "إضاءة RGB ملوّنة لمكان اللعب · TM‑FW‑LED",
+    "en": "Colour RGB lighting for a gaming setup · TM‑FW‑LED",
+    "ckb": "ڕووناکیی RGBی ڕەنگاوڕەنگ بۆ شوێنی یاری · TM‑FW‑LED"
+  },
+  "description": {
+    "ar": "شريط إضاءة LED بألوان RGB من Twisted Minds، العلامة المتخصصة بإكسسوارات وأثاث الألعاب، يُلصق خلف الشاشة أو المكتب ليعطي مكان اللعب إضاءة ملوّنة. الطراز TM‑FW‑LED.",
+    "en": "An RGB LED strip from Twisted Minds, the gaming accessories and furniture brand, that sticks behind a monitor or desk to give a gaming setup colour lighting. Model TM‑FW‑LED.",
+    "ckb": "شریتێکی ڕووناکیی LEDی RGB لە Twisted Minds، مارکەی تایبەت بە پێداویستی و کەلوپەلی یاری، کە لە پشت شاشە یان مێز دەلکێنرێت بۆ ئەوەی شوێنی یاری ڕووناکیی ڕەنگاوڕەنگی هەبێت. مۆدێلی TM‑FW‑LED."
+  },
+  "highlights": [
+    { "ar": "إضاءة RGB متعددة الألوان", "en": "Multi-colour RGB lighting", "ckb": "ڕووناکیی RGBی فرەڕەنگ" },
+    { "ar": "من Twisted Minds لإكسسوارات الألعاب", "en": "From gaming-gear brand Twisted Minds", "ckb": "لە مارکەی پێداویستیی یاری Twisted Minds" }
+  ],
+  "specs": [
+    { "key": "model", "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" }, "value": { "ar": "TM‑FW‑LED", "en": "TM‑FW‑LED", "ckb": "TM‑FW‑LED" } },
+    { "key": "light", "label": { "ar": "الإضاءة", "en": "Lighting", "ckb": "ڕووناکی" }, "value": { "ar": "LED بألوان RGB", "en": "RGB LED", "ckb": "LEDی RGB" } }
+  ],
+  "variants": [
+    {
+      "sku": "TM-FW-LED",
+      "sheetRow": 213,
+      "title": { "ar": "شريط إضاءة RGB من Twisted Minds", "en": "Twisted Minds RGB LED Strip", "ckb": "شریتی ڕووناکیی RGBی Twisted Minds" },
+      "options": {},
+      "modelNumber": "TM-FW-LED",
+      "isDefault": true
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    { "slug": "twisted-minds-wifi-tv-led-strip", "kind": "alternative" }
+  ],
+  "images": [],
+  "sources": [
+    {
+      "url": "https://www.ifa-berlin.com/exhibitors/twisted-minds",
+      "title": "Twisted Minds (exhibitor profile)",
+      "publisher": "IFA Berlin",
+      "retrieved": "2026-11-18",
+      "supports": "Twisted Minds is a gaming technology brand making monitors, desks, chairs, headsets, keyboards, mice and gaming accessories"
+    },
+    {
+      "url": "https://level-up.gg/products/twisted-minds-gaming-monitor-tv-rgb-led-strip-usb-powered-light-2-meters-tm-led-2m-x002jflrzr",
+      "title": "Twisted Minds Gaming Monitor / TV RGB LED Strip, USB Powered Light, 2 Meters | TM-LED-2M",
+      "publisher": "Level Up (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "Twisted Minds sells RGB LED strips for monitors and TVs under TM- model codes"
+    }
+  ],
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": false,
+    "unverified": [
+      "No page anywhere names model TM-FW-LED: length, power (USB or adapter), control method and what \"FW\" means are unknown",
+      "No maker image found (twistedminds.com does not serve the brand's catalogue)"
+    ]
+  }
+}

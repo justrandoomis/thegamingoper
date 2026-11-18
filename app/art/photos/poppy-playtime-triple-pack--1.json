@@ -1,0 +1,62 @@
+{
+  "key": "poppy-playtime-triple-pack--1",
+  "view": "hero",
+  "width": 1289,
+  "height": 1600,
+  "aspect": 0.8056,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/poppy-playtime-triple-pack/1-240.32187427.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/poppy-playtime-triple-pack/1-480.bf5a2f7d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/poppy-playtime-triple-pack/1-720.87c1cfef.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/poppy-playtime-triple-pack/1-960.a4ac5e7c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/poppy-playtime-triple-pack/1-240.37375a8c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/poppy-playtime-triple-pack/1-480.fc09bfe5.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/poppy-playtime-triple-pack/1-720.675bf741.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/poppy-playtime-triple-pack/1-960.c8050d67.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/poppy-playtime-triple-pack/1-1200.14913358.jpg",
+    "width": 1200,
+    "height": 1490,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAACwAwCdASoQABQAPxFysFAsJqSisAgBgCIJZAC2yCHfZRu3QEQn4AD+14WSvN/vXVzwIm3dqsHkYDM6FLP56ErmeAwrvpVLl8bgDMJ9rR9go+MAWjMkVxx3gNLNycQNiHhmZnPv1xrAJoVpNb70ZNGFfUAnB1V7/IP2sbkymbp6AAAA",
+  "dominant": "#040204",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "box-art",
+  "credit": "Mob Entertainment / Maximum Entertainment",
+  "source": {
+    "url": "https://mma.prnewswire.com/media/2488745/Mob_Entertainment_Poppy_Playtime_Triple_Pack.jpg?p=original",
+    "page": "https://www.prnewswire.com/news-releases/mob-entertainment-partners-with-maximum-entertainment-to-bring-poppy-playtime-triple-pack-to-retail-302229761.html"
+  },
+  "input": "485e8f0a6fad705e"
+}

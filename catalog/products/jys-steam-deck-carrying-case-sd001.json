@@ -1,0 +1,214 @@
+{
+  "slug": "jys-steam-deck-carrying-case-sd001",
+  "group": "handheld-pc-accessories",
+  "kind": "accessory",
+  "platform": "pc_handheld",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "حقيبة JYS‑SD001 لجهاز Steam Deck",
+    "en": "JYS‑SD001 Steam Deck Carrying Case",
+    "ckb": "جانتای JYS‑SD001 بۆ Steam Deck"
+  },
+  "qualifier": {
+    "ar": "مموّهة",
+    "en": "Camo",
+    "ckb": "شێوەی سەربازی"
+  },
+  "short": {
+    "ar": "حقيبة صلبة مموّهة · 322 × 145 × 65 ملم · سحاب مزدوج",
+    "en": "Hard camo case · 322 × 145 × 65 mm · Double zip",
+    "ckb": "جانتای ڕەقی سەربازی · 322 × 145 × 65 ملم · زنجیرەی دووانە"
+  },
+  "description": {
+    "ar": "حقيبة حمل صلبة من JYS لجهاز Steam Deck بنقشة تمويه عسكرية. هيكلها من ثلاث طبقات مقوّاة مع بطانة تمتص الصدمات، وتُغلق بسحاب مزدوج. في الداخل قاعدة يثبَّت عليها الجهاز بأشرطة مطاطية وتعمل أيضاً كحامل، وجيب مطاطي للكابلات والسماعات.",
+    "en": "A hard carrying case from JYS for the Steam Deck in a military camo print. The shell has three stiffened layers with a shock-absorbing lining and closes with a double zip. Inside, an insert holds the console with elastic straps and doubles as a stand, and an elastic pocket takes cables and earphones.",
+    "ckb": "جانتایەکی ڕەقی JYS بۆ Steam Deck بە نەخشی سەربازی. ڕووکارەکەی سێ چینی بەهێزکراوە لەگەڵ ناوپۆشی کەمکەرەوەی لێدان و بە زنجیرەی دووانە دادەخرێت. لەناوەوە پارچەیەک ئامێرەکە بە پشتێنی لاستیکی دەگرێت و وەک وەستێنەریش کار دەکات، و گیرفانێکی لاستیکی بۆ وایەر و هێدفۆن."
+  },
+  "highlights": [
+    {
+      "ar": "مصممة لجهاز Steam Deck",
+      "en": "Made for the Steam Deck",
+      "ckb": "بۆ Steam Deck دروستکراوە"
+    },
+    {
+      "ar": "هيكل صلب من 3 طبقات مع بطانة تمتص الصدمات",
+      "en": "Stiff 3-layer shell with shock-absorbing lining",
+      "ckb": "ڕووکاری ڕەقی 3 چین لەگەڵ ناوپۆشی کەمکەرەوەی لێدان"
+    },
+    {
+      "ar": "قاعدة داخلية تثبت الجهاز وتعمل كحامل",
+      "en": "Inner insert holds the console and works as a stand",
+      "ckb": "پارچەی ناوەوە ئامێرەکە دەگرێت و وەک وەستێنەر کار دەکات"
+    },
+    {
+      "ar": "جيب مطاطي للكابل والسماعات",
+      "en": "Elastic pocket for cable and earphones",
+      "ckb": "گیرفانی لاستیکی بۆ وایەر و هێدفۆن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "JYS‑SD001",
+        "en": "JYS‑SD001",
+        "ckb": "JYS‑SD001"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Steam Deck",
+        "en": "Steam Deck",
+        "ckb": "Steam Deck"
+      }
+    },
+    {
+      "key": "size",
+      "label": {
+        "ar": "الأبعاد",
+        "en": "Dimensions",
+        "ckb": "قەبارە"
+      },
+      "value": {
+        "ar": "322 × 145 × 65 ملم",
+        "en": "322 × 145 × 65 mm",
+        "ckb": "322 × 145 × 65 ملم"
+      }
+    },
+    {
+      "key": "color",
+      "label": {
+        "ar": "اللون",
+        "en": "Colour",
+        "ckb": "ڕەنگ"
+      },
+      "value": {
+        "ar": "تمويه عسكري (مموّه)",
+        "en": "Camouflage",
+        "ckb": "شێوەی سەربازی"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "الحقيبة فقط (الجهاز غير مشمول)",
+      "en": "Case only (console not included)",
+      "ckb": "تەنها جانتاکە (ئامێر لەگەڵیدا نییە)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-SD001-CAMO",
+      "sheetRow": 5,
+      "title": {
+        "ar": "مموّه",
+        "en": "Camo",
+        "ckb": "شێوەی سەربازی"
+      },
+      "options": {
+        "color": "Camo"
+      },
+      "modelNumber": "JYS-SD001",
+      "barcodes": [
+        "5904647826007"
+      ],
+      "isDefault": true,
+      "images": [
+        "jys-steam-deck-carrying-case-sd001--1"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "steam-deck-lcd",
+      "status": "verified",
+      "note": {
+        "ar": "مصممة لجهاز Steam Deck",
+        "en": "Made for the Steam Deck",
+        "ckb": "بۆ Steam Deck دروستکراوە"
+      },
+      "source": "https://www.systembank.pl/pokrowiec-futeral-etui-case-na-konsole-steam-deck-jys-sd001-p6960.html"
+    },
+    {
+      "deviceModel": "steam-deck-oled",
+      "status": "unverified",
+      "note": {
+        "ar": "حجم OLED الخارجي مماثل تقريباً، لكن JYS لا تذكره",
+        "en": "The OLED model's outer size is nearly the same, but JYS does not list it",
+        "ckb": "قەبارەی دەرەوەی OLED نزیکەی هەمانە، بەڵام JYS ناوی نابات"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "steam-deck-oled",
+      "kind": "setup"
+    },
+    {
+      "slug": "steam-deck-lcd",
+      "kind": "setup"
+    },
+    {
+      "slug": "dobe-steam-deck-case",
+      "kind": "accessory"
+    },
+    {
+      "slug": "dobe-steam-deck-tempered-glass-ty-3802",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "jys-steam-deck-carrying-case-sd001--1",
+      "file": ".cache/product-images/jys-steam-deck-carrying-case-sd001/1.jpg",
+      "sourceUrl": "https://www.systembank.pl/img/opis/6960/pokrowiec-futeral-etui-case-na-konsole-steam-deck-jys-sd001_o6960_1.jpg",
+      "sourcePage": "https://www.systembank.pl/pokrowiec-futeral-etui-case-na-konsole-steam-deck-jys-sd001-p6960.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "حقيبة JYS SD001 المموهة مغلقة ومفتوحة وفيها Steam Deck",
+        "en": "The camo JYS SD001 case closed and open with a Steam Deck inside",
+        "ckb": "جانتای سەربازیی JYS SD001 داخراو و کراوە لەگەڵ Steam Deck"
+      },
+      "credit": "JYS Electronics",
+      "width": 1000,
+      "height": 1000,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.systembank.pl/pokrowiec-futeral-etui-case-na-konsole-steam-deck-jys-sd001-p6960.html",
+      "title": "Pokrowiec Futerał Etui Case na Konsolę Steam Deck / JYS-SD001",
+      "publisher": "SystemBank (JYS distributor, Poland)",
+      "retrieved": "2026-11-18",
+      "supports": "model JYS-SD001, camo (moro), 322 × 145 × 65 mm, double zip, elastic pocket, 3-layer stiff shell, console insert / stand, EAN 5904647826007, product image"
+    },
+    {
+      "url": "https://www.amazon.com/Camouflage-Fall-proof-Waterproof-Organizer-JYS-SD001/dp/B0BL6S5P9K",
+      "title": "Steam Deck Case Handheld Storage Bag EVA Camouflage Carry Bag (JYS-SD001)",
+      "publisher": "Amazon.com listing",
+      "retrieved": "2026-11-18",
+      "supports": "second source: JYS-SD001 is a camouflage EVA carry bag for the Steam Deck"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "No JYS web page found; facts come from JYS's Polish distributor and retailers",
+      "Fit with the Steam Deck OLED"
+    ]
+  }
+}

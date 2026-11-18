@@ -1,0 +1,254 @@
+{
+  "slug": "hyperx-quadcast",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "HyperX",
+  "category": "microphones",
+  "status": "available",
+  "name": {
+    "ar": "مايكروفون HyperX QuadCast",
+    "en": "HyperX QuadCast",
+    "ckb": "مایکرۆفۆنی HyperX QuadCast"
+  },
+  "short": {
+    "ar": "مايكروفون USB · أربعة أنماط التقاط · كتم باللمس",
+    "en": "USB mic · 4 pickup patterns · tap-to-mute",
+    "ckb": "مایکی USB · 4 شێوازی وەرگرتن · بێدەنگکردن بە دەستلێدان"
+  },
+  "description": {
+    "ar": "مايكروفون USB مكثف من HyperX للبث والبودكاست والألعاب، مع حامل مضاد للاهتزاز وفلتر داخلي للأصوات الانفجارية. تختار بين أربعة أنماط التقاط، وتكتم الصوت بلمسة على أعلاه مع ضوء يوضح الحالة، وفيه مخرج سماعة 3.5 ملم ومقبض للتحكم بالحساسية.",
+    "en": "A HyperX USB condenser microphone for streaming, podcasts and gaming, with an anti-vibration shock mount and a built-in pop filter. You choose between four pickup patterns, tap the top to mute (an LED shows the status), and it has a 3.5 mm headphone jack and a gain dial.",
+    "ckb": "مایکرۆفۆنێکی USBی کۆندێنسەری HyperX بۆ پەخش و پۆدکاست و یاری، لەگەڵ هەڵگری دژە لەرزین و فلتەری ناوخۆیی. چوار شێوازی وەرگرتن هەڵدەبژێریت، بە دەستلێدان لە سەرەوەی بێدەنگی دەکەیت (ڕووناکییەک دۆخەکە نیشان دەدات)، و دەرچەی هێدفۆنی 3.5 ملم و دوگمەی هەستیاری هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "أربعة أنماط التقاط: ستيريو، شامل، قلبي، ثنائي الاتجاه",
+      "en": "4 patterns: stereo, omni, cardioid, bidirectional",
+      "ckb": "4 شێواز: ستێریۆ، هەمەلایەنە، دڵی، دوولایەنە"
+    },
+    {
+      "ar": "كتم بلمسة مع ضوء LED للحالة",
+      "en": "Tap-to-mute with LED indicator",
+      "ckb": "بێدەنگکردن بە دەستلێدان لەگەڵ نیشاندەری LED"
+    },
+    {
+      "ar": "حامل مضاد للاهتزاز وفلتر داخلي",
+      "en": "Shock mount and internal pop filter",
+      "ckb": "هەڵگری دژە لەرزین و فلتەری ناوخۆیی"
+    },
+    {
+      "ar": "يعمل مع الكمبيوتر وMac وPS5 وPS4",
+      "en": "Works with PC, Mac, PS5 and PS4",
+      "ckb": "لەگەڵ PC و Mac و PS5 و PS4 کار دەکات"
+    },
+    {
+      "ar": "معتمد من Discord وTeamSpeak",
+      "en": "Discord and TeamSpeak certified",
+      "ckb": "پەسەندکراوی Discord و TeamSpeak"
+    }
+  ],
+  "specs": [
+    {
+      "key": "capsule",
+      "label": {
+        "ar": "الكبسولة",
+        "en": "Capsule",
+        "ckb": "کەپسوول"
+      },
+      "value": {
+        "ar": "ثلاث كبسولات مكثفة 14 ملم",
+        "en": "Three 14 mm electret condenser capsules",
+        "ckb": "سێ کەپسوولی کۆندێنسەری 14 ملم"
+      }
+    },
+    {
+      "key": "pattern",
+      "label": {
+        "ar": "نمط الالتقاط",
+        "en": "Pickup pattern",
+        "ckb": "شێوازی وەرگرتن"
+      },
+      "value": {
+        "ar": "ستيريو، شامل الاتجاهات، قلبي، ثنائي الاتجاه",
+        "en": "Stereo, omnidirectional, cardioid, bidirectional",
+        "ckb": "ستێریۆ، هەمەلایەنە، دڵی، دوولایەنە"
+      }
+    },
+    {
+      "key": "frequency",
+      "label": {
+        "ar": "الاستجابة الترددية",
+        "en": "Frequency response",
+        "ckb": "وەڵامی لەرەلەر"
+      },
+      "value": {
+        "ar": "20 هرتز – 20 كيلوهرتز",
+        "en": "20 Hz–20 kHz",
+        "ckb": "20 هێرتز – 20 کیلۆهێرتز"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "USB Mini‑B، مخرج سماعة 3.5 ملم",
+        "en": "USB Mini-B, 3.5 mm headphone output",
+        "ckb": "USB Mini‑B، دەرچەی هێدفۆنی 3.5 ملم"
+      }
+    },
+    {
+      "key": "weight",
+      "label": {
+        "ar": "الوزن",
+        "en": "Weight",
+        "ckb": "کێش"
+      },
+      "value": {
+        "ar": "نحو 250 غرام (المايكروفون)",
+        "en": "About 250 g (microphone)",
+        "ckb": "نزیکەی 250 گرام (مایکەکە)"
+      }
+    },
+    {
+      "key": "warranty",
+      "label": {
+        "ar": "الضمان",
+        "en": "Warranty",
+        "ckb": "گەرەنتی"
+      },
+      "value": {
+        "ar": "سنتان حسب HyperX",
+        "en": "2 years per HyperX",
+        "ckb": "2 ساڵ بەپێی HyperX"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "المايكروفون مع الحامل",
+      "en": "Microphone with stand",
+      "ckb": "مایکرۆفۆن لەگەڵ پایە"
+    },
+    {
+      "ar": "كابل USB",
+      "en": "USB cable",
+      "ckb": "کێبڵی USB"
+    },
+    {
+      "ar": "محوّل تثبيت 3/8 و5/8 إنش",
+      "en": "3/8\" and 5/8\" mount adapter",
+      "ckb": "گۆڕەری 3/8 و 5/8 ئینج"
+    },
+    {
+      "ar": "دليل التشغيل السريع",
+      "en": "Quick start guide",
+      "ckb": "ڕێبەری خێرا"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "HX-QUADCAST",
+      "title": {
+        "ar": "أسود وأحمر",
+        "en": "Black/Red",
+        "ckb": "ڕەش و سوور"
+      },
+      "options": {
+        "color": "Black/Red"
+      },
+      "modelNumber": "4P5P6AA",
+      "barcodes": [
+        "196337765795"
+      ],
+      "isDefault": true,
+      "images": [
+        "hyperx-quadcast--3"
+      ],
+      "sheetRow": 28,
+      "notes": {
+        "ar": "رقم HP الحالي للموديل؛ الرقم القديم HX‑MICQC‑BK.",
+        "en": "HP's current part number; the older code is HX-MICQC-BK.",
+        "ckb": "ژمارەی ئێستای HP؛ کۆدی کۆن HX‑MICQC‑BK."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "USB، بدون تعريفات.",
+        "en": "USB, no drivers needed.",
+        "ckb": "USB، بێ پێناسە."
+      },
+      "source": "https://hyperx.com/products/hyperx-quadcast-usb-microphone"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "عبر USB حسب HyperX.",
+        "en": "Over USB, per HyperX.",
+        "ckb": "بە USB بەپێی HyperX."
+      },
+      "source": "https://hyperx.com/products/hyperx-quadcast-usb-microphone"
+    }
+  ],
+  "related": [
+    {
+      "slug": "maono-dm30",
+      "kind": "alternative"
+    },
+    {
+      "slug": "redragon-gm306",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "hyperx-quadcast--3",
+      "file": ".cache/product-images/hyperx-quadcast/3.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_quadcast_04_angled_84bb0734-bb08-4866-a15e-8739add42927.jpg",
+      "sourcePage": "https://hyperx.com/products/hyperx-quadcast-usb-microphone",
+      "kind": "hero",
+      "alt": {
+        "ar": "مايكروفون HyperX QuadCast على حامله بزاوية",
+        "en": "HyperX QuadCast on its stand, at an angle",
+        "ckb": "HyperX QuadCast لەسەر پایەکەی بە گۆشەیەک"
+      },
+      "credit": "HyperX",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://hyperx.com/products/hyperx-quadcast-usb-microphone",
+      "title": "HyperX QuadCast Microphone",
+      "publisher": "HyperX",
+      "retrieved": "2026-11-18",
+      "supports": "shock mount, tap-to-mute with LED, 4 polar patterns, gain dial, pop filter, headphone jack, PC/PS5/PS4/Mac, Discord and TeamSpeak certified, capsules, frequency response, USB Mini-B, weight 0.55 lb, box contents, 2-year warranty, part number 4P5P6A6#ABA, UPC, images"
+    },
+    {
+      "url": "https://www.tomshardware.com/reviews/kingston-hyperx-quadcast-gaming-microphone,6100.html",
+      "title": "Kingston HyperX QuadCast Gaming Microphone Review",
+      "publisher": "Tom's Hardware",
+      "retrieved": "2026-11-18",
+      "supports": "independent confirmation: four polar patterns, tap-to-mute with red glow, USB audio limited to 48 kHz / 16-bit"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Release date (on sale since 2019)",
+      "Region of the barcode (US listing)"
+    ]
+  }
+}

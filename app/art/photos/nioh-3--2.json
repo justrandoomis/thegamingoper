@@ -1,0 +1,64 @@
+{
+  "key": "nioh-3--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nioh-3/2-240.fc7543f8.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nioh-3/2-480.2374770f.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nioh-3/2-720.3358f9b7.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nioh-3/2-960.70719f70.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nioh-3/2-1440.02d4e54c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nioh-3/2-240.52140cb1.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nioh-3/2-480.e6ae46aa.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nioh-3/2-720.4a894003.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nioh-3/2-960.ed352787.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nioh-3/2-1440.7a28e369.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAQBACdASoUAAsAPxFwsFAsJiSisAgBgCIJQBdmUABoGCvboCpr3EL4gAD+6NBNf7ZcfFTARFKAek4ecVXB2Clgj7lV7spkBaq6KAAA",
+  "dominant": "#181618",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Koei Tecmo",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202510/1606/fe9d5be4d230baca2629930094cac3eb0b6e304980015e35.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP4108-PPSA32785_00-NIOH300000000000"
+  },
+  "input": "b0102d176b54d23e"
+}

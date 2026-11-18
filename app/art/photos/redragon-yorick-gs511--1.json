@@ -1,0 +1,62 @@
+{
+  "key": "redragon-yorick-gs511--1",
+  "view": "hero",
+  "width": 1195,
+  "height": 1361,
+  "aspect": 0.878,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/redragon-yorick-gs511/1-240.e52c8b48.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-yorick-gs511/1-480.cd5e9fd4.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-yorick-gs511/1-720.b9f2d07c.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-yorick-gs511/1-960.318704f7.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/redragon-yorick-gs511/1-240.b662e7c4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-yorick-gs511/1-480.b5b6fd4f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-yorick-gs511/1-720.34656072.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-yorick-gs511/1-960.4628c9c0.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/redragon-yorick-gs511/1-1195.36587782.png",
+    "width": 1195,
+    "height": 1361,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvIAAABXRUJQVlA4WAoAAAAQAAAAEQAAEwAAQUxQSF0AAAART6C0kRQ4ey3cAQr3OiIiUBGf5DWY1tbeJAXQrIBD43BxHFxGiOPgetsgK7x56WWAiP5PgDgfj16LeKykhVUaSC2gDeRu46BsgMjBelRvwjvsD5Q7Ismk8b5Q4hgAVlA4IG4AAAAwBACdASoSABQAPxFys1MsJiSisBgIAYAiCWcAA+OQ6aYPVqtAD4FKYOAA/oHWEVZxHfuen8Y7Y0EhFDkis/1tmVCblBcNIBsgbzUFgIOFv+Mm6GWyjF6Lk4pIzefA2P++G1E8z2GduKbCO6zAAA==",
+  "dominant": "#575757",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Redragon",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0012/4957/4961/products/RedragonGS511WirelessRGBDesktopSpeakers_2.png",
+    "page": "https://redragonshop.com/products/yorick-gs511"
+  },
+  "input": "19cbc26031825357"
+}

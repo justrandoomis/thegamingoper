@@ -1,0 +1,100 @@
+{
+  "slug": "ps5-slim-faceplates",
+  "group": "ps5-bags-cases-skins",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "أغطية جانبية ملوّنة لجهاز PS5 Slim",
+    "en": "PS5 Slim Replacement Faceplates",
+    "ckb": "بەرگە لاتەنیشتە ڕەنگاوڕەنگەکان بۆ PS5 Slim"
+  },
+  "short": {
+    "ar": "أغطية بديلة بلون جديد لجهاز PS5 Slim · أزرق، أخضر، أحمر",
+    "en": "Replacement shell plates in a new colour for the PS5 Slim · blue, green, red",
+    "ckb": "پلێتی جێگرەوە بە ڕەنگی نوێ بۆ PS5 Slim · شین، سەوز، سوور"
+  },
+  "description": {
+    "ar": "أغطية بلاستيكية بديلة تُركّب مكان الأغطية البيضاء لجهاز PS5 Slim لتغيّر لونه. تُركّب وتُفك باليد دون أدوات. تأكد من نسخة جهازك (أقراص أو رقمية) لأن الغطاء العلوي يختلف بينهما.",
+    "en": "Plastic replacement plates that go on in place of the PS5 Slim's white covers to change its colour. They clip on and off by hand, no tools. Check your console version (disc or Digital), since the top plate differs between them.",
+    "ckb": "پلێتی پلاستیکی جێگرەوە کە لە شوێنی بەرگە سپییەکانی PS5 Slim دادەنرێن بۆ گۆڕینی ڕەنگەکەی. بە دەست دادەنرێن و لادەبرێن، بێ ئامراز. وەشانی کۆنسۆڵەکەت بزانە (دیسک یان دیجیتاڵ)، چونکە پلێتی سەرەوە جیاوازە."
+  },
+  "highlights": [
+    { "ar": "تغيّر لون جهاز PS5 Slim", "en": "Change the colour of a PS5 Slim", "ckb": "ڕەنگی PS5 Slim دەگۆڕێت" },
+    { "ar": "تركيب باليد دون أدوات", "en": "Fit by hand, no tools", "ckb": "بە دەست دادەنرێت، بێ ئامراز" },
+    { "ar": "ألوان: أزرق، أخضر، أحمر", "en": "Colours: blue, green, red", "ckb": "ڕەنگەکان: شین، سەوز، سوور" }
+  ],
+  "specs": [
+    { "key": "fits", "label": { "ar": "يناسب", "en": "Fits", "ckb": "گونجاوە بۆ" }, "value": { "ar": "PS5 Slim", "en": "PS5 Slim", "ckb": "PS5 Slim" } },
+    { "key": "material", "label": { "ar": "المادة", "en": "Material", "ckb": "ماددە" }, "value": { "ar": "بلاستيك ABS", "en": "ABS plastic", "ckb": "پلاستیکی ABS" } }
+  ],
+  "inTheBox": [
+    { "ar": "الأغطية الجانبية", "en": "Faceplates", "ckb": "بەرگە لاتەنیشتەکان" }
+  ],
+  "variants": [
+    {
+      "sku": "PS5SLIM-PLATES-BLUE",
+      "sheetRow": 93,
+      "title": { "ar": "أزرق", "en": "Blue", "ckb": "شین" },
+      "options": { "color": "Blue" },
+      "isDefault": true
+    },
+    {
+      "sku": "PS5SLIM-PLATES-GREEN",
+      "sheetRow": 94,
+      "title": { "ar": "أخضر", "en": "Green", "ckb": "سەوز" },
+      "options": { "color": "Green" },
+      "isDefault": false
+    },
+    {
+      "sku": "PS5SLIM-PLATES-RED",
+      "sheetRow": 95,
+      "title": { "ar": "أحمر", "en": "Red", "ckb": "سوور" },
+      "options": { "color": "Red" },
+      "isDefault": false
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5-slim", "status": "unverified", "note": { "ar": "تأكد من أن الأغطية لنسخة الأقراص", "en": "Check the plates are for the disc version", "ckb": "دڵنیابە پلێتەکان بۆ وەشانی دیسکن" } },
+    { "deviceModel": "ps5-slim-digital", "status": "unverified", "note": { "ar": "تأكد من أن الأغطية للنسخة الرقمية", "en": "Check the plates are for the Digital version", "ckb": "دڵنیابە پلێتەکان بۆ وەشانی دیجیتاڵن" } },
+    { "deviceModel": "ps5", "status": "incompatible", "note": { "ar": "لا تناسب PS5 الأصلي", "en": "Does not fit the original PS5", "ckb": "بۆ PS5ی ڕەسەن ناگونجێت" }, "source": "https://www.intercyprus.com/products/abs-hard-case-replacement-faceplate-shockproof-side-plate-shell-faceplate-case-cover-for-playstation-5-slim-disc-digital-console" },
+    { "deviceModel": "ps5-pro", "status": "incompatible", "note": { "ar": "لا تناسب PS5 Pro", "en": "Does not fit the PS5 Pro", "ckb": "بۆ PS5 Pro ناگونجێت" }, "source": "https://www.intercyprus.com/products/abs-hard-case-replacement-faceplate-shockproof-side-plate-shell-faceplate-case-cover-for-playstation-5-slim-disc-digital-console" }
+  ],
+  "related": [
+    { "slug": "playstation-5-slim", "kind": "setup" },
+    { "slug": "playstation-5-slim-digital-edition", "kind": "setup" },
+    { "slug": "ps5-console-dust-cover", "kind": "accessory" },
+    { "slug": "ps5-slim-carrying-bag", "kind": "accessory" }
+  ],
+  "sources": [
+    {
+      "url": "https://www.intercyprus.com/products/abs-hard-case-replacement-faceplate-shockproof-side-plate-shell-faceplate-case-cover-for-playstation-5-slim-disc-digital-console",
+      "title": "PS5 Slim ABS Hard Faceplate Replacement With Cooling Vent",
+      "publisher": "InterCyprus",
+      "retrieved": "2026-11-18",
+      "supports": "third-party ABS replacement faceplates made for the PS5 Slim, disc and Digital versions"
+    },
+    {
+      "url": "https://www.walmart.com/c/kp/sony-faceplate",
+      "title": "Sony Faceplate",
+      "publisher": "Walmart",
+      "retrieved": "2026-11-18",
+      "supports": "third-party PS5 Slim faceplates sold in blue and red, per disc or Digital edition"
+    }
+  ],
+  "notes": {
+    "ar": "أغطية من صنع طرف ثالث (ليست أغطية Sony الرسمية).",
+    "en": "Third-party plates (not Sony's official console covers).",
+    "ckb": "پلێتی لایەنی سێیەمن (بەرگە فەرمییەکانی Sony نین)."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "That the sheet's 'PS5 CASE SLIM BLUE / GREEN / RED' are replacement faceplates (inferred from the colours and the 40,000 IQD price, below Sony's official covers)",
+      "Maker, exact shade, and whether they are the disc or the Digital version",
+      "No clean product image of these exact plates was found"
+    ]
+  }
+}

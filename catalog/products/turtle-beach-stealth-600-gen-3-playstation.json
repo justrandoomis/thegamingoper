@@ -1,0 +1,86 @@
+{
+  "slug": "turtle-beach-stealth-600-gen-3-playstation",
+  "group": "controllers-audio",
+  "kind": "headset",
+  "platform": "playstation",
+  "brand": "Turtle Beach",
+  "status": "available",
+  "releaseDate": "2024-05-19",
+  "name": { "ar": "سماعة Turtle Beach Stealth 600 Gen 3 لأجهزة PlayStation", "en": "Turtle Beach Stealth 600 Gen 3 for PlayStation", "ckb": "هێدسێتی Turtle Beach Stealth 600 Gen 3 بۆ PlayStation" },
+  "short": {
+    "ar": "لاسلكية 2.4 غيغاهرتز + Bluetooth · بطارية حتى 80 ساعة · PS5 وPS4 وPC",
+    "en": "2.4 GHz wireless + Bluetooth · Up to 80 h battery · PS5, PS4, PC",
+    "ckb": "بێتەلی 2.4 گیگاهێرتز + Bluetooth · پاتری تا 80 کاتژمێر · PS5، PS4، PC"
+  },
+  "description": {
+    "ar": "سماعة ألعاب لاسلكية من Turtle Beach بنسخة PlayStation (يظهر اسمها على الجهاز Stealth 600P Gen 3). تتصل بجهاز PS5 أو PS4 أو الكمبيوتر عبر محوّل USB بتردد 2.4 غيغاهرتز، وبالهاتف عبر Bluetooth، وتنتقل بينهما بزر QuickSwitch. فيها سماعات Nanoclear بقطر 50 ملم، ومايكروفون يُكتم بقلبه للأعلى مع تقليل ضوضاء بالذكاء الاصطناعي، وبطارية تدوم حتى 80 ساعة وتُشحن عبر USB‑C.",
+    "en": "Turtle Beach's wireless gaming headset in its PlayStation version (it shows up on the console as Stealth 600P Gen 3). It connects to a PS5, PS4 or PC through a 2.4 GHz USB transmitter and to a phone over Bluetooth, switching between them with the QuickSwitch button. It has 50 mm Nanoclear drivers, a flip-to-mute mic with AI noise reduction, and a battery rated up to 80 hours that charges over USB‑C.",
+    "ckb": "هێدسێتی یاریی بێتەلی Turtle Beach بە وەشانی PlayStation (لەسەر ئامێرەکە بە ناوی Stealth 600P Gen 3 دەردەکەوێت). بە ترانسمیتەری USBی 2.4 گیگاهێرتز بە PS5، PS4 یان PC دەبەسترێت و بە Bluetooth بە مۆبایل، و بە دوگمەی QuickSwitch لە نێوانیاندا دەگۆڕێت. دەنگدەری Nanoclearی 50 ملم، مایکێک کە بە هەڵگەڕاندنەوە بێدەنگ دەبێت لەگەڵ کەمکردنەوەی ژاوەژاو بە AI، و پاترییەکی تا 80 کاتژمێری هەیە کە بە USB‑C شەحن دەکرێت."
+  },
+  "highlights": [
+    { "ar": "بطارية حتى 80 ساعة مع شحن USB‑C", "en": "Up to 80 hours of battery, USB‑C charging", "ckb": "پاتری تا 80 کاتژمێر، شەحن بە USB‑C" },
+    { "ar": "محوّل USB لاسلكي لـ PS5 وPS4 والكمبيوتر، وBluetooth للهاتف", "en": "USB wireless transmitter for PS5, PS4 and PC, plus Bluetooth for phones", "ckb": "ترانسمیتەری بێتەلی USB بۆ PS5، PS4 و PC، و Bluetooth بۆ مۆبایل" },
+    { "ar": "زر QuickSwitch للتنقل بين الاتصال اللاسلكي وBluetooth", "en": "QuickSwitch button to swap between wireless and Bluetooth", "ckb": "دوگمەی QuickSwitch بۆ گۆڕین لە نێوان بێتەل و Bluetooth" },
+    { "ar": "سماعات Nanoclear بقطر 50 ملم", "en": "50 mm Nanoclear drivers", "ckb": "دەنگدەری Nanoclear بە قەبارەی 50 ملم" },
+    { "ar": "مايكروفون يُكتم بقلبه للأعلى مع تقليل ضوضاء بالذكاء الاصطناعي", "en": "Flip-to-mute mic with AI noise reduction", "ckb": "مایکی هەڵگەڕاوە بۆ بێدەنگکردن لەگەڵ کەمکردنەوەی ژاوەژاو بە AI" },
+    { "ar": "نسخة PlayStation لا تعمل مع أجهزة Xbox", "en": "The PlayStation version does not work with Xbox consoles", "ckb": "وەشانی PlayStation لەگەڵ Xbox کار ناکات" }
+  ],
+  "specs": [
+    { "key": "connection", "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" }, "value": { "ar": "لاسلكي 2.4 غيغاهرتز عبر محوّل USB، وBluetooth", "en": "2.4 GHz wireless via USB transmitter, plus Bluetooth", "ckb": "بێتەلی 2.4 گیگاهێرتز بە ترانسمیتەری USB، و Bluetooth" } },
+    { "key": "drivers", "label": { "ar": "السماعات الداخلية", "en": "Drivers", "ckb": "دەنگدەرەکان" }, "value": { "ar": "Nanoclear بقطر 50 ملم، 20 هرتز حتى 20 كيلوهرتز", "en": "50 mm Nanoclear, 20 Hz–20 kHz", "ckb": "Nanoclearی 50 ملم، 20 هێرتز تا 20 کیلۆهێرتز" } },
+    { "key": "microphone", "label": { "ar": "المايكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" }, "value": { "ar": "أحادي الاتجاه، يُكتم بقلبه للأعلى", "en": "Unidirectional, flip-to-mute", "ckb": "یەک ئاڕاستە، بێدەنگکردن بە هەڵگەڕاندنەوە" } },
+    { "key": "battery", "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" }, "value": { "ar": "ليثيوم بوليمر قابلة للشحن، حتى 80 ساعة", "en": "Rechargeable lithium polymer, up to 80 hours", "ckb": "لیسیۆم پۆلیمەری شەحنکراو، تا 80 کاتژمێر" } },
+    { "key": "cushions", "label": { "ar": "الوسائد", "en": "Ear cushions", "ckb": "بالیشتەکان" }, "value": { "ar": "قماش رياضي وإسفنج ذكي", "en": "Athletic weave fabric, memory foam", "ckb": "قوماشی وەرزشی، فۆمی یادەوەری" } }
+  ],
+  "inTheBox": [
+    { "ar": "السماعة Stealth 600", "en": "Stealth 600 wireless headset", "ckb": "هێدسێتی بێتەلی Stealth 600" },
+    { "ar": "محوّل USB لاسلكي", "en": "USB wireless transmitter", "ckb": "ترانسمیتەری بێتەلی USB" },
+    { "ar": "كابل شحن USB‑A إلى USB‑C بطول 0.7 متر", "en": "0.7 m USB‑A to USB‑C charging cable", "ckb": "کێبڵی شەحنی USB‑A بۆ USB‑C بە درێژی 0.7 مەتر" },
+    { "ar": "دليل البدء السريع", "en": "Quick start guide", "ckb": "ڕێبەری دەستپێکی خێرا" }
+  ],
+  "variants": [
+    {
+      "sku": "TB-STEALTH600G3-PS",
+      "sheetRow": 210,
+      "title": { "ar": "نسخة PlayStation", "en": "PlayStation version", "ckb": "وەشانی PlayStation" },
+      "options": { "edition": "PlayStation" },
+      "isDefault": true,
+      "images": ["turtle-beach-stealth-600-gen-3-playstation--1", "turtle-beach-stealth-600-gen-3-playstation--2", "turtle-beach-stealth-600-gen-3-playstation--3"],
+      "notes": { "ar": "اللون كما هو متوفر في المخزن (أسود أو أبيض).", "en": "Colour as in stock (black or white).", "ckb": "ڕەنگ بەپێی ئەوەی لە کۆگادا هەیە (ڕەش یان سپی)." }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5", "status": "verified", "source": "https://support.turtlebeach.com/s/?language=en_US#/328/0/0/All-models/article/a32UR0000025kiTYAQ" },
+    { "deviceModel": "ps5-slim", "status": "verified", "source": "https://support.turtlebeach.com/s/?language=en_US#/328/0/0/All-models/article/a32UR0000025kiTYAQ" },
+    { "deviceModel": "ps5-pro", "status": "verified", "source": "https://support.turtlebeach.com/s/?language=en_US#/328/0/0/All-models/article/a32UR0000025kiTYAQ" },
+    { "deviceModel": "ps4", "status": "verified", "source": "https://support.turtlebeach.com/s/?language=en_US#/328/0/0/All-models/article/a32UR0000025kiTYAQ" },
+    { "deviceModel": "windows-pc", "status": "verified", "source": "https://support.turtlebeach.com/s/?language=en_US#/328/0/0/All-models/article/a32UR0000025kiTYAQ" },
+    { "deviceModel": "xbox-series-x", "status": "incompatible", "note": { "ar": "نسخة PlayStation لا تعمل مع Xbox؛ هناك نسخة Xbox منفصلة.", "en": "The PlayStation version does not work with Xbox; there is a separate Xbox version.", "ckb": "وەشانی PlayStation لەگەڵ Xbox کار ناکات؛ وەشانێکی جیای Xbox هەیە." }, "source": "https://support.turtlebeach.com/s/?language=en_US#/328/0/0/All-models/article/a32UR0000025kiTYAQ" },
+    { "deviceModel": "xbox-series-s", "status": "incompatible", "source": "https://support.turtlebeach.com/s/?language=en_US#/328/0/0/All-models/article/a32UR0000025kiTYAQ" }
+  ],
+  "related": [
+    { "slug": "pulse-3d", "kind": "alternative" },
+    { "slug": "pulse-elite", "kind": "upsell" },
+    { "slug": "playstation-5-slim", "kind": "setup" }
+  ],
+  "images": [
+    { "key": "turtle-beach-stealth-600-gen-3-playstation--1", "file": ".cache/product-images/turtle-beach-stealth-600-gen-3-playstation/1.png", "sourceUrl": "https://cdn.shopify.com/s/files/1/0556/5795/5430/files/3-Stealth600-PS-BLK.png", "sourcePage": "https://www.turtlebeach.com/products/stealth-600-headset?Platform=PlayStation&Color=Black", "kind": "hero", "alt": { "ar": "سماعة Stealth 600 Gen 3 السوداء لـ PlayStation مع المايكروفون", "en": "Black Stealth 600 Gen 3 for PlayStation with its mic", "ckb": "Stealth 600 Gen 3ی ڕەش بۆ PlayStation لەگەڵ مایکەکەی" }, "credit": "Turtle Beach", "width": 2400, "height": 1350, "transparent": true },
+    { "key": "turtle-beach-stealth-600-gen-3-playstation--2", "file": ".cache/product-images/turtle-beach-stealth-600-gen-3-playstation/2.png", "sourceUrl": "https://cdn.shopify.com/s/files/1/0556/5795/5430/files/2-Stealth600-PS-BLK.png", "sourcePage": "https://www.turtlebeach.com/products/stealth-600-headset?Platform=PlayStation&Color=Black", "kind": "angle", "alt": { "ar": "السماعة من الجانب", "en": "The headset from the side", "ckb": "هێدسێتەکە لە لاوە" }, "credit": "Turtle Beach", "width": 2400, "height": 1350, "transparent": true },
+    { "key": "turtle-beach-stealth-600-gen-3-playstation--3", "file": ".cache/product-images/turtle-beach-stealth-600-gen-3-playstation/3.png", "sourceUrl": "https://cdn.shopify.com/s/files/1/0556/5795/5430/files/4-Stealth600-PS-BLK.png", "sourcePage": "https://www.turtlebeach.com/products/stealth-600-headset?Platform=PlayStation&Color=Black", "kind": "detail", "alt": { "ar": "أزرار التحكم على الكوب", "en": "Controls on the earcup", "ckb": "دوگمەکانی سەر گوێگرەکە" }, "credit": "Turtle Beach", "width": 2400, "height": 1350, "transparent": true }
+  ],
+  "sources": [
+    { "url": "https://www.turtlebeach.com/products/stealth-600-headset?Platform=PlayStation&Color=Black", "title": "Stealth 600 Wireless Multiplatform Gaming Headset", "publisher": "Turtle Beach", "retrieved": "2026-11-18", "supports": "80-hour battery, 50 mm Nanoclear drivers, 20 Hz–20 kHz, flip-to-mute mic, 2.4 GHz + Bluetooth with QuickSwitch, cushion materials, what's in the box, images" },
+    { "url": "https://support.turtlebeach.com/s/?language=en_US#/328/0/0/All-models/article/a32UR0000025kiTYAQ", "title": "Stealth 600 Gen 3 (PS Version) – Setup for PlayStation, PC", "publisher": "Turtle Beach Support", "retrieved": "2026-11-18", "supports": "PS version works with PS5, PS4 and Windows PC via the USB transmitter, not with Xbox; appears as Stealth 600P Gen 3" },
+    { "url": "https://press-start.com.au/reviews/tech/2024/06/07/turtle-beach-stealth-600-gen-3-review-third-times-the-charm/", "title": "Turtle Beach Stealth 600 Gen 3 Review", "publisher": "Press Start", "retrieved": "2026-11-18", "supports": "80-hour battery, Bluetooth 5.2, AI noise reduction mic, 2024 launch" },
+    { "url": "https://www.gamedeveloper.com/press-release/best-selling-gaming-accessory-brand-turtle-beach-unveils-new-gaming-headsets-keyboards-mice-launching-may-2024", "title": "Turtle Beach unveils new gaming headsets, keyboards & mice launching May 2024", "publisher": "Turtle Beach (press release)", "retrieved": "2026-11-18", "supports": "Stealth 600 Gen 3 launch on 19 May 2024" }
+  ],
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "That the sheet's 'TURTLE BEACH P 600' is the current Stealth 600 Gen 3 PlayStation version (Stealth 600P) and not the older Gen 2",
+      "Colour of the unit in stock (sheet does not say)",
+            "Weight"
+    ]
+  }
+}

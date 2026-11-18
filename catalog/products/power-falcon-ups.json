@@ -1,0 +1,270 @@
+{
+  "slug": "power-falcon-ups",
+  "group": "power-cables-storage-misc",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "ups-power",
+  "brand": "Power Falcon",
+  "status": "available",
+  "name": {
+    "ar": "جهاز UPS من Power Falcon",
+    "en": "Power Falcon Line‑Interactive UPS",
+    "ckb": "ئامێری UPSی Power Falcon"
+  },
+  "short": {
+    "ar": "حماية من انقطاع الكهرباء وتذبذبها · من 850VA إلى 2000VA",
+    "en": "Backup and protection for power cuts and swings · 850VA to 2000VA",
+    "ckb": "پاراستن لە بڕانی کارەبا و گۆڕانی ڤۆڵتیە · لە 850VA تا 2000VA"
+  },
+  "description": {
+    "ar": "جهاز UPS من نوع Line‑Interactive يحمي جهاز الألعاب أو الحاسوب والراوتر من انقطاع الكهرباء المفاجئ ومن ارتفاع الجهد وانخفاضه. عند الانقطاع يتحول إلى البطارية خلال أجزاء من الثانية فتجد وقتاً لحفظ اللعبة وإطفاء الجهاز بأمان، ومنظّم الجهد (AVR) يعدّل التيار دون استهلاك البطارية. يعمل مع المولدة ويمكن تشغيله من البطارية والكهرباء مقطوعة. يتوفر بأربع قدرات.",
+    "en": "A line-interactive UPS that protects a console, PC or router from sudden power cuts and from high or low voltage. When the power drops it switches to battery within milliseconds, giving you time to save and shut down safely, and its AVR corrects the voltage without draining the battery. It works with a generator and can be started from battery while the power is out. Four sizes.",
+    "ckb": "ئامێرێکی UPSی جۆری Line‑Interactive کە کۆنسۆڵ یان کۆمپیوتەر و ڕاوتەر لە بڕانی لەناکاوی کارەبا و بەرزبوونەوە و نزمبوونەوەی ڤۆڵتیە دەپارێزێت. کاتێک کارەبا دەبڕێت لە چەند میلی چرکەیەکدا دەچێتە سەر پاتری، بۆ ئەوەی کاتت هەبێت یارییەکە پاشەکەوت بکەیت و ئامێرەکە بە سەلامەتی بکوژێنیتەوە، و AVR ڤۆڵتیە ڕێکدەخات بێ ئەوەی پاتری بخوات. لەگەڵ مۆلیدە کار دەکات و دەتوانرێت لە کاتی بڕانی کارەبادا لە پاترییەوە هەڵبکرێت. بە چوار توانا هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "أربع قدرات: 850VA و1200VA و1500VA و2000VA",
+      "en": "Four sizes: 850VA, 1200VA, 1500VA and 2000VA",
+      "ckb": "چوار توانا: 850VA و 1200VA و 1500VA و 2000VA"
+    },
+    {
+      "ar": "منظّم جهد AVR (رفع وخفض) لتذبذب الكهرباء",
+      "en": "Boost-and-buck AVR for unstable mains",
+      "ckb": "AVRی بەرزکردنەوە و نزمکردنەوە بۆ کارەبای ناجێگیر"
+    },
+    {
+      "ar": "يعمل مع كهرباء المولدة",
+      "en": "Works on generator power",
+      "ckb": "لەگەڵ کارەبای مۆلیدە کار دەکات"
+    },
+    {
+      "ar": "يُشغّل من البطارية والكهرباء مقطوعة (Cold Start)",
+      "en": "Cold start: turns on from battery with no mains",
+      "ckb": "Cold Start: بێ کارەبا لە پاترییەوە هەڵدەکرێت"
+    },
+    {
+      "ar": "للحفظ والإطفاء الآمن، وليس للعب ساعات على البطارية",
+      "en": "Made for saving and shutting down safely, not hours of play on battery",
+      "ckb": "بۆ پاشەکەوتکردن و کوژاندنەوەی سەلامەتە، نەک چەند کاتژمێر یاری لەسەر پاتری"
+    }
+  ],
+  "specs": [
+    {
+      "key": "type",
+      "label": {
+        "ar": "النوع",
+        "en": "Type",
+        "ckb": "جۆر"
+      },
+      "value": {
+        "ar": "Line‑Interactive (أوفلاين مع AVR)",
+        "en": "Line‑interactive (offline with AVR)",
+        "ckb": "Line‑Interactive (ئۆفلاین لەگەڵ AVR)"
+      }
+    },
+    {
+      "key": "capacity",
+      "label": {
+        "ar": "القدرة",
+        "en": "Capacity",
+        "ckb": "توانا"
+      },
+      "value": {
+        "ar": "850VA (480W) / 1200VA / 1500VA / 2000VA",
+        "en": "850VA (480W) / 1200VA / 1500VA / 2000VA",
+        "ckb": "850VA (480W) / 1200VA / 1500VA / 2000VA"
+      }
+    },
+    {
+      "key": "input",
+      "label": {
+        "ar": "جهد الدخل",
+        "en": "Input voltage",
+        "ckb": "ڤۆڵتیەی هاتوو"
+      },
+      "value": {
+        "ar": "140–290 فولت (طراز 850VA)",
+        "en": "140–290 VAC (850VA model)",
+        "ckb": "140–290 ڤۆڵت (مۆدێلی 850VA)"
+      }
+    },
+    {
+      "key": "output",
+      "label": {
+        "ar": "جهد الخرج",
+        "en": "Output voltage",
+        "ckb": "ڤۆڵتیەی دەرچوو"
+      },
+      "value": {
+        "ar": "220/230 فولت ±10%",
+        "en": "220/230 VAC ±10%",
+        "ckb": "220/230 ڤۆڵت ±10%"
+      }
+    },
+    {
+      "key": "battery",
+      "label": {
+        "ar": "البطارية",
+        "en": "Battery",
+        "ckb": "پاتری"
+      },
+      "value": {
+        "ar": "بطارية 12V/9Ah واحدة (طراز 850VA)",
+        "en": "One 12V/9Ah battery (850VA model)",
+        "ckb": "یەک پاتریی 12V/9Ah (مۆدێلی 850VA)"
+      }
+    },
+    {
+      "key": "transfer",
+      "label": {
+        "ar": "زمن التحويل",
+        "en": "Transfer time",
+        "ckb": "کاتی گواستنەوە"
+      },
+      "value": {
+        "ar": "4–6 ملي ثانية (طراز 2000VA)",
+        "en": "4–6 ms (2000VA model)",
+        "ckb": "4–6 میلی چرکە (مۆدێلی 2000VA)"
+      }
+    },
+    {
+      "key": "alarms",
+      "label": {
+        "ar": "التنبيهات",
+        "en": "Alarms",
+        "ckb": "ئاگادارکردنەوەکان"
+      },
+      "value": {
+        "ar": "العمل على البطارية، بطارية ضعيفة، حمل زائد",
+        "en": "On battery, low battery, overload",
+        "ckb": "لەسەر پاتری، پاتریی لاواز، بارگرانی"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "PF-UPS-850VA",
+      "sheetRow": 222,
+      "title": {
+        "ar": "850VA",
+        "en": "850VA",
+        "ckb": "850VA"
+      },
+      "options": {
+        "capacity": "850VA"
+      },
+      "modelNumber": "GS 850VA",
+      "isDefault": true,
+      "notes": {
+        "ar": "850VA / 480W، بطارية 12V/9Ah واحدة، شاشة مؤشرات LED. يكفي لجهاز ألعاب مع راوتر.",
+        "en": "850VA / 480W, one 12V/9Ah battery, LED indicators. Enough for a console plus a router.",
+        "ckb": "850VA / 480W، یەک پاتریی 12V/9Ah، نیشاندەری LED. بۆ کۆنسۆڵێک لەگەڵ ڕاوتەر بەسە."
+      }
+    },
+    {
+      "sku": "PF-UPS-1200VA",
+      "sheetRow": 219,
+      "title": {
+        "ar": "1200VA",
+        "en": "1200VA",
+        "ckb": "1200VA"
+      },
+      "options": {
+        "capacity": "1200VA"
+      },
+      "isDefault": false
+    },
+    {
+      "sku": "PF-UPS-1500VA",
+      "sheetRow": 220,
+      "title": {
+        "ar": "1500VA",
+        "en": "1500VA",
+        "ckb": "1500VA"
+      },
+      "options": {
+        "capacity": "1500VA"
+      },
+      "isDefault": false
+    },
+    {
+      "sku": "PF-UPS-2000VA",
+      "sheetRow": 221,
+      "title": {
+        "ar": "2000VA",
+        "en": "2000VA",
+        "ckb": "2000VA"
+      },
+      "options": {
+        "capacity": "2000VA"
+      },
+      "isDefault": false,
+      "notes": {
+        "ar": "شاشة LCD رقمية، حماية لخط الإنترنت والهاتف (RJ45/RJ11)، زمن تحويل 4–6 ملي ثانية.",
+        "en": "Digital LCD, RJ45/RJ11 surge protection for network and phone lines, 4–6 ms transfer.",
+        "ckb": "شاشەی LCDی دیجیتاڵ، پاراستنی هێڵی ئینتەرنێت و تەلەفۆن (RJ45/RJ11)، گواستنەوە لە 4–6 میلی چرکە."
+      }
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    {
+      "slug": "power-falcon-online-ups-1kva",
+      "kind": "upsell"
+    },
+    {
+      "slug": "star-power-ups-2000va",
+      "kind": "alternative"
+    },
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    }
+  ],
+  "images": [],
+  "sources": [
+    {
+      "url": "https://www.elryan.com/en/power-falcon-ups-850va-black-833088.html",
+      "title": "Power Falcon UPS - 850VA - Black",
+      "publisher": "Elryan (Iraqi retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "850VA model GS 850VA eco / 480W, input 140-290VAC, output 220/230VAC ±10%, one 12V/9Ah battery, alarms, offline with boost/buck AVR, LED, generator compatible, auto restart, cold start"
+    },
+    {
+      "url": "https://www.lezzoo.com/erbil/m/ari-gaming-1542/power-falcon-2000va-line-interactive-ups-with-digital-lcd-display-2445937",
+      "title": "Power Falcon 2000VA Line-Interactive UPS with Digital LCD Display",
+      "publisher": "Ari Gaming on Lezzoo (Erbil retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "2000VA line-interactive with AVR, 4-6 ms transfer, LCD, RJ45/RJ11 surge ports, audible alarms, cold start, short-circuit protection"
+    },
+    {
+      "url": "https://www.elryan.com/en/brands/Power%20Falcon",
+      "title": "Power Falcon (brand page)",
+      "publisher": "Elryan (Iraqi retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "Power Falcon is a UPS brand sold in Iraq (online and line-interactive models, UPS batteries)"
+    },
+    {
+      "url": "https://www.se.com/sk/sk/faqs/FA157485/",
+      "title": "Watt Ratings Differs From Volt Amp Ratings",
+      "publisher": "Schneider Electric (APC)",
+      "retrieved": "2026-11-18",
+      "supports": "a UPS VA rating is larger than its watt rating; size the UPS by the watts and VA the connected equipment draws"
+    }
+  ],
+  "notes": {
+    "ar": "قدرة VA ليست الواط: اختر قدرة أعلى من استهلاك أجهزتك مجتمعة. مدة التشغيل على البطارية تعتمد على الحمل وعمر البطارية، والبطاريات قابلة للاستبدال عند ضعفها.",
+    "en": "VA is not watts: choose a size above the combined draw of your devices. Runtime on battery depends on the load and the battery's age; batteries can be replaced when they wear out.",
+    "ckb": "VA وات نییە: توانایەک هەڵبژێرە کە لە کۆی بەکارهێنانی ئامێرەکانت زیاتر بێت. ماوەی کارکردن لەسەر پاتری بەپێی بار و تەمەنی پاترییە؛ پاتری کاتێک لاواز بوو دەگۆڕدرێت."
+  },
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": true,
+    "unverified": [
+      "No maker website found for Power Falcon; facts come from Iraqi retailer listings",
+      "Model numbers, wattage, batteries and runtime of the 1200VA, 1500VA and 2000VA models",
+      "Whether the 850VA, 1200VA and 1500VA have the RJ45/RJ11 protection of the 2000VA",
+      "Warranty terms"
+    ]
+  }
+}

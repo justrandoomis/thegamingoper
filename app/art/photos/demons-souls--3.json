@@ -1,0 +1,64 @@
+{
+  "key": "demons-souls--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/demons-souls/3-240.179bc984.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/demons-souls/3-480.e8670a26.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/demons-souls/3-720.148df371.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/demons-souls/3-960.df9682a0.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/demons-souls/3-1440.550bc681.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/demons-souls/3-240.0e8a5229.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/demons-souls/3-480.f8f6b23b.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/demons-souls/3-720.d7bed37b.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/demons-souls/3-960.de63b148.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/demons-souls/3-1440.e0e5e818.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAAAQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZQAAQTxykrAA/u6gx7SKbW7LL2SAhL7fs+406nRx8PLHXwm1Y4AA",
+  "dominant": "#060406",
+  "transparent": false,
+  "background": "#040305",
+  "kind": "screenshot",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202010/0821/NE92EYZjGR8hU8ZcNDgEYEX1.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP9000-PPSA01341_00-DEMONSSOULS00000"
+  },
+  "input": "b3efdb4bbee8ffde"
+}

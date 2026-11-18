@@ -1,0 +1,64 @@
+{
+  "key": "stellar-blade--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/stellar-blade/2-240.1b2fe599.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/stellar-blade/2-480.1a0424e9.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/stellar-blade/2-720.be180f9e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/stellar-blade/2-960.e1c5283d.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/stellar-blade/2-1440.22ecdaee.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/stellar-blade/2-240.1db1ccf7.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/stellar-blade/2-480.e068cb07.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/stellar-blade/2-720.8cb26c8f.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/stellar-blade/2-960.6ffccd34.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/stellar-blade/2-1440.dd7d5e5a.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADQAwCdASoUAAsAPxFysVCsJqSisAgBgCIJQBdgAz41cDabs5WOHhwA/ujwLyg72qcNziUhWdOEJ8lACHgoG/Bpl+mbsVAA",
+  "dominant": "#362829",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Sony Interactive Entertainment / SHIFT UP",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202212/2003/AECvU37IqmA6Qkf6NPzm4OY4.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP9000-PPSA13197_00-STELLARBLADE0000"
+  },
+  "input": "da607e9db64a6aaa"
+}

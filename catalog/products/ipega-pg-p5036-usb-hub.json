@@ -1,0 +1,227 @@
+{
+  "slug": "ipega-pg-p5036-usb-hub",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "iPega",
+  "status": "available",
+  "name": {
+    "ar": "موزّع USB ‏6 في 1 من iPega PG‑P5036 لجهاز PS5",
+    "en": "iPega PG‑P5036 6‑in‑1 USB Hub for PS5",
+    "ckb": "دابەشکەری USB‏ 6 لە 1ی iPega PG‑P5036 بۆ PS5"
+  },
+  "short": {
+    "ar": "يوصل بمنافذ PS5 الأمامية · ‏USB‑C و5 منافذ USB‑A",
+    "en": "Plugs into the PS5 front ports · USB‑C plus 5 USB‑A",
+    "ckb": "بە دەروازە پێشەوەکانی PS5 دەبەسترێت · USB‑C و 5 USB‑A"
+  },
+  "description": {
+    "ar": "موزّع صغير يركب في واجهة جهاز PS5 الأصلي ويحوّل منفذيه الأماميين إلى ستة منافذ: منفذ USB‑C وخمسة منافذ USB‑A، أحدها للشحن. مفيد لشحن اليدين ووصل سماعة أو ذاكرة في الوقت نفسه.",
+    "en": "A small hub that clips onto the front of the original PS5 and turns its two front ports into six: one USB‑C and five USB‑A, one of them for charging. Handy for charging controllers while a headset dongle or drive stays plugged in.",
+    "ckb": "دابەشکەرێکی بچووک کە لە پێشەوەی PS5ی ڕەسەن دەبەسترێت و دوو دەروازە پێشەوەکەی دەکاتە شەش: یەک USB‑C و پێنج USB‑A، یەکێکیان بۆ شەحن."
+  },
+  "highlights": [
+    {
+      "ar": "6 منافذ: ‏USB‑C واحد و5 ‏USB‑A",
+      "en": "6 ports: 1 USB‑C and 5 USB‑A",
+      "ckb": "6 دەروازە: 1 USB‑C و 5 USB‑A"
+    },
+    {
+      "ar": "منفذ مخصص للشحن",
+      "en": "One port marked for charging",
+      "ckb": "دەروازەیەک بۆ شەحن"
+    },
+    {
+      "ar": "حجم صغير: 105 × 47.3 × 28 ملم",
+      "en": "Small: 105 × 47.3 × 28 mm",
+      "ckb": "بچووک: 105 × 47.3 × 28 ملم"
+    },
+    {
+      "ar": "لا يحتاج كابلات أو محوّل",
+      "en": "No cables or adapter needed",
+      "ckb": "وایەر یان ئەداپتەری ناوێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "PG‑P5036",
+        "en": "PG‑P5036",
+        "ckb": "PG‑P5036"
+      }
+    },
+    {
+      "key": "ports",
+      "label": {
+        "ar": "المنافذ",
+        "en": "Ports",
+        "ckb": "دەروازەکان"
+      },
+      "value": {
+        "ar": "1 × USB‑C، ‏5 × USB‑A (واحد للشحن)",
+        "en": "1 × USB‑C, 5 × USB‑A (one for charging)",
+        "ckb": "1 × USB‑C، 5 × USB‑A (یەکێک بۆ شەحن)"
+      }
+    },
+    {
+      "key": "power",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "وزە"
+      },
+      "value": {
+        "ar": "5V، حتى 2.5A",
+        "en": "5V, up to 2.5A",
+        "ckb": "5V، تا 2.5A"
+      }
+    },
+    {
+      "key": "dimensions",
+      "label": {
+        "ar": "الأبعاد",
+        "en": "Dimensions",
+        "ckb": "ئەندازەکان"
+      },
+      "value": {
+        "ar": "105 × 47.3 × 28 ملم",
+        "en": "105 × 47.3 × 28 mm",
+        "ckb": "105 × 47.3 × 28 ملم"
+      }
+    },
+    {
+      "key": "color",
+      "label": {
+        "ar": "اللون",
+        "en": "Colour",
+        "ckb": "ڕەنگ"
+      },
+      "value": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "IPEGA-PG-P5036",
+      "title": {
+        "ar": "موزّع USB ‏6 في 1 من iPega PG‑P5036 لجهاز PS5",
+        "en": "iPega PG‑P5036 6‑in‑1 USB Hub for PS5",
+        "ckb": "دابەشکەری USB‏ 6 لە 1ی iPega PG‑P5036 بۆ PS5"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "PG-P5036",
+      "sheetRow": 129,
+      "isDefault": true,
+      "images": [
+        "ipega-pg-p5036-usb-hub--1",
+        "ipega-pg-p5036-usb-hub--2"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "مصمم لواجهة PS5 الأصلي (CFI‑1000/1100/1200).",
+        "en": "Made for the front of the original PS5.",
+        "ckb": "بۆ پێشەوەی PS5ی ڕەسەن."
+      },
+      "source": "https://ipega.hk/ps3ps4series/76-484.html"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "verified",
+      "note": {
+        "ar": "مصمم لواجهة PS5 الأصلي (CFI‑1000/1100/1200).",
+        "en": "Made for the front of the original PS5.",
+        "ckb": "بۆ پێشەوەی PS5ی ڕەسەن."
+      },
+      "source": "https://ipega.hk/ps3ps4series/76-484.html"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-5",
+      "kind": "setup"
+    },
+    {
+      "slug": "ps5-usb-hub",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "ipega-pg-p5036-usb-hub--1",
+      "file": ".cache/product-images/ipega-pg-p5036-usb-hub/1.jpg",
+      "sourceUrl": "https://ipega.hk/uploads/202112/61b1ce1044799.jpg",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-484.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "موزّع PG‑P5036 الأسود من الأمام",
+        "en": "The black PG‑P5036 hub, front",
+        "ckb": "دابەشکەری ڕەشی PG‑P5036 لە پێشەوە"
+      },
+      "credit": "iPega",
+      "width": 1200,
+      "height": 1104,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5036-usb-hub--2",
+      "file": ".cache/product-images/ipega-pg-p5036-usb-hub/2.jpg",
+      "sourceUrl": "https://ipega.hk/uploads/202112/61b1ce16af1df.jpg",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-484.html",
+      "kind": "angle",
+      "alt": {
+        "ar": "الموزّع من زاوية جانبية",
+        "en": "The hub from an angle",
+        "ckb": "دابەشکەرەکە لە گۆشەیەکەوە"
+      },
+      "credit": "iPega",
+      "width": 1200,
+      "height": 1104,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ipega.hk/ps3ps4series/76-484.html",
+      "title": "PG-P5036 P5 HUB six-in-one extender",
+      "publisher": "iPega (official site)",
+      "retrieved": "2026-11-18",
+      "supports": "model, six-in-one hub, 5V ≤2.5A, 105 × 47.3 × 28 mm, port layout, pictures on the PS5 front"
+    },
+    {
+      "url": "https://www.skroutz.eu/s/35845802/iPega-PG-P5036-PG-P5036-USB-Hub-for-PS5-Black.html",
+      "title": "iPega PG-P5036 USB Hub for PS5 Black",
+      "publisher": "Skroutz (price comparison)",
+      "retrieved": "2026-11-18",
+      "supports": "fact-check: USB hub for PS5, black"
+    }
+  ],
+  "notes": {
+    "ar": "لا يركب على PS5 Slim أو PS5 Pro لأن واجهتيهما مختلفتان. أزلنا سطر رقم براءة الاختراع أسفل صورتين من iPega.",
+    "en": "Does not fit the PS5 Slim or PS5 Pro, whose fronts differ. The patent-number line under two iPega pictures was cropped off.",
+    "ckb": "لەسەر PS5 Slim یان PS5 Pro نابەسترێت."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Fit on the slim/Pro models is inferred from the different port layout, not stated by iPega",
+      "Data speed of each port"
+    ]
+  }
+}

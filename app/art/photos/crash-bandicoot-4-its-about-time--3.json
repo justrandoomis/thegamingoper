@@ -1,0 +1,64 @@
+{
+  "key": "crash-bandicoot-4-its-about-time--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/crash-bandicoot-4-its-about-time/3-240.524804f5.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/crash-bandicoot-4-its-about-time/3-480.f5b8862a.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/crash-bandicoot-4-its-about-time/3-720.f2158237.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/crash-bandicoot-4-its-about-time/3-960.d71050f0.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/crash-bandicoot-4-its-about-time/3-1440.71f006b0.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/crash-bandicoot-4-its-about-time/3-240.0a78565a.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/crash-bandicoot-4-its-about-time/3-480.34ab9e27.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/crash-bandicoot-4-its-about-time/3-720.41fb1791.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/crash-bandicoot-4-its-about-time/3-960.02edb37e.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/crash-bandicoot-4-its-about-time/3-1440.1a47ddc8.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJbACdABmbRaH89tqADHcAAP6p23MMKWg+YQRc/iCl0r7JmMulhxQ1afMcJlXVT5w10sbRnyw4KDnrtgpfb8fHZbUPKNUlZbM2TGON12VnGWSbCFd7FU5L9OpkMAAA",
+  "dominant": "#043b35",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Activision",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/crash-bandicoot-4-screenshot-02-en-15jun20?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/crash-bandicoot-4-its-about-time/"
+  },
+  "input": "b520cdf366d7c0f5"
+}

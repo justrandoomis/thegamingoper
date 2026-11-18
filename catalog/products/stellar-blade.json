@@ -1,0 +1,369 @@
+{
+  "slug": "stellar-blade",
+  "group": "games-ps5-xbox",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "PlayStation Studios",
+  "status": "available",
+  "releaseDate": "2024-04-26",
+  "name": {
+    "ar": "Stellar Blade",
+    "en": "Stellar Blade",
+    "ckb": "Stellar Blade"
+  },
+  "short": {
+    "ar": "PS5 · قرص · أكشن خيال علمي · ترجمة عربية",
+    "en": "PS5 · disc · sci-fi action · Arabic subtitles",
+    "ckb": "PS5 · دیسک · ئاکشنی زانستی-خەیاڵی · ژێرنووسی عەرەبی"
+  },
+  "description": {
+    "ar": "لعبة أكشن من استوديو SHIFT UP الكوري. تلعب بشخصية EVE التي تنزل إلى أرض مدمّرة لاستعادتها من مخلوقات Naytiba، في قتال سريع يعتمد على الصدّ والتفادي في الوقت المناسب.",
+    "en": "An action game from the Korean studio SHIFT UP. You play EVE, who lands on a ruined Earth to reclaim it from the Naytiba, in fast combat built on well-timed parries and dodges.",
+    "ckb": "یارییەکی ئاکشن لە ستۆدیۆی کۆری SHIFT UP. بە کارەکتەری EVE یاری دەکەیت کە دادەبەزێتە سەر زەوییەکی وێرانکراو بۆ گەڕاندنەوەی لە Naytiba، لە شەڕێکی خێرادا کە پشت بە بەرپەرچدانەوە و خۆلادانی کاتی گونجاو دەبەستێت."
+  },
+  "highlights": [
+    {
+      "ar": "قتال سريع يعتمد على الصدّ والتفادي.",
+      "en": "Fast combat built on parries and dodges.",
+      "ckb": "شەڕی خێرا کە پشت بە بەرپەرچدانەوە و خۆلادان دەبەستێت."
+    },
+    {
+      "ar": "لاعب واحد وتعمل بدون إنترنت.",
+      "en": "Single-player, plays offline.",
+      "ckb": "تاکەکەسییە و بێ ئینتەرنێت کار دەکات."
+    },
+    {
+      "ar": "ترجمة وقوائم بالعربية (بدون دبلجة عربية)، حسب قائمة لغات PlayStation Store.",
+      "en": "Arabic subtitles and menus (no Arabic voice), per the PlayStation Store language list.",
+      "ckb": "ژێرنووس و مێنیوی عەرەبی (بێ دەنگی عەرەبی)، بەپێی لیستی زمانەکانی PlayStation Store."
+    },
+    {
+      "ar": "التصنيف PEGI 18.",
+      "en": "Rated PEGI 18.",
+      "ckb": "پۆلێنی PEGI 18."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": {
+        "ar": "تاريخ الإصدار",
+        "en": "Release date",
+        "ckb": "بەرواری دەرچوون"
+      },
+      "value": {
+        "ar": "26 نيسان 2024",
+        "en": "26 April 2024",
+        "ckb": "26ی نیسانی 2024"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": {
+        "ar": "الأجهزة",
+        "en": "Platforms",
+        "ckb": "ئامێرەکان"
+      },
+      "value": {
+        "ar": "PS5 (وأيضاً PC)",
+        "en": "PS5 (also PC)",
+        "ckb": "PS5 (هەروەها PC)"
+      }
+    },
+    {
+      "key": "format",
+      "label": {
+        "ar": "نوع النسخة الفيزيائية",
+        "en": "Physical format",
+        "ckb": "جۆری وەشانی فیزیکی"
+      },
+      "value": {
+        "ar": "قرص PS5",
+        "en": "PS5 disc",
+        "ckb": "دیسکی PS5"
+      }
+    },
+    {
+      "key": "players",
+      "label": {
+        "ar": "عدد اللاعبين",
+        "en": "Players",
+        "ckb": "ژمارەی یاریزان"
+      },
+      "value": {
+        "ar": "لاعب واحد",
+        "en": "1 player",
+        "ckb": "1 یاریزان"
+      }
+    },
+    {
+      "key": "online",
+      "label": {
+        "ar": "الإنترنت والاشتراكات",
+        "en": "Internet and subscriptions",
+        "ckb": "ئینتەرنێت و بەشداریکردن"
+      },
+      "value": {
+        "ar": "تعمل بدون إنترنت ولا تحتاج اشتراكاً؛ التحديثات تحتاج إنترنت.",
+        "en": "Plays offline with no subscription; updates need internet.",
+        "ckb": "بێ ئینتەرنێت و بێ بەشداریکردن کار دەکات؛ نوێکردنەوەکان ئینتەرنێتیان پێویستە."
+      }
+    },
+    {
+      "key": "arabic",
+      "label": {
+        "ar": "اللغة العربية",
+        "en": "Arabic",
+        "ckb": "زمانی عەرەبی"
+      },
+      "value": {
+        "ar": "ترجمة وقوائم بالعربية بدون دبلجة (حسب منطقة النسخة)",
+        "en": "Arabic subtitles and menus, no Arabic voice (depends on the region of the copy)",
+        "ckb": "ژێرنووس و مێنیوی عەرەبی، بێ دەنگی عەرەبی (بەپێی ناوچەی وەشانەکە)"
+      }
+    },
+    {
+      "key": "age",
+      "label": {
+        "ar": "التصنيف العمري",
+        "en": "Age rating",
+        "ckb": "پۆلێنی تەمەن"
+      },
+      "value": {
+        "ar": "PEGI 18",
+        "en": "PEGI 18",
+        "ckb": "PEGI 18"
+      }
+    },
+    {
+      "key": "developer",
+      "label": {
+        "ar": "المطوّر والناشر",
+        "en": "Developer and publisher",
+        "ckb": "گەشەپێدەر و بڵاوکەرەوە"
+      },
+      "value": {
+        "ar": "SHIFT UP / Sony Interactive Entertainment",
+        "en": "SHIFT UP / Sony Interactive Entertainment",
+        "ckb": "SHIFT UP / Sony Interactive Entertainment"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة لجهاز PS5",
+      "en": "PS5 game disc",
+      "ckb": "دیسکی یارییەکە بۆ PS5"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "STELLAR-PS5-STD",
+      "title": {
+        "ar": "لجهاز PS5 · Standard Edition",
+        "en": "PS5 · Standard Edition",
+        "ckb": "بۆ PS5 · Standard Edition"
+      },
+      "options": {
+        "platform": "PS5",
+        "edition": "Standard",
+        "format": "Disc"
+      },
+      "isDefault": true,
+      "sheetRow": 149,
+      "images": [
+        "stellar-blade--1",
+        "stellar-blade--2",
+        "stellar-blade--3"
+      ],
+      "notes": {
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": [
+      "ps5",
+      "ps5-slim",
+      "ps5-pro",
+      "ps5-slim-digital"
+    ],
+    "genres": [
+      {
+        "ar": "أكشن ومغامرة",
+        "en": "Action-adventure",
+        "ckb": "ئاکشن و سەرکێشی"
+      }
+    ],
+    "players": "1",
+    "online": {
+      "ar": "تعمل بدون إنترنت ولا تحتاج اشتراكاً؛ التحديثات تحتاج إنترنت.",
+      "en": "Plays offline with no subscription; updates need internet.",
+      "ckb": "بێ ئینتەرنێت و بێ بەشداریکردن کار دەکات؛ نوێکردنەوەکان ئینتەرنێتیان پێویستە."
+    },
+    "ageRating": {
+      "pegi": 18
+    },
+    "arabic": "subtitles+interface",
+    "physicalFormat": "disc",
+    "developer": "SHIFT UP",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "قرص PS5.",
+        "en": "PS5 disc.",
+        "ckb": "دیسکی PS5."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP9000-PPSA13197_00-STELLARBLADE0000"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "يعمل على الموديل الذي فيه قارئ أقراص.",
+        "en": "Works on the model with a disc drive.",
+        "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP9000-PPSA13197_00-STELLARBLADE0000"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": {
+        "ar": "القرص يحتاج قارئ الأقراص الإضافي.",
+        "en": "The disc needs the add-on Disc Drive.",
+        "ckb": "دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": {
+        "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.",
+        "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "clair-obscur-expedition-33",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ninja-gaiden-4",
+      "kind": "alternative"
+    },
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense",
+      "kind": "accessory"
+    },
+    {
+      "slug": "ps5-disc-drive",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "stellar-blade--1",
+      "file": ".cache/product-images/stellar-blade/1.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202401/2211/a66e399e454256181c758f156c1bdeeb7dae40e21fb92504.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP9000-PPSA13197_00-STELLARBLADE0000",
+      "kind": "box-art",
+      "alt": {
+        "ar": "غلاف Stellar Blade",
+        "en": "Stellar Blade cover art",
+        "ckb": "وێنەی بەرگی Stellar Blade"
+      },
+      "credit": "Sony Interactive Entertainment / SHIFT UP",
+      "width": 1440,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "stellar-blade--2",
+      "file": ".cache/product-images/stellar-blade/2.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202212/2003/AECvU37IqmA6Qkf6NPzm4OY4.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP9000-PPSA13197_00-STELLARBLADE0000",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Stellar Blade",
+        "en": "Stellar Blade screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Stellar Blade"
+      },
+      "credit": "Sony Interactive Entertainment / SHIFT UP",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "stellar-blade--3",
+      "file": ".cache/product-images/stellar-blade/3.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202212/2003/NoWDLe9mWia035NJ969Hp0uW.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP9000-PPSA13197_00-STELLARBLADE0000",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Stellar Blade",
+        "en": "Stellar Blade screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Stellar Blade"
+      },
+      "credit": "Sony Interactive Entertainment / SHIFT UP",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://store.playstation.com/en-gb/product/EP9000-PPSA13197_00-STELLARBLADE0000",
+      "title": "Stellar Blade — PlayStation Store (UK)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "PS5, release 26 Apr 2024, PEGI 18, screen languages including Arabic, Standard and Complete editions, cover art and screenshots",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/games/stellar-blade/",
+      "title": "Stellar Blade — PlayStation (UAE)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "game overview: EVE, Naytiba, SHIFT UP, add-ons",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/",
+      "title": "Disc Drive for PS5 Digital Edition consoles",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "the add-on drive works only with PS5 Pro and the slim PS5 Digital Edition, so the original 2020 Digital Edition cannot play discs"
+    }
+  ],
+  "verification": {
+    "checkedBy": "games-ps5-xbox research 2026-11-18",
+    "secondSource": true,
+    "unverified": [
+      "Arabic support is taken from the PlayStation Store language list; the languages on a given disc depend on its region.",
+      "No EAN/UPC barcode recorded."
+    ]
+  }
+}

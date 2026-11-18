@@ -1,0 +1,40 @@
+{
+  "key": "turtle-beach-stealth-600-gen-3-playstation--2",
+  "view": "hero",
+  "width": 613,
+  "height": 1206,
+  "aspect": 0.5083,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/turtle-beach-stealth-600-gen-3-playstation/2-240.f468aad5.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/turtle-beach-stealth-600-gen-3-playstation/2-480.7178421f.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/turtle-beach-stealth-600-gen-3-playstation/2-240.65ef8a40.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/turtle-beach-stealth-600-gen-3-playstation/2-480.10a2ecaa.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRtgAAABXRUJQVlA4WAoAAAAQAAAACQAAEwAAQUxQSFIAAAART6CobSM2VBDzeSMiApxdv69gUtu2lMOcYJI/AhGQWBr8RQLslzgSsDh9mSJE9H8CuI1HAZvlfwWMCVhSBqczQS0mtdnUYX9qolqGy5SxHi23VlA4IGAAAADQAwCdASoKABQAPxFysFAsJqSisAgBgCIJZQAAXjmsc4xGRLAcUQAA/ok2cmmTOTHkzFntIw/IQPObO6fAnAsa0zbtRzI2emi5RB64VGhx8KvLbWyuq+QAG4126CZ0IAA=",
+  "dominant": "#454647",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Turtle Beach",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0556/5795/5430/files/2-Stealth600-PS-BLK.png",
+    "page": "https://www.turtlebeach.com/products/stealth-600-headset?Platform=PlayStation&Color=Black"
+  },
+  "input": "2a3948781401bf40"
+}

@@ -1,0 +1,78 @@
+{
+  "slug": "dobe-quest-silicone-cover",
+  "group": "xbox-vr",
+  "kind": "vr",
+  "platform": "multi",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "غطاء سيليكون DOBE لنظارة Meta Quest",
+    "en": "DOBE Silicone Cover for Meta Quest",
+    "ckb": "بەرگی سیلیکۆنی DOBE بۆ Meta Quest"
+  },
+  "short": {
+    "ar": "سيليكون ناعم يحمي النظارة من الخدوش والعرق",
+    "en": "Soft silicone that guards the headset against scratches and sweat",
+    "ckb": "سیلیکۆنی نەرم کە چاویلکە لە خەت و ئارەقە دەپارێزێت"
+  },
+  "description": {
+    "ar": "غطاء من السيليكون الناعم من DOBE لنظارة Meta Quest، يحميها من الخدوش والصدمات الخفيفة والعرق ويسهل تنظيفه. يُركّب ويُنزع باليد. اسأل المتجر عن موديل النظارة الذي يناسبه قبل الشراء.",
+    "en": "A soft silicone cover from DOBE for a Meta Quest headset that protects it from scratches, light knocks and sweat and is easy to clean. It goes on and comes off by hand. Ask the shop which Quest model it fits before buying.",
+    "ckb": "بەرگێکی سیلیکۆنی نەرم لە DOBE بۆ چاویلکەی Meta Quest کە لە خەت، لێدانی سووک و ئارەقە دەیپارێزێت و ئاسان پاک دەکرێتەوە. بە دەست دادەنرێت و لادەبرێت. پێش کڕین لە فرۆشگا بپرسە بۆ کام مۆدێلی Quest دەگونجێت."
+  },
+  "highlights": [
+    { "ar": "يحمي من الخدوش والعرق", "en": "Guards against scratches and sweat", "ckb": "لە خەت و ئارەقە دەپارێزێت" },
+    { "ar": "سهل التنظيف والتركيب", "en": "Easy to fit and clean", "ckb": "ئاسان دادەنرێت و پاک دەکرێتەوە" },
+    { "ar": "تأكد من موديل النظارة قبل الشراء", "en": "Check the headset model before buying", "ckb": "پێش کڕین مۆدێلی چاویلکە دڵنیا بکەرەوە" }
+  ],
+  "specs": [
+    { "key": "material", "label": { "ar": "المادة", "en": "Material", "ckb": "ماددە" }, "value": { "ar": "سيليكون", "en": "Silicone", "ckb": "سیلیکۆن" } }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-Q-SIL",
+      "sheetRow": 67,
+      "title": {
+        "ar": "غطاء سيليكون DOBE لنظارة Meta Quest",
+        "en": "DOBE Silicone Cover for Meta Quest",
+        "ckb": "بەرگی سیلیکۆنی DOBE بۆ Meta Quest"
+      },
+      "options": { "material": "Silicone" },
+      "isDefault": true
+    }
+  ],
+  "related": [
+    { "slug": "iine-quest-2-silicone-cover", "kind": "alternative" },
+    { "slug": "dobe-quest-3s-cooling-fan-ty-5805", "kind": "accessory" }
+  ],
+  "sources": [
+    {
+      "url": "https://us.vrcover.com/products/silicone-cover-grey-for-oculus™-quest-2",
+      "title": "Silicone Cover for Oculus Quest 2",
+      "publisher": "VR Cover",
+      "retrieved": "2026-11-18",
+      "supports": "what a Quest silicone cover does; covers are made per headset model"
+    },
+    {
+      "url": "https://brandwiki.lazada.sg/dobe/",
+      "title": "About DOBE",
+      "publisher": "Lazada Brand Wiki",
+      "retrieved": "2026-11-18",
+      "supports": "DOBE is a Shenzhen maker of game-console accessories"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع DOBE وليس من Meta.",
+    "en": "Made by DOBE, not by Meta.",
+    "ckb": "دروستکراوی DOBE ـیە، نەک Meta."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "No DOBE page or listing for a Quest silicone cover was found",
+      "Which Quest model it fits (Quest 2 is most likely), what the set includes and its colour",
+      "No product image of the exact item"
+    ]
+  }
+}

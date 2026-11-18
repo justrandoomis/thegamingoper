@@ -1,0 +1,62 @@
+{
+  "key": "hell-is-us--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hell-is-us/1-240.89cb50f7.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hell-is-us/1-480.de140781.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hell-is-us/1-720.9ade7739.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hell-is-us/1-960.c5793ea2.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hell-is-us/1-240.1899efd1.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hell-is-us/1-480.a7b28bd5.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hell-is-us/1-720.71b5e86a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hell-is-us/1-960.1772e3fb.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/hell-is-us/1-1067.8c20cceb.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAADwAwCdASoNABQAPxFysFAsJqSisAgBgCIJZQCw7BoHKaIGPC0nZn0AAP6YxKMleB8ziZcU6W+0b85XLco3w6mJ+JioSH+ouohy2iGR7EkbDTzA8c6xhS9DrYJEoyS3nRgAAA==",
+  "dominant": "#151919",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Nacon",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202505/1909/3e387e59545ff37d4312cef4c0d25d6eee3156e003b3eded.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP6665-PPSA09259_00-HIU0000000000000"
+  },
+  "input": "268695e6011df6d8"
+}

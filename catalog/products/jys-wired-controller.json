@@ -1,0 +1,73 @@
+{
+  "slug": "jys-wired-controller",
+  "group": "controllers-audio",
+  "kind": "controller",
+  "platform": "multi",
+  "brand": "JYS",
+  "status": "available",
+  "name": { "ar": "يد تحكم سلكية JYS", "en": "JYS Wired Controller", "ckb": "کۆنتڕۆڵەری وایەری JYS" },
+  "short": {
+    "ar": "يد تحكم سلكية من JYS · توصيل بكابل USB",
+    "en": "Wired controller by JYS · USB cable connection",
+    "ckb": "کۆنتڕۆڵەری وایەری JYS · بەستنەوە بە کێبڵی USB"
+  },
+  "description": {
+    "ar": "يد تحكم سلكية من JYS، الشركة الصينية المصنّعة لملحقات الألعاب (Shenzhen Jinyuansheng Electronics). تتصل بكابل USB فلا تحتاج شحناً ولا اقتراناً. متوفرة بطرازين بسعرين مختلفين؛ الأجهزة المتوافقة تختلف حسب الطراز ومكتوبة على العلبة.",
+    "en": "A wired controller from JYS, the Chinese gaming-accessory maker (Shenzhen Jinyuansheng Electronics). It connects with a USB cable, so there is no charging or pairing. Two models are stocked at different prices; the compatible devices depend on the model and are printed on the box.",
+    "ckb": "کۆنتڕۆڵەرێکی وایەری JYS، کۆمپانیای چینیی دروستکەری پاشکۆی یاری (Shenzhen Jinyuansheng Electronics). بە کێبڵی USB دەبەسترێت، بۆیە پێویستی بە شەحن و جووتکردن نییە. دوو مۆدێل بە دوو نرخی جیاواز هەیە؛ ئامێرە گونجاوەکان بەپێی مۆدێل جیاوازن و لەسەر قوتووەکە نووسراون."
+  },
+  "highlights": [
+    { "ar": "سلكية بكابل USB: دون شحن ودون اقتران", "en": "Wired USB: no charging, no pairing", "ckb": "وایەری USB: بێ شەحن و بێ جووتکردن" },
+    { "ar": "من JYS المصنّعة لملحقات الألعاب", "en": "Made by gaming-accessory maker JYS", "ckb": "دروستکراوی JYS، دروستکەری پاشکۆی یاری" },
+    { "ar": "طرازان: JYS‑2288 وJYS‑2332", "en": "Two models: JYS‑2288 and JYS‑2332", "ckb": "دوو مۆدێل: JYS‑2288 و JYS‑2332" }
+  ],
+  "specs": [
+    { "key": "connection", "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" }, "value": { "ar": "سلكي، USB", "en": "Wired, USB", "ckb": "وایەری، USB" } },
+    { "key": "maker", "label": { "ar": "الشركة المصنّعة", "en": "Maker", "ckb": "دروستکەر" }, "value": { "ar": "Shenzhen Jinyuansheng Electronics (JYS)", "en": "Shenzhen Jinyuansheng Electronics (JYS)", "ckb": "Shenzhen Jinyuansheng Electronics (JYS)" } }
+  ],
+  "inTheBox": [
+    { "ar": "يد التحكم السلكية", "en": "Wired controller", "ckb": "کۆنتڕۆڵەری وایەری" }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-2288-WIRED",
+      "sheetRow": 13,
+      "title": { "ar": "طراز JYS‑2288", "en": "JYS‑2288 model", "ckb": "مۆدێلی JYS‑2288" },
+      "options": { "model": "JYS-2288" },
+      "modelNumber": "JYS-2288",
+      "isDefault": true
+    },
+    {
+      "sku": "JYS-2332-WIRED",
+      "sheetRow": 14,
+      "title": { "ar": "طراز JYS‑2332", "en": "JYS‑2332 model", "ckb": "مۆدێلی JYS‑2332" },
+      "options": { "model": "JYS-2332" },
+      "modelNumber": "JYS-2332",
+      "isDefault": false
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "windows-pc", "status": "unverified", "note": { "ar": "حسب الطراز؛ راجع العلبة.", "en": "Depends on the model; check the box.", "ckb": "بەپێی مۆدێل؛ قوتووەکە بپشکنە." } }
+  ],
+  "related": [
+    { "slug": "generic-pc-gamepad", "kind": "alternative" },
+    { "slug": "dualsense", "kind": "upsell" }
+  ],
+  "sources": [
+    { "url": "https://manuals.plus/category/jys", "title": "JYS manuals", "publisher": "Manuals+", "retrieved": "2026-11-18", "supports": "JYS = Shenzhen Jinyuansheng Electronics, maker of game controllers and accessories; JYS model numbering" },
+    { "url": "https://exhibitions.globalsources.com/products/HK/jys-wireless-controller-gamepad-support-gyro-motion-controls-for-nintendo-switch_1214579049/", "title": "JYS wireless controller gamepad", "publisher": "Global Sources", "retrieved": "2026-11-18", "supports": "JYS brand controllers made in China" }
+  ],
+  "notes": {
+    "ar": "منتج طرف ثالث؛ تأكد من الأجهزة المكتوبة على العلبة قبل الشراء.",
+    "en": "Third-party product; check the devices printed on the box before buying.",
+    "ckb": "بەرهەمی لایەنی سێیەم؛ پێش کڕین ئامێرە نووسراوەکانی سەر قوتوو بپشکنە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "No maker or retailer page found for JYS-2288 or JYS-2332: platform, layout, vibration and cable length unknown",
+      "Whether the two rows are for PS4/PC, Switch or PC only"
+    ]
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "slug": "switch-joy-con-charging-dock",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة شحن ليدي Joy‑Con لجهاز Switch OLED",
+    "en": "Joy‑Con Charging Dock for Switch OLED",
+    "ckb": "بنکەی بارگاویکردنی Joy‑Con بۆ Switch OLED"
+  },
+  "short": {
+    "ar": "تشحن يدي Joy-Con لجهاز Switch و Switch OLED",
+    "en": "Charges Joy-Con for Switch and Switch OLED",
+    "ckb": "Joy-Con ی Switch و Switch OLED بارگاوی دەکات"
+  },
+  "description": {
+    "ar": "قاعدة شحن غير رسمية ليدي Joy-Con الخاصة بـ Nintendo Switch و Switch OLED، تشحن اليدين بعيدًا عن الجهاز. مسجلة في المخزن باسم «SW CHARGING OLED».",
+    "en": "An unofficial charging dock for Nintendo Switch and Switch OLED Joy-Con that charges them away from the console. Listed in stock as \"SW CHARGING OLED\".",
+    "ckb": "بنکەیەکی بارگاویکردنی نافەرمی بۆ Joy-Con ی Nintendo Switch و Switch OLED کە بە جیا لە ئامێرەکە بارگاوییان دەکات. لە کۆگادا بە «SW CHARGING OLED» تۆمارکراوە."
+  },
+  "highlights": [
+    {
+      "ar": "يشحن يدي Joy-Con دون الجهاز",
+      "en": "Charges Joy-Con without the console",
+      "ckb": "Joy-Con بێ ئامێر بارگاوی دەکات"
+    },
+    {
+      "ar": "لا يناسب يدي Joy-Con 2",
+      "en": "Does not fit Joy-Con 2",
+      "ckb": "بۆ Joy-Con 2 گونجاو نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "يدا Joy-Con لـ Switch و Switch OLED",
+        "en": "Switch and Switch OLED Joy-Con",
+        "ckb": "Joy-Con ی Switch و Switch OLED"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "SW-JC-CHARGE-DOCK",
+      "sheetRow": 195,
+      "title": {
+        "ar": "قاعدة شحن ليدي Joy‑Con لجهاز Switch OLED",
+        "en": "Joy‑Con Charging Dock for Switch OLED",
+        "ckb": "بنکەی بارگاویکردنی Joy‑Con بۆ Switch OLED"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-oled",
+      "status": "unverified",
+      "note": {
+        "ar": "يدا Joy-Con الأوليان",
+        "en": "Original Joy-Con",
+        "ckb": "Joy-Con ی یەکەم"
+      }
+    },
+    {
+      "deviceModel": "switch",
+      "status": "unverified",
+      "note": {
+        "ar": "يدا Joy-Con الأوليان",
+        "en": "Original Joy-Con",
+        "ckb": "Joy-Con ی یەکەم"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-oled",
+      "kind": "setup"
+    },
+    {
+      "slug": "switch-accessory-kit-24-in-1",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://jsaux.com/products/joy-con-energy-station-for-switch",
+      "title": "Joy-Con Energy Station for Switch",
+      "publisher": "JSAUX",
+      "retrieved": "2026-11-18",
+      "supports": "Joy-Con charging docks for Switch / Switch OLED as a product type"
+    },
+    {
+      "url": "https://ipega.hk/switch2series/102-686.html",
+      "title": "PG-SW2080 Switch Eight in One Charging Stand",
+      "publisher": "Shenzhen Ipega Electronic Technology",
+      "retrieved": "2026-11-18",
+      "supports": "second example of Switch Joy-Con charging stands"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Maker and model",
+      "Number of slots and power input"
+    ]
+  }
+}

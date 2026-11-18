@@ -1,0 +1,85 @@
+{
+  "slug": "meta-quest-link-cable",
+  "group": "xbox-vr",
+  "kind": "vr",
+  "platform": "multi",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "كابل Link لنظارات Meta Quest",
+    "en": "Link Cable for Meta Quest",
+    "ckb": "کێبڵی Link بۆ چاویلکەکانی Meta Quest"
+  },
+  "short": {
+    "ar": "يوصل نظارة Quest بالكمبيوتر للعب ألعاب PC VR · 3 م أو 5 م",
+    "en": "Connects a Quest headset to a PC for PC VR games · 3 m or 5 m",
+    "ckb": "چاویلکەی Quest بە کۆمپیوتەرەوە دەبەستێتەوە بۆ یارییەکانی PC VR · 3 م یان 5 م"
+  },
+  "description": {
+    "ar": "كابل USB طويل يصل نظارة Meta Quest بكمبيوتر Windows عبر ميزة Meta Horizon Link (Quest Link)، لتلعب ألعاب الواقع الافتراضي التي تعمل على الكمبيوتر، مثل ألعاب SteamVR، وتشحن النظارة في الوقت نفسه. تطلب Meta كابلاً جيداً ينقل البيانات والطاقة معاً، ويحتاج الكمبيوتر إلى مواصفات مناسبة ومنفذ USB.",
+    "en": "A long USB cable that connects a Meta Quest headset to a Windows PC through Meta Horizon Link (Quest Link), so you can play PC virtual-reality games such as SteamVR titles while the headset charges. Meta asks for a good cable that carries both data and power, and the PC needs suitable specs and a USB port.",
+    "ckb": "کێبڵێکی درێژی USB کە چاویلکەی Meta Quest بە کۆمپیوتەری Windows ـەوە دەبەستێتەوە لە ڕێگەی Meta Horizon Link (Quest Link)، بۆ ئەوەی یارییەکانی واقیعی مەجازیی کۆمپیوتەر وەک یارییەکانی SteamVR بکەیت و هاوکات چاویلکەکە شەحن ببێت. Meta کێبڵێکی باش دەخوازێت کە داتا و کارەبا پێکەوە بگوازێتەوە، و کۆمپیوتەرەکە پێویستی بە تایبەتمەندیی گونجاو و دەروازەی USB هەیە."
+  },
+  "highlights": [
+    { "ar": "للعب ألعاب PC VR على نظارة Quest", "en": "Play PC VR games on a Quest headset", "ckb": "یاریی PC VR لەسەر چاویلکەی Quest" },
+    { "ar": "طولان: 3 أمتار و5 أمتار", "en": "Two lengths: 3 m and 5 m", "ckb": "دوو درێژی: 3 مەتر و 5 مەتر" },
+    { "ar": "ينقل البيانات والطاقة معاً", "en": "Carries data and power together", "ckb": "داتا و کارەبا پێکەوە دەگوازێتەوە" },
+    { "ar": "يحتاج كمبيوتر Windows بمواصفات Meta Horizon Link", "en": "Needs a Windows PC that meets Meta Horizon Link requirements", "ckb": "پێویستی بە کۆمپیوتەری Windows هەیە کە مەرجەکانی Meta Horizon Link پڕبکاتەوە" }
+  ],
+  "specs": [
+    { "key": "use", "label": { "ar": "الاستعمال", "en": "Use", "ckb": "بەکارهێنان" }, "value": { "ar": "Meta Horizon Link (Quest Link) مع كمبيوتر Windows", "en": "Meta Horizon Link (Quest Link) with a Windows PC", "ckb": "Meta Horizon Link (Quest Link) لەگەڵ کۆمپیوتەری Windows" } },
+    { "key": "headset-end", "label": { "ar": "طرف النظارة", "en": "Headset end", "ckb": "سەری چاویلکە" }, "value": { "ar": "USB-C", "en": "USB-C", "ckb": "USB-C" } },
+    { "key": "pc-requirements", "label": { "ar": "أدنى مواصفات للكمبيوتر", "en": "Minimum PC", "ckb": "کەمترین تایبەتمەندیی کۆمپیوتەر" }, "value": { "ar": "Intel i5-4590 أو AMD Ryzen 5 1500X، ذاكرة 8GB، Windows 10 أو 11", "en": "Intel i5-4590 or AMD Ryzen 5 1500X, 8 GB RAM, Windows 10 or 11", "ckb": "Intel i5-4590 یان AMD Ryzen 5 1500X، بیرگەی 8GB، Windows 10 یان 11" } }
+  ],
+  "variants": [
+    {
+      "sku": "MQ-LINK-3M",
+      "sheetRow": 57,
+      "title": { "ar": "3 أمتار", "en": "3 m", "ckb": "3 مەتر" },
+      "options": { "length": "3 m" },
+      "isDefault": true
+    },
+    {
+      "sku": "MQ-LINK-5M",
+      "sheetRow": 58,
+      "title": { "ar": "5 أمتار", "en": "5 m", "ckb": "5 مەتر" },
+      "options": { "length": "5 m" },
+      "isDefault": false
+    }
+  ],
+  "related": [
+    { "slug": "dobe-quest-charging-kit-ty-3867", "kind": "accessory" },
+    { "slug": "dobe-quest-3-3s-charging-dock-ty-3868", "kind": "accessory" }
+  ],
+  "sources": [
+    {
+      "url": "https://www.meta.com/help/quest/140991407990979/",
+      "title": "Windows PC requirements for Meta Horizon Link",
+      "publisher": "Meta",
+      "retrieved": "2026-11-18",
+      "supports": "Link needs a high-quality USB cable for data and power, third-party cables allowed, minimum PC specs"
+    },
+    {
+      "url": "https://www.bhphotovideo.com/c/product/1590535-REG/oculus_301_00311_01_link_cable.html/overview",
+      "title": "Meta Quest Link Cable (16' / 5m)",
+      "publisher": "B&H Photo",
+      "retrieved": "2026-11-18",
+      "supports": "second source: Link cables connect Quest headsets to a PC; 5 m length"
+    }
+  ],
+  "notes": {
+    "ar": "كابل من صنع طرف ثالث وليس كابل Meta الرسمي. الكابل القصير المرفق مع النظارة للشحن غالباً لا يكفي لـ Link.",
+    "en": "A third-party cable, not Meta's official Link cable. The short charging cable that comes with the headset is usually not good enough for Link.",
+    "ckb": "کێبڵێکی لایەنی سێیەمە، نەک کێبڵی فەرمیی Link ـی Meta. کێبڵە کورتەکەی شەحن کە لەگەڵ چاویلکەکە دێت زۆرجار بۆ Link بەس نییە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Maker of the shop's 'OCULUS CABIE' cables",
+      "Whether the PC end is USB-A or USB-C, the USB speed and whether there is a separate charging port",
+      "Which Quest models the shop's cable has been tested with",
+      "No product image of the exact cable"
+    ]
+  }
+}

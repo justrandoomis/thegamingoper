@@ -1,0 +1,258 @@
+{
+  "slug": "asus-tuf-gaming-vg249qm1a",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "ASUS",
+  "category": "monitors",
+  "status": "available",
+  "name": {
+    "ar": "شاشة ASUS TUF Gaming VG249QM1A",
+    "en": "ASUS TUF Gaming VG249QM1A",
+    "ckb": "شاشەی ASUS TUF Gaming VG249QM1A"
+  },
+  "short": {
+    "ar": "23.8 بوصة · Full HD · ‏270Hz · Fast IPS",
+    "en": "23.8\" · Full HD · 270 Hz · Fast IPS",
+    "ckb": "23.8 ئینج · Full HD · ‏270Hz · Fast IPS"
+  },
+  "description": {
+    "ar": "شاشة ألعاب من ASUS بحجم 23.8 بوصة ودقة 1920×1080 ولوحة Fast IPS، يصل معدل تحديثها إلى 270 هرتز (عبر منفذ DisplayPort) بزمن استجابة 1 ملي ثانية. تدعم Adaptive‑Sync لتقليل تمزق الصورة، وفيها منفذا HDMI 2.0 ومنفذ DisplayPort 1.2 ومخرج سماعة.",
+    "en": "A 23.8-inch ASUS gaming monitor with a 1920×1080 Fast IPS panel that refreshes at up to 270 Hz (over DisplayPort) with a 1 ms response time. It supports Adaptive-Sync to cut screen tearing and has two HDMI 2.0 ports, one DisplayPort 1.2 and a headphone jack.",
+    "ckb": "شاشەیەکی یاری ASUS بە قەبارەی 23.8 ئینج و پانێڵی Fast IPSی 1920×1080، ڕێژەی نوێبوونەوەی تا 270 هێرتز دەگات (لە ڕێگەی DisplayPort) و کاتی وەڵامدانەوەی 1 ملی چرکەیە. Adaptive‑Sync پشتگیری دەکات و دوو دەرچەی HDMI 2.0 و یەک DisplayPort 1.2 و دەرچەی هێدفۆنی هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "معدل تحديث حتى 270 هرتز",
+      "en": "Up to 270 Hz refresh rate",
+      "ckb": "ڕێژەی نوێبوونەوە تا 270 هێرتز"
+    },
+    {
+      "ar": "لوحة Fast IPS بدقة Full HD وزوايا رؤية 178°",
+      "en": "Full HD Fast IPS panel, 178° viewing angles",
+      "ckb": "پانێڵی Fast IPSی Full HD، گۆشەی بینینی 178°"
+    },
+    {
+      "ar": "زمن استجابة 1 ملي ثانية (GTG)",
+      "en": "1 ms (GTG) response time",
+      "ckb": "کاتی وەڵامدانەوەی 1 ملی چرکە (GTG)"
+    },
+    {
+      "ar": "تغطية 99% من sRGB",
+      "en": "99% sRGB colour coverage",
+      "ckb": "داپۆشینی 99%ی sRGB"
+    }
+  ],
+  "specs": [
+    {
+      "key": "display",
+      "label": {
+        "ar": "الشاشة",
+        "en": "Display",
+        "ckb": "شاشە"
+      },
+      "value": {
+        "ar": "23.8 بوصة، 1920×1080، Fast IPS، سطح مضاد للانعكاس",
+        "en": "23.8\", 1920×1080, Fast IPS, anti-glare",
+        "ckb": "23.8 ئینج، 1920×1080، Fast IPS، ڕووکاری دژە درەوشانەوە"
+      }
+    },
+    {
+      "key": "refresh",
+      "label": {
+        "ar": "معدل التحديث",
+        "en": "Refresh rate",
+        "ckb": "ڕێژەی نوێبوونەوە"
+      },
+      "value": {
+        "ar": "حتى 270 هرتز عبر DisplayPort، وحتى 240 هرتز عبر HDMI",
+        "en": "Up to 270 Hz over DisplayPort, up to 240 Hz over HDMI",
+        "ckb": "تا 270 هێرتز بە DisplayPort، تا 240 هێرتز بە HDMI"
+      }
+    },
+    {
+      "key": "response",
+      "label": {
+        "ar": "زمن الاستجابة",
+        "en": "Response time",
+        "ckb": "کاتی وەڵامدانەوە"
+      },
+      "value": {
+        "ar": "1 ملي ثانية (GTG)",
+        "en": "1 ms (GTG)",
+        "ckb": "1 ملی چرکە (GTG)"
+      }
+    },
+    {
+      "key": "brightness",
+      "label": {
+        "ar": "السطوع والتباين",
+        "en": "Brightness and contrast",
+        "ckb": "ڕووناکی و جیاوازی"
+      },
+      "value": {
+        "ar": "350 شمعة/م²، تباين 1000:1",
+        "en": "350 cd/m², 1000:1 contrast",
+        "ckb": "350 cd/m²، جیاوازی 1000:1"
+      }
+    },
+    {
+      "key": "ports",
+      "label": {
+        "ar": "المنافذ",
+        "en": "Ports",
+        "ckb": "دەرچەکان"
+      },
+      "value": {
+        "ar": "2× HDMI 2.0، 1× DisplayPort 1.2، مخرج سماعة",
+        "en": "2× HDMI 2.0, 1× DisplayPort 1.2, earphone jack",
+        "ckb": "2× HDMI 2.0، 1× DisplayPort 1.2، دەرچەی هێدفۆن"
+      }
+    },
+    {
+      "key": "sync",
+      "label": {
+        "ar": "مزامنة الصورة",
+        "en": "Adaptive sync",
+        "ckb": "هاوکاتکردنی وێنە"
+      },
+      "value": {
+        "ar": "Adaptive‑Sync و ELMB",
+        "en": "Adaptive-Sync, ELMB",
+        "ckb": "Adaptive‑Sync و ELMB"
+      }
+    },
+    {
+      "key": "stand",
+      "label": {
+        "ar": "الحامل",
+        "en": "Stand",
+        "ckb": "پایە"
+      },
+      "value": {
+        "ar": "إمالة من ‎-5° حتى +20°، تثبيت جداري VESA ‏100×100",
+        "en": "Tilt -5° to +20°, VESA 100×100 wall mount",
+        "ckb": "لاربوونەوە لە ‎-5° تا +20°، VESA ‏100×100"
+      }
+    },
+    {
+      "key": "weight",
+      "label": {
+        "ar": "الوزن",
+        "en": "Weight",
+        "ckb": "کێش"
+      },
+      "value": {
+        "ar": "4.2 كغ مع الحامل",
+        "en": "4.2 kg with stand",
+        "ckb": "4.2 کگ لەگەڵ پایە"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "الشاشة والحامل",
+      "en": "Monitor and stand",
+      "ckb": "شاشە و پایە"
+    },
+    {
+      "ar": "كابل كهرباء",
+      "en": "Power cord",
+      "ckb": "کێبڵی کارەبا"
+    },
+    {
+      "ar": "كابل DisplayPort",
+      "en": "DisplayPort cable",
+      "ckb": "کێبڵی DisplayPort"
+    },
+    {
+      "ar": "دليل التشغيل السريع وبطاقة الضمان",
+      "en": "Quick start guide and warranty card",
+      "ckb": "ڕێبەری خێرا و کارتی گەرەنتی"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "ASUS-VG249QM1A",
+      "title": {
+        "ar": "شاشة ASUS TUF Gaming VG249QM1A",
+        "en": "ASUS TUF Gaming VG249QM1A",
+        "ckb": "شاشەی ASUS TUF Gaming VG249QM1A"
+      },
+      "options": {
+        "size": "23.8\""
+      },
+      "modelNumber": "VG249QM1A",
+      "isDefault": true,
+      "images": [
+        "asus-tuf-gaming-vg249qm1a--1"
+      ],
+      "sheetRow": 3,
+      "notes": {
+        "ar": "لاحقة ‎-IQ في اسم المخزن تعني نسخة السوق العراقية.",
+        "en": "The -IQ suffix in the stock name marks the Iraqi-market unit.",
+        "ckb": "پاشگری ‎-IQ لە ناوی کۆگادا یەکەی بازاڕی عێراق دەردەخات."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "عبر DisplayPort أو HDMI.",
+        "en": "Over DisplayPort or HDMI.",
+        "ckb": "لە ڕێگەی DisplayPort یان HDMI."
+      },
+      "source": "https://www.asus.com/me-en/displays-desktops/monitors/tuf-gaming/tuf-gaming-vg249qm1a/techspec/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "asus-tuf-gaming-vg279qm5a",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "asus-tuf-gaming-vg249qm1a--1",
+      "file": ".cache/product-images/asus-tuf-gaming-vg249qm1a/1.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/05f46a69-daad-4079-bdff-61809e431de5/",
+      "sourcePage": "https://www.asus.com/me-en/displays-desktops/monitors/tuf-gaming/tuf-gaming-vg249qm1a/",
+      "kind": "hero",
+      "alt": {
+        "ar": "شاشة ASUS TUF Gaming VG249QM1A من الأمام",
+        "en": "ASUS TUF Gaming VG249QM1A from the front",
+        "ckb": "شاشەی ASUS TUF Gaming VG249QM1A لە پێشەوە"
+      },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.asus.com/me-en/displays-desktops/monitors/tuf-gaming/tuf-gaming-vg249qm1a/techspec/",
+      "title": "TUF Gaming VG249QM1A – Tech Specs",
+      "publisher": "ASUS",
+      "retrieved": "2026-11-18",
+      "supports": "panel size 23.8\", 1920×1080 Fast IPS, 350 cd/m², 1000:1, 99% sRGB, 1 ms GTG, 270 Hz max (DP 48–270 Hz, HDMI 48–240 Hz), ports, Adaptive-Sync, ELMB, tilt, VESA, weight, box contents, image"
+    },
+    {
+      "url": "https://www.guru3d.com/story/asus-tuf-gaming-vg249qm1a-is-a-fast-ips-gaming-lcd-gets-a-refresh-rate-of-270hz/",
+      "title": "ASUS TUF Gaming VG249QM1A is a fast IPS gaming LCD with 270Hz",
+      "publisher": "Guru3D",
+      "retrieved": "2026-11-18",
+      "supports": "independent confirmation of 270 Hz Fast IPS 1080p specs"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Exact launch date",
+      "Whether the Iraqi (-IQ) box also includes an HDMI cable (ASUS lists accessories that vary by region)"
+    ]
+  }
+}

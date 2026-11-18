@@ -1,0 +1,40 @@
+{
+  "key": "dxracer-prince-series--4",
+  "view": "hero",
+  "width": 648,
+  "height": 1058,
+  "aspect": 0.6125,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-prince-series/4-240.1e4f5239.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-prince-series/4-480.a567f32e.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-prince-series/4-240.d2f95e91.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-prince-series/4-480.8d00313e.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRvgAAABXRUJQVlA4WAoAAAAQAAAACwAAEwAAQUxQSHQAAAART6CgbRs2VBD7fxERqK/xC3o4sW1bbc6H+MjIMrjYuqiCY3Kk6pgGEJpAu+582zlE9D/5vXQAPkcgLAoL43cRwUnawFgaQSx1oSL1QsbSZhuMpdHYnKTy68aSFHBIh3UTmnEAJLe5pZLmeZ+JGZvEQWz4A1ZQOCBeAAAAsAMAnQEqDAAUAD8RcrBQLCakorAIAYAiCWkAAEpsEtveThcEeogA/qErJC4y7R8R7XiJ9glOA2rqdNChskUMRIhJ4ujDCiHLBicLUtuEySOn+fV1c1FIzpHZgAAAAA==",
+  "dominant": "#292929",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "DXRacer",
+  "source": {
+    "url": "https://nex-img.dxracer.cc/20001/1b1e16e5-dc9d-4965-bf5b-bcc0ac198a4e-3.png",
+    "page": "https://www.dxracer.com/products/gaming-chairs/prince?sku=GC/LPF24LTC/N.N.N"
+  },
+  "input": "a8ee97667de4a6fa"
+}

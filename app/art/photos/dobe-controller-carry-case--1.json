@@ -1,0 +1,70 @@
+{
+  "key": "dobe-controller-carry-case--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1458,
+  "aspect": 1.0974,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dobe-controller-carry-case/1-240.474c7988.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-controller-carry-case/1-480.b183bc8c.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-controller-carry-case/1-720.7b3ca47a.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dobe-controller-carry-case/1-960.380369ea.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dobe-controller-carry-case/1-1440.89e697be.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dobe-controller-carry-case/1-240.c926a307.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-controller-carry-case/1-480.38e0768e.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-controller-carry-case/1-720.1fd36990.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dobe-controller-carry-case/1-960.81e93acc.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/dobe-controller-carry-case/1-1440.b68b69fe.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/dobe-controller-carry-case/1-1200.c168ed62.png",
+    "width": 1200,
+    "height": 1094,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRhwBAABXRUJQVlA4WAoAAAAQAAAAEwAAEQAAQUxQSGsAAAART6CobSM2VxC9PV53ERHwvuG+NZhGtu3kfKL9JWApBUcJSHDgwOXUADO33h9qiOj/BOBag9/cferYa5aWFDjkLoZW/ow/kLQKpmOoXCO6UFGFEn7fAJOvBg5PDnBK+oxjL6nBa68384EBAABWUDggigAAAPAEAJ0BKhQAEgA/EXi2U6wnJSKoCqmAIglnAAPj8Qnx/66s8/j+5FoFOpf4qiwfwAD+2P19adI5j35BRhMnz5Fnpn4b3kpXQiD/F0SeVipFXeoAPv441L/z7Zev4gm1XraQ+qhGFbiMloV02AHRijYmPiP76cPlXLFZdreZtkRFpKecaZ3kAAAAAA==",
+  "dominant": "#262528",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "DOBE",
+  "source": {
+    "url": "https://www.pbtech.com/imgprod/G/A/GAMDBE3583__2.jpg",
+    "page": "https://www.pbtech.com/product/GAMDBE3583/DOBE-Controller-Carry-Case-Black-Suits-XBOX-Switch"
+  },
+  "input": "a301f408a75b01ac"
+}

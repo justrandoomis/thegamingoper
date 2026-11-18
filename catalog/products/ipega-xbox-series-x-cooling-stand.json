@@ -1,0 +1,85 @@
+{
+  "slug": "ipega-xbox-series-x-cooling-stand",
+  "group": "xbox-vr",
+  "kind": "accessory",
+  "platform": "xbox",
+  "brand": "iPega",
+  "status": "available",
+  "name": {
+    "ar": "ستاند تبريد وشحن iPega لجهاز Xbox Series X",
+    "en": "iPega Cooling and Charging Stand for Xbox Series X",
+    "ckb": "ستاندی ساردکردنەوە و شەحنی iPega بۆ Xbox Series X"
+  },
+  "short": {
+    "ar": "يحمل الجهاز عمودياً · مراوح تبريد · يشحن يدين · إضاءة RGB",
+    "en": "Holds the console upright · cooling fans · charges two controllers · RGB light",
+    "ckb": "کۆنسۆڵ بە ستوونی ڕادەگرێت · پانکەی ساردکردنەوە · دوو دەسک شەحن دەکات · ڕووناکیی RGB"
+  },
+  "description": {
+    "ar": "ستاند من iPega يوضع عليه جهاز Xbox Series X بشكل عمودي، فيه مراوح تبريد تساعد على إخراج حرارة الجهاز في الجلسات الطويلة، ومكانان لشحن يدي Xbox، وإضاءة RGB. ستاندات iPega لهذا الجهاز تشحن اليد عبر بطاريتها القابلة للشحن.",
+    "en": "An iPega stand that holds the Xbox Series X upright, with cooling fans that help move heat away from the console in long sessions, two charging spots for Xbox controllers and RGB lighting. iPega's stands for this console charge the controller through its rechargeable battery pack.",
+    "ckb": "ستاندێکی iPega کە Xbox Series X بە ستوونی ڕادەگرێت، پانکەی ساردکردنەوەی هەیە کە لە دانیشتنە درێژەکاندا یارمەتی دەرکردنی گەرمای کۆنسۆڵ دەدات، دوو شوێن بۆ شەحنی دەسکەکانی Xbox، و ڕووناکیی RGB. ستاندەکانی iPega بۆ ئەم کۆنسۆڵە دەسک لە ڕێگەی پاتریی شەحنکراوەکەیەوە شەحن دەکەن."
+  },
+  "highlights": [
+    { "ar": "لـ Xbox Series X", "en": "For the Xbox Series X", "ckb": "بۆ Xbox Series X" },
+    { "ar": "مراوح تبريد", "en": "Cooling fans", "ckb": "پانکەی ساردکردنەوە" },
+    { "ar": "يشحن يدين معاً", "en": "Charges two controllers at once", "ckb": "دوو دەسک پێکەوە شەحن دەکات" },
+    { "ar": "إضاءة RGB", "en": "RGB lighting", "ckb": "ڕووناکیی RGB" }
+  ],
+  "specs": [
+    { "key": "fits", "label": { "ar": "يناسب", "en": "Fits", "ckb": "گونجاوە بۆ" }, "value": { "ar": "Xbox Series X", "en": "Xbox Series X", "ckb": "Xbox Series X" } }
+  ],
+  "variants": [
+    {
+      "sku": "IPEGA-XSX-STAND",
+      "sheetRow": 232,
+      "title": {
+        "ar": "ستاند تبريد وشحن iPega لجهاز Xbox Series X",
+        "en": "iPega Cooling and Charging Stand for Xbox Series X",
+        "ckb": "ستاندی ساردکردنەوە و شەحنی iPega بۆ Xbox Series X"
+      },
+      "options": { "color": "Black" },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "xbox-series-x", "status": "verified", "source": "https://www.fruugo.my/ipega-pg-xbx028s-for-xbox-series-x-cooling-stand-dual-controller-charging-dock-with-rgb-light/p-342735041" },
+    { "deviceModel": "xbox-series-x-digital", "status": "unverified", "note": { "ar": "نفس هيكل Series X", "en": "Same body as the Series X", "ckb": "هەمان لاشەی Series X" } },
+    { "deviceModel": "xbox-series-s", "status": "incompatible", "note": { "ar": "مقاسه لـ Series X", "en": "Sized for the Series X", "ckb": "قەبارەکەی بۆ Series X ـە" }, "source": "https://www.fruugo.my/ipega-pg-xbx028s-for-xbox-series-x-cooling-stand-dual-controller-charging-dock-with-rgb-light/p-342735041" }
+  ],
+  "related": [
+    { "slug": "xbox-series-x", "kind": "setup" },
+    { "slug": "xbox-series-x-stand", "kind": "alternative" },
+    { "slug": "xbox-wireless-controller", "kind": "accessory" }
+  ],
+  "sources": [
+    {
+      "url": "https://www.fruugo.my/ipega-pg-xbx028s-for-xbox-series-x-cooling-stand-dual-controller-charging-dock-with-rgb-light/p-342735041",
+      "title": "IPEGA PG-XBX028S For Xbox Series X Cooling Stand Dual Controller Charging Dock with RGB Light",
+      "publisher": "Fruugo",
+      "retrieved": "2026-11-18",
+      "supports": "iPega Series X cooling stand with dual controller charging and RGB; charges controllers with their rechargeable batteries; about 3.5 h charging"
+    },
+    {
+      "url": "https://www.digitec.ch/en/s1/product/-ipega-xbx024s-multifunctional-charging-rgb-stand-with-cooling-for-xbox-xbox-series-x-game-controlle-47747391",
+      "title": "iPega XBX024S Multifunctional Charging RGB Stand with Cooling for Xbox Series X",
+      "publisher": "Digitec",
+      "retrieved": "2026-11-18",
+      "supports": "second source: iPega Series X stand with cooling, dual charging and RGB"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع iPega وليس من Microsoft. الجهاز واليدان غير مرفقة.",
+    "en": "Made by iPega, not by Microsoft. The console and controllers are not included.",
+    "ckb": "دروستکراوی iPega ـیە، نەک Microsoft. کۆنسۆڵ و دەسکەکان لەگەڵی نین."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Exact iPega model of the shop's stand (PG-XBX028S, PG-XBX024S or PG-XBX025S)",
+      "Whether battery packs are included, number of fans, ports and box contents",
+      "No clean product image could be downloaded"
+    ]
+  }
+}

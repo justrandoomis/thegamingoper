@@ -1,0 +1,62 @@
+{
+  "key": "jys-rog-ally-carrying-case-x152--1",
+  "view": "hero",
+  "width": 1434,
+  "height": 972,
+  "aspect": 1.4753,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/jys-rog-ally-carrying-case-x152/1-240.ca825a4f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/jys-rog-ally-carrying-case-x152/1-480.907c26e8.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/jys-rog-ally-carrying-case-x152/1-720.c2986c2d.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/jys-rog-ally-carrying-case-x152/1-960.bce6d530.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/jys-rog-ally-carrying-case-x152/1-240.bddb2671.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/jys-rog-ally-carrying-case-x152/1-480.2284f0fd.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/jys-rog-ally-carrying-case-x152/1-720.c4a97ace.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/jys-rog-ally-carrying-case-x152/1-960.282347d7.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/jys-rog-ally-carrying-case-x152/1-1200.0796ef74.png",
+    "width": 1200,
+    "height": 813,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRt4AAABXRUJQVlA4WAoAAAAQAAAAEwAADQAAQUxQSFgAAAART6AmAAg2poF7byIigJKD6fDBqLZtJQ9n+KUAUuBLAZy5jp1GmvdjESL6PwHwHkmp3fkaIgqqChkKCgD7dVsCux6t6Mnt/3CiF96TDduDAWxZ17XLKbwFVlA4IGAAAAAwAwCdASoUAA4APxFysFAsJqSisAgBgCIJaQAAidpo7ZggAP7rRiZVJh6nUzBdz0mDXuDfjq5zxFh0l78HgcMPVul/Ow2SIxj4JHvoSAwrpQWBAvfC9PTKafc/IAX1AgA=",
+  "dominant": "#26242b",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "JYS Electronics",
+  "source": {
+    "url": "https://www.systembank.pl/img/opis/11092/etui-ochronne-futeral-case-hard-case-do-asus-rog-ally-rog-xbox-ally-x-jys-x152-v2-czarny_o11092_1.jpg",
+    "page": "https://www.systembank.pl/etui-ochronne-futeral-case-hard-case-do-asus-rog-ally-rog-xbox-ally-x-jys-x152-v2-czarny-p11092.html"
+  },
+  "input": "e5b085daf7fceac4"
+}

@@ -22,6 +22,10 @@ export const demoId = {
   serial: (serial: string) => `ser_${key(serial)}`,
   openingMovement: (sku: string, serial?: string) => (serial ? `smv_open_${key(serial)}` : `smv_open_${key(sku)}`),
   openingCostLayer: (sku: string) => `cly_open_${key(sku)}`,
+  /** The opening balance of a variant from the owner's sheet (one real unit). */
+  sheetOpening: (sku: string) => `smv_sheet_${key(sku)}`,
+  /** A real product's variant that is not on the owner's sheet: its demo stock taken back to 0. */
+  sheetWithdrawal: (sku: string) => `smv_sheet_out_${key(sku)}`,
   usedUnit: (slug: string) => `usd_${slug}`,
   tradeInGuide: (deviceModelSlug: string) => `tpg_${deviceModelSlug}`,
   article: (slug: string) => `kba_${slug}`,
@@ -33,3 +37,6 @@ export const demoId = {
 /** What the seed writes into `actor_id`, `source_ref` and `ref_type` columns so demo rows can be told apart. */
 export const DEMO_ACTOR_ID = "seed:demo";
 export const DEMO_REF_TYPE = "demo_seed";
+/** The same for the stock the import takes from the owner's sheet (real stock, not demo). */
+export const OWNER_SHEET_ACTOR_ID = "seed:owner-sheet";
+export const OWNER_SHEET_REF_TYPE = "owner_sheet";

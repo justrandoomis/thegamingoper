@@ -1,0 +1,282 @@
+{
+  "slug": "dobe-ps5-dual-charging-dock",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة شحن DOBE ليدَي DualSense",
+    "en": "DOBE Dual Charging Dock for DualSense",
+    "ckb": "بنکەی شەحنی DOBE بۆ دوو DualSense"
+  },
+  "short": {
+    "ar": "تشحن يدين معاً · محوّلات USB‑C مرفقة · تعمل بكابل USB",
+    "en": "Charges two controllers at once · USB‑C adapters included · USB powered",
+    "ckb": "دوو کۆنتڕۆڵەر پێکەوە شەحن دەکات · ئەداپتەری USB‑C لەگەڵیدایە · بە USB کار دەکات"
+  },
+  "description": {
+    "ar": "قاعدة صغيرة من DOBE تشحن يدَي PS5 DualSense في الوقت نفسه. تضع في منفذ USB‑C لكل يد محوّلاً صغيراً ثم تثبّت اليد على القاعدة، وتعمل القاعدة بكابل USB‑C يوصل بالجهاز أو بشاحن 5V/2A.",
+    "en": "A compact DOBE dock that charges two PS5 DualSense controllers at the same time. A small adapter goes into each controller's USB‑C port and the controller then sits on the dock; the dock itself runs from a USB‑C cable plugged into the console or a 5V/2A charger.",
+    "ckb": "بنکەیەکی بچووکی DOBE کە دوو کۆنتڕۆڵەری PS5 DualSense لە یەک کاتدا شەحن دەکات. ئەداپتەرێکی بچووک دەخرێتە دەروازەی USB‑Cی هەر کۆنتڕۆڵەرێک و پاشان لەسەر بنکەکە دادەنرێت؛ بنکەکە بە وایەری USB‑C لە کۆنسۆڵ یان شەحنەرێکی 5V/2A کار دەکات."
+  },
+  "highlights": [
+    {
+      "ar": "يشحن يدَي DualSense معاً",
+      "en": "Charges two DualSense controllers together",
+      "ckb": "دوو DualSense پێکەوە شەحن دەکات"
+    },
+    {
+      "ar": "محوّلا USB‑C وكابل شحن في العلبة (طراز TP5‑0505)",
+      "en": "Two USB‑C adapters and a charging cable in the box (model TP5‑0505)",
+      "ckb": "دوو ئەداپتەری USB‑C و وایەری شەحن لە قوتووەکەدایە (مۆدێلی TP5‑0505)"
+    },
+    {
+      "ar": "حماية من الشحن الزائد والجهد الزائد",
+      "en": "Overcharge and over‑voltage protection",
+      "ckb": "پاراستن لە شەحنی زیاد و ڤۆڵتی زیاد"
+    },
+    {
+      "ar": "حجم صغير: نحو 142 × 65 × 27 ملم",
+      "en": "Small: about 142 × 65 × 27 mm",
+      "ckb": "بچووک: نزیکەی 142 × 65 × 27 ملم"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "TP5‑0505",
+        "en": "TP5‑0505",
+        "ckb": "TP5‑0505"
+      }
+    },
+    {
+      "key": "controllers",
+      "label": {
+        "ar": "عدد الأيدي",
+        "en": "Controllers",
+        "ckb": "ژمارەی کۆنتڕۆڵەر"
+      },
+      "value": {
+        "ar": "2 × DualSense",
+        "en": "2 × DualSense",
+        "ckb": "2 × DualSense"
+      }
+    },
+    {
+      "key": "power",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "وزە"
+      },
+      "value": {
+        "ar": "كابل USB‑C؛ مصدر 5V / 2A أو أعلى",
+        "en": "USB‑C cable; 5V / 2A source or higher",
+        "ckb": "وایەری USB‑C؛ سەرچاوەی 5V / 2A یان زیاتر"
+      }
+    },
+    {
+      "key": "dimensions",
+      "label": {
+        "ar": "الأبعاد",
+        "en": "Dimensions",
+        "ckb": "ئەندازەکان"
+      },
+      "value": {
+        "ar": "نحو 142 × 65 × 27 ملم",
+        "en": "About 142 × 65 × 27 mm",
+        "ckb": "نزیکەی 142 × 65 × 27 ملم"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قاعدة الشحن",
+      "en": "Charging dock",
+      "ckb": "بنکەی شەحن"
+    },
+    {
+      "ar": "كابل شحن USB‑C",
+      "en": "USB‑C charging cable",
+      "ckb": "وایەری شەحنی USB‑C"
+    },
+    {
+      "ar": "محوّلا USB‑C (2)",
+      "en": "USB‑C adapters (2)",
+      "ckb": "ئەداپتەری USB‑C (2)"
+    },
+    {
+      "ar": "دليل الاستخدام",
+      "en": "User manual",
+      "ckb": "ڕێبەری بەکارهێنان"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TP5-0505",
+      "title": {
+        "ar": "TP5‑0505",
+        "en": "TP5‑0505",
+        "ckb": "TP5‑0505"
+      },
+      "options": {
+        "model": "TP5-0505"
+      },
+      "modelNumber": "TP5-0505",
+      "sheetRow": 83,
+      "isDefault": true,
+      "images": [
+        "dobe-ps5-dual-charging-dock--1",
+        "dobe-ps5-dual-charging-dock--2",
+        "dobe-ps5-dual-charging-dock--3",
+        "dobe-ps5-dual-charging-dock--4"
+      ]
+    },
+    {
+      "sku": "DOBE-PS5-DOCK-V2",
+      "title": {
+        "ar": "النسخة 2",
+        "en": "Version 2",
+        "ckb": "وەشانی 2"
+      },
+      "options": {
+        "version": "2"
+      },
+      "sheetRow": 96,
+      "notes": {
+        "ar": "قاعدة شحن DOBE لليد بسعر شراء مختلف؛ رقم الطراز غير مكتوب في قائمة المحل.",
+        "en": "A DOBE controller charging dock bought at a different price; the shop list does not give its model number.",
+        "ckb": "بنکەی شەحنی DOBE بۆ کۆنتڕۆڵەر بە نرخی کڕینی جیاواز؛ لیستی دووکان ژمارەی مۆدێلەکەی نانووسێت."
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "dualsense",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-edge",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-charging-station",
+      "kind": "alternative"
+    },
+    {
+      "slug": "powera-twin-charging-station-dualsense",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ipega-pg-p5003-charging-station",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ps5-controller-dual-charging-dock",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "dobe-ps5-dual-charging-dock--1",
+      "file": ".cache/product-images/dobe-ps5-dual-charging-dock/1.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0769/7317/9187/files/dobe-tp5-0505-3.jpg",
+      "sourcePage": "https://pixelzones.com/products/dobe-charging-dock-for-ps5-tp5-0505",
+      "kind": "hero",
+      "alt": {
+        "ar": "قاعدة DOBE وعليها يدا DualSense",
+        "en": "The DOBE dock holding two DualSense controllers",
+        "ckb": "بنکەی DOBE لەگەڵ دوو DualSense"
+      },
+      "credit": "DOBE",
+      "width": 1028,
+      "height": 1028,
+      "transparent": false
+    },
+    {
+      "key": "dobe-ps5-dual-charging-dock--2",
+      "file": ".cache/product-images/dobe-ps5-dual-charging-dock/2.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0769/7317/9187/files/dobe-tp5-0505-2.jpg",
+      "sourcePage": "https://pixelzones.com/products/dobe-charging-dock-for-ps5-tp5-0505",
+      "kind": "angle",
+      "alt": {
+        "ar": "القاعدة من الخلف مع كابل USB‑C",
+        "en": "The dock from behind with its USB‑C cable",
+        "ckb": "بنکەکە لە پشتەوە لەگەڵ وایەری USB‑C"
+      },
+      "credit": "DOBE",
+      "width": 1028,
+      "height": 1028,
+      "transparent": false
+    },
+    {
+      "key": "dobe-ps5-dual-charging-dock--3",
+      "file": ".cache/product-images/dobe-ps5-dual-charging-dock/3.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0769/7317/9187/files/dobe-tp5-0505-4.jpg",
+      "sourcePage": "https://pixelzones.com/products/dobe-charging-dock-for-ps5-tp5-0505",
+      "kind": "detail",
+      "alt": {
+        "ar": "طريقة وضع اليد على القاعدة",
+        "en": "How a controller sits on the dock",
+        "ckb": "چۆنیەتی دانانی کۆنتڕۆڵەر لەسەر بنکەکە"
+      },
+      "credit": "DOBE",
+      "width": 1028,
+      "height": 1028,
+      "transparent": false
+    },
+    {
+      "key": "dobe-ps5-dual-charging-dock--4",
+      "file": ".cache/product-images/dobe-ps5-dual-charging-dock/4.jpg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0769/7317/9187/files/dobe-tp5-0505-5.jpg",
+      "sourcePage": "https://pixelzones.com/products/dobe-charging-dock-for-ps5-tp5-0505",
+      "kind": "in-box",
+      "alt": {
+        "ar": "علبة قاعدة الشحن",
+        "en": "The dock's retail box",
+        "ckb": "قوتووی بنکەکە"
+      },
+      "credit": "DOBE",
+      "width": 1028,
+      "height": 1028,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://pixelzones.com/products/dobe-charging-dock-for-ps5-tp5-0505",
+      "title": "Dobe Charging Dock For PS5 - TP5-0505",
+      "publisher": "PixelZones (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "TP5-0505 vs TP5-0504 box contents, 5V/2A input, overcharge/OVP protection, product size 142 × 65 × 27 mm, product pictures"
+    },
+    {
+      "url": "https://www.av-cables.dk/elektronik-tilbehoer/gaming-udstyr/playstation-tilbehoer/tilbehor-til-playstation-controller/dobe-tp5-0505-playstation-5-dual-controller-dock-oplader",
+      "title": "DOBE TP5-0505 PlayStation 5 Dual Controller Dock oplader",
+      "publisher": "AV-Cables.dk (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "fact-check: charges up to two DualSense controllers, USB-C cable included"
+    }
+  ],
+  "notes": {
+    "ar": "لا تأتي اليدان مع القاعدة.",
+    "en": "Controllers are not included.",
+    "ckb": "کۆنتڕۆڵەرەکان لەگەڵیدا نین."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "The owner's sheet writes 'TP5-5505'; DOBE has no such model, so it is read as TP5-0505 (DOBE dual dock with two USB-C adapters)",
+      "Row 96 ('PS5 CHARGING CONTROL DOBE') gives no model number; it is listed as a second version of the DOBE dock",
+      "No DOBE-run product page was found; facts come from retailers"
+    ]
+  }
+}

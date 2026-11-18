@@ -1,0 +1,150 @@
+{
+  "slug": "jys-switch-2-pc-case",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "غطاء حماية JYS‑NS2273 لجهاز Nintendo Switch 2",
+    "en": "JYS‑NS2273 Protective Case for Nintendo Switch 2",
+    "ckb": "بەرگی پاراستنی JYS‑NS2273 بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "غطاء صلب من البولي كربونات لـ Switch 2",
+    "en": "Hard polycarbonate case for Switch 2",
+    "ckb": "بەرگی ڕەقی پۆلی کاربۆنات بۆ Switch 2"
+  },
+  "description": {
+    "ar": "غطاء حماية صلب من مادة PC (بولي كربونات) من JYS برقم JYS-NS2273، مصنوع لـ Nintendo Switch 2. خفيف ويحمي الجهاز من الخدوش والغبار والصدمات الخفيفة.",
+    "en": "A hard PC (polycarbonate) protective case from JYS, model JYS-NS2273, made for Nintendo Switch 2. It is light and guards the console against scratches, dust and light knocks.",
+    "ckb": "بەرگێکی پاراستنی ڕەقی PC (پۆلی کاربۆنات) لە JYS بە مۆدێلی JYS-NS2273، بۆ Nintendo Switch 2. سووکە و ئامێرەکە لە خەت و تۆز و لێدانی سووک دەپارێزێت."
+  },
+  "highlights": [
+    {
+      "ar": "بولي كربونات صلب وخفيف",
+      "en": "Light, hard polycarbonate",
+      "ckb": "پۆلی کاربۆناتی ڕەق و سووک"
+    },
+    {
+      "ar": "يحمي من الخدوش والغبار والصدمات الخفيفة",
+      "en": "Guards against scratches, dust and light knocks",
+      "ckb": "لە خەت و تۆز و لێدانی سووک دەپارێزێت"
+    },
+    {
+      "ar": "لـ Nintendo Switch 2",
+      "en": "For Nintendo Switch 2",
+      "ckb": "بۆ Nintendo Switch 2"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Nintendo Switch 2",
+        "en": "Nintendo Switch 2",
+        "ckb": "Nintendo Switch 2"
+      }
+    },
+    {
+      "key": "material",
+      "label": {
+        "ar": "المادة",
+        "en": "Material",
+        "ckb": "کەرەستە"
+      },
+      "value": {
+        "ar": "PC (بولي كربونات)",
+        "en": "PC (polycarbonate)",
+        "ckb": "PC (پۆلی کاربۆنات)"
+      }
+    },
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "JYS-NS2273",
+        "en": "JYS-NS2273",
+        "ckb": "JYS-NS2273"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-NS2273",
+      "sheetRow": 192,
+      "title": {
+        "ar": "غطاء حماية JYS‑NS2273 لجهاز Nintendo Switch 2",
+        "en": "JYS‑NS2273 Protective Case for Nintendo Switch 2",
+        "ckb": "بەرگی پاراستنی JYS‑NS2273 بۆ Nintendo Switch 2"
+      },
+      "modelNumber": "JYS-NS2273",
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": {
+        "ar": "غطاء لـ Switch 2",
+        "en": "Case for Switch 2",
+        "ckb": "بەرگ بۆ Switch 2"
+      },
+      "source": "https://gamextreme.ph/collections/new-arrival/products/jys-ns2273-protective-pc-case-for-nintendo-switch-2"
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "jys-switch-2-tempered-glass",
+      "kind": "accessory"
+    },
+    {
+      "slug": "jys-switch-2-silicone-case",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://gamextreme.ph/collections/new-arrival/products/jys-ns2273-protective-pc-case-for-nintendo-switch-2",
+      "title": "JYS-NS2273 Protective PC Case for Nintendo Switch 2",
+      "publisher": "GameXtreme",
+      "retrieved": "2026-11-18",
+      "supports": "model, PC material, Switch 2 fit, protection against scratches, dust and minor impacts"
+    },
+    {
+      "url": "https://www.fruugo.co.nz/jys-ns2276-for-nintendo-switch-2-detachable-joy-con-controller-grip-set-ergonomic-handheld-gamepad/p-384331286",
+      "title": "JYS-NS2276 For Nintendo Switch 2 Detachable Joy-Con Controller Grip Set",
+      "publisher": "Fruugo",
+      "retrieved": "2026-11-18",
+      "supports": "JYS NS22xx model series for Switch 2 accessories"
+    }
+  ],
+  "notes": {
+    "ar": "مكتوب في ورقة المخزن «SW CASE JYS 2273»، لكن الموديل JYS-NS2273 مصنوع لـ Switch 2.",
+    "en": "Listed on the stock sheet as \"SW CASE JYS 2273\"; the JYS-NS2273 model is made for Switch 2.",
+    "ckb": "لە لیستی کۆگادا «SW CASE JYS 2273» نووسراوە، بەڵام مۆدێلی JYS-NS2273 بۆ Switch 2 ـە."
+  },
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Colour",
+      "Split or one-piece design",
+      "Only one retailer page found; no JYS page"
+    ]
+  }
+}

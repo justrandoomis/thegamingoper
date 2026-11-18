@@ -1,0 +1,40 @@
+{
+  "key": "ipega-switch-2-charging-station--4",
+  "view": "hero",
+  "width": 711,
+  "height": 518,
+  "aspect": 1.3726,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ipega-switch-2-charging-station/4-240.e453af79.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-switch-2-charging-station/4-480.7e750dcc.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ipega-switch-2-charging-station/4-240.72d11a95.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-switch-2-charging-station/4-480.0d53c6ab.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRgQBAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSGEAAAART6CgjSQ1dhaYnxR8RASMzo96eMC0tvYmH93WAXpZAA8bdDSqOWw0igWSMG/KDBH9nwDozuu6rtvSIvmVpq8ywGUEoLIbeGUN0HOBxPD5L/2M7ldau8p5VN6gcjAf0gK6AFZQOCB8AAAAMAQAnQEqFAAPAD8RdrJRLCckorAIAYAiCWVXpUkQ7Adv8WqNKI/XB1y4AP7lXzQF+YER1E43pJ6SeB5KyRsR3RnQAt7U6uzXMA3JbRimwmN22rHueO0jSxBxs370hh/dTzUxkWnhPOVAj/6T/jQN4b9/9BSbkxv2AAAAAA==",
+  "dominant": "#474747",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "iPega",
+  "source": {
+    "url": "https://ipega.hk/uploads/202507/68888652637c3.jpg",
+    "page": "https://ipega.hk/switch2series/102-682.html"
+  },
+  "input": "9f80c1e6fb0fc94f"
+}

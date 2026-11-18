@@ -1,0 +1,204 @@
+{
+  "slug": "dobe-xbox-series-s-charging-stand-tyx-3612",
+  "group": "xbox-vr",
+  "kind": "accessory",
+  "platform": "xbox",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "ستاند تبريد وشحن DOBE لجهاز Xbox Series S",
+    "en": "DOBE Cooling and Charging Stand for Xbox Series S",
+    "ckb": "ستاندی ساردکردنەوە و شەحنی DOBE بۆ Xbox Series S"
+  },
+  "short": {
+    "ar": "يحمل الجهاز عمودياً · مراوح بثلاث سرعات · يشحن يدين · إضاءة RGB",
+    "en": "Holds the console upright · 3-speed fans · charges two controllers · RGB light",
+    "ckb": "کۆنسۆڵ بە ستوونی ڕادەگرێت · پانکە بە 3 خێرایی · دوو دەسک شەحن دەکات · ڕووناکیی RGB"
+  },
+  "description": {
+    "ar": "ستاند من DOBE (الموديل TYX-3612) يوضع عليه جهاز Xbox Series S بشكل عمودي، فيه مراوح تبريد بثلاث سرعات تحت الجهاز ومكانان على الجانبين لشحن يدي Xbox. في الأمام أزرار ومؤشرات للشحن والمراوح والإضاءة، وفي الخلف منفذ USB-C للطاقة ومنفذا USB إضافيان. إضاءة RGB حول القاعدة.",
+    "en": "A DOBE stand (model TYX-3612) that holds the Xbox Series S upright, with 3-speed cooling fans under the console and a charging spot on each side for an Xbox controller. Buttons and indicators on the front control charging, fans and lighting; at the back are a USB-C power input and two extra USB ports. RGB lighting runs around the base.",
+    "ckb": "ستاندێکی DOBE (مۆدێلی TYX-3612) کە Xbox Series S بە ستوونی ڕادەگرێت، پانکەی ساردکردنەوە بە 3 خێرایی لە ژێر کۆنسۆڵەکەدا و لە هەر لایەک شوێنێک بۆ شەحنی دەسکی Xbox. لە پێشەوە دوگمە و نیشاندەر بۆ شەحن، پانکە و ڕووناکی هەن؛ لە پشتەوە دەروازەی USB-C بۆ کارەبا و دوو دەروازەی USB ی زیادە. ڕووناکیی RGB بە دەوری بنکەکەدا."
+  },
+  "highlights": [
+    {
+      "ar": "لـ Xbox Series S فقط",
+      "en": "For the Xbox Series S only",
+      "ckb": "تەنها بۆ Xbox Series S"
+    },
+    {
+      "ar": "مراوح تبريد بثلاث سرعات",
+      "en": "3-speed cooling fans",
+      "ckb": "پانکەی ساردکردنەوە بە 3 خێرایی"
+    },
+    {
+      "ar": "يشحن يدين معاً مع مؤشرات (برتقالي يشحن، أخضر ممتلئ)",
+      "en": "Charges two controllers with indicators (orange charging, green full)",
+      "ckb": "دوو دەسک پێکەوە شەحن دەکات لەگەڵ نیشاندەر (پرتەقاڵی شەحن، سەوز پڕ)"
+    },
+    {
+      "ar": "منفذا USB إضافيان في الخلف",
+      "en": "Two extra USB ports at the back",
+      "ckb": "دوو دەروازەی USB ی زیادە لە پشتەوە"
+    },
+    {
+      "ar": "إضاءة RGB يمكن التحكم بها",
+      "en": "Switchable RGB lighting",
+      "ckb": "ڕووناکیی RGB ی کۆنتڕۆڵکراو"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "DOBE TYX-3612",
+        "en": "DOBE TYX-3612",
+        "ckb": "DOBE TYX-3612"
+      }
+    },
+    {
+      "key": "power",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "کارەبا"
+      },
+      "value": {
+        "ar": "USB-C، ‏5 واط تقريباً (1.5 أمبير)",
+        "en": "USB-C, about 5 W (1.5 A)",
+        "ckb": "USB-C، نزیکەی 5 وات (1.5 ئەمپێر)"
+      }
+    },
+    {
+      "key": "fans",
+      "label": {
+        "ar": "المراوح",
+        "en": "Fans",
+        "ckb": "پانکە"
+      },
+      "value": {
+        "ar": "ثلاث سرعات",
+        "en": "Three speed levels",
+        "ckb": "سێ ئاستی خێرایی"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "متوافق مع",
+        "en": "Compatible with",
+        "ckb": "گونجاوە لەگەڵ"
+      },
+      "value": {
+        "ar": "جهاز Xbox Series S، وأيدي Xbox Series وXbox One",
+        "en": "Xbox Series S console; Xbox Series and Xbox One controllers",
+        "ckb": "کۆنسۆڵی Xbox Series S؛ دەسکەکانی Xbox Series و Xbox One"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "الستاند",
+      "en": "Stand",
+      "ckb": "ستاند"
+    },
+    {
+      "ar": "كابل طاقة",
+      "en": "Power cable",
+      "ckb": "کێبڵی کارەبا"
+    },
+    {
+      "ar": "بطاريات قابلة للشحن لليدين",
+      "en": "Rechargeable controller battery packs",
+      "ckb": "پاتریی شەحنکراوە بۆ دەسکەکان"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TYX3612",
+      "sheetRow": 228,
+      "title": {
+        "ar": "ستاند تبريد وشحن DOBE لجهاز Xbox Series S",
+        "en": "DOBE Cooling and Charging Stand for Xbox Series S",
+        "ckb": "ستاندی ساردکردنەوە و شەحنی DOBE بۆ Xbox Series S"
+      },
+      "options": {
+        "color": "White"
+      },
+      "modelNumber": "TYX-3612",
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "xbox-series-s",
+      "status": "verified",
+      "note": {
+        "ar": "مصمم لهذا الجهاز",
+        "en": "Made for this console",
+        "ckb": "بۆ ئەم کۆنسۆڵە دروستکراوە"
+      },
+      "source": "https://www.amazon.com/dp/B07SY91MBT"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "incompatible",
+      "note": {
+        "ar": "مقاسه لـ Series S فقط",
+        "en": "Sized for the Series S only",
+        "ckb": "قەبارەکەی تەنها بۆ Series S ـە"
+      },
+      "source": "https://www.amazon.com/dp/B07SY91MBT"
+    }
+  ],
+  "related": [
+    {
+      "slug": "xbox-series-s",
+      "kind": "setup"
+    },
+    {
+      "slug": "xbox-wireless-controller",
+      "kind": "accessory"
+    },
+    {
+      "slug": "xbox-series-console-skin",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.amazon.com/dp/B07SY91MBT",
+      "title": "Dobe - Xbox Series S Console Grip Charging Stand with Ambient Lighting ... TYX-3612",
+      "publisher": "Amazon (DOBE listing)",
+      "retrieved": "2026-11-18",
+      "supports": "model TYX-3612, Xbox Series S, Xbox One and Series S controllers, power cord and battery pack included, cooling, USB-C, 1.5 A / 5 W, images (3 fan speeds, indicators, rear ports)"
+    },
+    {
+      "url": "https://ecommerce.datablitz.com.ph/products/dobe-xbox-series-s-multifunctional-cooling-stand-for-x-series-s-tyx-0663",
+      "title": "Dobe Xbox Series S Multifunctional Cooling Stand TYX-0663",
+      "publisher": "DataBlitz",
+      "retrieved": "2026-11-18",
+      "supports": "second source: DOBE's Series S cooling and dual-controller charging stands (sister model)"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع DOBE وليس من Microsoft. الجهاز واليدان غير مرفقة.",
+    "en": "Made by DOBE, not by Microsoft. The console and controllers are not included.",
+    "ckb": "دروستکراوی DOBE ـیە، نەک Microsoft. کۆنسۆڵ و دەسکەکان لەگەڵی نین."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "Which DOBE Series S stand the shop's 'XBOX SERIES S STAND DOBE' is: TYX-3612 chosen; DOBE also sells TYX-0663 and TYX-0658 for the Series S",
+      "Number and capacity of the included battery packs",
+      "Barcode not found",
+      "Clean DOBE photos exist (white product on white, DOBE marketplace listing) but none passes the cut-out/opaque-photo gate, so no image is recorded"
+    ]
+  }
+}

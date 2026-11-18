@@ -1,0 +1,48 @@
+{
+  "key": "dobe-steam-deck-case--3",
+  "view": "hero",
+  "width": 805,
+  "height": 738,
+  "aspect": 1.0908,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dobe-steam-deck-case/3-240.32db3014.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-steam-deck-case/3-480.dadf530c.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-steam-deck-case/3-720.8cf3c8c2.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dobe-steam-deck-case/3-240.ef85c824.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-steam-deck-case/3-480.c0096342.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-steam-deck-case/3-720.3e102eb2.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRvgAAABXRUJQVlA4WAoAAAAQAAAAEwAAEQAAQUxQSE4AAAARP6AWkiQ4uQYbfwQbnsNFRKD31AxFkSQ1S3yDAyQgAQlI4HUW8F91gWAgov9CAoIkuoEqxNjCuCT5lilJjYQehW84aEddRvhzxCGvfABWUDgghAAAAJAEAJ0BKhQAEgA/EW6uUawlpCKwGAwBgCIJQAAFValSJAgeM2PIbJ4tSWJVoAD+n+WQzJNt0S4Jdl6bIL+aQ0ZIw8FSFdfZ0SUBD8XdR9B8uFupOIi1LGMrJ0Qyae5DaY9VlMFrYezYdiG8cHF4ISAH9wITW4GPSf0xLHjxDVfckAAAAA==",
+  "dominant": "#15372b",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "DOBE (Shenzhen Yuyuanxin Electronic Technology)",
+  "source": {
+    "url": "https://www.dobe-game.com/uploads/image/20221018/1666067046.jpg",
+    "page": "https://www.dobe-game.com/en/productshow-68-1046.html"
+  },
+  "input": "ad987ee666162518"
+}

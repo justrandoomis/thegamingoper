@@ -1,0 +1,222 @@
+{
+  "slug": "redragon-k1ng-m724",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Redragon",
+  "category": "mice",
+  "status": "available",
+  "name": {
+    "ar": "ماوس Redragon K1NG M724",
+    "en": "Redragon K1NG M724",
+    "ckb": "ماوسی Redragon K1NG M724"
+  },
+  "short": {
+    "ar": "ماوس سلكي خفيف 42 غ · حتى 12400 DPI",
+    "en": "Wired 42 g mouse · up to 12,400 DPI",
+    "ckb": "ماوسی وایەری سووکی 42 گ · تا 12400 DPI"
+  },
+  "description": {
+    "ar": "أخف ماوس من Redragon بوزن 42 غراماً، سلكي بشكل مريح لليد ومعدل استجابة 1000 هرتز. فيه خمسة مستويات DPI حتى 12400 وخمسة أزرار قابلة للبرمجة، منها زران جانبيان.",
+    "en": "Redragon's lightest mouse at 42 g, wired, with a comfortable shape and 1000 Hz polling. It has five DPI levels up to 12,400 and five programmable buttons, including two side buttons.",
+    "ckb": "سووکترین ماوسی Redragon بە 42 گرام، وایەری بە شێوەیەکی ئاسوودە و 1000 هێرتز. پێنج ئاستی DPI تا 12400 و پێنج دوگمەی بەرنامەبۆکراوی هەیە، لەوانە دوو دوگمەی تەنیشت."
+  },
+  "highlights": [
+    {
+      "ar": "وزن 42 غراماً فقط",
+      "en": "Only 42 g",
+      "ckb": "تەنها 42 گرام"
+    },
+    {
+      "ar": "5 مستويات DPI حتى 12400",
+      "en": "5 DPI levels up to 12,400",
+      "ckb": "5 ئاستی DPI تا 12400"
+    },
+    {
+      "ar": "5 أزرار قابلة للبرمجة",
+      "en": "5 programmable buttons",
+      "ckb": "5 دوگمەی بەرنامەبۆکراو"
+    },
+    {
+      "ar": "معدل استجابة 1000 هرتز",
+      "en": "1000 Hz polling",
+      "ckb": "1000 هێرتز"
+    }
+  ],
+  "specs": [
+    {
+      "key": "dpi",
+      "label": {
+        "ar": "الدقة DPI",
+        "en": "DPI",
+        "ckb": "وردی DPI"
+      },
+      "value": {
+        "ar": "200–12400؛ الافتراضي 1200/2400/3500/5500/12400",
+        "en": "200–12,400; default 1200/2400/3500/5500/12400",
+        "ckb": "200–12400؛ بنەڕەت 1200/2400/3500/5500/12400"
+      }
+    },
+    {
+      "key": "buttons",
+      "label": {
+        "ar": "الأزرار",
+        "en": "Buttons",
+        "ckb": "دوگمەکان"
+      },
+      "value": {
+        "ar": "5 قابلة للبرمجة",
+        "en": "5 programmable",
+        "ckb": "5 بەرنامەبۆکراو"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "سلكي USB، ‏1000 هرتز",
+        "en": "Wired USB, 1000 Hz",
+        "ckb": "وایەری USB، ‏1000 هێرتز"
+      }
+    },
+    {
+      "key": "weight",
+      "label": {
+        "ar": "الوزن",
+        "en": "Weight",
+        "ckb": "کێش"
+      },
+      "value": {
+        "ar": "42 غراماً",
+        "en": "42 g",
+        "ckb": "42 گرام"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RD-M724-BK",
+      "title": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "M724",
+      "barcodes": [
+        "6950376721983"
+      ],
+      "isDefault": true,
+      "images": [
+        "redragon-k1ng-m724--1"
+      ],
+      "sheetRow": 52
+    },
+    {
+      "sku": "RD-M724-WH",
+      "title": {
+        "ar": "أبيض",
+        "en": "White",
+        "ckb": "سپی"
+      },
+      "options": {
+        "color": "White"
+      },
+      "modelNumber": "M724W",
+      "isDefault": false,
+      "images": [
+        "redragon-k1ng-m724--2"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "سلكي عبر USB.",
+        "en": "Wired over USB.",
+        "ckb": "وایەری بە USB."
+      },
+      "source": "https://redragonshop.com/products/k1ng-m724-1k-hz"
+    }
+  ],
+  "related": [
+    {
+      "slug": "redragon-storm-pro-m808-ks",
+      "kind": "alternative"
+    },
+    {
+      "slug": "redragon-p041-xeon-xl",
+      "kind": "accessory"
+    },
+    {
+      "slug": "redragon-ucal-k673-pro",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "redragon-k1ng-m724--1",
+      "file": ".cache/product-images/redragon-k1ng-m724/1.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/RedragonK1INGM7241KHzWiredGamingMouse_1.png",
+      "sourcePage": "https://redragonshop.com/products/k1ng-m724-1k-hz",
+      "kind": "hero",
+      "alt": {
+        "ar": "ماوس Redragon K1NG M724 الأسود",
+        "en": "Black Redragon K1NG M724",
+        "ckb": "Redragon K1NG M724ی ڕەش"
+      },
+      "credit": "Redragon",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    },
+    {
+      "key": "redragon-k1ng-m724--2",
+      "file": ".cache/product-images/redragon-k1ng-m724/2.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/RedragonK1INGM7241KHzWiredGamingMouse_2.png",
+      "sourcePage": "https://redragonshop.com/products/k1ng-m724-1k-hz",
+      "kind": "hero",
+      "alt": {
+        "ar": "ماوس Redragon K1NG M724 الأبيض",
+        "en": "White Redragon K1NG M724",
+        "ckb": "Redragon K1NG M724ی سپی"
+      },
+      "credit": "Redragon",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://redragonshop.com/products/k1ng-m724-1k-hz",
+      "title": "K1NG M724 (1K Hz)",
+      "publisher": "Redragon (official store)",
+      "retrieved": "2026-11-18",
+      "supports": "42 g, 5 DPI levels 200–12,400 with defaults, 5 programmable buttons, Black/White/Pink colours, images"
+    },
+    {
+      "url": "https://dangerfield.com.au/products/m724-throne-30g-acc-mouse",
+      "title": "Redragon M724 Throne Black Ultra-Light 42g Wired 12400 DPI Gaming Mouse",
+      "publisher": "Dangerfield (Redragon reseller, Australia)",
+      "retrieved": "2026-11-18",
+      "supports": "confirmation: 42 g wired 12,400 DPI, black M724 barcode 6950376721983, white model M724W"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Sensor model (resellers say Pixart 3327)",
+      "Which colour the sheet row \"BL+WH\" means (mapped to Black; White kept as a second, unpriced option)"
+    ]
+  }
+}

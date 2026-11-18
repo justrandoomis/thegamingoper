@@ -1,0 +1,65 @@
+{
+  "slug": "twisted-minds-tm-md07",
+  "group": "controllers-audio",
+  "kind": "headset",
+  "platform": "multi",
+  "brand": "Twisted Minds",
+  "status": "available",
+  "name": { "ar": "سماعة Twisted Minds TM‑MD07 بإضاءة RGB", "en": "Twisted Minds TM‑MD07 RGB Gaming Headset", "ckb": "هێدسێتی Twisted Minds TM‑MD07 بە ڕووناکی RGB" },
+  "short": {
+    "ar": "سلكية 3.5 ملم · إضاءة RGB تعمل بـ USB · سماعات 50 ملم",
+    "en": "Wired 3.5 mm · USB-powered RGB light · 50 mm drivers",
+    "ckb": "وایەری 3.5 ملم · ڕووناکی RGB بە USB · دەنگدەری 50 ملم"
+  },
+  "description": {
+    "ar": "سماعة ألعاب سلكية من Twisted Minds، يمر الصوت والمايكروفون عبر قابس 3.5 ملم، بينما يغذي كابل USB إضاءة RGB على الأكواب. فيها سماعات 50 ملم، ومايكروفون طويل، ووحدة تحكم على الكابل لرفع الصوت وكتم المايكروفون وإطفاء الإضاءة باللمس. الكابل مضفّر بطول 2.2 متر.",
+    "en": "A wired gaming headset from Twisted Minds: sound and mic go through a 3.5 mm plug, while a USB lead powers the RGB lighting on the earcups. It has 50 mm drivers, a long mic, and an in-line control to change volume, mute the mic and switch the light off with a touch. The braided cable is 2.2 m long.",
+    "ckb": "هێدسێتێکی وایەری یاریی Twisted Minds: دەنگ و مایک بە پلەگی 3.5 ملم دەڕۆن، و کێبڵێکی USB ڕووناکی RGBی سەر گوێگرەکان دەدات. دەنگدەری 50 ملم، مایکی درێژ، و کۆنترۆڵی سەر کێبڵی هەیە بۆ دەنگ و بێدەنگکردنی مایک و کوژاندنەوەی ڕووناکی بە دەستلێدان. کێبڵە هۆنراوەکە 2.2 مەترە."
+  },
+  "highlights": [
+    { "ar": "قابس 3.5 ملم للصوت والمايكروفون، وUSB للإضاءة فقط", "en": "3.5 mm plug for sound and mic, USB only for the lighting", "ckb": "پلەگی 3.5 ملم بۆ دەنگ و مایک، USB تەنها بۆ ڕووناکی" },
+    { "ar": "إضاءة RGB تُطفأ وتُشغّل باللمس", "en": "RGB lighting with touch on/off", "ckb": "ڕووناکی RGB بە دەستلێدان دادەگیرسێت و دەکوژێتەوە" },
+    { "ar": "سماعات 50 ملم ومايكروفون طويل", "en": "50 mm drivers and a long mic", "ckb": "دەنگدەری 50 ملم و مایکی درێژ" },
+    { "ar": "تحكم بالصوت وكتم المايكروفون على الكابل", "en": "In-line volume and mic mute", "ckb": "کۆنترۆڵی دەنگ و بێدەنگکردنی مایک لەسەر کێبڵ" }
+  ],
+  "specs": [
+    { "key": "model", "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" }, "value": { "ar": "TM-MD07", "en": "TM-MD07", "ckb": "TM-MD07" } },
+    { "key": "connection", "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" }, "value": { "ar": "قابس 3.5 ملم + USB 5 فولت للإضاءة، كابل مضفّر 2.2 متر", "en": "3.5 mm plug + USB 5 V for the lighting, 2.2 m braided cable", "ckb": "پلەگی 3.5 ملم + USB 5 ڤۆڵت بۆ ڕووناکی، کێبڵی هۆنراوی 2.2 مەتر" } },
+    { "key": "drivers", "label": { "ar": "السماعات الداخلية", "en": "Drivers", "ckb": "دەنگدەرەکان" }, "value": { "ar": "50 ملم، 20 هرتز حتى 20 كيلوهرتز، 21 أوم", "en": "50 mm, 20 Hz–20 kHz, 21 ohms", "ckb": "50 ملم، 20 هێرتز تا 20 کیلۆهێرتز، 21 ئۆم" } },
+    { "key": "microphone", "label": { "ar": "المايكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" }, "value": { "ar": "متعدد الاتجاهات، حساسية ‎-42 ديسيبل", "en": "Omnidirectional, -42 dB sensitivity", "ckb": "هەمە ئاڕاستە، هەستیاری ‎-42 دێسیبڵ" } }
+  ],
+  "inTheBox": [
+    { "ar": "السماعة", "en": "Headset", "ckb": "هێدسێت" }
+  ],
+  "variants": [
+    {
+      "sku": "TM-MD07-RGB",
+      "sheetRow": 212,
+      "title": { "ar": "سماعة Twisted Minds TM‑MD07 بإضاءة RGB", "en": "Twisted Minds TM‑MD07 RGB Gaming Headset", "ckb": "هێدسێتی Twisted Minds TM‑MD07 بە ڕووناکی RGB" },
+      "options": {},
+      "modelNumber": "TM-MD07",
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "windows-pc", "status": "verified", "source": "https://cdn.shopify.com/s/files/1/0577/3692/1279/files/TM-MD07_USER_MANUAL_a3c32d6b-b226-4ea8-8db0-259f3250ba51.pdf" },
+    { "deviceModel": "ps5", "status": "unverified", "note": { "ar": "يُتوقع أن تعمل عبر منفذ 3.5 ملم في ذراع التحكم، والإضاءة تحتاج منفذ USB.", "en": "Expected to work through the controller's 3.5 mm jack; the lighting needs a USB port.", "ckb": "چاوەڕوان دەکرێت لە ڕێگەی کونی 3.5 ملمی دەسکەکە کار بکات؛ ڕووناکی پێویستی بە USB هەیە." } }
+  ],
+  "related": [
+    { "slug": "hyperx-cloud-stinger-s", "kind": "alternative" },
+    { "slug": "razer-blackshark-v2-x", "kind": "alternative" }
+  ],
+  "sources": [
+    { "url": "https://cdn.shopify.com/s/files/1/0577/3692/1279/files/TM-MD07_USER_MANUAL_a3c32d6b-b226-4ea8-8db0-259f3250ba51.pdf", "title": "TM-MD07 Wired Gaming Headset – User Manual", "publisher": "Twisted Minds", "retrieved": "2026-11-18", "supports": "all specs, features, box contents, in-line controls, 3.5 mm + USB power use" },
+    { "url": "https://wibi.com.kw/products/twisted-minds-rgb-2-0-wired-gaming-sound-bar-3-5mm-jack-usb-65db-black", "title": "Twisted Minds RGB 2.0 wired gaming sound bar", "publisher": "Wibi (Kuwait retailer)", "retrieved": "2026-11-18", "supports": "Twisted Minds is a gaming-accessory brand sold in Gulf retail" }
+  ],
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "No maker product page or second source for the TM-MD07 was found; facts come only from the maker's manual",
+      "Release date, colours and console compatibility",
+      "No clean product image found (only the drawing in the manual)"
+    ]
+  }
+}

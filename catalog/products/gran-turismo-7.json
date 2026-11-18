@@ -114,6 +114,7 @@
   "variants": [
     {
       "sku": "GT7-PS5-STD",
+      "sheetRow": 120,
       "title": { "ar": "لجهاز PS5 · Standard Edition", "en": "PS5 · Standard Edition", "ckb": "بۆ PS5 · Standard Edition" },
       "options": { "platform": "PS5", "edition": "Standard", "format": "Disc" },
       "isDefault": true,

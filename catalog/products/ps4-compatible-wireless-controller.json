@@ -1,0 +1,110 @@
+{
+  "slug": "ps4-compatible-wireless-controller",
+  "group": "ps4",
+  "kind": "controller",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "يد تحكم لاسلكية متوافقة مع PS4",
+    "en": "Wireless Controller for PS4 (compatible)",
+    "ckb": "کۆنتڕۆڵەری بێتەلی گونجاو لەگەڵ PS4"
+  },
+  "short": {
+    "ar": "يد تحكم غير أصلية بتصميم DualShock 4 · Bluetooth · لوحة لمس · اهتزاز",
+    "en": "Non-Sony controller in the DualShock 4 style · Bluetooth · Touch pad · Vibration",
+    "ckb": "کۆنتڕۆڵەری نا-Sony بە شێوەی DualShock 4 · Bluetooth · تاچپاد · لەرینەوە"
+  },
+  "description": {
+    "ar": "يد تحكم لاسلكية من صنع شركة أخرى غير Sony، بشكل وأزرار يد DualShock 4، تعمل مع جهاز PS4. هذا النوع عادةً فيه لوحة لمس واهتزاز ومستشعر حركة ومنفذ سماعة 3.5 ملم، ويُربط بالجهاز أول مرة بكابل USB. خيار اقتصادي بديل عن اليد الأصلية.",
+    "en": "A wireless controller made by a company other than Sony, with the shape and buttons of the DualShock 4, for the PS4. Controllers of this type usually have a touch pad, vibration, motion sensors and a 3.5mm headset jack, and are paired with the console the first time over a USB cable. A budget alternative to the original controller.",
+    "ckb": "کۆنتڕۆڵەرێکی بێتەل کە کۆمپانیایەکی تر جگە لە Sony دروستی کردووە، بە شێوە و دوگمەکانی DualShock 4، بۆ PS4. ئەم جۆرە زۆرجار تاچپاد، لەرینەوە، هەستەوەری جووڵە و دەروازەی گوێگری 3.5 ملمی هەیە، و یەکەمجار بە کێبڵی USB بە ئامێرەکەوە دەبەسترێت. جێگرەوەیەکی هەرزان بۆ کۆنتڕۆڵەری ڕەسەن."
+  },
+  "highlights": [
+    {
+      "ar": "ليست من صنع Sony — بديل اقتصادي ليد DualShock 4",
+      "en": "Not made by Sony — a budget alternative to the DualShock 4",
+      "ckb": "دروستکراوی Sony نییە — جێگرەوەیەکی هەرزان بۆ DualShock 4"
+    },
+    {
+      "ar": "اتصال Bluetooth مع PS4، والربط أول مرة بكابل USB",
+      "en": "Bluetooth connection to the PS4, first pairing over a USB cable",
+      "ckb": "پەیوەندیی Bluetooth لەگەڵ PS4، یەکەم بەستنەوە بە کێبڵی USB"
+    },
+    {
+      "ar": "لا تعمل مع ألعاب PS5",
+      "en": "Does not work with PS5 games",
+      "ckb": "لەگەڵ یارییەکانی PS5 کار ناکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "connectivity",
+      "label": { "ar": "الاتصال", "en": "Connectivity", "ckb": "پەیوەندی" },
+      "value": { "ar": "Bluetooth، كابل USB للشحن والربط", "en": "Bluetooth, USB cable for charging and pairing", "ckb": "Bluetooth، کێبڵی USB بۆ بارگە و بەستنەوە" }
+    },
+    {
+      "key": "devices",
+      "label": { "ar": "الأجهزة المتوافقة", "en": "Compatible devices", "ckb": "ئامێرە گونجاوەکان" },
+      "value": { "ar": "PS4 وPS4 Slim وPS4 Pro", "en": "PS4, PS4 Slim and PS4 Pro", "ckb": "PS4، PS4 Slim و PS4 Pro" }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "PS4-WLC-BLACK",
+      "sheetRow": 71,
+      "title": { "ar": "أسود", "en": "Black", "ckb": "ڕەش" },
+      "options": { "color": "Black" },
+      "isDefault": true
+    },
+    {
+      "sku": "PS4-WLC-SILVER",
+      "sheetRow": 74,
+      "title": { "ar": "فضي", "en": "Silver", "ckb": "زیوی" },
+      "options": { "color": "Silver" },
+      "isDefault": false
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps4",
+      "status": "unverified",
+      "note": { "ar": "مصنوعة لجهاز PS4؛ قد لا تعمل بعض الميزات بعد تحديثات نظام الجهاز.", "en": "Made for the PS4; some features may stop working after console system updates.", "ckb": "بۆ PS4 دروستکراوە؛ لەوانەیە هەندێک تایبەتمەندی دوای نوێکردنەوەی سیستەمی ئامێرەکە کار نەکەن." },
+      "source": "https://www.ypc.co.uk/product/wireless-controller-for-ps-4-game-controller-for-ps-4-pro-slim-pc-bluetooth-gamepad-joystick-with-dual-vibration-touch-panel-upgraded-six-axis-sensor-3-5mm-audio-jack-2/"
+    }
+  ],
+  "related": [
+    { "slug": "dualshock-4", "kind": "upsell" },
+    { "slug": "ps4-controller-thumb-grips", "kind": "accessory" }
+  ],
+  "sources": [
+    {
+      "url": "https://www.ypc.co.uk/product/wireless-controller-for-ps-4-game-controller-for-ps-4-pro-slim-pc-bluetooth-gamepad-joystick-with-dual-vibration-touch-panel-upgraded-six-axis-sensor-3-5mm-audio-jack-2/",
+      "title": "Wireless Controller for PS-4, Bluetooth Gamepad with Dual Vibration, Touch Panel, Six-Axis Sensor and 3.5mm Audio Jack",
+      "publisher": "YPC (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "typical features of third-party PS4 wireless controllers: Bluetooth, dual vibration, touch panel, six-axis sensor, 3.5mm jack, USB cable for first pairing; PS4/PS4 Slim/PS4 Pro"
+    },
+    {
+      "url": "https://www.ypc.co.uk/product/effdrdfs-wireless-controller-for-ps-4-pc-ps-3-bluetooth-gamepad-joystick-with-dual-vibration-touch/",
+      "title": "Wireless controller for PS4 / PC / PS3, Bluetooth gamepad with dual vibration and touch panel (silver)",
+      "publisher": "YPC (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "the same type of controller sold in silver; first connection must be activated with the included USB cable"
+    }
+  ],
+  "notes": {
+    "ar": "هذه يد تحكم غير أصلية (ليست Sony). لليد الأصلية اختر DualShock 4.",
+    "en": "This is a non-original (non-Sony) controller. For the original, choose the DualShock 4.",
+    "ckb": "ئەمە کۆنتڕۆڵەرێکی ناڕەسەنە (Sony نییە). بۆ ڕەسەنەکە DualShock 4 هەڵبژێرە."
+  },
+  "verification": {
+    "checkedBy": "ps4-research",
+    "secondSource": true,
+    "unverified": [
+      "Sheet rows 71 'PS4 CONTROLLER BLACK' and 74 'PS4 CONTROLLER SILVER' are priced at 25,000 IQD, under half of the genuine DualShock 4 rows (60,000-61,250 IQD), so they are read as third-party compatible controllers; the maker and model are not in the sheet.",
+      "Exact features (speaker, light bar, motion sensors, battery) depend on the unknown maker.",
+      "No product picture: the exact model is unknown."
+    ]
+  }
+}

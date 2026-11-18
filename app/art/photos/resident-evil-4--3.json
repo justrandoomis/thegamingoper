@@ -1,0 +1,64 @@
+{
+  "key": "resident-evil-4--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/resident-evil-4/3-240.9c6bf39e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/resident-evil-4/3-480.701a1dea.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/resident-evil-4/3-720.4b63c075.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/resident-evil-4/3-960.982cc760.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/resident-evil-4/3-1440.aa7b29cb.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/resident-evil-4/3-240.0452f513.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/resident-evil-4/3-480.488c526b.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/resident-evil-4/3-720.cf781db3.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/resident-evil-4/3-960.9c7f4e59.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/resident-evil-4/3-1440.ae61ec80.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZwAAXE7FbwXdPRXEQAD+3JcNLhEZjHFzFb6BVz9Amzz1IZJ0G68hqeAfZegGvR2nfQAA",
+  "dominant": "#020102",
+  "transparent": false,
+  "background": "#020202",
+  "kind": "screenshot",
+  "credit": "Capcom",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202210/2104/Zxh8NsrqsVzvQblfe4uIZCCg.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP0102-PPSA07412_00-RE4RMAINGAME0000"
+  },
+  "input": "2b36a593e04799c6"
+}

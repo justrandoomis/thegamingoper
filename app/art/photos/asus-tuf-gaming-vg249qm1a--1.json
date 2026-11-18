@@ -1,0 +1,70 @@
+{
+  "key": "asus-tuf-gaming-vg249qm1a--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1220,
+  "aspect": 1.3115,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/asus-tuf-gaming-vg249qm1a/1-240.9307578f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/asus-tuf-gaming-vg249qm1a/1-480.b6599611.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/asus-tuf-gaming-vg249qm1a/1-720.c7e9ceff.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/asus-tuf-gaming-vg249qm1a/1-960.42fe7d2c.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/asus-tuf-gaming-vg249qm1a/1-1440.c651b255.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/asus-tuf-gaming-vg249qm1a/1-240.d089929c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/asus-tuf-gaming-vg249qm1a/1-480.0156d783.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/asus-tuf-gaming-vg249qm1a/1-720.b50b1322.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/asus-tuf-gaming-vg249qm1a/1-960.fb074e51.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/asus-tuf-gaming-vg249qm1a/1-1440.1d09f62c.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/asus-tuf-gaming-vg249qm1a/1-1200.49341a53.png",
+    "width": 1200,
+    "height": 915,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRtgAAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSFEAAAARR6CkjSQ4u3Dh4vtPxbGLiID5hZ4LRrHtOrn0baICAwjoYCDZfwk0ERjvGIjo/wSInkbhOM3ns+Jf4Sy/UNTuvk/mngKylhGAdDaYVwAKoAAAVlA4IGAAAACwAwCdASoUAA8APxFysFAsJqSisAgBgCIJQAAIfcO8z1Pg2EQBgAD+43Iv/m/ZxDvb77AhErHU1/1Qt8sv+25f2HnZT+fC/hEdpG+jozOv/e9ioa6+UvoMcXo8eQoAAAA=",
+  "dominant": "#24262a",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "ASUS",
+  "source": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/05f46a69-daad-4079-bdff-61809e431de5/",
+    "page": "https://www.asus.com/me-en/displays-desktops/monitors/tuf-gaming/tuf-gaming-vg249qm1a/"
+  },
+  "input": "fa6a6866f08eaa68"
+}

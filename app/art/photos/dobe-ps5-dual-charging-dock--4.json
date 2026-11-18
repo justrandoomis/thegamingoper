@@ -1,0 +1,56 @@
+{
+  "key": "dobe-ps5-dual-charging-dock--4",
+  "view": "hero",
+  "width": 977,
+  "height": 872,
+  "aspect": 1.1204,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dobe-ps5-dual-charging-dock/4-240.8e2fe9ec.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-ps5-dual-charging-dock/4-480.4c8a46f4.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-ps5-dual-charging-dock/4-720.6cbbb655.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dobe-ps5-dual-charging-dock/4-960.0bfda887.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dobe-ps5-dual-charging-dock/4-240.cbb8d2e4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-ps5-dual-charging-dock/4-480.50847e41.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-ps5-dual-charging-dock/4-720.d1fe1f45.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dobe-ps5-dual-charging-dock/4-960.d931165f.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRqYAAABXRUJQVlA4IJoAAAAwBACdASoUABIAPxF+tlWsJ6SjKAgBgCIJaAC+SA07sSRibYv+bda7MQAA/u3f5rckJwJuiyFzI03Vfo9kVPpicISn5YZ8BSpynyi9HCkUHAeusZ6M6p7oelMKvjIDf7xpqMgmGr9NolokdIJ8gm+DEtUAxE3wK2vEUxBV1thqlyTRZihCldcBkpj1f92AHutl34ShTpEwAAAA",
+  "dominant": "#ebeced",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "in-box",
+  "credit": "DOBE",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0769/7317/9187/files/dobe-tp5-0505-5.jpg",
+    "page": "https://pixelzones.com/products/dobe-charging-dock-for-ps5-tp5-0505"
+  },
+  "input": "5745c9e2c4372401"
+}

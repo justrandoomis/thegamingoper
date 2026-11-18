@@ -1,0 +1,221 @@
+{
+  "slug": "redragon-ucal-k673-pro",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Redragon",
+  "category": "keyboards",
+  "status": "available",
+  "name": {
+    "ar": "كيبورد Redragon UCAL K673 PRO",
+    "en": "Redragon UCAL K673 PRO",
+    "ckb": "کیبۆردی Redragon UCAL K673 PRO"
+  },
+  "short": {
+    "ar": "75% · 81 زراً · لاسلكي 3 أوضاع · Gasket",
+    "en": "75% · 81 keys · 3-mode wireless · gasket",
+    "ckb": "75% · 81 دوگمە · بێتەلی 3 شێواز · Gasket"
+  },
+  "description": {
+    "ar": "كيبورد ميكانيكي من Redragon بحجم 75% و81 زراً، يحتفظ بصف أزرار الوظائف ويستغني عن لوحة الأرقام. يتصل بكابل USB‑C أو 2.4 غيغاهرتز أو بلوتوث، وبنيته Gasket مع خمس طبقات عزل للصوت ومفاتيح قابلة للتبديل ومقبض للتحكم بالإضاءة والصوت.",
+    "en": "A 75% Redragon mechanical keyboard with 81 keys that keeps the function row and drops the number pad. It connects by USB-C, 2.4 GHz or Bluetooth, with a gasket mount, five dampening layers, hot-swap switches and a knob for lighting and volume.",
+    "ckb": "کیبۆردێکی میکانیکی 75%ی Redragon بە 81 دوگمە کە ڕیزی دوگمەکانی F دەهێڵێتەوە و بەشی ژمارە لادەبات. بە USB‑C یان 2.4 گیگاهێرتز یان بلووتوز دەبەسترێت، Gasket و پێنج چینی دەنگ‌کەمکەرەوە و سویچی گۆڕینی گەرم و دوگمەی بازنەیی هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "ثلاثة أوضاع: USB‑C و2.4 غيغاهرتز وبلوتوث",
+      "en": "3 modes: USB-C, 2.4 GHz and Bluetooth",
+      "ckb": "3 شێواز: USB‑C و 2.4 گیگاهێرتز و بلووتوز"
+    },
+    {
+      "ar": "حجم 75% بـ 81 زراً مع صف F",
+      "en": "75% with 81 keys and F-row",
+      "ckb": "75% بە 81 دوگمە لەگەڵ ڕیزی F"
+    },
+    {
+      "ar": "بنية Gasket وخمس طبقات عزل صوت",
+      "en": "Gasket mount, 5 dampening layers",
+      "ckb": "Gasket و 5 چینی دەنگ‌کەمکەرەوە"
+    },
+    {
+      "ar": "مفاتيح قابلة للتبديل (3/5 دبابيس)",
+      "en": "Hot-swap sockets (3/5-pin)",
+      "ckb": "گۆڕینی گەرم (3/5 پین)"
+    },
+    {
+      "ar": "مكان لحفظ مستقبل 2.4 غيغاهرتز داخل الكيبورد",
+      "en": "Built-in slot to store the 2.4 GHz dongle",
+      "ckb": "شوێنی هەڵگرتنی ڕیسیڤەری 2.4 گیگاهێرتز"
+    }
+  ],
+  "specs": [
+    {
+      "key": "layout",
+      "label": {
+        "ar": "التصميم",
+        "en": "Layout",
+        "ckb": "شێوە"
+      },
+      "value": {
+        "ar": "75%، ‏81 زراً، تخطيط أمريكي",
+        "en": "75%, 81 keys, US layout",
+        "ckb": "75%، ‏81 دوگمە، ئەمریکی"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "USB‑C سلكي، 2.4 غيغاهرتز، بلوتوث 3.0/5.0",
+        "en": "Wired USB-C, 2.4 GHz, Bluetooth 3.0/5.0",
+        "ckb": "USB‑Cی وایەری، 2.4 گیگاهێرتز، بلووتوز 3.0/5.0"
+      }
+    },
+    {
+      "key": "switches",
+      "label": {
+        "ar": "المفاتيح",
+        "en": "Switches",
+        "ckb": "سویچەکان"
+      },
+      "value": {
+        "ar": "ميكانيكية Red خطية، قابلة للتبديل",
+        "en": "Mechanical linear Red, hot-swappable",
+        "ckb": "Redی میکانیکی هێڵی، گۆڕینی گەرم"
+      }
+    },
+    {
+      "key": "keycaps",
+      "label": {
+        "ar": "أغطية الأزرار",
+        "en": "Keycaps",
+        "ckb": "سەری دوگمەکان"
+      },
+      "value": {
+        "ar": "PBT بلونين (أزرق داكن وأبيض)",
+        "en": "Two-tone PBT (deep blue and white)",
+        "ckb": "PBTی دوو ڕەنگ (شینی تۆخ و سپی)"
+      }
+    },
+    {
+      "key": "lighting",
+      "label": {
+        "ar": "الإضاءة",
+        "en": "Lighting",
+        "ckb": "ڕووناکی"
+      },
+      "value": {
+        "ar": "RGB",
+        "en": "RGB",
+        "ckb": "RGB"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RD-K673WB-PRO",
+      "title": {
+        "ar": "أزرق Abyssal",
+        "en": "Abyssal Blue",
+        "ckb": "شینی Abyssal"
+      },
+      "options": {
+        "color": "Abyssal Blue"
+      },
+      "modelNumber": "K673WB-RGB-PRO",
+      "barcodes": [
+        "6950376720085"
+      ],
+      "isDefault": true,
+      "images": [
+        "redragon-ucal-k673-pro--1",
+        "redragon-ucal-k673-pro--2"
+      ],
+      "sheetRow": 47
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "سلكي أو لاسلكي.",
+        "en": "Wired or wireless.",
+        "ckb": "وایەری یان بێتەل."
+      },
+      "source": "https://redragonshop.com/products/ucal-k673-pro-75-keyboard"
+    }
+  ],
+  "related": [
+    {
+      "slug": "redragon-eisa-k686-pro-se",
+      "kind": "alternative"
+    },
+    {
+      "slug": "redragon-k1ng-m724",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "redragon-ucal-k673-pro--1",
+      "file": ".cache/product-images/redragon-ucal-k673-pro/1.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/RedragonK673PRO75_WirelessGasketRGBKeyboard_1.png",
+      "sourcePage": "https://redragonshop.com/products/ucal-k673-pro-75-keyboard",
+      "kind": "hero",
+      "alt": {
+        "ar": "كيبورد Redragon UCAL K673 PRO بأزرار زرقاء وبيضاء من الأمام",
+        "en": "Redragon UCAL K673 PRO with blue and white keycaps, front view",
+        "ckb": "Redragon UCAL K673 PRO بە دوگمەی شین و سپی لە پێشەوە"
+      },
+      "credit": "Redragon",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    },
+    {
+      "key": "redragon-ucal-k673-pro--2",
+      "file": ".cache/product-images/redragon-ucal-k673-pro/2.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/RedragonK673PRO75_WirelessGasketRGBKeyboard_2.png",
+      "sourcePage": "https://redragonshop.com/products/ucal-k673-pro-75-keyboard",
+      "kind": "angle",
+      "alt": {
+        "ar": "الكيبورد بزاوية",
+        "en": "Keyboard at an angle",
+        "ckb": "کیبۆردەکە بە گۆشەیەک"
+      },
+      "credit": "Redragon",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://redragonshop.com/products/ucal-k673-pro-75-keyboard",
+      "title": "UCAL K673 PRO",
+      "publisher": "Redragon (official store)",
+      "retrieved": "2026-11-18",
+      "supports": "81 keys 75%, mixed deep blue/white PBT, dongle slot, tri-mode USB-C / BT 3.0/5.0 / 2.4 GHz, knob, 5-layer dampening, gasket, hot-swap 3/5-pin, Abyssal Blue variant, images"
+    },
+    {
+      "url": "https://dangerfield.com.au/products/k673wb-rgb-pro-75-gasket-kb",
+      "title": "Redragon K673WB-RGB Pro 75% gasket keyboard",
+      "publisher": "Dangerfield (Redragon reseller, Australia)",
+      "retrieved": "2026-11-18",
+      "supports": "model code K673WB-RGB-PRO, barcode 6950376720085, 75% tri-mode gasket"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Battery capacity (Redragon pages state 3000 mAh and 4000 mAh in different places)",
+      "Release date (Redragon US listing created September 2023)"
+    ]
+  }
+}

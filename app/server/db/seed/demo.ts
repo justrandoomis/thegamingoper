@@ -37,6 +37,11 @@
  *     to them belong to the audited admin flows. It does not delete either: a picture, rule or
  *     relation removed from the catalogue stays until `npm run db:reset` (or the admin) removes it.
  *
+ * OWNER'S SHEET ({ ownerSheet: true }, what every script passes): the variants on the owner's price sheet sell at its
+ * prices with one real unit each (no cost, no serial, no "DEMO"), their products are real (is_demo = 0), every other
+ * product and the store set are archived, the demo used units are not listed; ./demo/owner.ts moves a database that
+ * already has the demo rows to that state (catalog/README.md "Owner's sheet").
+ *
  * Needs seedReference() to have run (stock location, inspection templates). The catalogue is read by
  * Node only (./demo/catalog/load.ts) — this module itself uses no Node API, and nothing the Worker
  * or the client bundles imports it.
@@ -98,7 +103,8 @@ import type { DemoCatalog } from "./demo/catalog/types";
 import { DEMO_CATEGORIES } from "./demo/categories";
 import { DEMO_COUPONS, DEMO_FX_RATE } from "./demo/commerce";
 import { DEMO_DEVICE_MODELS, DEMO_GENERATIONS, DEMO_PLATFORMS } from "./demo/devices";
-import { DEMO_ACTOR_ID, DEMO_REF_TYPE, demoId } from "./demo/ids";
+import { DEMO_ACTOR_ID, DEMO_REF_TYPE, OWNER_SHEET_ACTOR_ID, OWNER_SHEET_REF_TYPE, demoId } from "./demo/ids";
+import { ownerTransitionStatements, sheetOpeningReason, sheetRefId } from "./demo/owner";
 import { buildDemoData, type DemoData, type DemoImage, type DemoProduct, type DemoVariant } from "./demo/import";
 import { DEMO_ARTICLES } from "./demo/knowledge";
 import { BAGHDAD_OFFSET_MS, PRICE_STEP_IQD, defaultVariantOf, demoStock, isPreorderAt, type DemoStock } from "./demo/pricing";
@@ -145,7 +151,9 @@ export function demoTradeInGuides(data: DemoData): DemoTradeInGuide[] {
     const sku = model.variant ?? defaultVariantOf(product.source).sku;
     const reference = data.variantsBySku.get(sku);
     if (!reference) throw new Error(`Demo seed: unknown SKU ${sku}`);
-    return { deviceModel: model.slug, baseIqd: tradeInBaseIqd(reference.variant.priceIqd), deductions: tradeInDeductions(model, product.source) };
+    // From the placeholder price: the guides are demo figures, never derived from the owner's sheet (a variant of a real
+    // product that is not on the sheet has no price at all).
+    return { deviceModel: model.slug, baseIqd: tradeInBaseIqd(reference.variant.demoPriceIqd), deductions: tradeInDeductions(model, product.source) };
   });
 }
 
@@ -163,7 +171,7 @@ export function demoUsedUnits(data: DemoData, guides: readonly DemoTradeInGuide[
     return {
       ...unit,
       deviceModel: product.deviceModel,
-      priceIqd: usedPriceIqd(variant.priceIqd, unit.grade),
+      priceIqd: usedPriceIqd(variant.demoPriceIqd, unit.grade),
       acquisitionCostIqd: acquisitionCostIqd(guide.baseIqd, unit.grade, guide.deductions, unit.missing),
       images: shots.map((image) => ({ key: image.key, alt: withNote(image.alt, USED_PHOTO_NOTE) })),
     };
@@ -173,8 +181,11 @@ export function demoUsedUnits(data: DemoData, guides: readonly DemoTradeInGuide[
 const withNote = (alt: T3, note: T3): T3 => ({ ar: `${alt.ar} — ${note.ar}`, en: `${alt.en} — ${note.en}`, ckb: `${alt.ckb} — ${note.ckb}` });
 
 /** Units on hand of a variant (a store set has none of its own: its components do). */
-const stockOf = (product: DemoProduct, variant: DemoVariant, now: number): DemoStock =>
-  product.source && variant.source ? demoStock(product.source, variant.source, now) : { onHand: 0, reorderPoint: null };
+const stockOf = (product: DemoProduct, variant: DemoVariant, now: number): DemoStock => {
+  // The owner's sheet: one real unit per row, no reorder point (the sheet sets no reorder policy).
+  if (variant.ownerStock !== null) return { onHand: variant.ownerStock, reorderPoint: null };
+  return product.source && variant.source ? demoStock(product.source, variant.source, now) : { onHand: 0, reorderPoint: null };
+};
 
 // ───────────────────────────────────────────────────────────────── consistency of the definitions
 
@@ -184,6 +195,7 @@ const stockOf = (product: DemoProduct, variant: DemoVariant, now: number): DemoS
  * a foreign-key error in the middle of a batch.
  */
 export function assertDemoDataConsistent(catalog: DemoCatalog = loadDemoCatalog(), data: DemoData = buildDemoData(catalog)): void {
+  // (data may be built either way: buildDemoData(catalog, { ownerSheet: true }) checks the owner's state)
   const problems: string[] = [];
   const categorySlugs = new Set<string>();
   for (const category of DEMO_CATEGORIES) {
@@ -193,8 +205,15 @@ export function assertDemoDataConsistent(catalog: DemoCatalog = loadDemoCatalog(
   }
   for (const product of data.products) {
     if (product.variants.length === 0) problems.push(`product "${product.slug}" has no variant`);
-    if (product.images.length === 0) problems.push(`product "${product.slug}" has no picture`);
+    // A product without a clean official picture has none (catalog/README.md "noImage"): the storefront shows its
+    // placeholder rather than a picture of something else.
     for (const variant of product.variants) {
+      if (!product.isDemo) {
+        // The owner's prices are his: whole IQD; 0 only on a variant that is not sold.
+        if (!Number.isSafeInteger(variant.priceIqd) || variant.priceIqd < 0 || (variant.isActive && variant.priceIqd === 0)) problems.push(`${variant.sku}: price ${variant.priceIqd} is not a sheet price`);
+        if (variant.compareAtIqd !== null || variant.cost !== null) problems.push(`${variant.sku}: a real item carries no previous price and no invented cost`);
+        continue;
+      }
       for (const price of [variant.priceIqd, variant.compareAtIqd]) {
         if (price !== null && (!Number.isSafeInteger(price) || price <= 0 || price % PRICE_STEP_IQD !== 0)) problems.push(`${variant.sku}: price ${price} is not a positive multiple of ${PRICE_STEP_IQD}`);
       }
@@ -225,7 +244,7 @@ export function assertDemoDataConsistent(catalog: DemoCatalog = loadDemoCatalog(
       const found = data.variantsBySku.get(unit.sku);
       if (!found?.variant.trackSerials) problems.push(`used unit "${unit.slug}" must be an instance of a serial-tracked variant`);
       if (unit.priceIqd % PRICE_STEP_IQD !== 0 || unit.acquisitionCostIqd <= 0 || unit.acquisitionCostIqd >= unit.priceIqd) problems.push(`used unit "${unit.slug}" has an invalid price or cost`);
-      if (found && unit.priceIqd >= found.variant.priceIqd) problems.push(`used unit "${unit.slug}" is not cheaper than new`);
+      if (found && unit.priceIqd >= found.variant.demoPriceIqd) problems.push(`used unit "${unit.slug}" is not cheaper than new`);
     }
   } catch (error) {
     problems.push(error instanceof Error ? error.message : String(error));
@@ -253,6 +272,11 @@ type PutOptions = {
 
 /** `Plan.tables` entry of a row-count probe (a SELECT, not a write). */
 const PROBE = "";
+/**
+ * `Plan.tables` entry of the owner's-sheet updates of existing rows (./demo/owner.ts). They write several tables, so
+ * their changes are reported under this name in `SeedDemoResult.changed` — not as rows the seed defines.
+ */
+export const OWNER_TRANSITION = "owner_sheet_updates";
 
 class Plan {
   readonly statements: BatchStatement[] = [];
@@ -271,7 +295,7 @@ class Plan {
   add(table: string, statement: BatchStatement, rows: number): void {
     this.statements.push(statement);
     this.tables.push(table);
-    this.rows[table] = (this.rows[table] ?? 0) + rows;
+    if (table !== OWNER_TRANSITION) this.rows[table] = (this.rows[table] ?? 0) + rows;
   }
 
   /**
@@ -324,8 +348,8 @@ function listingOrder(products: readonly DemoProduct[]): DemoProduct[] {
   return [...products].sort((a, b) => (key(a) === key(b) ? a.slug.localeCompare(b.slug) : key(a) < key(b) ? 1 : -1));
 }
 
-function buildPlan(db: Db, now: number, overwrite: boolean, catalog: DemoCatalog): Plan {
-  const data = buildDemoData(catalog);
+function buildPlan(db: Db, now: number, overwrite: boolean, catalog: DemoCatalog, ownerSheet: boolean): Plan {
+  const data = buildDemoData(catalog, { ownerSheet });
   assertDemoDataConsistent(catalog, data);
   const plan = new Plan(db, overwrite);
 
@@ -383,6 +407,9 @@ function buildPlan(db: Db, now: number, overwrite: boolean, catalog: DemoCatalog
     { target: categories.id, mode: "content" },
   );
 
+  // ── the owner's sheet on rows that already exist (./demo/owner.ts): before the inserts below ──
+  if (ownerSheet) for (const statement of ownerTransitionStatements(db, data, now)) plan.add(OWNER_TRANSITION, statement, 0);
+
   // ── products, variants, costs, sets ────────────────────────────────────────
   const listed = listingOrder(data.products);
   plan.put(
@@ -408,9 +435,9 @@ function buildPlan(db: Db, now: number, overwrite: boolean, catalog: DemoCatalog
         region: product.region,
         licenseType: product.licenseType,
         mediaFormat: product.mediaFormat,
-        status: "published",
+        status: product.status,
         publishAt: null,
-        isDemo: true,
+        isDemo: product.isDemo,
         seo: null,
         createdAt,
         updatedAt: now,
@@ -418,12 +445,14 @@ function buildPlan(db: Db, now: number, overwrite: boolean, catalog: DemoCatalog
         preorderReleaseAt: product.source && isPreorderAt(product.source, now) ? product.releaseAt : null,
         preorderDepositIqd: null,
         version: 1,
-        publishedAt: createdAt,
+        publishedAt: product.status === "published" ? createdAt : null,
         createdBy: null,
         updatedBy: null,
       };
     }),
-    { target: products.id, mode: "content", keep: ["createdAt", "publishedAt", "version", "createdBy"], rowsPerStatement: 1 },
+    // Status and the demo flag of an existing row change only through the owner's-sheet statements above (which leave
+    // a product the admin has saved alone) — never by re-running a seed with overwrite.
+    { target: products.id, mode: "content", keep: ["createdAt", "publishedAt", "version", "createdBy", "status", "isDemo", "updatedBy"], rowsPerStatement: 1 },
   );
   const allVariants = data.products.flatMap((product) => product.variants.map((variant) => ({ product, variant })));
   plan.put(
@@ -439,7 +468,7 @@ function buildPlan(db: Db, now: number, overwrite: boolean, catalog: DemoCatalog
         priceIqd: variant.priceIqd,
         compareAtIqd: variant.compareAtIqd,
         isDefault: variant.isDefault,
-        isActive: true,
+        isActive: variant.isActive,
         trackSerials: variant.trackSerials,
         sort: variant.sort,
         weightGrams: null,
@@ -448,7 +477,8 @@ function buildPlan(db: Db, now: number, overwrite: boolean, catalog: DemoCatalog
       }),
     ),
     // A price only changes through the audited price-change flow, never by re-running a seed.
-    { target: variants.id, mode: "content", keep: ["priceIqd", "compareAtIqd", "createdAt", "weightGrams"] },
+    // (and whether a variant is on sale: the owner's-sheet statements set it, only on variants nobody has touched)
+    { target: variants.id, mode: "content", keep: ["priceIqd", "compareAtIqd", "createdAt", "weightGrams", "isActive", "isDefault"] },
   );
   const fxDate = new Date(now + BAGHDAD_OFFSET_MS).toISOString().slice(0, 10);
   const costRows: NewVariantCost[] = [];
@@ -497,11 +527,27 @@ function buildPlan(db: Db, now: number, overwrite: boolean, catalog: DemoCatalog
   const serialRows: NewSerial[] = [];
   const movementRows: NewStockMovement[] = [];
   const layerRows: NewCostLayer[] = [];
+  const ownerOpenings: BatchStatement[] = [];
   for (const { product, variant } of allVariants) {
     const variantId = demoId.variant(variant.sku);
     const stock = stockOf(product, variant, now);
     levelRows.push({ variantId, locationId: DEFAULT_LOCATION_ID, onHand: stock.onHand, reserved: 0, incoming: 0, reorderPoint: stock.reorderPoint, allowOversell: false, reorderQty: null, updatedAt: now });
     if (stock.onHand === 0) continue;
+    if (variant.ownerStock !== null) {
+      // A real unit from the owner's sheet: its opening balance says so. No cost (the sheet has none), no serial (the
+      // unit's real serial is scanned in by staff), never "DEMO". Written only for a variant with no movement at all —
+      // i.e. a level this very batch has just created: on a database that had the variant already, its level is moved
+      // by ./demo/owner.ts (or left alone because staff moved it), and a second opening balance would double it.
+      ownerOpenings.push(
+        batchSql(
+          db,
+          sql`INSERT INTO stock_movements (id, variant_id, location_id, serial_id, kind, qty_delta, reserved_delta, unit_cost_iqd, ref_type, ref_id, reason, actor_kind, actor_id, at)
+            SELECT ${demoId.sheetOpening(variant.sku)}, ${variantId}, ${DEFAULT_LOCATION_ID}, NULL, 'adjust', ${stock.onHand}, 0, NULL, ${OWNER_SHEET_REF_TYPE}, ${sheetRefId(variant.sheetRow)}, ${sheetOpeningReason(variant.sheetRow)}, 'system', ${OWNER_SHEET_ACTOR_ID}, ${now}
+            WHERE NOT EXISTS (SELECT 1 FROM stock_movements WHERE variant_id = ${variantId} AND location_id = ${DEFAULT_LOCATION_ID})`,
+        ),
+      );
+      continue;
+    }
     const unitCost = variant.cost?.landedCostIqd ?? null;
     const movement = (id: string, qtyDelta: number, serialId: string | null): NewStockMovement => ({
       id,
@@ -552,6 +598,7 @@ function buildPlan(db: Db, now: number, overwrite: boolean, catalog: DemoCatalog
   plan.put(stockLevels, levelRows, { target: [stockLevels.variantId, stockLevels.locationId], mode: "state" });
   plan.put(serials, serialRows, { target: serials.id, mode: "state" });
   plan.put(stockMovements, movementRows, { target: stockMovements.id, mode: "state" });
+  for (const statement of ownerOpenings) plan.add("stock_movements", statement, 1);
   plan.put(costLayers, layerRows, { target: costLayers.id, mode: "state" });
 
   // ── relations and compatibility (as researched) ────────────────────────────
@@ -601,10 +648,11 @@ function buildPlan(db: Db, now: number, overwrite: boolean, catalog: DemoCatalog
         acquisitionCostIqd: unit.acquisitionCostIqd,
         warrantyDays: unit.warrantyDays,
         locationId: DEFAULT_LOCATION_ID,
-        status: "listed",
+        // Owner mode: the demo units are not the owner's, so they are not listed (ready = inspected, not for sale).
+        status: ownerSheet ? "ready" : "listed",
         ownershipCheckedAt: inspectedAt,
         dataWipedAt: inspectedAt,
-        listedAt: now - unit.listedDaysAgo * DAY_MS,
+        listedAt: ownerSheet ? null : now - unit.listedDaysAgo * DAY_MS,
         isDemo: true,
         source: "trade_in",
         tradeInId: null,
@@ -780,6 +828,12 @@ export type SeedDemoOptions = {
   overwrite?: boolean;
   /** The catalogue to import; default: catalog/products and app/art/photos read from disk (Node only). */
   catalog?: DemoCatalog;
+  /**
+   * The owner's state (./demo/import.ts BuildDemoOptions.ownerSheet, ./demo/owner.ts): sheet prices and real stock for
+   * the variants on the owner's sheet, everything else archived. The scripts (db:seed, db:reset, catalog:import, the
+   * --sql file) always pass it; without it (the tests of other areas) the catalogue is the published demo.
+   */
+  ownerSheet?: boolean;
 };
 
 export type SeedDemoResult = {
@@ -812,7 +866,7 @@ const countOf = (result: unknown): number => {
 export async function seedDemo(db: Db, now: number, options: SeedDemoOptions & Record<string, unknown> = {}): Promise<SeedDemoResult> {
   const overwrite = options.overwrite === true;
   const catalog = (options.catalog as DemoCatalog | undefined) ?? loadDemoCatalog();
-  const plan = buildPlan(db, now, overwrite, catalog);
+  const plan = buildPlan(db, now, overwrite, catalog, options.ownerSheet === true);
   // One batch = one transaction: either the whole demo catalogue is there, or none of this run's rows are.
   const results = await runBatch(db, plan.statements);
   const changed: Record<string, number> = {};

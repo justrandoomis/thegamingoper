@@ -1,0 +1,325 @@
+{
+  "slug": "assassins-creed-iv-black-flag",
+  "group": "ps4",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "Ubisoft",
+  "status": "available",
+  "releaseDate": "2013-11-29",
+  "name": {
+    "ar": "Assassin's Creed IV Black Flag",
+    "en": "Assassin's Creed IV Black Flag",
+    "ckb": "Assassin's Creed IV Black Flag"
+  },
+  "short": {
+    "ar": "PS4 · قرص · مغامرة قراصنة في الكاريبي · PEGI 18",
+    "en": "PS4 · disc · pirate adventure in the Caribbean · PEGI 18",
+    "ckb": "PS4 · دیسک · سەرکێشیی چەتەی دەریا لە کاریبی · PEGI 18"
+  },
+  "description": {
+    "ar": "مغامرة عالم مفتوح من Ubisoft تدور سنة 1715 في البحر الكاريبي. تلعب بشخصية القرصان Edward Kenway، تقود سفينتك Jackdaw، تهاجم السفن وتستكشف الجزر والمدن مثل Havana وNassau. هذه نسخة PS4 الأصلية على قرص.",
+    "en": "Ubisoft's open-world adventure set in the Caribbean in 1715. You play the pirate captain Edward Kenway, sail your ship the Jackdaw, raid other ships and explore islands and cities such as Havana and Nassau. This is the original PS4 version on disc.",
+    "ckb": "سەرکێشییەکی جیهانی کراوەی Ubisoft کە لە ساڵی 1715 لە دەریای کاریبی ڕوودەدات. بە کەسایەتیی چەتەی دەریا Edward Kenway یاری دەکەیت، کەشتییەکەت Jackdaw لێدەخوڕیت، هێرش دەکەیتە سەر کەشتییەکان و دوورگە و شارەکانی وەک Havana و Nassau دەگەڕێیت. ئەمە وەشانی ڕەسەنی PS4 ـە لەسەر دیسک."
+  },
+  "highlights": [
+    {
+      "ar": "عالم مفتوح في الكاريبي: معارك بحرية واستكشاف جزر ومدن.",
+      "en": "Open Caribbean world: naval battles, islands and cities to explore.",
+      "ckb": "جیهانی کراوەی کاریبی: شەڕی دەریایی و گەڕان بە دوورگە و شارەکاندا."
+    },
+    {
+      "ar": "القصة للاعب واحد ولا تحتاج إنترنت.",
+      "en": "Single-player story, no internet needed.",
+      "ckb": "چیرۆکی تاکە یاریزان، ئینتەرنێتی پێویست نییە."
+    },
+    {
+      "ar": "لا توجد لغة عربية: الصوت والترجمة بلغات أوروبية منها الإنجليزية.",
+      "en": "No Arabic: voice and text in European languages including English.",
+      "ckb": "زمانی عەرەبی نییە: دەنگ و نووسین بە زمانە ئەوروپییەکان لەوانە ئینگلیزی."
+    },
+    {
+      "ar": "التصنيف PEGI 18.",
+      "en": "Rated PEGI 18.",
+      "ckb": "پۆلێنی PEGI 18."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": {
+        "ar": "تاريخ الإصدار",
+        "en": "Release date",
+        "ckb": "بەرواری دەرچوون"
+      },
+      "value": {
+        "ar": "29 تشرين الثاني 2013 (أوروبا)",
+        "en": "29 November 2013 (Europe)",
+        "ckb": "29ی تشرینی دووەمی 2013 (ئەوروپا)"
+      }
+    },
+    {
+      "key": "format",
+      "label": {
+        "ar": "نوع النسخة الفيزيائية",
+        "en": "Physical format",
+        "ckb": "جۆری وەشانی فیزیکی"
+      },
+      "value": {
+        "ar": "قرص PS4",
+        "en": "PS4 disc",
+        "ckb": "دیسکی PS4"
+      }
+    },
+    {
+      "key": "players",
+      "label": {
+        "ar": "عدد اللاعبين",
+        "en": "Players",
+        "ckb": "ژمارەی یاریزان"
+      },
+      "value": {
+        "ar": "لاعب واحد؛ لعب جماعي أونلاين حتى 8 لاعبين",
+        "en": "1 player; online multiplayer up to 8",
+        "ckb": "1 یاریزان؛ یاری بەکۆمەڵی ئۆنلاین تا 8 یاریزان"
+      }
+    },
+    {
+      "key": "online",
+      "label": {
+        "ar": "الإنترنت والاشتراكات",
+        "en": "Internet and subscriptions",
+        "ckb": "ئینتەرنێت و بەشداریکردن"
+      },
+      "value": {
+        "ar": "اللعب أونلاين اختياري ويحتاج PlayStation Plus",
+        "en": "Online play optional, needs PlayStation Plus",
+        "ckb": "یاری ئۆنلاین ئارەزوومەندانەیە و PlayStation Plus ی پێویستە"
+      }
+    },
+    {
+      "key": "arabic",
+      "label": {
+        "ar": "اللغة العربية",
+        "en": "Arabic",
+        "ckb": "زمانی عەرەبی"
+      },
+      "value": {
+        "ar": "غير مدعومة",
+        "en": "Not supported",
+        "ckb": "پشتگیری ناکرێت"
+      }
+    },
+    {
+      "key": "age",
+      "label": {
+        "ar": "التصنيف العمري",
+        "en": "Age rating",
+        "ckb": "پۆلێنی تەمەن"
+      },
+      "value": {
+        "ar": "PEGI 18",
+        "en": "PEGI 18",
+        "ckb": "PEGI 18"
+      }
+    },
+    {
+      "key": "developer",
+      "label": {
+        "ar": "المطوّر والناشر",
+        "en": "Developer and publisher",
+        "ckb": "گەشەپێدەر و بڵاوکەرەوە"
+      },
+      "value": {
+        "ar": "Ubisoft Montreal / Ubisoft",
+        "en": "Ubisoft Montreal / Ubisoft",
+        "ckb": "Ubisoft Montreal / Ubisoft"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة لجهاز PS4",
+      "en": "PS4 game disc",
+      "ckb": "دیسکی یارییەکە بۆ PS4"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "AC4BF-PS4",
+      "sheetRow": 69,
+      "title": {
+        "ar": "لجهاز PS4",
+        "en": "PS4 edition",
+        "ckb": "بۆ PS4"
+      },
+      "options": {
+        "platform": "PS4",
+        "format": "Disc"
+      },
+      "isDefault": true,
+      "images": [
+        "assassins-creed-iv-black-flag--1"
+      ],
+      "notes": {
+        "ar": "قرص PS4. يعمل على PS5 بقارئ أقراص عبر التوافق مع ألعاب PS4؛ PS5 Pro وPS5 Slim Digital Edition يحتاجان قارئ الأقراص الإضافي. وجهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS4 disc. Plays on a PS5 with a disc drive through backward compatibility; PS5 Pro and PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "دیسکی PS4. لەسەر PS5 ی خاوەن دیسک خوێنەر کار دەکات لە ڕێگەی گونجانی یارییەکانی PS4؛ PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": [
+      "ps4"
+    ],
+    "genres": [
+      {
+        "ar": "أكشن ومغامرة",
+        "en": "Action-adventure",
+        "ckb": "ئاکشن و سەرکێشی"
+      },
+      {
+        "ar": "عالم مفتوح",
+        "en": "Open world",
+        "ckb": "جیهانی کراوە"
+      }
+    ],
+    "players": "1 (online multiplayer up to 8)",
+    "online": {
+      "ar": "القصة بدون إنترنت؛ اللعب الجماعي أونلاين يحتاج PlayStation Plus.",
+      "en": "Story works offline; online multiplayer needs PlayStation Plus.",
+      "ckb": "چیرۆکەکە بێ ئینتەرنێت کار دەکات؛ یاری بەکۆمەڵی ئۆنلاین PlayStation Plus ی پێویستە."
+    },
+    "ageRating": {
+      "pegi": 18
+    },
+    "arabic": "none",
+    "physicalFormat": "disc",
+    "developer": "Ubisoft Montreal",
+    "publisher": "Ubisoft"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps4",
+      "status": "verified",
+      "note": {
+        "ar": "قرص PS4.",
+        "en": "PS4 disc.",
+        "ckb": "دیسکی PS4."
+      },
+      "source": "https://www.playstation.com/en-gb/games/assassins-creed-iv-black-flag/"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "يعمل قرص PS4 على PS5 عبر التوافق مع ألعاب PS4.",
+        "en": "The PS4 disc runs on PS5 through backward compatibility.",
+        "ckb": "دیسکی PS4 لەسەر PS5 کار دەکات لە ڕێگەی گونجانی یارییەکانی PS4."
+      },
+      "source": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "على الموديل الذي فيه قارئ أقراص، عبر التوافق مع ألعاب PS4.",
+        "en": "On the model with a disc drive, through backward compatibility.",
+        "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە، لە ڕێگەی گونجانی یارییەکانی PS4."
+      },
+      "source": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": {
+        "ar": "جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      },
+      "source": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "dualshock-4",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "assassins-creed-iv-black-flag--1",
+      "file": ".cache/product-images/assassins-creed-iv-black-flag/1.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202604/2414/81ba5198b663c1c00e1c33f7b78597340020abc30b0fc5c8.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP0001-CUSA00009_00-AC4GAMEPS4000001",
+      "kind": "box-art",
+      "alt": {
+        "ar": "غلاف Assassin's Creed IV Black Flag",
+        "en": "Assassin's Creed IV Black Flag cover art",
+        "ckb": "وێنەی بەرگی Assassin's Creed IV Black Flag"
+      },
+      "credit": "Ubisoft",
+      "width": 1440,
+      "height": 2160,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-gb/games/assassins-creed-iv-black-flag/",
+      "title": "Assassin's Creed IV Black Flag",
+      "publisher": "Sony Interactive Entertainment (PlayStation UK)",
+      "retrieved": "2026-11-18",
+      "supports": "PS4 release 29 November 2013, publisher Ubisoft, PEGI 18"
+    },
+    {
+      "url": "https://store.playstation.com/en-gb/product/EP0001-CUSA00009_00-AC4GAMEPS4000001",
+      "title": "Assassin's Creed IV Black Flag – PlayStation Store",
+      "publisher": "Sony Interactive Entertainment (PlayStation Store UK)",
+      "retrieved": "2026-11-18",
+      "supports": "1 player, online up to 8 with PS Plus, voice and screen languages (no Arabic), PEGI 18, cover art"
+    },
+    {
+      "url": "https://store.playstation.com/en-ae/product/EP0001-CUSA00009_00-AC4GAMEPS4000001",
+      "title": "Assassin's Creed IV Black Flag – PlayStation Store (UAE)",
+      "publisher": "Sony Interactive Entertainment (PlayStation Store UAE)",
+      "retrieved": "2026-11-18",
+      "supports": "Middle East store lists the same languages, no Arabic"
+    },
+    {
+      "url": "https://www.playstation.com/en-us/support/games/ps5-backward-compatibility-games/",
+      "title": "Backward compatibility: PS4 games playable on PS5 consoles",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "PS4 discs play on PS5 consoles with a disc drive; PS4 discs cannot be used on the PS5 Digital Edition"
+    }
+  ],
+  "verification": {
+    "checkedBy": "ps4-research",
+    "secondSource": true,
+    "unverified": [
+      "Whether the online multiplayer servers still run (Ubisoft has retired servers for several older games).",
+      "Which cover (original or PlayStation Hits) the owner's copy has.",
+      "Install size and barcode."
+    ]
+  }
+}

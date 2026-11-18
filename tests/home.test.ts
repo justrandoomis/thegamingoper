@@ -291,7 +291,10 @@ describe("getHomeData — shelves", () => {
       }
       for (let i = 1; i < list.length; i++) expect(pub.get(list[i - 1])! >= pub.get(list[i])!).toBe(true);
       // nothing newer and buyable was skipped
-      const cards = new Map((await getCardsByIds(t.db, "ar", [...members], { now: t.now })).map((card) => [card.id, card]));
+      // getCardsByIds takes at most 100 ids; a platform now has more members than that
+      const memberIds = [...members];
+      const cards = new Map<string, Awaited<ReturnType<typeof getCardsByIds>>[number]>();
+      for (let i = 0; i < memberIds.length; i += 100) for (const card of await getCardsByIds(t.db, "ar", memberIds.slice(i, i + 100), { now: t.now })) cards.set(card.id, card);
       const newest = [...members]
         .filter((id) => isBuyable(cards.get(id)))
         .sort((a, b) => pub.get(b)! - pub.get(a)! || b.localeCompare(a))

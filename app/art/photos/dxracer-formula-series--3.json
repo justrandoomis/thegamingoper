@@ -1,0 +1,40 @@
+{
+  "key": "dxracer-formula-series--3",
+  "view": "hero",
+  "width": 705,
+  "height": 1204,
+  "aspect": 0.5855,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-formula-series/3-240.eba220d0.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-formula-series/3-480.b2c87f2d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-formula-series/3-240.4e5bdedf.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-formula-series/3-480.9868fcbf.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRvYAAABXRUJQVlA4WAoAAAAQAAAACwAAEwAAQUxQSGsAAAART6CgbRs2VRbt/omIwKy/7IJwWtu2Gp2gZ/1VViQ1kAxr7oAcdjBqPN5656eHiP5PAIOPxd/36UAnhfCSTkNnqYRK8i0p1VSa+uYuzT2ztxylnUe7zCMHKh+gCgAzKjyq9Wa78Sun84yLFQBWUDggZAAAADADAJ0BKgwAFAA/EXKwUCwmpKKwCAGAIglpAABKYTEwjWAA/r+jDY7rYfqRYkHSqj3drSFd4OJC3bB8/uwyFs+jBHS58QFABsANHbK9sfbJbFe8gJo9l2pxvuBfX91yXRAAAAA=",
+  "dominant": "#383838",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "DXRacer (product render, via MaxGaming)",
+  "source": {
+    "url": "https://www.maxgaming.com/bilder/artiklar/zoom/32123_1.jpg",
+    "page": "https://www.maxgaming.com/en/dxracer-formula/formula-l-black-white-pvc-leather"
+  },
+  "input": "bc010ee10579b991"
+}

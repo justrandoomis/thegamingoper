@@ -1,0 +1,151 @@
+{
+  "slug": "dobe-playstation-portal-protective-kit",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "طقم حماية DOBE TP5‑3587 لجهاز PlayStation Portal",
+    "en": "DOBE TP5‑3587 Protective Kit for PlayStation Portal",
+    "ckb": "کۆمەڵەی پاراستنی DOBE TP5‑3587 بۆ PlayStation Portal"
+  },
+  "short": {
+    "ar": "حقيبة + واقي شاشة زجاجي + غطاء سيليكون",
+    "en": "Bag + glass screen protector + silicone cover",
+    "ckb": "جانتا + پارێزەری شاشەی شووشەیی + بەرگی سیلیکۆن"
+  },
+  "description": {
+    "ar": "طقم حماية من DOBE (موديل TP5-3587) لجهاز PlayStation Portal: حقيبة حمل، وواقي شاشة زجاجي، وغطاء سيليكون يحمي الجهاز من الخدوش والصدمات. يباع في المتاجر باسم «5 in 1 Protective Kit».",
+    "en": "A DOBE protective kit (model TP5-3587) for PlayStation Portal: a carrying bag, a glass screen protector and a silicone cover that guards the device against scratches and knocks. Sold as a \"5 in 1 Protective Kit\".",
+    "ckb": "کۆمەڵەیەکی پاراستنی DOBE (مۆدێلی TP5-3587) بۆ PlayStation Portal: جانتای هەڵگرتن، پارێزەری شاشەی شووشەیی و بەرگی سیلیکۆن کە ئامێرەکە لە خەت و لێدان دەپارێزێت. بە ناوی «5 in 1 Protective Kit» دەفرۆشرێت."
+  },
+  "highlights": [
+    {
+      "ar": "حقيبة وواقي شاشة وغطاء سيليكون في علبة واحدة",
+      "en": "Bag, screen protector and silicone cover in one box",
+      "ckb": "جانتا و پارێزەری شاشە و بەرگی سیلیکۆن لە یەک قوتوودا"
+    },
+    {
+      "ar": "مصمم لـ PlayStation Portal",
+      "en": "Made for PlayStation Portal",
+      "ckb": "بۆ PlayStation Portal دروستکراوە"
+    },
+    {
+      "ar": "الجهاز غير مرفق",
+      "en": "Device not included",
+      "ckb": "ئامێرەکە لەگەڵیدا نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "PlayStation Portal",
+        "en": "PlayStation Portal",
+        "ckb": "PlayStation Portal"
+      }
+    },
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "DOBE TP5-3587",
+        "en": "DOBE TP5-3587",
+        "ckb": "DOBE TP5-3587"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "حقيبة حمل",
+      "en": "Carrying bag",
+      "ckb": "جانتای هەڵگرتن"
+    },
+    {
+      "ar": "واقي شاشة زجاجي",
+      "en": "Glass screen protector",
+      "ckb": "پارێزەری شاشەی شووشەیی"
+    },
+    {
+      "ar": "غطاء سيليكون",
+      "en": "Silicone cover",
+      "ckb": "بەرگی سیلیکۆن"
+    },
+    {
+      "ar": "أغطية لعصي التحكم",
+      "en": "Thumbstick caps",
+      "ckb": "سەرپۆشی جۆیستیک"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TP5-3587",
+      "sheetRow": 162,
+      "title": {
+        "ar": "طقم حماية DOBE TP5‑3587 لجهاز PlayStation Portal",
+        "en": "DOBE TP5‑3587 Protective Kit for PlayStation Portal",
+        "ckb": "کۆمەڵەی پاراستنی DOBE TP5‑3587 بۆ PlayStation Portal"
+      },
+      "modelNumber": "TP5-3587",
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps-portal",
+      "status": "verified",
+      "note": {
+        "ar": "طقم حماية لـ PlayStation Portal",
+        "en": "Protective kit for PlayStation Portal",
+        "ckb": "کۆمەڵەی پاراستن بۆ PlayStation Portal"
+      },
+      "source": "https://ecommerce.datablitz.com.ph/products/dobe-5-in-1-protective-kit-for-playstation-portal-tp5-3587"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-portal",
+      "kind": "setup"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ecommerce.datablitz.com.ph/products/dobe-5-in-1-protective-kit-for-playstation-portal-tp5-3587",
+      "title": "DOBE 5 in 1 Protective Kit for PlayStation Portal (TP5-3587)",
+      "publisher": "Datablitz",
+      "retrieved": "2026-11-18",
+      "supports": "brand, model TP5-3587, PlayStation Portal fit, silicone protective case in the kit"
+    },
+    {
+      "url": "https://www.bestbuy.ca/en-ca/product/carrying-case-accessories-ps5-portal-full-protection-bundle-with-tempered-glass-screen-protector-clear-protective-cover-case-hard-shell-portable-travel-bag-for-ps5-portal-black/18194615",
+      "title": "PS5 Portal full protection bundle (bag, tempered glass, cover)",
+      "publisher": "Best Buy Canada",
+      "retrieved": "2026-11-18",
+      "supports": "the bag + glass + cover kit type for PlayStation Portal"
+    }
+  ],
+  "notes": {
+    "ar": "مكتوب في ورقة المخزن «PSP 2 BAG + GLASS + SILICON 3587»؛ الرمز 3587 يطابق طقم DOBE لجهاز PlayStation Portal.",
+    "en": "Listed on the stock sheet as \"PSP 2 BAG + GLASS + SILICON 3587\"; code 3587 matches the DOBE kit for PlayStation Portal.",
+    "ckb": "لە لیستی کۆگادا «PSP 2 BAG + GLASS + SILICON 3587» نووسراوە؛ کۆدی 3587 لەگەڵ کۆمەڵەی DOBE بۆ PlayStation Portal دەگونجێت."
+  },
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Full list of the five pieces (retailer page did not load in full)",
+      "Bag colour",
+      "No DOBE maker page found"
+    ]
+  }
+}

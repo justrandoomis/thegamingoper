@@ -1,0 +1,157 @@
+{
+  "slug": "ps5-external-cooling-fan",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "مروحة تبريد خارجية لجهاز PS5",
+    "en": "External Cooling Fan for PS5",
+    "ckb": "پانکەی ساردکردنەوەی دەرەکی بۆ PS5"
+  },
+  "short": {
+    "ar": "تُثبت على فتحة الهواء الخلفية · تعمل من منفذ USB في الجهاز",
+    "en": "Fits on the rear vent · Powered from a console USB port",
+    "ckb": "لەسەر کونی هەوای پشتەوە دادەنرێت · لە دەروازەی USBی کۆنسۆڵ کار دەکات"
+  },
+  "description": {
+    "ar": "مروحة إضافية تُثبت على مخرج الهواء الخلفي لجهاز PS5 وتساعد على سحب الهواء الساخن، وتأخذ الطاقة من منفذ USB في الجهاز. نسختان: طراز P5228 ونسخة مخصصة لجهاز PS5 Slim.",
+    "en": "An add‑on fan that fits on the PS5's rear exhaust to help pull hot air out, powered from a console USB port. Two versions: model P5228 and one made for the PS5 Slim.",
+    "ckb": "پانکەیەکی زیادە کە لەسەر کونی هەوای پشتەوەی PS5 دادەنرێت بۆ دەرکردنی هەوای گەرم، و لە دەروازەی USBی کۆنسۆڵ وزە وەردەگرێت. دوو وەشان: مۆدێلی P5228 و وەشانێک بۆ PS5 Slim."
+  },
+  "highlights": [
+    {
+      "ar": "تساعد على إخراج الهواء الساخن",
+      "en": "Helps move hot air out",
+      "ckb": "یارمەتی دەرکردنی هەوای گەرم دەدات"
+    },
+    {
+      "ar": "لا تحتاج محوّل كهرباء: تعمل من منفذ USB",
+      "en": "No adapter needed: runs from USB",
+      "ckb": "ئەداپتەری ناوێت: لە USB کار دەکات"
+    },
+    {
+      "ar": "اختر النسخة حسب طراز جهازك",
+      "en": "Pick the version for your console model",
+      "ckb": "وەشان بەپێی مۆدێلی کۆنسۆڵەکەت هەڵبژێرە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "power",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "وزە"
+      },
+      "value": {
+        "ar": "منفذ USB في جهاز PS5",
+        "en": "A PS5 USB port",
+        "ckb": "دەروازەی USBی PS5"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-FAN-P5228",
+      "title": {
+        "ar": "P5228",
+        "en": "P5228",
+        "ckb": "P5228"
+      },
+      "options": {
+        "model": "P5228"
+      },
+      "modelNumber": "P5228",
+      "sheetRow": 117,
+      "isDefault": true,
+      "notes": {
+        "ar": "رقم الطراز P5228 من قائمة المحل؛ لم نجد صفحة للصانع.",
+        "en": "Model P5228 as written on the shop list; no maker page was found.",
+        "ckb": "مۆدێلی P5228 وەک لە لیستی دووکان نووسراوە."
+      }
+    },
+    {
+      "sku": "PS5-SLIM-FAN",
+      "title": {
+        "ar": "لـ PS5 Slim",
+        "en": "For PS5 Slim",
+        "ckb": "بۆ PS5 Slim"
+      },
+      "options": {
+        "console": "PS5 Slim"
+      },
+      "sheetRow": 148
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-slim",
+      "status": "unverified",
+      "note": {
+        "ar": "نسخة PS5 Slim فقط.",
+        "en": "PS5 Slim version only.",
+        "ckb": "تەنها وەشانی PS5 Slim."
+      },
+      "source": "https://ipega.hk/ps3ps4series/76-576.html"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "unverified",
+      "note": {
+        "ar": "نسخة PS5 Slim فقط.",
+        "en": "PS5 Slim version only.",
+        "ckb": "تەنها وەشانی PS5 Slim."
+      },
+      "source": "https://ipega.hk/ps3ps4series/76-576.html"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-slim-digital-edition",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-pro",
+      "kind": "setup"
+    },
+    {
+      "slug": "dobe-tp5-3536b-cooling-stand",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ipega.hk/ps3ps4series/76-576.html",
+      "title": "PG-P5S005 New Host Cooling Fan",
+      "publisher": "iPega (official site)",
+      "retrieved": "2026-11-18",
+      "supports": "example of a clip-on cooling fan made for the PS5 Slim"
+    },
+    {
+      "url": "https://www.pbtech.com/product/GAMDBE1523/DOBE-Cooling-Fan-For-PS5-Sony-PlayStation-5-Consol",
+      "title": "DOBE Cooling Fan For PS5",
+      "publisher": "PB Tech (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "example of a USB-powered rear fan for the original PS5"
+    }
+  ],
+  "notes": {
+    "ar": "منتج بدون علامة معروفة. المروحة الخارجية لا تحل محل تنظيف فتحات الجهاز وتركه في مكان جيد التهوية.",
+    "en": "Unbranded product. An external fan does not replace cleaning the vents and keeping the console in a well‑ventilated spot.",
+    "ckb": "بەرهەمی بێ براند. پانکەی دەرەکی جێگەی پاککردنەوەی کونەکان و دانانی کۆنسۆڵ لە شوێنێکی هەوادار ناگرێتەوە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "Maker and exact specs of 'PS5 FAN P5228' (no page found for P5228) and which PS5 model it fits",
+      "Maker of 'PS5 SLIM FAN'"
+    ]
+  }
+}

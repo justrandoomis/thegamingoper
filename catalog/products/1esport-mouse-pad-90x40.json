@@ -1,0 +1,105 @@
+{
+  "slug": "1esport-mouse-pad-90x40",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "1ESPORT",
+  "category": "mouse-pads",
+  "status": "available",
+  "name": {
+    "ar": "ماوس باد 1ESPORT مقاس 90×40",
+    "en": "1ESPORT Mouse Pad 90×40",
+    "ckb": "ماوس پادی 1ESPORT قەبارەی 90×40"
+  },
+  "short": {
+    "ar": "ماوس باد كبير 90×40 سم للماوس والكيبورد",
+    "en": "Extended 90×40 cm pad for mouse and keyboard",
+    "ckb": "ماوس پادی گەورەی 90×40 سم بۆ ماوس و کیبۆرد"
+  },
+  "description": {
+    "ar": "ماوس باد ممتد بمقاس 90×40 سم يتسع للكيبورد والماوس معاً على المكتب. مناسب لمن يلعب بحساسية منخفضة ويحتاج مساحة واسعة لحركة الماوس.",
+    "en": "An extended 90×40 cm desk pad that fits the keyboard and mouse together. Suits players who use low sensitivity and need a wide area for mouse movement.",
+    "ckb": "ماوس پادێکی درێژی 90×40 سم کە کیبۆرد و ماوس پێکەوە لەسەری جێیان دەبێتەوە. گونجاوە بۆ ئەو یاریزانانەی هەستیاری نزم بەکاردەهێنن و شوێنی فراوانیان پێویستە."
+  },
+  "highlights": [
+    {
+      "ar": "مقاس كبير 90×40 سم يغطي الكيبورد والماوس",
+      "en": "Large 90×40 cm, covers keyboard and mouse",
+      "ckb": "قەبارەی گەورەی 90×40 سم، کیبۆرد و ماوس دادەپۆشێت"
+    },
+    {
+      "ar": "يعمل مع أي ماوس بصري أو ليزري",
+      "en": "Works with any optical or laser mouse",
+      "ckb": "لەگەڵ هەر ماوسێکی ئۆپتیکی یان لەیزەری کار دەکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "size",
+      "label": {
+        "ar": "المقاس",
+        "en": "Size",
+        "ckb": "قەبارە"
+      },
+      "value": {
+        "ar": "90 × 40 سم",
+        "en": "90 × 40 cm",
+        "ckb": "90 × 40 سم"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "1ESPORT-PAD-90X40",
+      "title": {
+        "ar": "مقاس 90×40",
+        "en": "90×40 cm",
+        "ckb": "قەبارەی 90×40"
+      },
+      "options": {
+        "size": "90x40 cm"
+      },
+      "isDefault": true,
+      "sheetRow": 1
+    }
+  ],
+  "related": [
+    {
+      "slug": "redragon-p032-flick-xl",
+      "kind": "alternative"
+    },
+    {
+      "slug": "redragon-p041-xeon-xl",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.overclockers.co.uk/asus-rog-hone-ace-xxl-high-density-memory-foam-base-gaming-mouse-pad/GAM-ASU-05901.html",
+      "title": "ASUS ROG Hone Ace XXL (a 90 × 40 cm pad, for what the size class means)",
+      "publisher": "Overclockers UK",
+      "retrieved": "2026-11-18",
+      "supports": "what a 90 × 40 cm extended pad covers (keyboard and mouse)"
+    },
+    {
+      "url": "https://www.mightyape.co.nz/product/msi-agility-gd70-mousepad-xl-pc/33800378",
+      "title": "MSI Agility GD70 (900 × 400 mm extended pad)",
+      "publisher": "Mighty Ape",
+      "retrieved": "2026-11-18",
+      "supports": "the 900 × 400 mm extended-pad size class"
+    }
+  ],
+  "notes": {
+    "ar": "لم نجد صفحة رسمية لعلامة 1ESPORT، لذلك نذكر المقاس فقط كما في قائمة مخزون المتجر.",
+    "en": "We found no official 1ESPORT product page, so only the size from the store's own stock list is stated.",
+    "ckb": "پەڕەیەکی فەرمیی 1ESPORT نەدۆزرایەوە، بۆیە تەنها قەبارەکە وەک لە لیستی کۆگای فرۆشگا نووسراوە."
+  },
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": false,
+    "unverified": [
+      "Maker page, material, thickness, edge stitching and base for the 1ESPORT pad (no page found)",
+      "Design or colour of the pad in stock"
+    ]
+  }
+}

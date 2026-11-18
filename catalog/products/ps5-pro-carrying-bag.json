@@ -1,0 +1,101 @@
+{
+  "slug": "ps5-pro-carrying-bag",
+  "group": "ps5-bags-cases-skins",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "حقيبة حمل لجهاز PS5 Pro",
+    "en": "PS5 Pro Carrying Bag",
+    "ckb": "جانتای هەڵگرتنی PS5 Pro"
+  },
+  "short": {
+    "ar": "حقيبة سفر مبطّنة بحزام كتف للجهاز والأذرع",
+    "en": "Padded travel bag with shoulder strap for the console and controllers",
+    "ckb": "جانتای گەشتی پەڕۆدار بە قایشی شان بۆ کۆنسۆڵ و دەسکەکان"
+  },
+  "description": {
+    "ar": "حقيبة سفر بمقاس جهاز PS5 Pro تحميه أثناء التنقل. الغلاف الخارجي صلب ومقاوم للماء والصدمات، والداخل مبطّن مع أماكن للأذرع والكابلات. تُحمل باليد أو بحزام الكتف القابل للتعديل. الجهاز والأذرع غير مرفقة.",
+    "en": "A travel bag sized for the PS5 Pro that protects it on the move. The outside is a firm water- and knock-resistant shell, the inside is padded with room for controllers and cables. Carry it by the handle or the adjustable shoulder strap. Console and controllers are not included.",
+    "ckb": "جانتایەکی گەشت بە قەبارەی PS5 Pro کە لە کاتی گواستنەوەدا دەیپارێزێت. دەرەوەی قاڵبێکی ڕەقی بەرگری ئاو و لێدانە، ناوەوەشی پەڕۆدارە و شوێنی دەسک و کێبڵی تێدایە. بە دەسگرە یان بە قایشی شانی گۆڕاو هەڵدەگیرێت. کۆنسۆڵ و دەسکەکان لەگەڵیدا نین."
+  },
+  "highlights": [
+    { "ar": "بمقاس جهاز PS5 Pro", "en": "Sized for the PS5 Pro", "ckb": "بە قەبارەی PS5 Pro" },
+    { "ar": "غلاف مقاوم للماء والصدمات وبطانة داخلية مبطّنة", "en": "Water- and knock-resistant shell with padded lining", "ckb": "قاڵبی بەرگری ئاو و لێدان بە ناوەوەی پەڕۆدار" },
+    { "ar": "مقبض وحزام كتف قابل للتعديل", "en": "Handle and adjustable shoulder strap", "ckb": "دەسگرە و قایشی شانی گۆڕاو" },
+    { "ar": "أماكن للأذرع والكابلات", "en": "Room for controllers and cables", "ckb": "شوێن بۆ دەسک و کێبڵ" }
+  ],
+  "specs": [
+    { "key": "fits", "label": { "ar": "يناسب", "en": "Fits", "ckb": "گونجاوە بۆ" }, "value": { "ar": "PS5 Pro", "en": "PS5 Pro", "ckb": "PS5 Pro" } },
+    { "key": "carry", "label": { "ar": "طريقة الحمل", "en": "Carrying", "ckb": "شێوەی هەڵگرتن" }, "value": { "ar": "مقبض وحزام كتف", "en": "Handle and shoulder strap", "ckb": "دەسگرە و قایشی شان" } }
+  ],
+  "inTheBox": [
+    { "ar": "الحقيبة", "en": "Bag", "ckb": "جانتا" },
+    { "ar": "حزام الكتف", "en": "Shoulder strap", "ckb": "قایشی شان" }
+  ],
+  "variants": [
+    {
+      "sku": "PS5PRO-BAG-BLACK",
+      "sheetRow": 86,
+      "title": { "ar": "أسود", "en": "Black", "ckb": "ڕەش" },
+      "options": { "color": "Black" },
+      "isDefault": true
+    },
+    {
+      "sku": "PS5PRO-BAG-GRAY",
+      "sheetRow": 87,
+      "title": { "ar": "رمادي", "en": "Grey", "ckb": "خۆڵەمێشی" },
+      "options": { "color": "Grey" },
+      "isDefault": false
+    },
+    {
+      "sku": "PS5PRO-BAG-PRINT2",
+      "sheetRow": 88,
+      "title": { "ar": "بتصميم مطبوع 2", "en": "Printed design 2", "ckb": "دیزاینی چاپکراو 2" },
+      "options": { "color": "Printed design 2" },
+      "isDefault": false,
+      "notes": { "ar": "حقيبة بصورة مطبوعة على الوجه؛ اسأل المتجر عن شكل التصميم.", "en": "A bag with a printed picture on the front; ask the shop to see the design.", "ckb": "جانتایەک بە وێنەی چاپکراو لەسەر ڕووەکەی؛ داوای بینینی دیزاینەکە لە فرۆشگا بکە." }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5-pro", "status": "verified", "source": "https://www.skygames.com.pk/?p=12544" }
+  ],
+  "related": [
+    { "slug": "playstation-5-pro", "kind": "setup" },
+    { "slug": "ps5-console-dust-cover", "kind": "accessory" },
+    { "slug": "dobe-controller-carry-case", "kind": "accessory" },
+    { "slug": "ps5-slim-carrying-bag", "kind": "alternative" }
+  ],
+  "sources": [
+    {
+      "url": "https://www.skygames.com.pk/?p=12544",
+      "title": "PS5 Pro Travel Bag – PS5 Pro Hard Shell Bag",
+      "publisher": "Sky Games",
+      "retrieved": "2026-11-18",
+      "supports": "fits PS5 Pro, hard cushioned build, water- and impact-resistant nylon exterior, padded interior, adjustable shoulder strap, colours black and grey"
+    },
+    {
+      "url": "https://miot-store.com/products/for-ps5-pro-single-layer-carrying-case-hard-shell-waterproof-travel-bag-with-adjustable-shoulder-strapgray",
+      "title": "For PS5 Pro Single-Layer Carrying Case Hard Shell Waterproof Travel Bag with Adjustable Shoulder Strap (Gray)",
+      "publisher": "MIOT store",
+      "retrieved": "2026-11-18",
+      "supports": "second listing of a hard-shell PS5 Pro travel bag in grey with handle and adjustable shoulder strap"
+    }
+  ],
+  "notes": {
+    "ar": "حقيبة من صنع طرف ثالث (ليست من Sony).",
+    "en": "A third-party bag (not made by Sony).",
+    "ckb": "جانتایەکی لایەنی سێیەمە (هی Sony نییە)."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Maker and model of the bags the shop stocks (unbranded generic bags; the sheet names only the colour)",
+      "Dimensions, weight and inner layout",
+      "What picture 'PHOTOS 2' shows",
+      "No clean, watermark-free product image of these exact bags was found"
+    ]
+  }
+}

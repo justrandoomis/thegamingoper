@@ -1,0 +1,100 @@
+{
+  "slug": "ps5-usb-hub",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "موزّع USB لجهاز PS5",
+    "en": "USB Hub for PS5",
+    "ckb": "دابەشکەری USB بۆ PS5"
+  },
+  "short": {
+    "ar": "منافذ USB إضافية للجهاز · لشحن اليدين ووصل الملحقات",
+    "en": "Extra USB ports for the console · For charging and accessories",
+    "ckb": "دەروازەی USBی زیاتر بۆ کۆنسۆڵ · بۆ شەحن و پاشکۆکان"
+  },
+  "description": {
+    "ar": "موزّع USB بدون علامة معروفة يضيف منافذ USB إلى جهاز PS5، لشحن اليدين ووصل سماعة أو كاميرا أو ذاكرة في الوقت نفسه.",
+    "en": "An unbranded USB hub that adds USB ports to the PS5 for charging controllers and plugging in a headset, camera or drive at the same time.",
+    "ckb": "دابەشکەرێکی USBی بێ براند کە دەروازەی USB بۆ PS5 زیاد دەکات بۆ شەحنی کۆنتڕۆڵەر و بەستنی هێدسێت یان کامێرا یان بیرگە."
+  },
+  "highlights": [
+    {
+      "ar": "منافذ USB إضافية",
+      "en": "Extra USB ports",
+      "ckb": "دەروازەی USBی زیاتر"
+    },
+    {
+      "ar": "يوصل بمنفذ USB في الجهاز",
+      "en": "Plugs into a console USB port",
+      "ckb": "بە دەروازەی USBی کۆنسۆڵ دەبەسترێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "connection",
+      "label": {
+        "ar": "التوصيل",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "منفذ USB في جهاز PS5",
+        "en": "A PS5 USB port",
+        "ckb": "دەروازەی USBی PS5"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-USB-HUB",
+      "title": {
+        "ar": "موزّع USB لجهاز PS5",
+        "en": "USB Hub for PS5",
+        "ckb": "دابەشکەری USB بۆ PS5"
+      },
+      "sheetRow": 130,
+      "isDefault": true
+    }
+  ],
+  "related": [
+    {
+      "slug": "ipega-pg-p5036-usb-hub",
+      "kind": "alternative"
+    },
+    {
+      "slug": "playstation-5",
+      "kind": "setup"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ipega.hk/ps3ps4series/76-484.html",
+      "title": "PG-P5036 P5 HUB six-in-one extender",
+      "publisher": "iPega (official site)",
+      "retrieved": "2026-11-18",
+      "supports": "example of this product type: a hub that adds USB ports to the PS5 front"
+    },
+    {
+      "url": "https://www.galaxus.it/en/s1/product/hama-6in1-usb-hub-for-playstation-5-6-ports-1x-usb-c-5x-usb-a-black-ps5-game-controller-accessories-32513384",
+      "title": "Hama 6in1 USB hub for PlayStation 5",
+      "publisher": "Galaxus (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "example of this product type"
+    }
+  ],
+  "notes": {
+    "ar": "منتج بدون علامة معروفة؛ عدد المنافذ وسرعتها غير مؤكدين.",
+    "en": "Unbranded product; port count and speed not confirmed.",
+    "ckb": "بەرهەمی بێ براند؛ ژمارە و خێرایی دەروازەکان دڵنیا نین."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "Maker, port count, port speeds and which PS5 model it is shaped for ('PS5 HUB USB' on the owner's sheet)"
+    ]
+  }
+}

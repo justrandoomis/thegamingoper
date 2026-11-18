@@ -96,6 +96,7 @@
   "variants": [
     {
       "sku": "DSENSE-WHITE",
+      "sheetRow": 113,
       "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "color": "White" },
       "modelNumber": "CFI-ZCT2W",
@@ -104,6 +105,7 @@
     },
     {
       "sku": "DSENSE-MIDNIGHT-BLACK",
+      "sheetRow": 107,
       "title": { "ar": "أسود Midnight Black", "en": "Midnight Black", "ckb": "ڕەشی Midnight Black" },
       "options": { "color": "Midnight Black" },
       "isDefault": false,
@@ -125,12 +127,14 @@
     },
     {
       "sku": "DSENSE-GALACTIC-PURPLE",
+      "sheetRow": 111,
       "title": { "ar": "بنفسجي Galactic Purple", "en": "Galactic Purple", "ckb": "مۆری Galactic Purple" },
       "options": { "color": "Galactic Purple" },
       "isDefault": false
     },
     {
       "sku": "DSENSE-STARLIGHT-BLUE",
+      "sheetRow": 108,
       "title": { "ar": "أزرق Starlight Blue", "en": "Starlight Blue", "ckb": "شینی Starlight Blue" },
       "options": { "color": "Starlight Blue" },
       "isDefault": false
@@ -197,7 +201,7 @@
     },
     {
       "sku": "DSENSE-PRISM-FLARE-ORANGE",
-      "title": { "ar": "Prism برتقالي شفاف Flare Orange", "en": "Prism Flare Orange", "ckb": "Prism پرتەقاڵیی ڕوون Flare Orange" },
+      "title": { "ar": "برتقالي شفاف · Prism Flare Orange", "en": "Prism Flare Orange", "ckb": "پرتەقاڵیی ڕوون · Prism Flare Orange" },
       "options": { "color": "Flare Orange", "edition": "Prism Collection" },
       "releaseDate": "2027-02-04",
       "isDefault": false,
@@ -206,7 +210,7 @@
     },
     {
       "sku": "DSENSE-PRISM-EMERALD-GREEN",
-      "title": { "ar": "Prism أخضر زمردي Emerald Green", "en": "Prism Emerald Green", "ckb": "Prism سەوزی زمرودی Emerald Green" },
+      "title": { "ar": "أخضر زمردي شفاف · Prism Emerald Green", "en": "Prism Emerald Green", "ckb": "سەوزی زمرودیی ڕوون · Prism Emerald Green" },
       "options": { "color": "Emerald Green", "edition": "Prism Collection" },
       "releaseDate": "2027-02-04",
       "isDefault": false,
@@ -214,11 +218,27 @@
     },
     {
       "sku": "DSENSE-PRISM-GRAPHITE-GRAY",
-      "title": { "ar": "Prism رمادي غرافيتي Graphite Gray", "en": "Prism Graphite Gray", "ckb": "Prism خۆڵەمێشیی گرافیتی Graphite Gray" },
+      "title": { "ar": "رمادي غرافيتي شفاف · Prism Graphite Gray", "en": "Prism Graphite Gray", "ckb": "خۆڵەمێشیی گرافیتیی ڕوون · Prism Graphite Gray" },
       "options": { "color": "Graphite Gray", "edition": "Prism Collection" },
       "releaseDate": "2027-02-04",
       "isDefault": false,
       "notes": { "ar": "تصدر في 4 شباط 2027.", "en": "Out on 4 February 2027.", "ckb": "لە 4ی شوباتی 2027 دەردەچێت." }
+    },
+    {
+      "sku": "DSENSE-SPECIAL-COLOUR",
+      "sheetRow": 109,
+      "title": { "ar": "لون خاص", "en": "Special colour", "ckb": "ڕەنگی تایبەت" },
+      "options": { "color": "Special colour" },
+      "isDefault": false,
+      "notes": { "ar": "أحد ألوان DualSense الخاصة غير الأبيض والأسود والأزرق والبنفسجي، حسب المتوفر في المخزن.", "en": "One of the DualSense special colours other than white, black, blue and purple, as in stock.", "ckb": "یەکێک لە ڕەنگە تایبەتەکانی DualSense جگە لە سپی، ڕەش، شین و مۆر، بەپێی ئەوەی لە کۆگادا هەیە." }
+    },
+    {
+      "sku": "DSENSE-AS-STOCKED",
+      "sheetRow": 112,
+      "title": { "ar": "اللون حسب المتوفر", "en": "Colour as in stock", "ckb": "ڕەنگ بەپێی کۆگا" },
+      "options": { "color": "As in stock" },
+      "isDefault": false,
+      "notes": { "ar": "DualSense أصلية بسعر أقل؛ اللون حسب المتوفر في المخزن.", "en": "Genuine DualSense at a lower price; colour as in stock.", "ckb": "DualSenseی ڕەسەن بە نرخی کەمتر؛ ڕەنگ بەپێی ئەوەی لە کۆگادا هەیە." }
     }
   ],
   "compatibility": [
@@ -250,6 +270,7 @@
   "related": [
     { "slug": "dualsense-edge", "kind": "upsell" },
     { "slug": "dualsense-charging-station", "kind": "accessory" },
+    { "slug": "dualsense-controller-shell", "kind": "accessory" },
     { "slug": "access-controller", "kind": "alternative" },
     { "slug": "playstation-5-slim", "kind": "setup" }
   ],

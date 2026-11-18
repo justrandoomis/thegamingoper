@@ -1,0 +1,70 @@
+{
+  "key": "jys-steam-deck-clear-case-sd003--1",
+  "view": "hero",
+  "width": 1465,
+  "height": 1408,
+  "aspect": 1.0405,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/jys-steam-deck-clear-case-sd003/1-240.1088e337.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/jys-steam-deck-clear-case-sd003/1-480.cd4d0e0d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/jys-steam-deck-clear-case-sd003/1-720.51dd5916.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/jys-steam-deck-clear-case-sd003/1-960.30b88f92.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/jys-steam-deck-clear-case-sd003/1-1440.91a60692.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/jys-steam-deck-clear-case-sd003/1-240.ee8da1ed.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/jys-steam-deck-clear-case-sd003/1-480.492fdb7c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/jys-steam-deck-clear-case-sd003/1-720.70c2bae4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/jys-steam-deck-clear-case-sd003/1-960.ff67a5b9.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/jys-steam-deck-clear-case-sd003/1-1440.aaa5a411.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/jys-steam-deck-clear-case-sd003/1-1200.deb9242b.png",
+    "width": 1200,
+    "height": 1153,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjQBAABXRUJQVlA4WAoAAAAQAAAAEwAAEgAAQUxQSH8AAAART6CobSM2VBDrdTMiAr4u5nfhNrJttTnilBqQKccC2E5dAkPIlDnTqALr1fueeojo/wRQm2A39pWneodKJIJJITqgK7bPqsZjZHwX0FVLF8hFzhnmvwMkKoHe8+MA8eRViXjE+0K0z1p0KSEXQyTkZ5RvV5WntgOsz8ME26EWAFZQOCCOAAAAEAQAnQEqFAATAD8RfrVVrCekoygIAYAiCWcAA+MYcrHZL+fQ9iqUTcAA8i4Cr+YZB/GHNnSkeTg9pj9YaBAGNBWXSOyGRKxH9cejH3PunnI1kgEn6IKPpMpIiamtA6OlIDPDjpva22+zjZVEsXgqyoWRQzq8+4feek/ermKhkLFew+BV6Y9qD0z3o6AAAA==",
+  "dominant": "#59595b",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "JYS Electronics",
+  "source": {
+    "url": "https://www.systembank.pl/img/opis/6994/futeral-pokrowiec-etui-case-stojak-do-konsoli-steam-deck-przezroczysty-jys-sd003_o6994_2.jpg",
+    "page": "https://www.systembank.pl/futeral-pokrowiec-etui-case-+-stojak-do-konsoli-steam-deck-przezroczysty-jys-sd003-p6994.html"
+  },
+  "input": "ff5399aebda2f9ce"
+}

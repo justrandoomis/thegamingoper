@@ -119,6 +119,7 @@
   "variants": [
     {
       "sku": "NSW-OLED-WHT",
+      "sheetRow": 55,
       "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
       "options": { "edition": "Standard", "storage": "64GB", "color": "White" },
       "modelNumber": "HEG-001",
@@ -129,13 +130,14 @@
     },
     {
       "sku": "NSW-OLED-NEON",
+      "sheetRow": 54,
       "title": { "ar": "أزرق نيون / أحمر نيون", "en": "Neon Blue / Neon Red", "ckb": "شینی نیۆن / سووری نیۆن" },
       "options": { "edition": "Standard", "storage": "64GB", "color": "Neon Blue / Neon Red" },
       "modelNumber": "HEG-001",
       "barcodes": ["0045496883409"],
       "isDefault": false,
       "images": ["nintendo-switch-oled--4", "nintendo-switch-oled--5"],
-      "notes": { "ar": "الباركود هو رمز UPC الأمريكي.", "en": "Barcode is the US UPC.", "ckb": "بارکۆدەکە UPCی ئەمریکییە." }
+      "notes": { "ar": "الجهاز والقاعدة باللون الأسود، ويدا Joy-Con بالأزرق والأحمر النيون. الباركود هو رمز UPC الأمريكي.", "en": "Black console and black dock, with Neon Blue and Neon Red Joy-Con. Barcode is the US UPC.", "ckb": "کۆنسۆڵ و دۆکەکە ڕەشن، و Joy-Con ـەکان شینی نیۆن و سووری نیۆنن. بارکۆدەکە UPCی ئەمریکییە." }
     }
   ],
   "related": [
@@ -279,6 +281,7 @@
     "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
+      "Owner sheet row 54 «NINTENDO SWITCH OLED BLACK» is read as the Neon Blue / Neon Red set (black console and dock); a special black edition is not ruled out — check the box",
       "Whether the end of Switch hardware sales in mid-February 2027 also applies to Saudi Arabia, the UAE and Oman",
       "Availability of special-design OLED editions (the Mario Red Edition shows as sold out on Nintendo's US store)"
     ]

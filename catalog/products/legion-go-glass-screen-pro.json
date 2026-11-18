@@ -1,0 +1,168 @@
+{
+  "slug": "legion-go-glass-screen-pro",
+  "group": "handheld-pc-accessories",
+  "kind": "accessory",
+  "platform": "pc_handheld",
+  "brand": "Glass Screen Pro+",
+  "status": "available",
+  "name": {
+    "ar": "زجاج حماية Glass Screen Pro+ لجهاز Legion Go",
+    "en": "Glass Screen Pro+ for Lenovo Legion Go",
+    "ckb": "شیشەی پارێزەری Glass Screen Pro+ بۆ Legion Go"
+  },
+  "short": {
+    "ar": "زجاج مقسّى 9H · لشاشة Legion Go مقاس 8.8 بوصة",
+    "en": "9H tempered glass · For the 8.8-inch Legion Go screen",
+    "ckb": "شیشەی ڕەقکراوی 9H · بۆ شاشەی 8.8 ئینجی Legion Go"
+  },
+  "description": {
+    "ar": "واقي شاشة من الزجاج المقسّى بصلابة 9H مقصوص لشاشة Lenovo Legion Go. يحمي الشاشة من الخدوش والصدمات اليومية، شفاف لا يغيّر الألوان، ولا يؤثر على اللمس، وعليه طبقة تقلل بصمات الأصابع. تأتي معه أدوات التنظيف والتركيب.",
+    "en": "A 9H tempered-glass screen protector cut for the Lenovo Legion Go display. It guards the screen against scratches and everyday knocks, stays clear without changing colours, keeps touch responsive and has a coating that cuts fingerprints. Cleaning and installation tools are included.",
+    "ckb": "پارێزەری شاشەی شیشەی ڕەقکراو بە ڕەقیی 9H کە بۆ شاشەی Lenovo Legion Go بڕدراوە. شاشە لە خەت و لێدانی ڕۆژانە دەپارێزێت، ڕوونە و ڕەنگ ناگۆڕێت، کاریگەری لەسەر دەستلێدان نییە و چینێکی کەمکەرەوەی شوێنپەنجەی هەیە. ئامرازی پاککردنەوە و دانانی لەگەڵدایە."
+  },
+  "highlights": [
+    {
+      "ar": "زجاج مقسّى بصلابة 9H",
+      "en": "9H tempered glass",
+      "ckb": "شیشەی ڕەقکراوی 9H"
+    },
+    {
+      "ar": "مقصوص لشاشة Lenovo Legion Go",
+      "en": "Cut for the Lenovo Legion Go screen",
+      "ckb": "بۆ شاشەی Lenovo Legion Go بڕدراوە"
+    },
+    {
+      "ar": "طبقة تقلل بصمات الأصابع",
+      "en": "Anti-fingerprint coating",
+      "ckb": "چینی دژە شوێنپەنجە"
+    },
+    {
+      "ar": "أدوات التنظيف والتركيب مرفقة",
+      "en": "Cleaning and installation kit included",
+      "ckb": "ئامرازی پاککردنەوە و دانان لەگەڵیدایە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "hardness",
+      "label": {
+        "ar": "الصلابة",
+        "en": "Hardness",
+        "ckb": "ڕەقی"
+      },
+      "value": {
+        "ar": "9H",
+        "en": "9H",
+        "ckb": "9H"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Lenovo Legion Go (8.8\")",
+        "en": "Lenovo Legion Go (8.8\")",
+        "ckb": "Lenovo Legion Go (8.8\")"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "واقي شاشة زجاجي",
+      "en": "Glass screen protector",
+      "ckb": "پارێزەری شاشەی شیشە"
+    },
+    {
+      "ar": "أدوات التنظيف والتركيب",
+      "en": "Cleaning and installation kit",
+      "ckb": "ئامرازی پاککردنەوە و دانان"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "GSP-LEGION-GO",
+      "sheetRow": 49,
+      "title": {
+        "ar": "زجاج حماية Glass Screen Pro+ لجهاز Legion Go",
+        "en": "Glass Screen Pro+ for Lenovo Legion Go",
+        "ckb": "شیشەی پارێزەری Glass Screen Pro+ بۆ Legion Go"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "legion-go",
+      "status": "verified",
+      "note": {
+        "ar": "مقصوص لشاشة Legion Go الأصلي",
+        "en": "Cut for the original Legion Go screen",
+        "ckb": "بۆ شاشەی Legion Goی ئەسڵی بڕدراوە"
+      },
+      "source": "https://www.skygames.com.pk/?p=16653"
+    },
+    {
+      "deviceModel": "legion-go-2",
+      "status": "unverified",
+      "note": {
+        "ar": "الشاشة بنفس القياس 8.8 بوصة لكن أبعاد الواجهة مختلفة؛ تأكد قبل الشراء",
+        "en": "Same 8.8-inch size but a different front; check before buying",
+        "ckb": "هەمان قەبارەی 8.8 ئینج بەڵام ڕووی پێشەوە جیاوازە؛ پێش کڕین دڵنیابە"
+      }
+    },
+    {
+      "deviceModel": "legion-go-s",
+      "status": "incompatible",
+      "note": {
+        "ar": "Legion Go S بشاشة 8 بوصات",
+        "en": "The Legion Go S has an 8-inch screen",
+        "ckb": "Legion Go S شاشەی 8 ئینجە"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "lenovo-legion-go",
+      "kind": "setup"
+    },
+    {
+      "slug": "lenovo-legion-go-2",
+      "kind": "setup"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.skygames.com.pk/?p=16653",
+      "title": "Lenovo Legion Go Glass Screen Pro+ Premium Screen Protector",
+      "publisher": "Sky Games (retailer, Pakistan)",
+      "retrieved": "2026-11-18",
+      "supports": "product name, 9H tempered glass, anti-fingerprint coating, cut for the Lenovo Legion Go, cleaning and installation kit"
+    },
+    {
+      "url": "https://support.lenovo.com/hk/en/accessories/acc500355-lenovo-legion-go-screen-protector-overview-and-service-parts",
+      "title": "Lenovo Legion Go Screen Protector – overview",
+      "publisher": "Lenovo",
+      "retrieved": "2026-11-18",
+      "supports": "second source: Legion Go display size and that 9H glass protectors are made for it; Legion Go family screen sizes"
+    }
+  ],
+  "notes": {
+    "ar": "«Glass Screen Pro+» هو الاسم المطبوع على العلبة؛ لم نجد صفحة للشركة المصنّعة تؤكد الطراز.",
+    "en": "\"Glass Screen Pro+\" is the name printed on the pack; we found no maker page confirming the model.",
+    "ckb": "«Glass Screen Pro+» ئەو ناوەیە کە لەسەر قوتووەکە چاپکراوە؛ هیچ پەڕەیەکی دروستکەرمان نەدۆزییەوە."
+  },
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Maker of the \"Glass Screen Pro+\" line (iPega uses the name on its Switch 2 glass; not confirmed for this item)",
+      "Whether the unit is for the original Legion Go or the Legion Go 2",
+      "Number of sheets in the pack",
+      "No clean product image found"
+    ]
+  }
+}

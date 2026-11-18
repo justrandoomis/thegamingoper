@@ -1,0 +1,62 @@
+{
+  "key": "silent-hill-f--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/silent-hill-f/1-240.97c6b40c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/silent-hill-f/1-480.689371b4.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/silent-hill-f/1-720.04e82a14.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/silent-hill-f/1-960.ddb25304.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/silent-hill-f/1-240.34edce66.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/silent-hill-f/1-480.5699d429.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/silent-hill-f/1-720.bcba223f.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/silent-hill-f/1-960.37a12801.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/silent-hill-f/1-1067.7092113f.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAwCdASoNABQAPxFysFAsJqSisAgBgCIJQBdgBFV/4kYMEVFagaAA/svKR7549wTfnf0OET2REz/nX88ZbLj4esH5reyoA4Hbr1MfGLf4X+72JZAI60PLIAA=",
+  "dominant": "#2a2d34",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Konami",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202505/0704/ac8ee550a288cb7d095374a35c14ff0fdbf185b56ce7478a.png",
+    "page": "https://store.playstation.com/en-gb/product/JP0101-PPSA21159_00-MAINGAME00000000"
+  },
+  "input": "4967b06f7063e287"
+}

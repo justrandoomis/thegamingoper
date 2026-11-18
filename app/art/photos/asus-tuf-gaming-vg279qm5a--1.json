@@ -1,0 +1,70 @@
+{
+  "key": "asus-tuf-gaming-vg279qm5a--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1217,
+  "aspect": 1.3147,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/asus-tuf-gaming-vg279qm5a/1-240.8a10c9d3.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/asus-tuf-gaming-vg279qm5a/1-480.438e6e78.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/asus-tuf-gaming-vg279qm5a/1-720.2305e65e.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/asus-tuf-gaming-vg279qm5a/1-960.5ba5a302.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/asus-tuf-gaming-vg279qm5a/1-1440.1172d505.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/asus-tuf-gaming-vg279qm5a/1-240.612ee5c5.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/asus-tuf-gaming-vg279qm5a/1-480.adc7754e.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/asus-tuf-gaming-vg279qm5a/1-720.1d8f62e0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/asus-tuf-gaming-vg279qm5a/1-960.b7588f07.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/asus-tuf-gaming-vg279qm5a/1-1440.e02f2d85.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/asus-tuf-gaming-vg279qm5a/1-1200.92bd2ba1.png",
+    "width": 1200,
+    "height": 913,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRt4AAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSE0AAAARR6CgbRs2VwjdP2i2iAhk3fJTwLa2bRnn/4/40YFIAwqYaeDf3NSDFjT+MgVE9H8CrHbD8brV8bk/NEh6dkkFYFcXAGzOa1YfgAagBQBWUDggagAAANADAJ0BKhQADwA/EXKwUCwmpKKwCAGAIgliAABKiuOuTtktk7VUAAD+3UGUXvPaf/SQxHknuBDszXSXL07OozhyE1vdXpGZNfNTMcAAPzkYtce1SaloWkX8zaLag1NG1j2Bd+tcm3MxQAA=",
+  "dominant": "#020303",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "ASUS",
+  "source": {
+    "url": "https://dlcdnwebimgs.asus.com/gain/71dfd7d0-700c-4b98-a9b6-e21ad184b996/",
+    "page": "https://www.asus.com/me-en/displays-desktops/monitors/tuf-gaming/tuf-gaming-vg279qm5a/"
+  },
+  "input": "2fe8a7adbaaca0b3"
+}

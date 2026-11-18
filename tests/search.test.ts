@@ -384,10 +384,12 @@ describe("GET /api/search/suggest (the header's suggestions)", () => {
     const productRows = body.suggestions.filter((row) => row.href.startsWith("/p/"));
     expect(productRows.length).toBeGreaterThan(0);
     for (const row of productRows) {
-      expect(row.image).toMatch(/^[a-z0-9-]+--\d+$/);
+      // a cheap generic item may have no clean picture (catalog/README.md): then the row has none, never a wrong one
+      if (row.image !== undefined) expect(row.image).toMatch(/^[a-z0-9-]+--\d+$/);
       expect(row.kindLabel?.length).toBeGreaterThan(0);
       if (row.priceIqd !== undefined) expect(Number.isSafeInteger(row.priceIqd) && row.priceIqd >= 0).toBe(true);
     }
+    expect(productRows.some((row) => typeof row.image === "string")).toBe(true);
     // «اعرض كل النتائج (42)»: exactly what the results page lists for the same words
     const page = await searchProducts(t.db, "en", "playstation", { now: Date.now() });
     expect(body.total).toBe(page.total);

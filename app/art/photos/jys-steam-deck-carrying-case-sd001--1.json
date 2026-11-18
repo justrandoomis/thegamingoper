@@ -1,0 +1,62 @@
+{
+  "key": "jys-steam-deck-carrying-case-sd001--1",
+  "view": "hero",
+  "width": 967,
+  "height": 957,
+  "aspect": 1.0104,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/jys-steam-deck-carrying-case-sd001/1-240.19c12981.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/jys-steam-deck-carrying-case-sd001/1-480.cdedbb08.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/jys-steam-deck-carrying-case-sd001/1-720.8d85d2db.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/jys-steam-deck-carrying-case-sd001/1-960.151d9cd8.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/jys-steam-deck-carrying-case-sd001/1-240.02f20402.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/jys-steam-deck-carrying-case-sd001/1-480.4b577fde.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/jys-steam-deck-carrying-case-sd001/1-720.1ad18d74.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/jys-steam-deck-carrying-case-sd001/1-960.23bbb94f.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/jys-steam-deck-carrying-case-sd001/1-967.a1971a46.png",
+    "width": 967,
+    "height": 957,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjYBAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSHMAAAART6CgbRsWl8bfIiLwZh1f4cS2rWU5Px5dok3Bm0skkb/G+hueqX/H7nh57x9DRP8ngNSd6n2TMV6SkubfT5KSCDoyRzCzlCM4RWZOicXPKs7kZk5OzNOKa94UgtWGjrWDYCnLycmzt5KI8uN4WA/6VVIDAFZQOCCcAAAAUAQAnQEqFAAUAD8RfLJULCekIygKqYAiCUAZsIEIKXpG0cP0sj4Sw7+igAD+u2Iex50ssNuCf5SPMbtoSfcJg63LF4pMtxcoFC7faIHT/4/xifGpw795X3PYMufwE5BdBJ9AHC5kLQ0anDLU32ScEa/fw1vn6PRA21YgxPUfgo9ZMbaByi+0qZhyQtGVfiY2gLdRwq+urJAAAAAA",
+  "dominant": "#191c23",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "JYS Electronics",
+  "source": {
+    "url": "https://www.systembank.pl/img/opis/6960/pokrowiec-futeral-etui-case-na-konsole-steam-deck-jys-sd001_o6960_1.jpg",
+    "page": "https://www.systembank.pl/pokrowiec-futeral-etui-case-na-konsole-steam-deck-jys-sd001-p6960.html"
+  },
+  "input": "0923f434bbdc653e"
+}

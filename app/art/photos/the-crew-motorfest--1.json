@@ -1,0 +1,62 @@
+{
+  "key": "the-crew-motorfest--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/the-crew-motorfest/1-240.a49730bf.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-crew-motorfest/1-480.90d4a968.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-crew-motorfest/1-720.84a7f5b3.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-crew-motorfest/1-960.3e689c32.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/the-crew-motorfest/1-240.25a202cd.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-crew-motorfest/1-480.7604213d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-crew-motorfest/1-720.4c36b96e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-crew-motorfest/1-960.9b819ef1.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/the-crew-motorfest/1-1067.4e2597b9.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAADwAwCdASoNABQAPxFysFAsJqSisAgBgCIJbACw7Bwc6My3slAEWGEYAMxsQEObW+PXqXRpu3pZTjjbwUqqqRSXaaQ42yr8L5sGEufNYNMMfjEDkwAMe8+ufoBrDB5FqIe0fIp5wfeDi8EboQw3WYAA",
+  "dominant": "#030304",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Ubisoft",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202305/2315/dad1086dcb9113fda41fd623b6ea54f1e181190a53fb9d37.jpg",
+    "page": "https://store.playstation.com/en-ae/product/EP0001-PPSA14723_00-THECREWORL000000"
+  },
+  "input": "c49e35c50a644537"
+}

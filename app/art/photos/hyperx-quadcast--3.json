@@ -1,0 +1,54 @@
+{
+  "key": "hyperx-quadcast--3",
+  "view": "hero",
+  "width": 745,
+  "height": 1512,
+  "aspect": 0.4927,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-quadcast/3-240.e8ccfad6.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-quadcast/3-480.5e090135.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-quadcast/3-720.37060c18.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-quadcast/3-240.f63ea8c2.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-quadcast/3-480.44be342c.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-quadcast/3-720.9df14dc7.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/hyperx-quadcast/3-745.6acd2c3f.png",
+    "width": 745,
+    "height": 1512,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvoAAABXRUJQVlA4WAoAAAAQAAAACQAAEwAAQUxQSGQAAAART6CokSQ1tgr2yXgYEQHfcG4aDZzGtu0q+ydA5uS+xaGSexaHfe6VgEo2U0Dc/f4iIvqfNJ9L6Bph4RaCc9g5g2QH9rbhbYugG5LaCmrBzxd8z1f4xAvUwyv18xVJGukeTiMaVlA4IHAAAABQAwCdASoKABQAPxFwsFAsJiSisAgBgCIJZDuAABLd9l1SoAD+7D0Rb9yM++2mAruCNIqY7CyqpNMRKSE9vNmLbmSn5kuUka5gdHjbvsy0n6dS7f+wGAFHUB/gQGGxcvOL6qxRPJOv1e3vws64xAAA",
+  "dominant": "#292828",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "HyperX",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_quadcast_04_angled_84bb0734-bb08-4866-a15e-8739add42927.jpg",
+    "page": "https://hyperx.com/products/hyperx-quadcast-usb-microphone"
+  },
+  "input": "5e5ffc7d2f7e7550"
+}

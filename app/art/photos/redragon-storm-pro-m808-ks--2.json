@@ -1,0 +1,56 @@
+{
+  "key": "redragon-storm-pro-m808-ks--2",
+  "view": "hero",
+  "width": 1254,
+  "height": 1592,
+  "aspect": 0.7877,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/redragon-storm-pro-m808-ks/2-240.bc2e2bfa.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-storm-pro-m808-ks/2-480.073d2803.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-storm-pro-m808-ks/2-720.d924857a.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-storm-pro-m808-ks/2-960.f7cd8623.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/redragon-storm-pro-m808-ks/2-240.e27b2ea4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-storm-pro-m808-ks/2-480.214b33bd.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-storm-pro-m808-ks/2-720.1f6e9249.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-storm-pro-m808-ks/2-960.be28d534.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRiIBAABXRUJQVlA4WAoAAAAQAAAADwAAEwAAQUxQSG4AAAART6CgbRQ4dipewAIREfD1h5mD09i2XWX/XEHCYb/D4pLCoagDi8xBZtj1/rk9RPR/Aohnm3ow+WsNbNVVcE9gpprBeFAAX7UCXmoHPNUe2KtT4BE8g5faByNgr1bLlLWaf3L4uku+BcyuDaeCEFZQOCCOAAAA0AMAnQEqEAAUAD8RcrBQLCakorAIAYAiCWMAI8AHJdD6LAigUf+QAP7NhCWUw1zEfWNsGXaCF+XOcVJbm3AGbzB582Cn8ZxKSi0Li4V8gZT/GdCdyUDSxk7PN4AlQ6lKJLuNIob+IeLg49+b6wZz7nlB5zqi83+HBytibFJdADPMSvbzScngaWwQ5AAAAA==",
+  "dominant": "#050505",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Redragon",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0012/4957/4961/products/RedragonM808wirelessrgbgamingmouse.png",
+    "page": "https://redragonshop.com/products/wireless-m808-mouse"
+  },
+  "input": "837002fd62f2d663"
+}

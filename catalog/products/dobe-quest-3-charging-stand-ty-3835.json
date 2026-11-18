@@ -1,0 +1,178 @@
+{
+  "slug": "dobe-quest-3-charging-stand-ty-3835",
+  "group": "xbox-vr",
+  "kind": "vr",
+  "platform": "multi",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة شحن DOBE لنظارة Meta Quest 3",
+    "en": "DOBE Charging Stand for Meta Quest 3",
+    "ckb": "بنکەی شەحنی DOBE بۆ Meta Quest 3"
+  },
+  "short": {
+    "ar": "تشحن النظارة وبطاريتي اليدين معاً · إضاءة أثناء الشحن",
+    "en": "Charges the headset and both controller batteries together · lights up while charging",
+    "ckb": "چاویلکە و پاتریی هەردوو دەسک پێکەوە شەحن دەکات · لە کاتی شەحندا ڕووناک دەبێتەوە"
+  },
+  "description": {
+    "ar": "قاعدة من DOBE (الموديل TY-3835) مصممة لنظارة Meta Quest 3: تحمل النظارة واليدين على ذراعين شفافين، وتشحن النظارة وبطاريتي اليدين في الوقت نفسه. يضيء الذراعان أثناء الشحن، ومؤشرات في الأمام تبيّن حالة النظارة والبطاريات. شحن النظارة يأخذ نحو 3 ساعات مع شاحن Meta الأصلي.",
+    "en": "A DOBE stand (model TY-3835) made for the Meta Quest 3: it holds the headset and controllers on two clear arms and charges the headset and both controller batteries at the same time. The arms glow while charging and indicators on the front show the headset and battery status. Charging the headset takes about 3 hours with Meta's original charger.",
+    "ckb": "بنکەیەکی DOBE (مۆدێلی TY-3835) کە بۆ Meta Quest 3 دروستکراوە: چاویلکە و دەسکەکان لەسەر دوو باڵی ڕوون هەڵدەگرێت و چاویلکە و پاتریی هەردوو دەسک هاوکات شەحن دەکات. باڵەکان لە کاتی شەحندا ڕووناک دەبنەوە و نیشاندەرەکانی پێشەوە دۆخی چاویلکە و پاترییەکان پیشان دەدەن. شەحنی چاویلکە نزیکەی 3 کاتژمێر دەخایەنێت بە شەحنکەری ڕەسەنی Meta."
+  },
+  "highlights": [
+    {
+      "ar": "مصممة لـ Meta Quest 3",
+      "en": "Made for the Meta Quest 3",
+      "ckb": "بۆ Meta Quest 3 دروستکراوە"
+    },
+    {
+      "ar": "تشحن النظارة وبطاريتي اليدين معاً",
+      "en": "Charges the headset and both controller batteries at once",
+      "ckb": "چاویلکە و پاتریی هەردوو دەسک پێکەوە شەحن دەکات"
+    },
+    {
+      "ar": "بطاريتان قابلتان للشحن مرفقتان",
+      "en": "Two rechargeable batteries included",
+      "ckb": "دوو پاتریی شەحنکراوە لەگەڵیەتی"
+    },
+    {
+      "ar": "إضاءة ومؤشرات لحالة الشحن",
+      "en": "Glow and status indicators",
+      "ckb": "ڕووناکی و نیشاندەری دۆخی شەحن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "DOBE TY-3835",
+        "en": "DOBE TY-3835",
+        "ckb": "DOBE TY-3835"
+      }
+    },
+    {
+      "key": "charge-time",
+      "label": {
+        "ar": "زمن شحن النظارة",
+        "en": "Headset charging time",
+        "ckb": "کاتی شەحنی چاویلکە"
+      },
+      "value": {
+        "ar": "نحو 3 ساعات مع شاحن Meta الأصلي",
+        "en": "About 3 hours with Meta's original charger",
+        "ckb": "نزیکەی 3 کاتژمێر بە شەحنکەری ڕەسەنی Meta"
+      }
+    },
+    {
+      "key": "input",
+      "label": {
+        "ar": "الإدخال",
+        "en": "Input",
+        "ckb": "تێچوون"
+      },
+      "value": {
+        "ar": "منفذ USB-C",
+        "en": "USB-C port",
+        "ckb": "دەروازەی USB-C"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "متوافق مع",
+        "en": "Compatible with",
+        "ckb": "گونجاوە لەگەڵ"
+      },
+      "value": {
+        "ar": "Meta Quest 3",
+        "en": "Meta Quest 3",
+        "ckb": "Meta Quest 3"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قاعدة الشحن",
+      "en": "Charging stand",
+      "ckb": "بنکەی شەحن"
+    },
+    {
+      "ar": "بطاريتان قابلتان للشحن",
+      "en": "Two rechargeable batteries",
+      "ckb": "دوو پاتریی شەحنکراوە"
+    },
+    {
+      "ar": "كابل USB-C",
+      "en": "USB-C cable",
+      "ckb": "کێبڵی USB-C"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TY3835",
+      "sheetRow": 61,
+      "title": {
+        "ar": "قاعدة شحن DOBE لنظارة Meta Quest 3",
+        "en": "DOBE Charging Stand for Meta Quest 3",
+        "ckb": "بنکەی شەحنی DOBE بۆ Meta Quest 3"
+      },
+      "options": {
+        "color": "White"
+      },
+      "modelNumber": "TY-3835",
+      "isDefault": true
+    }
+  ],
+  "related": [
+    {
+      "slug": "dobe-quest-3-3s-charging-dock-ty-3868",
+      "kind": "alternative"
+    },
+    {
+      "slug": "dobe-quest-charging-kit-ty-3867",
+      "kind": "alternative"
+    },
+    {
+      "slug": "meta-quest-gun-stock",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.amazon.com/dp/B0DBSRYVZV",
+      "title": "DOBE - VR Charging Cradle for Meta/Oculus Quest 3 ... TY-3835 VR charger stand",
+      "publisher": "Amazon (DOBE listing)",
+      "retrieved": "2026-11-18",
+      "supports": "model TY-3835, Quest 3, charges headset and controller batteries, holder, ambient light, USB input, images incl. 3-hour charging time note and box"
+    },
+    {
+      "url": "https://www.games2egypt.com/Product/42093/dobe-charging-dock-station-for-oculus-meta-quest-3",
+      "title": "DOBE Charging Dock Station for Oculus Meta Quest 3 (DOBE TY-3835)",
+      "publisher": "Games2Egypt",
+      "retrieved": "2026-11-18",
+      "supports": "second source: DOBE TY-3835 charger stand for Quest 3"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع DOBE وليس من Meta. بعض البائعين يذكرون أنه يعمل مع Quest 3S، لكن DOBE تذكر Quest 3 فقط.",
+    "en": "Made by DOBE, not by Meta. Some sellers say it also works with the Quest 3S, but DOBE lists the Quest 3 only.",
+    "ckb": "دروستکراوی DOBE ـیە، نەک Meta. هەندێک فرۆشیار دەڵێن لەگەڵ Quest 3S یش کار دەکات، بەڵام DOBE تەنها Quest 3 ناو دەبات."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "No DOBE-run website was found; facts come from DOBE's marketplace listing and retailers",
+      "Battery capacity of the included batteries",
+      "Quest 3S fit (seller claim only)",
+      "Barcode not found",
+      "Clean DOBE photos exist (white product on white, DOBE marketplace listing) but none passes the cut-out/opaque-photo gate, so no image is recorded"
+    ]
+  }
+}

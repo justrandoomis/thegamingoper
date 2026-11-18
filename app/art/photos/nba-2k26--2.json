@@ -1,0 +1,64 @@
+{
+  "key": "nba-2k26--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/nba-2k26/2-240.6ac85c82.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/nba-2k26/2-480.d9cd37df.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/nba-2k26/2-720.b09719cf.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/nba-2k26/2-960.422f5188.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nba-2k26/2-1440.743603eb.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/nba-2k26/2-240.4e34edf6.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/nba-2k26/2-480.4a6fcdfc.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/nba-2k26/2-720.2c35d408.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/nba-2k26/2-960.66b4e8d2.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/nba-2k26/2-1440.dc9f89f8.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAwBACdASoUAAsAPxFysFAsJqSisAgBgCIJQBfnBHn+X1j8Sfnj1xXpkAAA/qN5tOt+ZdqD7fG5tAakPRrCuPFQ7xN2VkvXk68khC4gYIF3oerwZ330K9CDgnSVZLo06hiiyz/rISRf30+7/sNR1nrOmAAAAA==",
+  "dominant": "#060509",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "2K",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202506/2715/c94d467929e203da934b3205d964d4722ad8db477aaa9521.jpg",
+    "page": "https://store.playstation.com/en-gb/product/UP1001-PPSA28420_00-NBA2K26000000000"
+  },
+  "input": "f5034a5d2f8b6829"
+}

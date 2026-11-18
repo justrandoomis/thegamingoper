@@ -76,6 +76,7 @@
       "title": { "ar": "قاعدة الشحن DualSense Charging Station", "en": "DualSense Charging Station", "ckb": "وێستگەی شەحنی DualSense Charging Station" },
       "options": { "color": "White" },
       "modelNumber": "CFI-ZDS1",
+      "sheetRow": 102,
       "isDefault": true,
       "images": ["dualsense-charging-station--1", "dualsense-charging-station--2"]
     }

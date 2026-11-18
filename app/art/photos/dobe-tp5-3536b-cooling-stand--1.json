@@ -1,0 +1,62 @@
+{
+  "key": "dobe-tp5-3536b-cooling-stand--1",
+  "view": "hero",
+  "width": 1372,
+  "height": 1600,
+  "aspect": 0.8575,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dobe-tp5-3536b-cooling-stand/1-240.e12fc407.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-tp5-3536b-cooling-stand/1-480.ee8134dc.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-tp5-3536b-cooling-stand/1-720.ee252447.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dobe-tp5-3536b-cooling-stand/1-960.1684646f.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dobe-tp5-3536b-cooling-stand/1-240.a969299e.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-tp5-3536b-cooling-stand/1-480.dede28a3.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-tp5-3536b-cooling-stand/1-720.04faea7e.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dobe-tp5-3536b-cooling-stand/1-960.d1aa07dc.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/dobe-tp5-3536b-cooling-stand/1-1200.12e5e5f4.jpg",
+    "width": 1200,
+    "height": 1399,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAQBACdASoRABQAPxF6tVOsJ6UiqAqpgCIJZwAAIg81VnrCQO4FHOziFAD+79eUXqvz+t4q8fX5dGkd85YhDKnKbJvcS22kWaAB5dhy1d3L2XyKDcUTANp5TF2s1nTx0epiJ/Mt5eSwtKUHNJ/Nhwt+RYAAAA==",
+  "dominant": "#060607",
+  "transparent": false,
+  "background": "#ffffff",
+  "kind": "hero",
+  "credit": "DOBE",
+  "source": {
+    "url": "https://www.pbtech.com/imgprod/G/A/GAMDBE3536B__6.jpg",
+    "page": "https://www.pbtech.com/product/GAMDBE3536B/DOBE-Vertical-Cooling-Stand-with-Controller-Chargi"
+  },
+  "input": "5b5625468f5a1fb8"
+}

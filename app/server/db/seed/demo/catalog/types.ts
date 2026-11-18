@@ -46,6 +46,11 @@ export type CatalogVariant = {
   /** Keys of the product's images that show this variant. */
   images?: string[];
   notes?: CatalogL10n;
+  /**
+   * The row of the owner's price sheet (OWNER_SHEET_FILE) this variant IS: its price comes from that row and it is a
+   * real stock item (one unit). At most one per variant; every sheet row belongs to exactly one variant of the catalogue.
+   */
+  sheetRow?: number;
 };
 
 export type CatalogGame = {
@@ -86,6 +91,11 @@ export type CatalogProduct = {
   kind: CatalogKind;
   platform: CatalogPlatform;
   brand: string;
+  /**
+   * The store category the product is filed under (a leaf slug of app/server/db/seed/demo/categories.ts). Optional:
+   * without it the kind and platform decide (categoryOf()).
+   */
+  category?: string;
   /** Consoles and handhelds: the device this product IS. */
   deviceModel?: string;
   /** Editions of the same device share a family. */
@@ -115,9 +125,23 @@ export type CatalogProduct = {
   verification: { checkedBy?: string; secondSource?: boolean; unverified?: string[] };
 };
 
+/**
+ * One row of the owner's price sheet (OWNER_SHEET_FILE): the owner's warehouse name for the item and its final price
+ * in whole IQD (null where the sheet has none). Every row is one real item in stock, one unit.
+ */
+export type OwnerSheetRow = { row: number; sheetName: string; sheetPrice?: number | null; priceIqd: number | null; priceBasis?: string; group?: string };
+
+/** The owner's sheet the import reads (relative to the repository root), and the date of its opening stock. */
+export const OWNER_SHEET_FILE = "catalog/owner-sheet-2026-11-18.json";
+export const OWNER_SHEET_DATE = "2026-11-18";
+/** Rows the owner left out of the store: row 233 («كارت جهاز», 1,500 IQD) is not a product. */
+export const OWNER_SHEET_SKIPPED_ROWS: readonly number[] = [233];
+
 /** What the demo seed imports: the researched products, and the photo keys built for them (app/art/photos). */
 export type DemoCatalog = {
   products: readonly CatalogProduct[];
   /** Keys "<slug>--<n>" that have a built photo manifest. */
   photoKeys: ReadonlySet<string>;
+  /** The owner's price sheet (OWNER_SHEET_FILE), when there is one: the rows `variants[].sheetRow` point at. */
+  ownerSheet?: readonly OwnerSheetRow[];
 };

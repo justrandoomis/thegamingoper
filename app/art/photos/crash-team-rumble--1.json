@@ -1,0 +1,62 @@
+{
+  "key": "crash-team-rumble--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/crash-team-rumble/1-240.414dc869.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/crash-team-rumble/1-480.793275e5.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/crash-team-rumble/1-720.5381c647.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/crash-team-rumble/1-960.665a368b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/crash-team-rumble/1-240.f5e07180.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/crash-team-rumble/1-480.8f713dc7.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/crash-team-rumble/1-720.7b79c034.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/crash-team-rumble/1-960.1452be83.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/crash-team-rumble/1-1067.ba79122a.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRqoAAABXRUJQVlA4IJ4AAADwBACdASoNABQAPxFysFAsJqSisAgBgCIJbACdMoR3JoM4CZMwKP5Fbf40LP7gE4AA/sJPhIpzT/4eGsXEXmbd6XljiLTsMDe5bVtkhXTXVFpR3rHu5TJpUTnw9dPStM0MLKnemkJZf0LPu31OgK5ZPvQWZ2VDkMQG+mMHUmp3VJCQPGtY6cIRHUGhsxHFqeXewSSdYjfOXG/dPV2gAA==",
+  "dominant": "#050615",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Activision",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202402/1700/78f65d9e84d885b763499caf7f5cb6fddd74f434b6020a74.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP0002-PPSA06660_00-CTR23STDEDITION1"
+  },
+  "input": "ad4f4153cdde0a73"
+}

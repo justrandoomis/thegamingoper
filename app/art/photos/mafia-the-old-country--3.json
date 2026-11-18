@@ -1,0 +1,64 @@
+{
+  "key": "mafia-the-old-country--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/mafia-the-old-country/3-240.1b846642.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/mafia-the-old-country/3-480.fc0eea1d.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/mafia-the-old-country/3-720.30d88078.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/mafia-the-old-country/3-960.7b73730f.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/mafia-the-old-country/3-1440.5b5dc29d.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/mafia-the-old-country/3-240.22e08afc.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/mafia-the-old-country/3-480.c809e988.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/mafia-the-old-country/3-720.703cfcb0.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/mafia-the-old-country/3-960.73a6ea03.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/mafia-the-old-country/3-1440.22a1fb29.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAACwAwCdASoUAAsAPxF0sFAsJySisAgBgCIJQBYdg8L6b+u/x91sAAD+6SB6nXXukZ4oMxx2mFcwiVJCM+Gv36MWz0zaL1Wl/ljPSAmVbPYfZbYAAAA=",
+  "dominant": "#0a0a0a",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "2K",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202505/0616/4ab90956369c08652df2e9286f791426433566c2551ebced.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP1001-PPSA14299_00-00000NEROPS5SIEE"
+  },
+  "input": "bc4bedeb2046bcbb"
+}

@@ -1,0 +1,46 @@
+{
+  "key": "redragon-gm306--1",
+  "view": "hero",
+  "width": 566,
+  "height": 1030,
+  "aspect": 0.5495,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/redragon-gm306/1-240.24970cb7.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-gm306/1-480.eb0f9f4f.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/redragon-gm306/1-240.7d53f5fb.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-gm306/1-480.4dbd501a.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/redragon-gm306/1-566.c6212995.png",
+    "width": 566,
+    "height": 1030,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRgIBAABXRUJQVlA4WAoAAAAQAAAACgAAEwAAQUxQSF8AAAART6AmACE4KYKNiXsiIpDh6MeF09i2XWX/bANRfoujDUrAfRwypw7QmV0vlx4i+j8B/O3XGXB3AbxcAh9n0GkFKy3gozm8dRrk8NGMzp95wCu4B08t6NUrm6A+3i4jYgBWUDggfAAAALADAJ0BKgsAFAA/EXKwUCwmpKKwCAGAIgljALDsH1GU3pGjk2sAAP6iY+gu+ahO8zzsEmzbNfY3e1VD6xItrUVdd2fEZA4XK/K4+i/WIC8uKn8mtfTTxQNoJ9hehv7hPt1C/n6GJ1u3vZqPwjPDlfvz9I0AXHx7Y7LAAAA=",
+  "dominant": "#464647",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Redragon",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0644/1618/6586/files/ERRXA705_001_11.jpg",
+    "page": "https://dangerfield.com.au/products/gm306-stellar-is-microphone"
+  },
+  "input": "57a1cf6294f4c273"
+}

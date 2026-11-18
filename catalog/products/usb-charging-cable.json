@@ -1,0 +1,80 @@
+{
+  "slug": "usb-charging-cable",
+  "group": "power-cables-storage-misc",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "cables",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "كابل شحن USB للأذرع",
+    "en": "USB Charging Cable for Controllers",
+    "ckb": "کێبڵی بارگاویکردنی USB بۆ دەستەکان"
+  },
+  "short": {
+    "ar": "كابل USB لشحن أذرع التحكم · أحمر أو أبيض",
+    "en": "USB cable for charging controllers · red or white",
+    "ckb": "کێبڵی USB بۆ بارگاویکردنی دەستەکان · سوور یان سپی"
+  },
+  "description": {
+    "ar": "كابل USB بدون علامة تجارية لشحن أذرع التحكم من منفذ USB في الجهاز أو من شاحن الحائط. يتوفر باللونين الأحمر والأبيض. تأكد من نوع منفذ ذراعك قبل الشراء: أذرع PS5 وXbox Series وSwitch 2 تستخدم USB‑C، وأذرع PS4 تستخدم Micro‑USB.",
+    "en": "An unbranded USB cable for charging controllers from a console's USB port or a wall charger. It comes in red and white. Check your controller's port before buying: PS5, Xbox Series and Switch 2 controllers use USB‑C, PS4 controllers use Micro‑USB.",
+    "ckb": "کێبڵێکی USBی بێ مارکە بۆ بارگاویکردنی دەستەکان لە دەرچەی USBی کۆنسۆڵ یان بارگاویکەری دیوار. بە ڕەنگی سوور و سپی هەیە. پێش کڕین جۆری دەرچەی دەستەکەت بزانە: دەستەکانی PS5 و Xbox Series و Switch 2 USB‑C بەکاردەهێنن، دەستەکانی PS4 Micro‑USB."
+  },
+  "highlights": [
+    { "ar": "لونان: أحمر وأبيض", "en": "Two colours: red and white", "ckb": "دوو ڕەنگ: سوور و سپی" },
+    { "ar": "للشحن من منفذ USB في الجهاز أو من شاحن", "en": "Charges from a console USB port or a charger", "ckb": "لە دەرچەی USBی کۆنسۆڵ یان بارگاویکەر بارگاوی دەکات" },
+    { "ar": "تحقّق من نوع منفذ الذراع (USB‑C أو Micro‑USB)", "en": "Check the controller's port type (USB‑C or Micro‑USB)", "ckb": "جۆری دەرچەی دەستەکە بپشکنە (USB‑C یان Micro‑USB)" }
+  ],
+  "specs": [
+    { "key": "color", "label": { "ar": "اللون", "en": "Colour", "ckb": "ڕەنگ" }, "value": { "ar": "أحمر، أبيض", "en": "Red, white", "ckb": "سوور، سپی" } }
+  ],
+  "variants": [
+    {
+      "sku": "USB-CABLE-RED",
+      "sheetRow": 8,
+      "title": { "ar": "أحمر", "en": "Red", "ckb": "سوور" },
+      "options": { "color": "Red" },
+      "isDefault": true
+    },
+    {
+      "sku": "USB-CABLE-WHITE",
+      "sheetRow": 9,
+      "title": { "ar": "أبيض", "en": "White", "ckb": "سپی" },
+      "options": { "color": "White" },
+      "isDefault": false
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    { "slug": "dualsense", "kind": "setup" },
+    { "slug": "xbox-wireless-controller", "kind": "setup" },
+    { "slug": "dualsense-charging-station", "kind": "alternative" }
+  ],
+  "images": [],
+  "sources": [
+    {
+      "url": "https://www.playstation.com/en-us/accessories/dualsense-wireless-controller/",
+      "title": "DualSense wireless controller",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "DualSense charges over a USB Type‑C port"
+    },
+    {
+      "url": "https://www.xbox.com/en-US/accessories/controllers/xbox-wireless-controller",
+      "title": "Xbox Wireless Controller",
+      "publisher": "Microsoft",
+      "retrieved": "2026-11-18",
+      "supports": "Xbox Wireless Controller has a USB‑C port"
+    }
+  ],
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": false,
+    "unverified": [
+      "Connector type at the controller end (owner sheet says only \"CABLE USB RED/WHITE\")",
+      "Length and maker",
+      "No product images: unbranded cable with no maker page"
+    ]
+  }
+}

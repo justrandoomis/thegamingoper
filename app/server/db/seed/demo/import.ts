@@ -28,7 +28,13 @@
  *   variant releaseDate  attributes.variantReleaseDates; a variant that comes out later than its
  *                   product (a new colour, the PS5 version of an Xbox game) is never stocked before
  *                   that date (./pricing.ts demoStock) — the schema has no pre-order flag per variant
- * Prices, costs, deals and stock are not research: ./pricing.ts.
+ *   category        products.category_id: the research's own leaf category, else the kind's (categoryOf)
+ *   variant sheetRow  the owner's sheet (catalog/README.md "Owner's sheet"): with { ownerSheet: true } the variant
+ *                   sells at the sheet price with 1 real unit, its product is real (is_demo 0), the product's other
+ *                   variants are inactive, and products on no row are archived; attributes.sheetRows keeps the
+ *                   owner's own name for each row
+ * Prices, costs, deals and stock are not research: ./pricing.ts (demo), the owner's sheet (real), ./owner.ts (moving
+ * a database that has the demo rows).
  */
 import type { L10n } from "~/lib/locales";
 import type { CompatibilityStatus, LicenseType, MediaFormat, ProductKind, ProductRelationKind, Specs } from "../../schema";
@@ -44,8 +50,11 @@ import {
   type CatalogStatus,
   type CatalogVariant,
   type DemoCatalog,
+  type OwnerSheetRow,
+  OWNER_SHEET_FILE,
+  OWNER_SHEET_SKIPPED_ROWS,
 } from "./catalog/types";
-import { DEMO_CATEGORIES, categoryOf } from "./categories";
+import { DEMO_CATEGORIES, categoryOf, isLeafCategory } from "./categories";
 import { DEMO_DEVICE_MODELS, DEMO_GENERATIONS, DEMO_PLATFORMS, PLATFORM_OF_CATALOG, deviceModelsOfProducts, type DeviceModelSeed, type PlatformSlug } from "./devices";
 import { capacityGb, demoCost, demoDeals, demoPrice, licenseTypeOf, productKindOf, releaseAtOf, type DemoCost } from "./pricing";
 import { productSearchKeywords } from "./search";
@@ -80,6 +89,11 @@ export type ProductAttributes = {
   sources: CatalogProduct["sources"];
   /** What the research could not confirm. */
   unverified: string[];
+  /**
+   * Per SKU, the row of the owner's price sheet the variant is, with the owner's own name for it (his warehouse
+   * shorthand, so staff can match the shelf to the page). Empty for a product that is not on the sheet.
+   */
+  sheetRows: Record<string, { row: number; name: string }>;
 };
 
 /** A store set's attributes: what it is made of (it is not a researched product). */
@@ -104,6 +118,17 @@ export type DemoVariant = {
   trackSerials: boolean;
   /** The researched variant (null for a store set). */
   source: CatalogVariant | null;
+  /** The placeholder price of ./pricing.ts — the trade-in guides and demo used units are worked out from it. */
+  demoPriceIqd: number;
+  /** The owner's sheet row this variant is (null: not on the sheet). */
+  sheetRow: number | null;
+  /** Sold in the store. Off for the variants of a real product that are not on the owner's sheet (or have no price there). */
+  isActive: boolean;
+  /**
+   * Units on hand from the owner's sheet (owner mode, a real product): 1 for a sheet row, 0 for a variant not on it.
+   * null: the demo stock rules (./pricing.ts demoStock).
+   */
+  ownerStock: number | null;
 };
 
 export type DemoProduct = {
@@ -134,6 +159,22 @@ export type DemoProduct = {
   variants: DemoVariant[];
   /** SKUs, model numbers and barcodes, for the search index. */
   codes: string[];
+  /**
+   * `products.status`: "published"; in owner mode a product that is not on the owner's sheet is "archived" (hidden, not
+   * deleted) and a sheet product without any price on the sheet is a "draft".
+   */
+  status: "published" | "archived" | "draft";
+  /** `products.is_demo`: false only for a product on the owner's sheet, in owner mode. */
+  isDemo: boolean;
+};
+
+export type BuildDemoOptions = {
+  /**
+   * The owner's state (npm run db:seed, db:reset, catalog:import and the --sql file): the variants on the owner's sheet
+   * carry its prices and one real unit each, their products are real (is_demo = 0), everything else is archived.
+   * Off (the default, used by the tests of other areas): the whole catalogue is a published demo with placeholder prices.
+   */
+  ownerSheet?: boolean;
 };
 
 export type DemoDeviceModel = DeviceModelSeed & { summary: T3; specs: Specs | null; releasedOn: string | null; artKey: string | null; images: DemoImage[] };
@@ -172,6 +213,12 @@ export function catalogImportProblems(catalog: DemoCatalog): string[] {
   const generations = new Set(DEMO_GENERATIONS.map((generation) => generation.slug));
   const platforms = new Set(DEMO_PLATFORMS.map((platform) => platform.slug));
   const categories = new Set(DEMO_CATEGORIES.map((category) => category.slug));
+  const sheetRows = new Map((catalog.ownerSheet ?? []).map((row) => [row.row, row]));
+  /** Sheet row → the variant that is it ("slug/SKU"). */
+  const rowOwners = new Map<number, string>();
+  for (const row of catalog.ownerSheet ?? []) {
+    if (row.priceIqd !== null && (!Number.isSafeInteger(row.priceIqd) || row.priceIqd <= 0)) problems.push(`${OWNER_SHEET_FILE}: row ${row.row} price ${row.priceIqd} is not a positive whole IQD amount`);
+  }
 
   for (const product of catalog.products) {
     if (bySlug.has(product.slug)) problems.push(`duplicate product slug "${product.slug}"`);
@@ -192,7 +239,9 @@ export function catalogImportProblems(catalog: DemoCatalog): string[] {
       if (!texts.every((text) => typeof text === "string") || texts.every((text) => !String(text).trim())) problems.push(`${at}: qualifier needs ar, en and ckb ("" where the name says it) and words in at least one`);
     }
     try {
-      if (!categories.has(categoryOf(product))) problems.push(`${at}: category "${categoryOf(product)}" does not exist`);
+      const category = categoryOf(product);
+      if (!categories.has(category)) problems.push(`${at}: category "${category}" does not exist`);
+      else if (product.category !== undefined && !isLeafCategory(category)) problems.push(`${at}: category "${category}" has sub-categories: file the product under one of them`);
     } catch (error) {
       problems.push(error instanceof Error ? error.message : String(error));
     }
@@ -211,7 +260,7 @@ export function catalogImportProblems(catalog: DemoCatalog): string[] {
       if (!catalog.photoKeys.has(image.key)) problems.push(`${at}: image ${image.key} has no built photo in app/art/photos (run node scripts/products/images.mjs --only ${product.slug})`);
       if (!isL10n(image.alt)) problems.push(`${at}: image ${image.key} alt is incomplete`);
     }
-    if (product.images.length === 0) problems.push(`${at}: no images`);
+    // A product without a clean official picture has none (the storefront shows its placeholder) — never a made-up one.
     const specKeys = product.specs.map((spec) => spec.key);
     if (new Set(specKeys).size !== specKeys.length) problems.push(`${at}: a spec key appears twice`);
     if (product.variants.filter((variant) => variant.isDefault).length !== 1) problems.push(`${at}: needs exactly one default variant`);
@@ -219,6 +268,16 @@ export function catalogImportProblems(catalog: DemoCatalog): string[] {
       if (skus.has(variant.sku)) problems.push(`${at}: duplicate SKU ${variant.sku}`);
       skus.add(variant.sku);
       for (const key of variant.images ?? []) if (!imageKeys.has(key)) problems.push(`${at}: variant ${variant.sku} shows unknown image ${key}`);
+      if (variant.sheetRow !== undefined) {
+        const row = variant.sheetRow;
+        if (!Number.isSafeInteger(row)) problems.push(`${at}: variant ${variant.sku} sheetRow must be a whole number`);
+        else if (!catalog.ownerSheet) problems.push(`${at}: variant ${variant.sku} names sheet row ${row}, but the owner's sheet (${OWNER_SHEET_FILE}) was not loaded`);
+        else if (!sheetRows.has(row)) problems.push(`${at}: variant ${variant.sku} names sheet row ${row}, which is not in ${OWNER_SHEET_FILE}`);
+        else if (OWNER_SHEET_SKIPPED_ROWS.includes(row)) problems.push(`${at}: variant ${variant.sku} names sheet row ${row}, which the owner left out of the store`);
+        const taken = rowOwners.get(row);
+        if (taken) problems.push(`${at}: sheet row ${row} is already variant ${taken} — every row is exactly one variant`);
+        else rowOwners.set(row, `${product.slug}/${variant.sku}`);
+      }
       if (variant.releaseDate !== undefined) {
         if (!/^\d{4}-\d{2}-\d{2}$/.test(variant.releaseDate) || Number.isNaN(Date.parse(variant.releaseDate))) problems.push(`${at}: variant ${variant.sku} releaseDate must be YYYY-MM-DD`);
         else if (product.releaseDate && variant.releaseDate <= product.releaseDate) problems.push(`${at}: variant ${variant.sku} releaseDate is not after the product's (leave it out)`);
@@ -266,6 +325,12 @@ export function catalogImportProblems(catalog: DemoCatalog): string[] {
   for (const platform of DEMO_PLATFORMS) if (platform.artKey && !catalog.photoKeys.has(platform.artKey)) problems.push(`platform "${platform.slug}": no photo ${platform.artKey}`);
   for (const category of DEMO_CATEGORIES) if (category.artKey && !catalog.photoKeys.has(category.artKey)) problems.push(`category "${category.slug}": no photo ${category.artKey}`);
   return problems;
+}
+
+/** Sheet rows (other than the skipped ones) that no variant of the catalogue is yet — a warning while research runs. */
+export function unmappedSheetRows(catalog: DemoCatalog): OwnerSheetRow[] {
+  const mapped = new Set(catalog.products.flatMap((product) => product.variants.map((variant) => variant.sheetRow)).filter((row): row is number => row !== undefined));
+  return (catalog.ownerSheet ?? []).filter((row) => !OWNER_SHEET_SKIPPED_ROWS.includes(row.row) && !mapped.has(row.row));
 }
 
 export function assertCatalogImportable(catalog: DemoCatalog): void {
@@ -334,14 +399,17 @@ function variantImagesOf(product: CatalogProduct, variant: CatalogVariant): Demo
   return keys.map((key) => imageOf(product, key));
 }
 
-function attributesOf(product: CatalogProduct, deviceModel: string | null): ProductAttributes {
+function attributesOf(product: CatalogProduct, deviceModel: string | null, sheet: ReadonlyMap<number, OwnerSheetRow>): ProductAttributes {
   const variantNotes: Record<string, L10n> = {};
   const variantBarcodes: Record<string, string[]> = {};
   const variantReleaseDates: Record<string, string> = {};
+  const sheetRows: Record<string, { row: number; name: string }> = {};
   for (const variant of product.variants) {
     if (variant.notes) variantNotes[variant.sku] = t3Of(variant.notes);
     if ((variant.barcodes?.length ?? 0) > 1) variantBarcodes[variant.sku] = [...(variant.barcodes ?? [])];
     if (variant.releaseDate) variantReleaseDates[variant.sku] = variant.releaseDate;
+    const row = variant.sheetRow !== undefined ? sheet.get(variant.sheetRow) : undefined;
+    if (row) sheetRows[variant.sku] = { row: row.row, name: row.sheetName };
   }
   return {
     catalogue: { group: product.group, kind: product.kind, platform: product.platform, status: product.status, releaseDate: product.releaseDate ?? null, family: product.family ?? null, deviceModel },
@@ -355,15 +423,26 @@ function attributesOf(product: CatalogProduct, deviceModel: string | null): Prod
     variantReleaseDates,
     sources: product.sources,
     unverified: product.verification.unverified ?? [],
+    sheetRows,
   };
 }
 
-function productOf(product: CatalogProduct, deviceModel: string | null, deals: ReadonlyMap<string, number>): DemoProduct {
+/** The owner's sheet row of a variant, when it has one and the sheet knows it. */
+const sheetRowOf = (variant: CatalogVariant, sheet: ReadonlyMap<number, OwnerSheetRow>): OwnerSheetRow | null => (variant.sheetRow !== undefined ? (sheet.get(variant.sheetRow) ?? null) : null);
+
+/** A product the owner stocks: at least one of its variants is a row of his sheet. */
+export const isOwnerProduct = (product: CatalogProduct): boolean => product.variants.some((variant) => variant.sheetRow !== undefined);
+
+function productOf(product: CatalogProduct, deviceModel: string | null, deals: ReadonlyMap<string, number>, sheet: ReadonlyMap<number, OwnerSheetRow>, ownerMode: boolean): DemoProduct {
   const kind = productKindOf(product.kind);
   const platforms = platformsOf(product);
+  // Owner mode, a product on the sheet: its sheet rows are real items at the owner's price (no "was" price, no
+  // invented cost); its other variants are not sold (inactive, no price, no stock).
+  const real = ownerMode && isOwnerProduct(product);
   const variants = product.variants.map((variant, index): DemoVariant => {
-    const priceIqd = demoPrice(product, variant);
-    return {
+    const demoPriceIqd = demoPrice(product, variant);
+    const row = sheetRowOf(variant, sheet);
+    const base = {
       sku: variant.sku,
       title: t3Of(variant.title),
       options: optionsOf(variant),
@@ -371,14 +450,24 @@ function productOf(product: CatalogProduct, deviceModel: string | null, deals: R
       isDefault: variant.isDefault,
       sort: index,
       images: variantImagesOf(product, variant),
-      priceIqd,
-      compareAtIqd: deals.get(variant.sku) ?? null,
-      cost: demoCost(kind, variant.sku, priceIqd),
       bundle: null,
       trackSerials: kind === "console",
       source: variant,
+      demoPriceIqd,
+      sheetRow: row?.row ?? null,
     };
+    if (!real) {
+      return { ...base, priceIqd: demoPriceIqd, compareAtIqd: deals.get(variant.sku) ?? null, cost: demoCost(kind, variant.sku, demoPriceIqd), isActive: true, ownerStock: null };
+    }
+    const priced = row?.priceIqd ?? null;
+    return { ...base, priceIqd: priced ?? 0, compareAtIqd: null, cost: null, isActive: priced !== null, ownerStock: row ? 1 : 0 };
   });
+  // The default is a variant on sale: when the researched default is not on the sheet, the first one that is.
+  if (real && variants.some((variant) => variant.isActive) && !variants.some((variant) => variant.isDefault && variant.isActive)) {
+    const first = variants.find((variant) => variant.isActive);
+    for (const variant of variants) variant.isDefault = variant === first;
+  }
+  const status: DemoProduct["status"] = !ownerMode ? "published" : !real ? "archived" : variants.some((variant) => variant.isActive) ? "published" : "draft";
   return {
     slug: product.slug,
     source: product,
@@ -392,7 +481,7 @@ function productOf(product: CatalogProduct, deviceModel: string | null, deals: R
     deviceModel,
     category: categoryOf(product),
     specs: specsOf(product),
-    attributes: attributesOf(product, deviceModel),
+    attributes: attributesOf(product, deviceModel, sheet),
     // The store's warranty, not the maker's (see the header): the owner's policy sets it.
     warrantyMonths: null,
     ageRating: ageRatingOf(product),
@@ -404,11 +493,13 @@ function productOf(product: CatalogProduct, deviceModel: string | null, deals: R
     images: product.images.map((image) => ({ key: image.key, alt: t3Of(image.alt) })),
     variants,
     codes: [...new Set(product.variants.flatMap((variant) => [variant.sku, variant.modelNumber, ...(variant.barcodes ?? [])]).filter((code): code is string => !!code))],
+    status,
+    isDemo: !real,
   };
 }
 
 /** A store set: priced 3–5 % below its components bought one by one. */
-function storeSetOf(set: (typeof DEMO_STORE_SETS)[number], catalogue: ReadonlyMap<string, { product: CatalogProduct; variant: CatalogVariant }>, photoAlt: (key: string) => T3): DemoProduct {
+function storeSetOf(set: (typeof DEMO_STORE_SETS)[number], catalogue: ReadonlyMap<string, { product: CatalogProduct; variant: CatalogVariant }>, photoAlt: (key: string) => T3, ownerMode: boolean): DemoProduct {
   const separately = set.components.reduce((sum, component) => {
     const found = catalogue.get(component.sku);
     if (!found) throw new Error(`Demo seed: store set ${set.slug} needs ${component.sku}`);
@@ -452,9 +543,16 @@ function storeSetOf(set: (typeof DEMO_STORE_SETS)[number], catalogue: ReadonlyMa
         bundle: set.components.map((component) => ({ ...component })),
         trackSerials: false,
         source: null,
+        demoPriceIqd: priceIqd,
+        sheetRow: null,
+        isActive: true,
+        ownerStock: null,
       },
     ],
     codes: [set.sku],
+    // The set is a demo of the store-set feature, priced from placeholder prices: not on the owner's sheet.
+    status: ownerMode ? "archived" : "published",
+    isDemo: true,
   };
 }
 
@@ -480,8 +578,10 @@ function deviceModelOf(model: DeviceModelSeed, bySlug: ReadonlyMap<string, Catal
 const compatStatus = (status: CatalogCompatStatus): CompatibilityStatus => (status === "unknown" ? "unverified" : status);
 
 /** Everything the seed writes about the catalogue, derived from it. Throws when the catalogue cannot be imported. */
-export function buildDemoData(catalog: DemoCatalog): DemoData {
+export function buildDemoData(catalog: DemoCatalog, options: BuildDemoOptions = {}): DemoData {
   assertCatalogImportable(catalog);
+  const ownerMode = options.ownerSheet === true;
+  const sheet = new Map((catalog.ownerSheet ?? []).map((row) => [row.row, row]));
   const bySlug = new Map(catalog.products.map((product) => [product.slug, product]));
   const deviceOf = deviceModelsOfProducts(catalog.products);
   const deals = demoDeals(catalog.products);
@@ -494,7 +594,10 @@ export function buildDemoData(catalog: DemoCatalog): DemoData {
     return t3("", "", "");
   };
 
-  const products = [...catalog.products.map((product) => productOf(product, deviceOf.get(product.slug) ?? null, deals)), ...DEMO_STORE_SETS.map((set) => storeSetOf(set, catalogueVariants, photoAlt))];
+  const products = [
+    ...catalog.products.map((product) => productOf(product, deviceOf.get(product.slug) ?? null, deals, sheet, ownerMode)),
+    ...DEMO_STORE_SETS.map((set) => storeSetOf(set, catalogueVariants, photoAlt, ownerMode)),
+  ];
   const variantsBySku = new Map<string, { product: DemoProduct; variant: DemoVariant }>();
   for (const product of products) for (const variant of product.variants) variantsBySku.set(variant.sku, { product, variant });
 

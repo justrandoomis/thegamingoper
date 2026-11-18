@@ -117,8 +117,15 @@ describe("the universe agrees with the store's cards", () => {
     const models = await rows<{ slug: string }>("SELECT dm.slug FROM device_models dm JOIN platforms pl ON pl.id = dm.platform_id WHERE dm.status = 'published' AND pl.is_active = 1");
     expect(models.length).toBeGreaterThan(20);
     for (const { slug } of models) {
-      const viaCards = await listCards(t.db, "ar", { deviceModel: slug, sort: "newest", limit: 60, now: t.now });
-      expect(sorted(universe.filter((row) => row.devices.includes(slug)).map((row) => row.id)), slug).toEqual(sorted(ids(viaCards.items)));
+      // every page of listCards (a PS5 now fits more than one page of 60)
+      const viaCards: ProductCardData[] = [];
+      let cursor: string | null = null;
+      do {
+        const page = await listCards(t.db, "ar", { deviceModel: slug, sort: "newest", limit: 60, now: t.now, ...(cursor ? { cursor } : {}) });
+        viaCards.push(...page.items);
+        cursor = page.nextCursor;
+      } while (cursor);
+      expect(sorted(universe.filter((row) => row.devices.includes(slug)).map((row) => row.id)), slug).toEqual(sorted(ids(viaCards)));
     }
   });
 });
@@ -146,6 +153,7 @@ describe("researched platforms (multi-platform products have no platform_id)", (
       "SELECT id, json_extract(attributes, '$.game.platforms') AS game FROM products WHERE platform_id IS NULL AND status = 'published'",
     );
     expect(multi.length).toBeGreaterThan(0);
+    let onSomeHub = 0;
     const { rows: universe } = await loadListingRows(t.db, { kind: "all" }, t.now);
     const byId = new Map(universe.map((row) => [row.id, row]));
     for (const product of multi) {
@@ -157,13 +165,15 @@ describe("researched platforms (multi-platform products have no platform_id)", (
               product.id,
             )
           ).map((r) => r.slug);
-      expect(expected.length, product.id).toBeGreaterThan(0);
+      // PC-only gear (a keyboard, a chair, a headset researched for Windows) is on no console hub: the pc platform has no hub
+      if (expected.length > 0) onSomeHub++;
       expect(sorted(byId.get(product.id)!.platforms), product.id).toEqual(sorted(expected));
       for (const slug of expected) {
         const hub = await allPages({ scope: { kind: "platform", slug }, filters: { category: null } }, 60);
         expect(ids(hub.items), `${product.id} on ${slug}`).toContain(product.id);
       }
     }
+    expect(onSomeHub).toBeGreaterThan(0);
   });
 
   it("the platform filter on a category uses the same researched platforms", async () => {
@@ -519,8 +529,9 @@ describe("hub data", () => {
       }
     }
     expect(links).toBeGreaterThan(0);
-    // every seeded model has a photo: the menu shows pictures, not the glyph
-    expect(nav.platforms.flatMap((platform) => platform.devices).every((link) => typeof link.artKey === "string" && /^[a-z0-9-]+--\d+$/.test(link.artKey))).toBe(true);
+    // every seeded model has a photo: the menu shows pictures, not the glyph — except the PS4, which the store
+    // lists for its games and accessories only (no PS4 console product, so no researched photo)
+    expect(nav.platforms.flatMap((platform) => platform.devices).filter((link) => link.href !== "/device/ps4").every((link) => typeof link.artKey === "string" && /^[a-z0-9-]+--\d+$/.test(link.artKey))).toBe(true);
     // category and product links carry none (a NavCategory's own artKey is its tile photo)
     for (const platform of nav.platforms) for (const link of [...platform.games, ...platform.accessories, ...platform.consoles]) expect(link.artKey).toBeUndefined();
   });

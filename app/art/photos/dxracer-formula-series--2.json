@@ -1,0 +1,40 @@
+{
+  "key": "dxracer-formula-series--2",
+  "view": "hero",
+  "width": 635,
+  "height": 1093,
+  "aspect": 0.581,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-formula-series/2-240.22908103.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-formula-series/2-480.96f26c88.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-formula-series/2-240.080c3f91.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-formula-series/2-480.19435d80.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRvIAAABXRUJQVlA4WAoAAAAQAAAACwAAEwAAQUxQSHAAAAART6CgjSQ1dR4Ynz8iAvhX53oYcFpte6u8aT6HCTq6NxcJsqhIGKHDBlxN/ebNHSKi/xNA/X5VvCoDXG8Bmo97hiTJ0JQy8NcS+ClD/Ksa2mJbPH4ufiUFNpd1x2BSAGJqGOLx+e+TJofuzkYGFkMtVlA4IFwAAACwAwCdASoMABQAPxFysFAsJqSisAgBgCIJaQAAW+7riKrZrcKwAAD+44SjCc2fmGC8ffI6pFUeVDgEZN7vycuZyyuust4mFfPmqgu65le+inP3Qtzh+J1toAAAAA==",
+  "dominant": "#272728",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "DXRacer",
+  "source": {
+    "url": "https://nex-img.dxracer.cc/20001/8b1bbf2a-b1bd-4fa9-84ed-18f778170185-2.png",
+    "page": "https://www.dxracer.com/products/gaming-chairs/formula?sku=GC/LFD01FBCFBB/N"
+  },
+  "input": "4e97faf7e42cef9a"
+}

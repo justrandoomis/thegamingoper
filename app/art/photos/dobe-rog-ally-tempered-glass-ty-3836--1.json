@@ -1,0 +1,54 @@
+{
+  "key": "dobe-rog-ally-tempered-glass-ty-3836--1",
+  "view": "hero",
+  "width": 853,
+  "height": 541,
+  "aspect": 1.5767,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dobe-rog-ally-tempered-glass-ty-3836/1-240.f6a7fe92.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-rog-ally-tempered-glass-ty-3836/1-480.c28193f4.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-rog-ally-tempered-glass-ty-3836/1-720.b1a525c7.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dobe-rog-ally-tempered-glass-ty-3836/1-240.dce06711.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dobe-rog-ally-tempered-glass-ty-3836/1-480.6aa14764.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dobe-rog-ally-tempered-glass-ty-3836/1-720.81bce517.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/dobe-rog-ally-tempered-glass-ty-3836/1-853.5f06618e.png",
+    "width": 853,
+    "height": 541,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRqIAAABXRUJQVlA4WAoAAAAQAAAAEwAADAAAQUxQSD8AAAARN6CmkRQ4ewKufoASQRARAd5rFooiSWq2TgHxnwxQaDgEYOL8iyBjIKL/E4DFwmNCl3Gmmfi/Qp2p0HhosQgAVlA4IDwAAACQAwCdASoUAA0APxFysVCsJqSisAgBgCIJaQAAW+sXMdYfXTTAAP7eTCtjncSetzScemHC+Rj+AqIAAAA=",
+  "dominant": "#dadada",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "DOBE (Shenzhen Yuyuanxin Electronic Technology)",
+  "source": {
+    "url": "https://www.dobe-game.com/uploads/image/20240321/1711010511.jpg",
+    "page": "https://www.dobe-game.com/en/productshow-52-1260.html"
+  },
+  "input": "84dd8d0bf8f5695b"
+}

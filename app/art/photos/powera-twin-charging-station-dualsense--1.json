@@ -1,0 +1,70 @@
+{
+  "key": "powera-twin-charging-station-dualsense--1",
+  "view": "hero",
+  "width": 1532,
+  "height": 1100,
+  "aspect": 1.3927,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/powera-twin-charging-station-dualsense/1-240.34bcebd6.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/powera-twin-charging-station-dualsense/1-480.9ee01b8f.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/powera-twin-charging-station-dualsense/1-720.a0215ff6.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/powera-twin-charging-station-dualsense/1-960.eae21edc.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/powera-twin-charging-station-dualsense/1-1440.927c45bf.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/powera-twin-charging-station-dualsense/1-240.8d794496.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/powera-twin-charging-station-dualsense/1-480.9756a449.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/powera-twin-charging-station-dualsense/1-720.9e4698c2.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/powera-twin-charging-station-dualsense/1-960.d3141159.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/powera-twin-charging-station-dualsense/1-1440.38ff3bfd.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/powera-twin-charging-station-dualsense/1-1200.5db054b4.png",
+    "width": 1200,
+    "height": 862,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRiIBAABXRUJQVlA4WAoAAAAQAAAAEwAADQAAQUxQSGcAAAART6CgjSQ1dSIYnz8iAvwYjh/ScGLb1rKcX7Nbc6G5zYJEtvQ3IjSIDEDH+31vDhH9nwAA30CdNufX7RAB7786QvHX2+wFl6OQcRVyHsLOkCYcNeM7w7so8dEG7/P/3dF6q+egAw8VAFZQOCCUAAAA8AMAnQEqFAAOAD8RcrBQLCakorAIAYAiCWMAA+XSAn5z+g9sGEuwAAD+tey1cdwQGMgN0SYrZgiO/tQQ7IkMvKTew563X2CDqYbxNji35PHddpLyG7DJCfK6JBI3NOeR39ljzV0+fee8cns/9HIvvxJHR/NXeqcxPnz+gUqAfZwOPUJW4Zuu+PLNV7XfjsIBrgAAAA==",
+  "dominant": "#d4d7db",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "PowerA (ACCO Brands)",
+  "source": {
+    "url": "https://media.accobrands.com/media/1500-1500/578099.jpg",
+    "page": "https://www.powera.com/p/playstation/playstation-5/charging/twin-charging-station-for-dualsense-wireless-controllers-1516956-01"
+  },
+  "input": "a5e9b7823e967b1f"
+}

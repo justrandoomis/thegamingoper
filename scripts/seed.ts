@@ -3,6 +3,11 @@
  *
  *   npm run db:seed                       into the LOCAL development database (the one `npm run dev` uses)
  *   npm run db:seed -- --overwrite        also restore the seed's names, texts, pictures and rules on existing rows
+ *   npm run db:seed -- --demo             the old all-demo catalogue (placeholder prices for everything) instead of
+ *                                         the owner's state (default: the items of catalog/owner-sheet-*.json at their
+ *                                         prices with one unit each, every other product archived)
+ *   npm run db:owner-sheet -- owner.sql   = db:seed -- --overwrite --sql owner.sql: the production file that moves a
+ *                                         database seeded with the old demo catalogue to the owner's state
  *   npm run db:seed -- --sql seed.sql     write the same statements to a plain SQL file instead — the
  *                                         development database is not touched — for
  *                                         npx wrangler d1 execute DB --remote --file seed.sql
@@ -30,19 +35,21 @@ import { getPlatformProxy } from "wrangler";
 import { createDb, type Db } from "~/server/db/drizzle.server";
 import { loadDemoCatalog, seedDemo, type SeedDemoResult } from "~/server/db/seed/demo";
 import { seedDemoDigitalCodes } from "~/server/db/seed/demo/codes";
+import { OWNER_SHEET_FILE } from "~/server/db/seed/demo/catalog/types";
+import { unmappedSheetRows } from "~/server/db/seed/demo/import";
 import { recordWrites, statementToSql, toSqlScript, type RecordedStatement } from "~/server/db/seed/demo/sql";
 import { seedReference } from "~/server/db/seed/reference";
 import { mapDbError } from "~/server/db/tx.server";
 import { PROJECT_ROOT, applyMigrations, dropEverything } from "../tests/helpers/migrations";
 
-const USAGE = "Usage: npm run db:seed [-- --overwrite] [-- --sql <file>]";
+const USAGE = "Usage: npm run db:seed [-- --overwrite] [-- --sql <file>] [-- --demo]";
 
 // ───────────────────────────────────────────────────────────────── arguments
 
-type Args = { overwrite: boolean; sqlFile: string | null };
+type Args = { overwrite: boolean; sqlFile: string | null; demo: boolean };
 
 function parseArgs(argv: string[]): Args {
-  const args: Args = { overwrite: false, sqlFile: null };
+  const args: Args = { overwrite: false, sqlFile: null, demo: false };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--help" || arg === "-h") {
@@ -50,6 +57,8 @@ function parseArgs(argv: string[]): Args {
       process.exit(0);
     } else if (arg === "--overwrite") {
       args.overwrite = true;
+    } else if (arg === "--demo") {
+      args.demo = true;
     } else if (arg === "--sql") {
       const file = argv[++i];
       if (!file || file.startsWith("--")) fail(`--sql needs a file name. ${USAGE}`);
@@ -92,7 +101,7 @@ function findRolesSeed(module: Record<string, unknown>): RolesSeed | null {
 const summary = (value: unknown) => (value === undefined ? "" : ` ${JSON.stringify(value)}`);
 
 /** Runs reference → roles → demo. Returns the demo result, or null when a step failed (already reported). */
-async function runSeeds(db: Db, now: number, overwrite: boolean): Promise<SeedDemoResult | null> {
+async function runSeeds(db: Db, now: number, overwrite: boolean, demoOnly = false): Promise<SeedDemoResult | null> {
   let step = "Reference data";
   try {
     const reference = await seedReference(db, now);
@@ -117,7 +126,11 @@ async function runSeeds(db: Db, now: number, overwrite: boolean): Promise<SeedDe
     step = "Demo data";
     const catalog = loadDemoCatalog();
     console.log(`Catalogue: ${catalog.products.length} researched products (catalog/products), ${catalog.photoKeys.size} built photos (app/art/photos).`);
-    const demo = await seedDemo(db, now, { overwrite, catalog });
+    if (!demoOnly) {
+      const unmapped = unmappedSheetRows(catalog);
+      console.log(`Owner's sheet: ${catalog.ownerSheet?.length ?? 0} rows (${OWNER_SHEET_FILE}); ${unmapped.length} not yet a catalogue variant${unmapped.length > 0 ? `: rows ${unmapped.map((row) => row.row).join(", ")}` : ""}.`);
+    }
+    const demo = await seedDemo(db, now, { overwrite, catalog, ownerSheet: !demoOnly });
     const defined = Object.values(demo.rows).reduce((sum, count) => sum + count, 0);
     const changed = Object.values(demo.changed).reduce((sum, count) => sum + count, 0);
     console.log(`Demo data: ${defined} rows defined in ${Object.keys(demo.rows).length} tables, ${changed} written by this run (${demo.statements} statements, one transaction${overwrite ? ", overwrite" : ""}).`);
@@ -176,7 +189,7 @@ async function seedLocal(args: Args): Promise<number> {
       return 1;
     }
     const now = Date.now();
-    const demo = await runSeeds(createDb(d1), now, args.overwrite);
+    const demo = await runSeeds(createDb(d1), now, args.overwrite, args.demo);
     if (!demo) return 1;
     // Demo digital codes need this environment's DATA_KEY (they are stored encrypted), so they are not part of the
     // replayable seed above and never of the --sql file: insert-if-missing, so a second run writes nothing.
@@ -204,7 +217,7 @@ async function writeSqlFile(args: Args & { sqlFile: string }): Promise<number> {
 
     const recorded: RecordedStatement[] = [];
     const now = Date.now();
-    const demo = await runSeeds(createDb(recordWrites(d1, recorded)), now, args.overwrite);
+    const demo = await runSeeds(createDb(recordWrites(d1, recorded)), now, args.overwrite, args.demo);
     if (!demo) return 1;
     const expected = await countRows(d1);
 
@@ -227,8 +240,10 @@ async function writeSqlFile(args: Args & { sqlFile: string }): Promise<number> {
     const script = toSqlScript(recorded, [
       "TamTam Games — reference data, roles (when the roles seed exists) and the DEMO catalogue.",
       `Generated ${new Date(now).toISOString()} by: npm run db:seed -- --sql ${relative}${args.overwrite ? " --overwrite" : ""}`,
-      `${statements.length} statements. ${args.overwrite ? "Existing rows are refreshed (descriptive content only; never prices, costs or stock)." : 'Each one is "insert if missing": rows that already exist are left as they are.'}`,
-      "DEMO data: prices, stock and the USD rate are placeholders, flagged is_demo = 1. No accounts, customers or orders.",
+      `${statements.length} statements. ${args.overwrite ? "Existing rows are refreshed (descriptive content only)." : 'Inserts are "insert if missing": rows that already exist are left as they are.'}`,
+      args.demo
+        ? "DEMO data: prices, stock and the USD rate are placeholders, flagged is_demo = 1. No accounts, customers or orders."
+        : `Owner's sheet (${OWNER_SHEET_FILE}): its items at its prices, 1 unit each (is_demo = 0); every other product archived. Existing demo rows are moved to that state only where the admin never touched them (catalog/README.md "Owner's sheet"). Running it twice is harmless. No accounts, customers or orders.`,
       "Apply AFTER the migrations:",
       "  npx wrangler d1 migrations apply DB --remote",
       `  npx wrangler d1 execute DB --remote --file ${relative}`,

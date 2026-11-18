@@ -1,0 +1,83 @@
+{
+  "slug": "dobe-quest-3s-cooling-fan-ty-5805",
+  "group": "xbox-vr",
+  "kind": "vr",
+  "platform": "multi",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "مروحة تبريد DOBE لنظارة Meta Quest 3S",
+    "en": "DOBE Cooling Fan Mask for Meta Quest 3S",
+    "ckb": "پانکەی ساردکەرەوەی DOBE بۆ Meta Quest 3S"
+  },
+  "short": {
+    "ar": "مروحتان صغيرتان بسرعات قابلة للتعديل · تخفف الحرارة وضباب العدسات",
+    "en": "Two small fans with adjustable speed · eases heat and lens fogging",
+    "ckb": "دوو پانکەی بچووک بە خێرایی گۆڕاو · گەرما و تەمی عەدەسە کەم دەکاتەوە"
+  },
+  "description": {
+    "ar": "إطار وجه بمروحتين صغيرتين من DOBE (الموديل TY-5805) يُركّب على نظارة Meta Quest 3S. يحرّك الهواء داخل النظارة ليخفف الحرارة والتعرّق وضباب العدسات في الجلسات الطويلة والألعاب الرياضية، وسرعة المروحتين قابلة للتعديل. يعمل ببطارية مدمجة.",
+    "en": "A face frame with two small fans from DOBE (model TY-5805) that fits the Meta Quest 3S. It moves air inside the headset to ease heat, sweat and lens fogging during long sessions and fitness games, and the fan speed is adjustable. It runs on a built-in battery.",
+    "ckb": "چوارچێوەیەکی ڕوخسار بە دوو پانکەی بچووک لە DOBE (مۆدێلی TY-5805) کە لەسەر Meta Quest 3S دادەنرێت. هەوا لەناو چاویلکەکەدا دەجووڵێنێت بۆ کەمکردنەوەی گەرما، ئارەقە و تەمی عەدەسە لە دانیشتنە درێژەکان و یارییە وەرزشییەکاندا، و خێرایی پانکەکان دەگۆڕدرێت. بە پاترییەکی ناوەکی کار دەکات."
+  },
+  "highlights": [
+    { "ar": "مروحتان صغيرتان بسرعات قابلة للتعديل", "en": "Two micro fans with adjustable speed", "ckb": "دوو پانکەی بچووک بە خێرایی گۆڕاو" },
+    { "ar": "تخفف ضباب العدسات والحرارة", "en": "Eases lens fogging and heat", "ckb": "تەمی عەدەسە و گەرما کەم دەکاتەوە" },
+    { "ar": "بطارية مدمجة تدوم نحو 2–8 ساعات حسب السرعة", "en": "Built-in battery, about 2–8 hours depending on speed", "ckb": "پاتریی ناوەکی، نزیکەی 2–8 کاتژمێر بەپێی خێرایی" },
+    { "ar": "لـ Meta Quest 3S فقط", "en": "For the Meta Quest 3S only", "ckb": "تەنها بۆ Meta Quest 3S" }
+  ],
+  "specs": [
+    { "key": "model", "label": { "ar": "الموديل", "en": "Model", "ckb": "مۆدێل" }, "value": { "ar": "DOBE TY-5805", "en": "DOBE TY-5805", "ckb": "DOBE TY-5805" } },
+    { "key": "battery", "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" }, "value": { "ar": "مدمجة، نحو 2–8 ساعات", "en": "Built-in, about 2–8 hours", "ckb": "ناوەکی، نزیکەی 2–8 کاتژمێر" } },
+    { "key": "compatibility", "label": { "ar": "متوافق مع", "en": "Compatible with", "ckb": "گونجاوە لەگەڵ" }, "value": { "ar": "Meta Quest 3S", "en": "Meta Quest 3S", "ckb": "Meta Quest 3S" } }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TY5805",
+      "sheetRow": 62,
+      "title": {
+        "ar": "مروحة تبريد DOBE لنظارة Meta Quest 3S",
+        "en": "DOBE Cooling Fan Mask for Meta Quest 3S",
+        "ckb": "پانکەی ساردکەرەوەی DOBE بۆ Meta Quest 3S"
+      },
+      "options": { "color": "Black" },
+      "modelNumber": "TY-5805",
+      "isDefault": true
+    }
+  ],
+  "related": [
+    { "slug": "dobe-quest-3-3s-charging-dock-ty-3868", "kind": "accessory" },
+    { "slug": "dobe-quest-silicone-cover", "kind": "accessory" }
+  ],
+  "sources": [
+    {
+      "url": "https://ecommerce.datablitz.com.ph/products/dobe-vr-ventilation-cooling-fan-mask-for-meta-quest-3s-ty-5805",
+      "title": "Dobe VR Ventilation Cooling Fan Mask for Meta Quest 3S TY-5805",
+      "publisher": "DataBlitz",
+      "retrieved": "2026-11-18",
+      "supports": "model TY-5805, Quest 3S, dual micro fans with adjustable speed, battery about 2-8 hours, headset not included"
+    },
+    {
+      "url": "https://brandwiki.lazada.sg/dobe/",
+      "title": "About DOBE",
+      "publisher": "Lazada Brand Wiki",
+      "retrieved": "2026-11-18",
+      "supports": "DOBE is a Shenzhen maker of game-console accessories"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع DOBE وليس من Meta. النظارة غير مرفقة. إطار وجه Quest 3S يختلف عن Quest 3، فلا يناسب Quest 3.",
+    "en": "Made by DOBE, not by Meta. The headset is not included. The Quest 3S facial interface differs from the Quest 3's, so it does not fit the Quest 3.",
+    "ckb": "دروستکراوی DOBE ـیە، نەک Meta. چاویلکەکە لەگەڵی نییە. چوارچێوەی ڕوخساری Quest 3S جیاوازە لە هی Quest 3، بۆیە بۆ Quest 3 ناگونجێت."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "Which DOBE fan the shop's 'OCULUS FAN DOBE' is: TY-5805 (Quest 3S) is the only DOBE Quest fan found; a Quest 2 or Quest 3 model may exist",
+      "Only one retailer page describes the product; no DOBE-run page found",
+      "Number of speed levels, charging port and box contents",
+      "No clean product image could be downloaded (retailer blocked automated requests)"
+    ]
+  }
+}

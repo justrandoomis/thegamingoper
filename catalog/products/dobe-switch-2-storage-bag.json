@@ -1,0 +1,127 @@
+{
+  "slug": "dobe-switch-2-storage-bag",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "حقيبة تخزين DOBE لجهاز Nintendo Switch 2",
+    "en": "DOBE Storage Bag for Nintendo Switch 2",
+    "ckb": "جانتای هەڵگرتنی DOBE بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "حقيبة حمل من DOBE لـ Switch 2 · رمز 2136",
+    "en": "DOBE carrying bag for Switch 2 · code 2136",
+    "ckb": "جانتای DOBE بۆ Switch 2 · کۆد 2136"
+  },
+  "description": {
+    "ar": "حقيبة تخزين وحمل من DOBE مصنوعة لـ Nintendo Switch 2، تحمي الجهاز في التنقل ولها مكان للملحقات. رمز المورّد 2136.",
+    "en": "A DOBE storage and carrying bag made for Nintendo Switch 2 that protects the console on the go and has room for accessories. Supplier code 2136.",
+    "ckb": "جانتایەکی هەڵگرتنی DOBE بۆ Nintendo Switch 2 کە ئامێرەکە لە گەشتدا دەپارێزێت و شوێنی پاشکۆی هەیە. کۆدی دابینکەر 2136."
+  },
+  "highlights": [
+    {
+      "ar": "من DOBE، صانع ملحقات ألعاب معروف",
+      "en": "By DOBE, a well-known accessory maker",
+      "ckb": "لە DOBE، دروستکەرێکی ناسراوی پاشکۆ"
+    },
+    {
+      "ar": "مقاس Nintendo Switch 2",
+      "en": "Sized for Nintendo Switch 2",
+      "ckb": "بە قەبارەی Nintendo Switch 2"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Nintendo Switch 2",
+        "en": "Nintendo Switch 2",
+        "ckb": "Nintendo Switch 2"
+      }
+    },
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "رمز المورّد 2136",
+        "en": "Supplier code 2136",
+        "ckb": "کۆدی دابینکەر 2136"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-NS2-BAG-2136",
+      "sheetRow": 183,
+      "title": {
+        "ar": "حقيبة تخزين DOBE لجهاز Nintendo Switch 2",
+        "en": "DOBE Storage Bag for Nintendo Switch 2",
+        "ckb": "جانتای هەڵگرتنی DOBE بۆ Nintendo Switch 2"
+      },
+      "options": {
+        "code": "2136"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "unverified",
+      "note": {
+        "ar": "حقيبة لـ Switch 2",
+        "en": "Bag for Switch 2",
+        "ckb": "جانتا بۆ Switch 2"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "switch-2-storage-bag",
+      "kind": "alternative"
+    },
+    {
+      "slug": "nintendo-switch-2-carrying-case",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://castlemaniagames.com/products/dobe-slim-storage-bag-for-switch-2",
+      "title": "DOBE Slim Storage Bag for Switch 2",
+      "publisher": "Castlemania Games",
+      "retrieved": "2026-11-18",
+      "supports": "DOBE makes storage bags for Switch 2"
+    },
+    {
+      "url": "https://www.pbtech.com/product/GAMDBE3176/DOBE-Nintendo-Switch-2-Carrying-Storage-Case---Gre",
+      "title": "DOBE Nintendo Switch 2 Carrying Storage Case",
+      "publisher": "PB Tech",
+      "retrieved": "2026-11-18",
+      "supports": "second retailer for DOBE Switch 2 bags (TNS model codes)"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "DOBE model behind code 2136 (no listing found)",
+      "Size, colour and game-card slots"
+    ]
+  }
+}

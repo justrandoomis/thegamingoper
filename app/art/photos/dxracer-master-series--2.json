@@ -1,0 +1,40 @@
+{
+  "key": "dxracer-master-series--2",
+  "view": "hero",
+  "width": 625,
+  "height": 1063,
+  "aspect": 0.588,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-master-series/2-240.146f97c7.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-master-series/2-480.1758bf52.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dxracer-master-series/2-240.14eb5782.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dxracer-master-series/2-480.9874e21c.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRvwAAABXRUJQVlA4WAoAAAAQAAAACwAAEwAAQUxQSHMAAAART6CobSQ3txh637vfRkSAXCnen4YT27aW5fzWIVHd2peQRqXpANwaiwTVYQJy5ssgIvqf/F9PEfA1g6IWoK8DCNqDorYgaA+Kui9FQc+XJOh+yEzf32T4U1OOn10N8rMEGK6mEeHxerWZJYfoSI5hlOMfAFZQOCBiAAAAkAMAnQEqDAAUAD8RcrBQLCakorAIAYAiCWkAAEpoauIRNUysAAD+pn7/6rCrwE4KirlCxuoRFxiamf3oCmxDvWqS9z1eKqrXf/vZFSvX9PJdLsRH9eWAdzefOW/zUN04AAA=",
+  "dominant": "#282929",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "DXRacer",
+  "source": {
+    "url": "https://nex-img.dxracer.cc/20001/76660160-5081-4595-82de-db6d79e93c3e-2.png",
+    "page": "https://www.dxracer.com/products/gaming-chairs/master?sku=GC/XLMF24LTA/N"
+  },
+  "input": "68dd505878622ded"
+}

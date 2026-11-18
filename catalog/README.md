@@ -2,7 +2,7 @@
 
 One JSON file per product in `catalog/products/<slug>.json`, researched from official manufacturer and publisher pages (checked against a second source), as of the `retrieved` date in each source entry. This folder is the single source of truth for the demo catalogue: the demo seed (`npm run db:seed`, `npm run db:reset`) imports it into the database (see Import below), and `npm run catalog:images` turns the downloaded images into the responsive files the storefront serves.
 
-**Prices are not researched.** Shop prices come later from the owner's price file; until then the importer assigns random placeholder prices flagged `is_demo`.
+**Prices are not researched.** They come from the owner's price sheet, `catalog/owner-sheet-2026-11-18.json` (one row per real stock item: the owner's warehouse name, the final price in IQD): a variant names the row it IS with `sheetRow` (see "Owner's sheet" below). Products that are on no row are the old demo catalogue: the store keeps them archived (hidden, not deleted).
 
 ## Rules
 
@@ -13,7 +13,7 @@ One JSON file per product in `catalog/products/<slug>.json`, researched from off
 - **Variant titles are the option value only** (design v2 spec §4.13): «لجهاز PS5» / "PS5 edition" / «بۆ PS5», «النسخة الدولية» / "International model", «أبيض», "512GB · Robot White" — carts and order lines print them under the product's name, so a title never repeats that name, and an English one starts with a capital. A product with one version that has nothing to choose keeps its own name as the title (no option line is printed then).
 - **Three languages.** Every `L10n` object has `ar`, `en` and `ckb` (Kurdish Sorani, Arabic script). Natural, plain shop language — no machine-literal phrasing.
 - **What customers in Iraq need to know** goes into `highlights`/`specs`/`notes`: storage and what it holds, what is in the box, which devices it works with, online requirements (Nintendo Switch Online, PlayStation Plus, Game Pass), region or account restrictions (gift cards, digital codes), Arabic language support in games (interface / subtitles / voice — say "unknown" if the official page does not state it), whether a Switch 2 physical game is a full cartridge or a **Game-Key Card** (download required), storage size of a game, age rating (PEGI where available, else ESRB), players / co-op.
-- **Images.** 2–6 per product from official sources (manufacturer site, official store, publisher press kit). Front/hero first, then angles, what's in the box, details; for games the front box art (pack shot) first — the 2:3 cover (the store "Poster" / "PORTRAIT_BANNER" art), never square or 16:9 key art (design v2 spec §7.6); for gift cards the card face (kind `hero`; a printed face that fills its frame is accepted by the opaque-photo gate in `scripts/products/image-options.json`). No retailer watermarks, no third-party logos added, no lifestyle photos of people as the first image. Prefer transparent PNG/WebP, at least 1000 px on the long side. Save originals to `.cache/product-images/<slug>/<n>.<ext>` (git-ignored; the `sourceUrl` lets anyone re-download) and record each in `images`.
+- **Images.** 1–6 per product from official sources (manufacturer site, official store, publisher press kit). Front/hero first, then angles, what's in the box, details; for games the front box art (pack shot) first — the 2:3 cover (the store "Poster" / "PORTRAIT_BANNER" art), never square or 16:9 key art (design v2 spec §7.6); for gift cards the card face (kind `hero`; a printed face that fills its frame is accepted by the opaque-photo gate in `scripts/products/image-options.json`). No retailer watermarks, no third-party logos added, no lifestyle photos of people as the first image. Prefer transparent PNG/WebP, at least 1000 px on the long side. Save originals to `.cache/product-images/<slug>/<n>.<ext>` (git-ignored; the `sourceUrl` lets anyone re-download) and record each in `images`. When no clean product picture exists (a cheap generic item), leave `images` out — never a picture of something else; the storefront shows its placeholder and the validator only warns.
 - **Image rights.** These are manufacturer and publisher marketing images, used to sell their genuine products; record the owner in `credit`. The store owner must confirm usage rights with their distributors before going live.
 
 ## Shape
@@ -25,6 +25,7 @@ One JSON file per product in `catalog/products/<slug>.json`, researched from off
   "kind": "console",                           // console | handheld_pc | game | controller | headset | storage | accessory | vr | digital
   "platform": "nintendo",                      // nintendo | playstation | xbox | pc_handheld | multi
   "brand": "Nintendo",
+  "category": "gaming-chairs",              // optional: a LEAF category slug of app/server/db/seed/demo/categories.ts; default by kind/platform (categoryOf)
   "deviceModel": "switch-2",                   // consoles / handhelds: the device this product IS (device hubs, compatibility targets)
   "family": "switch-2",                        // products that are editions of the same device share a family
   "status": "available",
@@ -47,6 +48,7 @@ One JSON file per product in `catalog/products/<slug>.json`, researched from off
       "barcodes": ["0045496884963"],           // EAN/UPC only when found on an official or major-retailer page; region noted in notes
       "releaseDate": "2027-02-04",             // optional, only when THIS variant comes out after the product (a new colour, a later platform version); never on the default variant
       "isDefault": true,
+      "sheetRow": 54,                         // optional: the owner's sheet row this variant IS (its price, 1 unit in stock)
       "images": ["nintendo-switch-2--1", "nintendo-switch-2--2"],
       "notes": { "ar": "…", "en": "…", "ckb": "…" }   // optional
     }
@@ -85,13 +87,13 @@ One JSON file per product in `catalog/products/<slug>.json`, researched from off
 }
 ```
 
-Validate with `node scripts/products/validate.mjs [slug…]` — it checks required fields, the three languages, slugs, SKUs, image files and sources, that a Latin-first name carries no Arabic-script words (and the `qualifier` shape), that names and variant titles keep their Latin tokens whole (U+2011, never a plain hyphen inside a token), and that no variant title repeats the product's name or starts an English value with a small letter.
+Validate with `node scripts/products/validate.mjs [slug…]` — it checks required fields, the three languages, slugs, SKUs, image files and sources, that a Latin-first name carries no Arabic-script words (and the `qualifier` shape), that names and variant titles keep their Latin tokens whole (U+2011, never a plain hyphen inside a token), and that no variant title repeats the product's name or starts an English value with a small letter. It also checks that a `category` is a known leaf category, that every compatibility and `game.platforms` key is a device of `devices.ts`, and that each `sheetRow` is a row of the owner's sheet, not row 233, and claimed by ONE variant in the whole catalogue (also when only some slugs are checked); a full run warns about the sheet rows no variant maps yet. A product without images is a warning, not an error.
 
 ## Import
 
 The demo seed imports this folder directly — there is no generated copy to keep in step. `npm run db:seed`, `npm run db:reset` and the production path `npm run db:seed -- --sql <file>` all read `catalog/products/*.json` at run time, in Node (`app/server/db/seed/demo/catalog/load.ts`); nothing under `catalog/` is imported by a module, so none of it reaches the Worker or the client bundle (`tests/seed.test.ts` checks that no module under `app/` imports it).
 
-After editing a file: `npm run catalog:validate`; if images changed, `node scripts/products/images.mjs --only <slug>`; then `npm run db:seed -- --overwrite` (refreshes names, texts, specs, pictures, compatibility and relations of existing rows; never prices, costs or stock) or `npm run db:reset`. Overwrite does not delete: an image, rule or relation you removed stays until `db:reset`. (A `catalog:import` npm script for that overwrite seed is requested from the lead; it does not exist yet.)
+After editing a file: `npm run catalog:validate`; if images changed, `node scripts/products/images.mjs --only <slug>`; then `npm run catalog:import` (= `db:seed -- --overwrite`: refreshes names, texts, specs, pictures, categories, compatibility and relations of existing rows, and applies the owner's sheet as described below) or `npm run db:reset`. Overwrite does not delete: an image, rule or relation you removed stays until `db:reset`.
 
 Where the facts go (`app/server/db/seed/demo/import.ts`):
 
@@ -111,7 +113,48 @@ Where the facts go (`app/server/db/seed/demo/import.ts`):
 | `images` | `media` rows: `art_key` = the photo key, `kind` image, `is_illustration` 0, alt as researched; a variant with its own set of pictures gets its own rows |
 | `compatibility` | `compatibility_rules` on the product, status exactly as researched (`unknown` → `unverified`, never better), `source` = the URL |
 | `related` | `product_relations` |
+| `category` | `products.category_id` (else the kind's default, `categories.ts` `categoryOf`) |
+| variant `sheetRow` | the variant's price, stock and `is_active`, the product's `is_demo` and `status` (see "Owner's sheet"); `attributes.sheetRows[sku] = { row, name }` keeps the owner's own name for the item |
 
-The seed refuses to run, with a message naming the file, when the catalogue cannot be placed: a device key (`deviceModel`, `family`, a compatibility or `game.platforms` key) that is not in `app/server/db/seed/demo/devices.ts` — add the device there (name, platform, generation, device kind, the product that is that device) —, an image without a built photo, a duplicate SKU or slug, a product without exactly one default variant, a related slug that does not exist, a variant `releaseDate` that is malformed, not after the product's, or on the default variant.
+The seed refuses to run, with a message naming the file, when the catalogue cannot be placed: a device key (`deviceModel`, `family`, a compatibility or `game.platforms` key) that is not in `app/server/db/seed/demo/devices.ts` — add the device there (name, platform, generation, device kind, the product that is that device) —, an image without a built photo, a duplicate SKU or slug, a product without exactly one default variant, a related slug that does not exist, a variant `releaseDate` that is malformed, not after the product's, or on the default variant, a `category` that is unknown or has sub-categories, a `sheetRow` that is not a row of the sheet, is row 233, or is claimed by two variants.
 
 What the import adds that research does not cover is demo data (`app/server/db/seed/demo/pricing.ts`, `used.ts`, `sets.ts`): placeholder prices (deterministic per SKU), costs (70–85 % of the price; digital codes 92–96 %, since they sell at face value), a handful of previous prices (only on items sold for at least 90 days), stock, serials, six used units, trade-in guides, and one store set made of two catalogue items. Products and used units carry `is_demo = 1`; prices, costs and stock have no such column and belong to those demo products; stock movements and serials say "DEMO" in their text. A digital variant has 5 units on hand (the last 2 of a discontinued card, `pricing.ts` `demoCodeCount`) and as many DEMO codes ("DEMO-<SKU>-0001", `is_demo = 1`, encrypted with the environment's `DATA_KEY` exactly as module 13 stores an import): `seedDemoDigitalCodes(db, now, { dataKey })` in `app/server/db/seed/demo/codes.ts`, run by the local seed with the local key — never part of the SQL file, whose database has another key.
+
+## Owner's sheet
+
+`catalog/owner-sheet-2026-11-18.json` is the owner's stock and price list: one object per row `{ row, sheetName, priceIqd, priceBasis }`, prices final and in whole IQD (row 173 has none; row 233 «كارت جهاز» is not a product and is left out). Each row is ONE variant of the catalogue (`variants[].sheetRow`); rows that are one product in several colours or editions are variants of one product.
+
+What the scripts (`npm run db:seed`, `db:reset`, `catalog:import`, `db:owner-sheet`) make of it — `buildDemoData(catalog, { ownerSheet: true })` in `app/server/db/seed/demo/import.ts`, `seedDemo(db, now, { ownerSheet: true })`:
+
+| | Database |
+|---|---|
+| a variant with a priced `sheetRow` | `price_iqd` = the sheet price, no "was" price, active; 1 unit at the main location, its opening movement `ref_type = 'owner_sheet'`, «رصيد افتتاحي من جرد المالك 2026-11-18 (الصف n)», no unit cost |
+| its product | `is_demo = 0`, published |
+| a variant of that product NOT on the sheet | inactive (`is_active = 0`), price 0, no stock — not shown, not buyable |
+| the sheet row without a price (173) | its variant inactive at price 0 with its 1 unit; a product with no priced row is a `draft` |
+| every product on no row (the old demo catalogue) and the demo store set | `status = 'archived'` (hidden, not deleted), still `is_demo = 1` with its demo prices and stock |
+| cost | none: no `variant_costs` row, no cost layer, no unit cost on the movement — the sheet has no costs and none is invented; the owner enters them (purchasing/receiving or the pricing screen). Everything costed by margin (reports, margin floors) treats these items as "no cost yet". |
+| serials | none: a console from the sheet (Switch OLED, Switch 2 bundle…) is serial-tracked, and staff scan its real serial in (inventory) before it can be shipped |
+| reorder point | none (the sheet sets no reorder policy) |
+| demo used units | not listed (`status = 'ready'`); trade-in price guides stay as they were (demo figures — the owner's buy prices are not in the sheet) |
+
+`npm run db:seed -- --demo` (local only) still builds the old all-demo catalogue, and the tests of other areas seed without `ownerSheet`.
+
+### Production
+
+Production D1 already holds the old demo rows ("insert if missing"). One command writes the SQL that moves it to the owner's state without touching orders, customers or staff:
+
+```sh
+npm run db:owner-sheet -- owner.sql                        # = db:seed -- --overwrite --sql owner.sql (local, in memory; checked by replay)
+npx wrangler d1 migrations apply DB --remote               # first, if migrations are pending
+npx wrangler d1 execute DB --remote --file owner.sql
+```
+
+The file holds the usual seed (new categories, the `ps4` device, new products, variants, pictures, relations, stock rows — all "insert if missing" or, with overwrite, a refresh of descriptive content), plus the statements of `app/server/db/seed/demo/owner.ts`, placed before the inserts, which move rows that already exist:
+
+- **Prices and on-sale flags** of every variant of a sheet product: only while nobody touched it — no `price_changes` row for the variant (every admin price change writes one) and the product never saved in the admin (`products.updated_by IS NULL`).
+- **Stock**: the main location's level is set to the sheet's (1, or 0 for a variant not on the sheet) by ONE appended `adjust` movement with a stable id (`smv_sheet_<sku>` / `smv_sheet_out_<sku>`) whose delta is the difference, and `on_hand` becomes the sum of the variant's movements — only while every movement of the variant is a seed's (`ref_type` `demo_seed` or `owner_sheet`) and nothing is reserved. A sale, receipt, count or adjustment by staff writes a movement of its own, and from then on the seed never touches that level again. The opening movement of a new database is written only for a variant with no movement at all. So running the file twice (or the seed again) never doubles stock; the fake DEMO serials of a moved level are set aside (`scrapped`, with a note), and the demo cost (seed-written `variant_costs`, the remaining units of the demo opening cost layer) is removed.
+- **Products**: a sheet product becomes `is_demo = 0`, published (draft without a priced row), on its category; every other product is archived — both only when the admin never saved it. Status and the demo flag are never changed by `--overwrite` itself.
+- **Used units**: the demo ones leave the listing.
+
+Every statement is a single-table `INSERT … SELECT` / `UPDATE` / `DELETE` with scalar sub-queries (no compound SELECT), one per line. `tests/seed-owner-sheet.test.ts` replays such a file twice on a demo-seeded database and checks it ends in the same state as the direct seed, that staff-touched prices and stock stay, and that nothing is doubled.

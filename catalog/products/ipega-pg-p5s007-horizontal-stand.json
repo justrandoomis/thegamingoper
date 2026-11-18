@@ -1,0 +1,215 @@
+{
+  "slug": "ipega-pg-p5s007-horizontal-stand",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "iPega",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة أفقية iPega PG‑P5S007 لجهاز PS5 Slim",
+    "en": "iPega PG‑P5S007 Horizontal Stand for PS5 Slim",
+    "ckb": "ستاندی ئاسۆیی iPega PG‑P5S007 بۆ PS5 Slim"
+  },
+  "short": {
+    "ar": "قاعدة بسيطة للوضع الأفقي · لنسختي الأقراص والرقمية",
+    "en": "Simple base for lying flat · Disc and digital models",
+    "ckb": "بنکەی سادە بۆ ئاسۆیی · دیسک و دیجیتاڵ"
+  },
+  "description": {
+    "ar": "قاعدة من قطعتين من iPega ترفع جهاز PS5 Slim عن الطاولة في الوضع الأفقي وتثبّته، وتناسب نسخة الأقراص والنسخة الرقمية. لا تحتاج كهرباء.",
+    "en": "A two‑piece iPega base that lifts and steadies the PS5 Slim lying flat, for both the disc and digital models. No power needed.",
+    "ckb": "بنکەیەکی دوو پارچەیی iPega کە PS5 Slim بە ئاسۆیی بەرز دەکاتەوە و جێگیری دەکات، بۆ وەشانی دیسک و دیجیتاڵ. کارەبای ناوێت."
+  },
+  "highlights": [
+    {
+      "ar": "للوضع الأفقي لجهاز PS5 Slim",
+      "en": "Holds the PS5 Slim lying flat",
+      "ckb": "PS5 Slim بە ئاسۆیی ڕادەگرێت"
+    },
+    {
+      "ar": "تناسب نسختي الأقراص والرقمية",
+      "en": "Fits disc and digital models",
+      "ckb": "بۆ دیسک و دیجیتاڵ"
+    },
+    {
+      "ar": "ترفع الجهاز لمرور الهواء من الأسفل",
+      "en": "Raises the console so air can pass underneath",
+      "ckb": "کۆنسۆڵ بەرز دەکاتەوە بۆ تێپەڕینی هەوا"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "PG‑P5S007B",
+        "en": "PG‑P5S007B",
+        "ckb": "PG‑P5S007B"
+      }
+    },
+    {
+      "key": "color",
+      "label": {
+        "ar": "اللون",
+        "en": "Colour",
+        "ckb": "ڕەنگ"
+      },
+      "value": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      }
+    },
+    {
+      "key": "power",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "وزە"
+      },
+      "value": {
+        "ar": "لا تحتاج كهرباء",
+        "en": "No power needed",
+        "ckb": "کارەبای ناوێت"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "IPEGA-PG-P5S007B",
+      "title": {
+        "ar": "قاعدة أفقية iPega PG‑P5S007 لجهاز PS5 Slim",
+        "en": "iPega PG‑P5S007 Horizontal Stand for PS5 Slim",
+        "ckb": "ستاندی ئاسۆیی iPega PG‑P5S007 بۆ PS5 Slim"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "PG-P5S007B",
+      "sheetRow": 153,
+      "isDefault": true,
+      "images": [
+        "ipega-pg-p5s007-horizontal-stand--1",
+        "ipega-pg-p5s007-horizontal-stand--2",
+        "ipega-pg-p5s007-horizontal-stand--3"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "source": "https://ipega.hk/ps3ps4series/76-580.html"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "verified",
+      "source": "https://ipega.hk/ps3ps4series/76-580.html"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-slim-digital-edition",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-pro",
+      "kind": "setup"
+    },
+    {
+      "slug": "ipega-pg-p5s021-horizontal-stand",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ipega-pg-p5s039-horizontal-stand",
+      "kind": "upsell"
+    }
+  ],
+  "images": [
+    {
+      "key": "ipega-pg-p5s007-horizontal-stand--1",
+      "file": ".cache/product-images/ipega-pg-p5s007-horizontal-stand/1.png",
+      "sourceUrl": "https://ipega.hk/uploads/202312/65867fb05652e.png",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-580.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "جهاز PS5 Slim على القاعدة السوداء",
+        "en": "A PS5 Slim on the black stand",
+        "ckb": "PS5 Slim لەسەر ستاندە ڕەشەکە"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5s007-horizontal-stand--2",
+      "file": ".cache/product-images/ipega-pg-p5s007-horizontal-stand/2.png",
+      "sourceUrl": "https://ipega.hk/uploads/202312/65868059ec8a0.png",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-580.html",
+      "kind": "angle",
+      "alt": {
+        "ar": "الجهاز على القاعدة من زاوية أخرى",
+        "en": "The console on the stand from another angle",
+        "ckb": "کۆنسۆڵ لەسەر ستاندەکە لە گۆشەیەکی ترەوە"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "ipega-pg-p5s007-horizontal-stand--3",
+      "file": ".cache/product-images/ipega-pg-p5s007-horizontal-stand/3.png",
+      "sourceUrl": "https://ipega.hk/uploads/202312/65867fb1b40fa.png",
+      "sourcePage": "https://ipega.hk/ps3ps4series/76-580.html",
+      "kind": "detail",
+      "alt": {
+        "ar": "قطعتا القاعدة بالأسود والأبيض",
+        "en": "The two stand pieces in black and white",
+        "ckb": "دوو پارچەی ستاندەکە بە ڕەش و سپی"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ipega.hk/ps3ps4series/76-580.html",
+      "title": "PG-P5S007 P5 slim Horizontal bracket",
+      "publisher": "iPega (official site)",
+      "retrieved": "2026-11-18",
+      "supports": "model, PS5 Slim horizontal bracket, black and white pieces, box marked for P5 Slim digital/disc, pictures"
+    },
+    {
+      "url": "https://www.skroutz.mt/s/54650128/iPega-PG-P5S007-Charging-Station-for-PS5-Slim-White.html",
+      "title": "iPega PG-P5S007 for PS5 Slim White",
+      "publisher": "Skroutz (price comparison)",
+      "retrieved": "2026-11-18",
+      "supports": "fact-check: PS5 Slim stand, no charging port, no LED lighting"
+    }
+  ],
+  "notes": {
+    "ar": "الجهاز غير مرفق. B في رقم الطراز تعني على الأرجح اللون الأسود.",
+    "en": "Console not included. The 'B' in the model number most likely means black.",
+    "ckb": "کۆنسۆڵ لەگەڵیدا نییە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "The owner's sheet calls it '4 IN 1', but iPega's box shows '2in1' and lists no extra functions for PG-P5S007; the model number on the sheet was followed",
+      "That the B suffix is the black colour"
+    ]
+  }
+}

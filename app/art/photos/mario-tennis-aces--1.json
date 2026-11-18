@@ -1,0 +1,46 @@
+{
+  "key": "mario-tennis-aces--1",
+  "view": "hero",
+  "width": 494,
+  "height": 750,
+  "aspect": 0.6587,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/mario-tennis-aces/1-240.620858ff.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/mario-tennis-aces/1-480.f72c7fd2.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/mario-tennis-aces/1-240.052e48d4.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/mario-tennis-aces/1-480.ba233be6.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/mario-tennis-aces/1-494.8f27ab4e.png",
+    "width": 494,
+    "height": 750,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRvAAAABXRUJQVlA4WAoAAAAQAAAADAAAEwAAQUxQSDIAAAARJ0CQbTOD+XuN4CLXiIjgNhiKbMNo8BsYDXgN6J/K2T2i/xMQeW0A1luS6pMBWI+8BlZQOCCYAAAAUAQAnQEqDQAUAD8RcrBQLCakorAIAYAiCWwAnS9dbP8B1FBDg9Ov0dN6AAD5P5xjHy9sn+zk+Z1+1N/Ha/CmX/CzpitMO7ppkIYho9ycwbrSMoygAppb1o0L7Cb2w12kljYn7ilnqLSBNG0p9PGA+bMkPeB7vqdf2BNVNDTTi9ntOiM3UAxuQ6SlIxtHJDzrR3A0o5x4gAA=",
+  "dominant": "#fafbfb",
+  "transparent": true,
+  "background": null,
+  "kind": "box-art",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/games/switch/mario-tennis-aces/107729-switch-mario-tennis-aces-us-1200x675",
+    "page": "https://www.nintendo.com/store/products/mario-tennis-aces-107729/"
+  },
+  "input": "a162a98af7bd8e3d"
+}

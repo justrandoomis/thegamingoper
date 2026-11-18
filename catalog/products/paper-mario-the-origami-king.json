@@ -1,0 +1,158 @@
+{
+  "slug": "paper-mario-the-origami-king",
+  "group": "nintendo-consoles-games",
+  "kind": "game",
+  "platform": "nintendo",
+  "brand": "Nintendo",
+  "status": "available",
+  "releaseDate": "2020-07-17",
+  "name": { "ar": "Paper Mario: The Origami King", "en": "Paper Mario: The Origami King", "ckb": "Paper Mario: The Origami King" },
+  "short": {
+    "ar": "Nintendo Switch · تعمل على Switch 2 · PEGI 7",
+    "en": "Nintendo Switch · Plays on Switch 2 · PEGI 7",
+    "ckb": "Nintendo Switch · لەسەر Switch 2 کار دەکات · PEGI 7"
+  },
+  "description": {
+    "ar": "مغامرة ماريو في عالم مصنوع من الورق: الملك Olly حوّل الأعداء إلى أوريغامي وأحاط قلعة الأميرة Peach بشرائط ملونة، وعلى ماريو قطعها وإنقاذ المملكة مع رفيقته Olivia. القتال بأسلوب ألغاز دائرية تُرتّب فيها الأعداء في صفوف قبل الهجوم. مليئة بالفكاهة والاستكشاف.",
+    "en": "Mario's adventure in a world made of paper: King Olly has folded enemies into origami and wrapped Princess Peach's castle in colourful streamers, and Mario must cut them and save the kingdom with his partner Olivia. Battles are ring-based puzzles where you line up enemies before attacking. Full of humour and exploration.",
+    "ckb": "سەرکێشیی ماریۆ لە جیهانێکی کاغەزیدا: پاشا Olly دوژمنەکانی کردووە بە ئۆریگامی و قەڵای شازادە Peach ی بە پەڕۆی ڕەنگاوڕەنگ پێچاوە، و ماریۆ دەبێت بیانبڕێت و لەگەڵ هاوڕێکەی Olivia شانشینەکە ڕزگار بکات. شەڕەکان مەتەڵی بازنەیین کە پێش هێرش دوژمنەکان ڕیز دەکەیت. پڕە لە گاڵتە و گەڕان."
+  },
+  "highlights": [
+    { "ar": "قتال بألغاز الحلقات الدوارة: رتّب الأعداء ثم اهجم", "en": "Ring-puzzle battles: line up the enemies, then attack", "ckb": "شەڕی مەتەڵی بازنەیی: دوژمنەکان ڕیز بکە، پاشان هێرش بکە" },
+    { "ar": "لاعب واحد، ولا تحتاج إنترنت", "en": "Single player, no internet needed", "ckb": "تاکە یاریزان، پێویستی بە ئینتەرنێت نییە" },
+    { "ar": "تعمل على Nintendo Switch 2 كما تعمل على Switch بحسب Nintendo", "en": "Runs on Nintendo Switch 2 the same as on Switch, according to Nintendo", "ckb": "بەپێی Nintendo لەسەر Nintendo Switch 2 وەک Switch کار دەکات" },
+    { "ar": "PEGI 7 · ESRB E · لا تدعم العربية", "en": "PEGI 7 · ESRB E · No Arabic", "ckb": "PEGI 7 · ESRB E · عەرەبی تێدا نییە" }
+  ],
+  "specs": [
+    { "key": "platform", "label": { "ar": "المنصة", "en": "Platform", "ckb": "پلاتفۆرم" }, "value": { "ar": "Nintendo Switch (تعمل على Nintendo Switch 2)", "en": "Nintendo Switch (runs on Nintendo Switch 2)", "ckb": "Nintendo Switch (لەسەر Nintendo Switch 2 کار دەکات)" } },
+    { "key": "releaseDate", "label": { "ar": "تاريخ الإصدار", "en": "Release date", "ckb": "ڕێکەوتی دەرچوون" }, "value": { "ar": "17 تموز 2020", "en": "17 July 2020", "ckb": "17ی تەممووزی 2020" } },
+    { "key": "format", "label": { "ar": "نوع النسخة الفيزيائية", "en": "Physical format", "ckb": "جۆری کۆپیی فیزیکی" }, "value": { "ar": "بطاقة لعبة Nintendo Switch", "en": "Nintendo Switch game card", "ckb": "کارتی یاریی Nintendo Switch" } },
+    { "key": "size", "label": { "ar": "حجم اللعبة", "en": "Game size", "ckb": "قەبارەی یاری" }, "value": { "ar": "6.5 GB (النسخة الرقمية)", "en": "6.5 GB (digital version)", "ckb": "6.5 GB (وەشانی دیجیتاڵ)" } },
+    { "key": "players", "label": { "ar": "عدد اللاعبين", "en": "Players", "ckb": "ژمارەی یاریزان" }, "value": { "ar": "لاعب واحد", "en": "1 player", "ckb": "1 یاریزان" } },
+    { "key": "ageRating", "label": { "ar": "التصنيف العمري", "en": "Age rating", "ckb": "پۆلێنی تەمەن" }, "value": { "ar": "PEGI 7 · ESRB E (عنف كرتوني خفيف)", "en": "PEGI 7 · ESRB E (Mild Cartoon Violence)", "ckb": "PEGI 7 · ESRB E (توندوتیژیی کارتۆنیی سووک)" } },
+    { "key": "languages", "label": { "ar": "اللغات", "en": "Languages", "ckb": "زمانەکان" }, "value": { "ar": "الإنجليزية، الفرنسية، الألمانية، الإيطالية، الإسبانية، الهولندية، اليابانية، الكورية، الصينية — بدون العربية", "en": "English, French, German, Italian, Spanish, Dutch, Japanese, Korean, Chinese — no Arabic", "ckb": "ئینگلیزی، فەرەنسی، ئەڵمانی، ئیتاڵی، ئیسپانی، هۆڵەندی، یابانی، کۆری، چینی — بێ عەرەبی" } }
+  ],
+  "inTheBox": [
+    { "ar": "بطاقة لعبة Nintendo Switch داخل علبتها", "en": "Nintendo Switch game card in its case", "ckb": "کارتی یاریی Nintendo Switch لە ناو قوتووەکەیدا" }
+  ],
+  "variants": [
+    {
+      "sku": "NSG-PAPER-MARIO-OK",
+      "sheetRow": 207,
+      "title": { "ar": "نسخة فيزيائية لـ Nintendo Switch", "en": "Nintendo Switch physical edition", "ckb": "کۆپیی فیزیکی بۆ Nintendo Switch" },
+      "options": { "edition": "Standard", "format": "Game card", "platform": "Nintendo Switch" },
+      "barcodes": ["045496596767"],
+      "isDefault": true,
+      "images": ["paper-mario-the-origami-king--1", "paper-mario-the-origami-king--2", "paper-mario-the-origami-king--3", "paper-mario-the-origami-king--4"],
+      "notes": { "ar": "الباركود للنسخة الأمريكية (UPC) من متجر Nintendo الأمريكي.", "en": "Barcode is the US edition's UPC from Nintendo's US store.", "ckb": "بارکۆدەکە UPC ی وەشانی ئەمریکییە لە فرۆشگای ئەمریکیی Nintendo." }
+    }
+  ],
+  "game": {
+    "platforms": ["switch", "switch-oled", "switch-lite", "switch-2"],
+    "genres": [ { "ar": "مغامرة وتقمّص أدوار", "en": "Adventure RPG", "ckb": "سەرکێشی و ڕۆڵگێڕان" } ],
+    "players": "1",
+    "online": {
+      "ar": "لا يوجد لعب عبر الإنترنت. الحفظ السحابي يحتاج Nintendo Switch Online.",
+      "en": "No online play. Cloud saves need Nintendo Switch Online.",
+      "ckb": "یاریی ئۆنلاین نییە. پاشەکەوتی هەوری پێویستی بە Nintendo Switch Online هەیە."
+    },
+    "ageRating": { "pegi": 7, "esrb": "E" },
+    "arabic": "none",
+    "physicalFormat": "cartridge",
+    "sizeGb": 6.5,
+    "developer": "Intelligent Systems",
+    "publisher": "Nintendo"
+  },
+  "compatibility": [
+    { "deviceModel": "switch", "status": "verified", "note": { "ar": "لعبة Nintendo Switch.", "en": "A Nintendo Switch game.", "ckb": "یاریی Nintendo Switch ە." }, "source": "https://www.nintendo.com/us/store/products/paper-mario-the-origami-king-switch/" },
+    { "deviceModel": "switch-oled", "status": "verified", "note": { "ar": "مثل Nintendo Switch.", "en": "Same as Nintendo Switch.", "ckb": "وەک Nintendo Switch." }, "source": "https://www.nintendo.com/us/store/products/paper-mario-the-origami-king-switch/" },
+    { "deviceModel": "switch-lite", "status": "verified", "note": { "ar": "تدعم الوضع المحمول.", "en": "Handheld mode is supported.", "ckb": "دۆخی دەستی پشتگیری دەکرێت." }, "source": "https://www.nintendo.com/us/store/products/paper-mario-the-origami-king-switch/" },
+    { "deviceModel": "switch-2", "status": "verified", "note": { "ar": "مدعومة: تعمل كما على Switch.", "en": "Supported: behaves as on Switch.", "ckb": "پشتگیری دەکرێت: وەک Switch کار دەکات." }, "source": "https://www.nintendo.com/us/store/products/paper-mario-the-origami-king-switch/" }
+  ],
+  "related": [
+    { "slug": "super-mario-galaxy-plus-super-mario-galaxy-2", "kind": "alternative" },
+    { "slug": "mario-tennis-aces", "kind": "alternative" },
+    { "slug": "nintendo-switch-oled", "kind": "setup" },
+    { "slug": "nintendo-switch-2", "kind": "setup" },
+    { "slug": "nintendo-switch-lite", "kind": "setup" }
+  ],
+  "images": [
+    {
+      "key": "paper-mario-the-origami-king--1",
+      "file": ".cache/product-images/paper-mario-the-origami-king/1.png",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_png/q_100/ncom/en_US/products/games/switch/paper-mario-the-origami-king/110720-switch-paper-mario-the-origami-king-us-1200x675",
+      "sourcePage": "https://www.nintendo.com/us/store/products/paper-mario-the-origami-king-us-110720/",
+      "kind": "box-art",
+      "alt": { "ar": "الغلاف الأمامي لـ Paper Mario: The Origami King على Nintendo Switch", "en": "Front cover of Paper Mario: The Origami King for Nintendo Switch", "ckb": "بەرگی پێشەوەی Paper Mario: The Origami King بۆ Nintendo Switch" },
+      "credit": "Nintendo",
+      "width": 1200, "height": 675, "transparent": false
+    },
+    {
+      "key": "paper-mario-the-origami-king--2",
+      "file": ".cache/product-images/paper-mario-the-origami-king/2.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/en_US/games/switch/p/paper-mario-the-origami-king-switch/screenshot-gallery/screenshot01",
+      "sourcePage": "https://www.nintendo.com/us/store/products/paper-mario-the-origami-king-us-110720/",
+      "kind": "screenshot",
+      "alt": { "ar": "ماريو الورقي فوق سقف أحمر مع أعداء من الأوريغامي", "en": "Paper Mario on a red roof with origami enemies", "ckb": "ماریۆی کاغەزی لەسەر سەقفێکی سوور لەگەڵ دوژمنی ئۆریگامی" },
+      "credit": "Nintendo",
+      "width": 1280, "height": 720, "transparent": false
+    },
+    {
+      "key": "paper-mario-the-origami-king--3",
+      "file": ".cache/product-images/paper-mario-the-origami-king/3.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/en_US/games/switch/p/paper-mario-the-origami-king-switch/screenshot-gallery/screenshot02",
+      "sourcePage": "https://www.nintendo.com/us/store/products/paper-mario-the-origami-king-us-110720/",
+      "kind": "screenshot",
+      "alt": { "ar": "ماريو يسحب شريطًا ورقيًا في بلدة Toad", "en": "Mario pulling a paper streamer in Toad Town", "ckb": "ماریۆ پەڕۆیەکی کاغەزی لە شارۆچکەی Toad ڕادەکێشێت" },
+      "credit": "Nintendo",
+      "width": 1280, "height": 720, "transparent": false
+    },
+    {
+      "key": "paper-mario-the-origami-king--4",
+      "file": ".cache/product-images/paper-mario-the-origami-king/4.jpg",
+      "sourceUrl": "https://assets.nintendo.com/image/upload/f_jpg/q_95/ncom/en_US/games/switch/p/paper-mario-the-origami-king-switch/screenshot-gallery/screenshot03",
+      "sourcePage": "https://www.nintendo.com/us/store/products/paper-mario-the-origami-king-us-110720/",
+      "kind": "screenshot",
+      "alt": { "ar": "معركة على الحلقات الدائرية والأعداء مصطفّون أمام ماريو", "en": "A ring battle with enemies lined up in front of Mario", "ckb": "شەڕێکی بازنەیی کە دوژمنەکان لە بەردەم ماریۆ ڕیز کراون" },
+      "credit": "Nintendo",
+      "width": 1280, "height": 720, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/store/products/paper-mario-the-origami-king-switch/",
+      "title": "Paper Mario: The Origami King for Nintendo Switch (digital)",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-18",
+      "supports": "release date 7/17/20, ESRB E (Mild Cartoon Violence), single player, play modes, languages, file size 6.5 GB, Save Data Cloud, publisher Nintendo, Nintendo Switch 2 compatibility status (supported)"
+    },
+    {
+      "url": "https://www.nintendo.com/us/store/products/paper-mario-the-origami-king-us-110720/",
+      "title": "Paper Mario: The Origami King for Nintendo Switch (physical)",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-18",
+      "supports": "physical edition, UPC 00045496596767, box art and screenshots"
+    },
+    {
+      "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-games/Paper-Mario-The-Origami-King-1782440.html",
+      "title": "Paper Mario: The Origami King | Nintendo Switch games",
+      "publisher": "Nintendo UK",
+      "retrieved": "2026-11-18",
+      "supports": "PEGI 7 (violence, fear)"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Paper_Mario:_The_Origami_King",
+      "title": "Paper Mario: The Origami King",
+      "publisher": "Wikipedia",
+      "retrieved": "2026-11-18",
+      "supports": "independent confirmation: developer Intelligent Systems, publisher Nintendo, single-player, release 17 July 2020, King Olly, Olivia, ring-based battle system, streamers around Peach's Castle"
+    }
+  ],
+  "verification": {
+    "checkedBy": "nintendo-consoles-games",
+    "secondSource": true,
+    "unverified": [
+      "European EAN barcode"
+    ]
+  }
+}

@@ -110,6 +110,7 @@
   "variants": [
     {
       "sku": "NS2-ZELDA40",
+      "sheetRow": 206,
       "title": {
         "ar": "النسخة الدولية",
         "en": "International model",
@@ -273,7 +274,8 @@
     "checkedBy": "fact-check",
     "secondSource": true,
     "unverified": [
-      "European barcode",
+      "Owner's sheet row 206 reads «SWITCH 2 WITH ZELDA GAMES»; this official edition has no game in the box, so the mapping to this edition is assumed — confirm whether the shop's unit is this edition and whether the shop adds any Zelda game to it",
+    "European barcode",
       "Whether European stock is the BEE-001 or the BEE-001(-01) user-replaceable battery model (press reports say some units are BEE-001(-01); Nintendo has not confirmed)",
       "Whether this edition will be restocked or is a one-time production run (Nintendo only marks it Limited)"
     ]

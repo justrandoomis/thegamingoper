@@ -1,0 +1,182 @@
+{
+  "slug": "dobe-quest-3-3s-charging-dock-ty-3868",
+  "group": "xbox-vr",
+  "kind": "vr",
+  "platform": "multi",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة شحن مغناطيسية DOBE لنظارات Meta Quest 3 و3S",
+    "en": "DOBE Magnetic Charging Dock for Meta Quest 3 and 3S",
+    "ckb": "بنکەی شەحنی مەگناتیسیی DOBE بۆ Meta Quest 3 و 3S"
+  },
+  "short": {
+    "ar": "تشحن النظارة واليدين معاً · بطاريتان 900mAh مرفقتان",
+    "en": "Charges the headset and both controllers together · two 900 mAh batteries included",
+    "ckb": "چاویلکە و هەردوو دەسک پێکەوە شەحن دەکات · دوو پاتریی 900mAh لەگەڵیەتی"
+  },
+  "description": {
+    "ar": "قاعدة شحن رفيعة من DOBE (الموديل TY-3868) لنظارة Meta Quest 3 أو 3S مع يديها. توصل النظارة بكابل قصير بزاوية، وتُشحن اليدان مغناطيسياً بعد تركيب البطاريتين القابلتين للشحن (900mAh) والغطاءين المرفقين. ضوء برتقالي أثناء الشحن وأخضر عند الامتلاء، ويُطفأ بمفتاح في الخلف.",
+    "en": "A slim DOBE charging dock (model TY-3868) for a Meta Quest 3 or 3S and its controllers. The headset connects with a short angled cable, and the controllers charge magnetically once you fit the two rechargeable 900 mAh batteries and the battery covers that come with it. The light shows orange while charging and green when full, and a switch at the back turns it off.",
+    "ckb": "بنکەیەکی شەحنی تەنکی DOBE (مۆدێلی TY-3868) بۆ Meta Quest 3 یان 3S و دەسکەکانی. چاویلکەکە بە کێبڵێکی کورتی گۆشەدار دەبەسترێتەوە، و دەسکەکان بە مەگناتیس شەحن دەبن دوای دانانی دوو پاتریی شەحنکراوەی 900mAh و قەپاغەکانیان کە لەگەڵیدا دێن. ڕووناکییەکە لە کاتی شەحندا پرتەقاڵییە و کە پڕ بوو سەوزە، و سویچێک لە پشتەوە دەیکوژێنێتەوە."
+  },
+  "highlights": [
+    {
+      "ar": "لـ Meta Quest 3 وQuest 3S",
+      "en": "For Meta Quest 3 and Quest 3S",
+      "ckb": "بۆ Meta Quest 3 و Quest 3S"
+    },
+    {
+      "ar": "بطاريتان 900mAh للأيدي (حتى 2000 دورة شحن)",
+      "en": "Two 900 mAh controller batteries (up to 2,000 charge cycles)",
+      "ckb": "دوو پاتریی 900mAh بۆ دەسک (تا 2000 جار شەحن)"
+    },
+    {
+      "ar": "شحن مغناطيسي لليدين",
+      "en": "Magnetic charging for the controllers",
+      "ckb": "شەحنی مەگناتیسی بۆ دەسکەکان"
+    },
+    {
+      "ar": "ضوء هادئ يمكن إطفاؤه",
+      "en": "Soft light that can be switched off",
+      "ckb": "ڕووناکییەکی نەرم کە دەکوژێنرێتەوە"
+    },
+    {
+      "ar": "حماية من الشحن الزائد والقصر والحرارة",
+      "en": "Overcharge, short-circuit and overheating protection",
+      "ckb": "پاراستن لە شەحنی زیاد، کورتەبوون و گەرمبوون"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "DOBE TY-3868",
+        "en": "DOBE TY-3868",
+        "ckb": "DOBE TY-3868"
+      }
+    },
+    {
+      "key": "batteries",
+      "label": {
+        "ar": "البطاريات",
+        "en": "Batteries",
+        "ckb": "پاتری"
+      },
+      "value": {
+        "ar": "2 × 900mAh قابلة للشحن",
+        "en": "2 × 900 mAh rechargeable",
+        "ckb": "2 × 900mAh شەحنکراوە"
+      }
+    },
+    {
+      "key": "charger",
+      "label": {
+        "ar": "الشاحن",
+        "en": "Charger",
+        "ckb": "شەحنکەر"
+      },
+      "value": {
+        "ar": "يُنصح بشاحن Meta الأصلي أو شاحن 15 واط أو أكثر (غير مرفق)",
+        "en": "Meta's original charger or one of 15 W or more is recommended (not included)",
+        "ckb": "شەحنکەری ڕەسەنی Meta یان 15 وات یان زیاتر پێشنیار دەکرێت (لەگەڵی نییە)"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "متوافق مع",
+        "en": "Compatible with",
+        "ckb": "گونجاوە لەگەڵ"
+      },
+      "value": {
+        "ar": "Meta Quest 3 وQuest 3S",
+        "en": "Meta Quest 3 and Quest 3S",
+        "ckb": "Meta Quest 3 و Quest 3S"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قاعدة الشحن",
+      "en": "Charging dock",
+      "ckb": "بنکەی شەحن"
+    },
+    {
+      "ar": "بطاريتان 900mAh وغطاءان للبطاريات",
+      "en": "Two 900 mAh batteries and two battery covers",
+      "ckb": "دوو پاتریی 900mAh و دوو قەپاغی پاتری"
+    },
+    {
+      "ar": "كابل USB-C ومحوّلان بزاوية",
+      "en": "USB-C cable and two angled adapters",
+      "ckb": "کێبڵی USB-C و دوو گۆڕەری گۆشەدار"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TY3868",
+      "sheetRow": 60,
+      "title": {
+        "ar": "قاعدة شحن مغناطيسية DOBE لنظارات Meta Quest 3 و3S",
+        "en": "DOBE Magnetic Charging Dock for Meta Quest 3 and 3S",
+        "ckb": "بنکەی شەحنی مەگناتیسیی DOBE بۆ Meta Quest 3 و 3S"
+      },
+      "options": {
+        "color": "White"
+      },
+      "modelNumber": "TY-3868",
+      "isDefault": true
+    }
+  ],
+  "related": [
+    {
+      "slug": "dobe-quest-3-charging-stand-ty-3835",
+      "kind": "alternative"
+    },
+    {
+      "slug": "dobe-quest-charging-kit-ty-3867",
+      "kind": "alternative"
+    },
+    {
+      "slug": "dobe-quest-3s-cooling-fan-ty-5805",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.amazon.com/dp/B0DHVF176W",
+      "title": "Charging Dock Compatible with Meta Quest 3/3S, Magnetic Fast Charging (DOBE Fomis Electronics)",
+      "publisher": "Amazon (DOBE listing)",
+      "retrieved": "2026-11-18",
+      "supports": "Quest 3/3S, two 900 mAh batteries with up to 2000 cycles, LED orange/green with rear switch, charger advice 15 W+, protections, image"
+    },
+    {
+      "url": "https://ecommerce.datablitz.com.ph/products/dobe-charging-dock-for-meta-quest-3-meta-quest-3s-ty-3868",
+      "title": "Dobe Charging Dock for Meta Quest 3 / Meta Quest 3S TY-3868",
+      "publisher": "DataBlitz",
+      "retrieved": "2026-11-18",
+      "supports": "second source: model TY-3868, Quest 3 and Quest 3S compatibility"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع DOBE وليس من Meta. لا يناسب Quest 2.",
+    "en": "Made by DOBE, not by Meta. It does not fit the Quest 2.",
+    "ckb": "دروستکراوی DOBE ـیە، نەک Meta. بۆ Quest 2 ناگونجێت."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "No DOBE-run website was found; facts come from DOBE's marketplace listing and a retailer",
+      "Which of DOBE's Quest 3/3S stands the shop's 'CHARGING STAND DOBE 3-3S' is (TY-3868 chosen as the DOBE dock sold for both headsets)",
+      "Barcode not found",
+      "Clean DOBE photos exist (white product on white, DOBE marketplace listing) but none passes the cut-out/opaque-photo gate, so no image is recorded"
+    ]
+  }
+}

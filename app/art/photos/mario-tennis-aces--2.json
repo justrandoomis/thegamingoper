@@ -1,0 +1,56 @@
+{
+  "key": "mario-tennis-aces--2",
+  "view": "hero",
+  "width": 1280,
+  "height": 720,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/mario-tennis-aces/2-240.2c876a76.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/mario-tennis-aces/2-480.fc637242.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/mario-tennis-aces/2-720.960ae4fb.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/mario-tennis-aces/2-960.68f93cc8.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/mario-tennis-aces/2-240.d9db7b19.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/mario-tennis-aces/2-480.e5b64220.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/mario-tennis-aces/2-720.37f0a894.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/mario-tennis-aces/2-960.30dd1725.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAABwBACdASoUAAsAPxFwsFAsJiSisAgBgCIJbACdMoMftEnyMJg90kvQBhGeAAD+hBflCS2PfEbcfHRY6YnCZGsH3DmxlH+DzUg2de0jI3agj3CTXHz/6Oe1ZoY6RjUzZcjk/3nc1SyuAicd8CbH0mdogcFOAAAA",
+  "dominant": "#fefef9",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Nintendo",
+  "source": {
+    "url": "https://assets.nintendo.com/image/upload/f_jpg/q_95/store/software/switch/70010000003889/3b32dbcc272cf2c8140404dd9a3d07d13b7450f5362edcbcbd7fd4a643a794d0",
+    "page": "https://www.nintendo.com/us/store/products/mario-tennis-aces-switch/"
+  },
+  "input": "85bd2f7295809c7e"
+}

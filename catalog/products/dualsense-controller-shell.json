@@ -1,0 +1,68 @@
+{
+  "slug": "dualsense-controller-shell",
+  "group": "controllers-audio",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": { "ar": "غلاف بديل لذراع DualSense", "en": "DualSense Replacement Shell", "ckb": "قاپی جێگرەوە بۆ کۆنتڕۆڵەری DualSense" },
+  "short": {
+    "ar": "غلاف خارجي بديل من صنع طرف ثالث لذراع PS5 العادية",
+    "en": "Third-party replacement outer shell for the standard PS5 controller",
+    "ckb": "قاپی دەرەوەی جێگرەوەی لایەنی سێیەم بۆ کۆنتڕۆڵەری ئاسایی PS5"
+  },
+  "description": {
+    "ar": "غلاف بلاستيكي بديل من صنع طرف ثالث لذراع DualSense، لتغيير شكل الذراع أو استبدال غلاف مكسور أو مخدوش. التركيب يحتاج فك الذراع، لذلك يُفضّل أن يقوم به فني. لا يناسب ذراع DualSense Edge لأن شكل هيكلها مختلف.",
+    "en": "A third-party plastic replacement shell for the DualSense controller, to give it a new look or replace a cracked or scratched one. Fitting it means opening the controller, so it is best done by a technician. It does not fit the DualSense Edge, whose housing has a different shape.",
+    "ckb": "قاپێکی پلاستیکی جێگرەوەی لایەنی سێیەم بۆ کۆنتڕۆڵەری DualSense، بۆ گۆڕینی شێوەی کۆنتڕۆڵەرەکە یان گۆڕینی قاپێکی شکاو یان خەتدار. دانانی پێویستی بە کردنەوەی کۆنتڕۆڵەرەکە هەیە، بۆیە باشترە تەکنیسیەنێک بیکات. بۆ DualSense Edge ناگونجێت چونکە شێوەی قاپەکەی جیاوازە."
+  },
+  "highlights": [
+    { "ar": "لتجديد شكل الذراع أو استبدال غلاف مكسور", "en": "Refreshes the look or replaces a broken shell", "ckb": "بۆ نوێکردنەوەی شێوە یان گۆڕینی قاپی شکاو" },
+    { "ar": "التركيب يحتاج فك الذراع (يُفضّل عند فني)", "en": "Fitting requires opening the controller (best done by a technician)", "ckb": "دانان پێویستی بە کردنەوەی کۆنتڕۆڵەر هەیە (باشترە لای تەکنیسیەن)" },
+    { "ar": "لذراع DualSense العادية فقط، لا يناسب DualSense Edge", "en": "For the standard DualSense only, not the DualSense Edge", "ckb": "تەنها بۆ DualSenseی ئاسایی، بۆ DualSense Edge نا" },
+    { "ar": "منتج طرف ثالث وليس قطعة Sony رسمية", "en": "Third-party part, not an official Sony part", "ckb": "پارچەی لایەنی سێیەم، نەک پارچەی فەرمیی Sony" }
+  ],
+  "specs": [
+    { "key": "fits", "label": { "ar": "يناسب", "en": "Fits", "ckb": "دەگونجێت بۆ" }, "value": { "ar": "ذراع DualSense العادية لجهاز PS5", "en": "Standard PS5 DualSense controller", "ckb": "کۆنتڕۆڵەری ئاسایی DualSenseی PS5" } },
+    { "key": "material", "label": { "ar": "المادة", "en": "Material", "ckb": "ماددە" }, "value": { "ar": "بلاستيك", "en": "Plastic", "ckb": "پلاستیک" } }
+  ],
+  "inTheBox": [
+    { "ar": "غلاف الذراع", "en": "Controller shell", "ckb": "قاپی کۆنتڕۆڵەر" }
+  ],
+  "variants": [
+    {
+      "sku": "DSENSE-SHELL",
+      "sheetRow": 103,
+      "title": { "ar": "غلاف بديل لذراع DualSense", "en": "DualSense Replacement Shell", "ckb": "قاپی جێگرەوە بۆ کۆنتڕۆڵەری DualSense" },
+      "options": {},
+      "isDefault": true,
+      "notes": { "ar": "اللون والتصميم كما هو متوفر في المخزن.", "en": "Colour and design as in stock.", "ckb": "ڕەنگ و دیزاین بەپێی ئەوەی لە کۆگادا هەیە." }
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "ps5", "status": "unverified", "note": { "ar": "لذراع DualSense العادية؛ تأكد من طراز الذراع قبل التركيب.", "en": "For the standard DualSense; check the controller model before fitting.", "ckb": "بۆ DualSenseی ئاسایی؛ پێش دانان مۆدێلی کۆنتڕۆڵەرەکە بپشکنە." } },
+    { "deviceModel": "ps5-slim", "status": "unverified", "note": { "ar": "لذراع DualSense العادية.", "en": "For the standard DualSense.", "ckb": "بۆ DualSenseی ئاسایی." } }
+  ],
+  "related": [
+    { "slug": "dualsense", "kind": "setup" },
+    { "slug": "dualsense-edge-stick-module", "kind": "alternative" }
+  ],
+  "sources": [
+    { "url": "https://www.videogameschronicle.com/news/a-third-party-company-is-selling-ps5-controller-faceplates-for-10/", "title": "A third-party company is selling PS5 controller faceplates for $10", "publisher": "Video Games Chronicle", "retrieved": "2026-11-18", "supports": "third-party DualSense faceplates/shells exist and are sold cheaply" },
+    { "url": "https://extremerate.com/products/extremerate-replacement-decorative-trim-shell-with-accent-rings-compatible-with-ps5-controller-white", "title": "eXtremeRate replacement decorative trim shell compatible with PS5 controller", "publisher": "eXtremeRate", "retrieved": "2026-11-18", "supports": "replacement shells require taking the controller apart" },
+    { "url": "https://makerworld.com/fr/models/3011220-ps5-edge-shell", "title": "PS5 Edge Shell", "publisher": "MakerWorld", "retrieved": "2026-11-18", "supports": "DualSense Edge housing differs from the standard DualSense, shells are not interchangeable" }
+  ],
+  "notes": {
+    "ar": "منتج طرف ثالث (ليس من Sony).",
+    "en": "Third-party product (not made by Sony).",
+    "ckb": "بەرهەمی لایەنی سێیەم (Sony دروستی نەکردووە)."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Maker, colour and exact parts (front only, or front and back, buttons included?) of the sheet's 'PS5 CONTROLLER SHELL' (US$6.67 cost suggests a generic third-party shell)",
+      "Which DualSense board revisions (BDM-010 to BDM-050) it fits"
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "key": "dualshock-4--3",
+  "view": "hero",
+  "width": 1142,
+  "height": 701,
+  "aspect": 1.6291,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dualshock-4/3-240.b74a8831.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualshock-4/3-480.c7bf3b06.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualshock-4/3-720.2d216a63.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualshock-4/3-960.21a29243.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dualshock-4/3-240.47db42db.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualshock-4/3-480.673bebdd.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualshock-4/3-720.16fc592a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/dualshock-4/3-960.a56e4554.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRugAAABXRUJQVlA4WAoAAAAQAAAAEwAACwAAQUxQSFoAAAART6CgbSM3diT2vvuPiAB7it+KDmwj21ZycUItxIkpg5gIMofUrQNevf+/HiL6PwEQFbDOojLnF8iin6hUAYwkNkBPciMk1m45c+X0QsijmRSMVAcAKgAuRAdWUDggaAAAAPADAJ0BKhQADAA/EXKwUKwmpKKwCAGAIglnAABdznD/UUFCMwohe8AA/sxUYKYL7yrDuxF5U7zrQYirFsI3BdJtNVZvsOnK6Djry/s2NYDkDoEQQbzHZsE+a0M/1dZo4+fNTLBVAAAA",
+  "dominant": "#23252b",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/ps4-accessories-ds4-jet-black-screen-02-en-28oct20?$native--t$",
+    "page": "https://www.playstation.com/en-ae/accessories/dualshock-4-wireless-controller/"
+  },
+  "input": "b099a481c1d1340d"
+}

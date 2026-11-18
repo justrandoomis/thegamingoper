@@ -1,0 +1,64 @@
+{
+  "key": "wuchang-fallen-feathers--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/wuchang-fallen-feathers/3-240.93202842.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/wuchang-fallen-feathers/3-480.ec88fc50.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/wuchang-fallen-feathers/3-720.72020a27.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/wuchang-fallen-feathers/3-960.27e483e1.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/wuchang-fallen-feathers/3-1440.2cdf1622.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/wuchang-fallen-feathers/3-240.f2eddd22.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/wuchang-fallen-feathers/3-480.4faf28d5.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/wuchang-fallen-feathers/3-720.3dae4532.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/wuchang-fallen-feathers/3-960.0d06b511.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/wuchang-fallen-feathers/3-1440.06f5cdb1.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADwAwCdASoUAAsAPxFyslCsJqSisAgBgCIJZwDImB6PMN/QvSx3XogAAP7QLK0BATYzEFRRtqn5pACgUMu6wS6u8UgvUAAA",
+  "dominant": "#262828",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "505 Games / Leenzee",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202406/0520/5d252906fcb93b6ca74b438431a6c2deb990a9b1a164d117.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP4040-PPSA09519_00-WUCHANGPS5000000"
+  },
+  "input": "89cc084f46122915"
+}

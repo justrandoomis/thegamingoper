@@ -1,0 +1,64 @@
+{
+  "key": "minecraft-legends--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/minecraft-legends/3-240.646d1710.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/minecraft-legends/3-480.78fc5fb9.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/minecraft-legends/3-720.256184d7.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/minecraft-legends/3-960.11bee001.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/minecraft-legends/3-1440.d6105ed8.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/minecraft-legends/3-240.92eb117c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/minecraft-legends/3-480.a029e501.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/minecraft-legends/3-720.8dbb6867.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/minecraft-legends/3-960.6b61254a.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/minecraft-legends/3-1440.f4d52b38.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAACwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZgCdMoABfbSUvSn0wAD+0Djwa30nwBcMbLV2WWzl5/XxSvCa6iGYHElziQMRwTSHTYOZM2hSqtpyScQbBnAw4CuTa/gK02rkjQAA",
+  "dominant": "#6c64aa",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Mojang Studios / Microsoft",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202207/1516/rCwcQu0dh8YUxh6iL72vvDPG.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP4433-PPSA05510_00-1296939562310362"
+  },
+  "input": "2bd77cf7f2db53c8"
+}

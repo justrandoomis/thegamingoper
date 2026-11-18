@@ -1,0 +1,78 @@
+{
+  "slug": "xbox-series-x-stand",
+  "group": "xbox-vr",
+  "kind": "accessory",
+  "platform": "xbox",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "ستاند لجهاز Xbox Series X",
+    "en": "Stand for Xbox Series X",
+    "ckb": "ستاند بۆ Xbox Series X"
+  },
+  "short": {
+    "ar": "ستاند عمودي لجهاز Xbox Series X",
+    "en": "Upright stand for the Xbox Series X",
+    "ckb": "ستاندی ستوونی بۆ Xbox Series X"
+  },
+  "description": {
+    "ar": "ستاند يوضع عليه جهاز Xbox Series X بشكل عمودي، من صنع طرف ثالث. اسأل المتجر عن مزاياه (مراوح تبريد، شحن الأيدي، منافذ USB) قبل الشراء، فهي تختلف من موديل لآخر.",
+    "en": "A third-party stand that holds the Xbox Series X upright. Ask the shop about its features (cooling fans, controller charging, USB ports) before buying, as these vary between models.",
+    "ckb": "ستاندێکی لایەنی سێیەم کە Xbox Series X بە ستوونی ڕادەگرێت. پێش کڕین لە فرۆشگا دەربارەی تایبەتمەندییەکانی بپرسە (پانکەی ساردکردنەوە، شەحنی دەسک، دەروازەی USB)، چونکە لە مۆدێلێکەوە بۆ یەکێکی تر جیاوازن."
+  },
+  "highlights": [
+    { "ar": "لـ Xbox Series X", "en": "For the Xbox Series X", "ckb": "بۆ Xbox Series X" },
+    { "ar": "يحمل الجهاز عمودياً بثبات", "en": "Holds the console steadily upright", "ckb": "کۆنسۆڵ بە جێگیری بە ستوونی ڕادەگرێت" },
+    { "ar": "الجهاز غير مرفق", "en": "Console not included", "ckb": "کۆنسۆڵ لەگەڵی نییە" }
+  ],
+  "specs": [
+    { "key": "fits", "label": { "ar": "يناسب", "en": "Fits", "ckb": "گونجاوە بۆ" }, "value": { "ar": "Xbox Series X", "en": "Xbox Series X", "ckb": "Xbox Series X" } }
+  ],
+  "variants": [
+    {
+      "sku": "XSX-STAND-GEN",
+      "sheetRow": 231,
+      "title": { "ar": "ستاند لجهاز Xbox Series X", "en": "Stand for Xbox Series X", "ckb": "ستاند بۆ Xbox Series X" },
+      "options": { "fits": "Xbox Series X" },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "xbox-series-x", "status": "unverified" },
+    { "deviceModel": "xbox-series-x-digital", "status": "unverified" }
+  ],
+  "related": [
+    { "slug": "xbox-series-x", "kind": "setup" },
+    { "slug": "ipega-xbox-series-x-cooling-stand", "kind": "alternative" }
+  ],
+  "sources": [
+    {
+      "url": "https://www.xbox.com/en-US/consoles/xbox-series-x",
+      "title": "Xbox Series X",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-18",
+      "supports": "the console the stand is made for; it can stand vertically"
+    },
+    {
+      "url": "https://m.reach.dog/shop/niveous-gaming/products/vertical-charging-stand-with-cooling-fan-compatible-with-xbox-series-x-s-console-and-controller-dual-controller-charger-station-dock-accessories-with-3-usb-ports",
+      "title": "Vertical charging stand with cooling fan for Xbox Series X|S",
+      "publisher": "Reach",
+      "retrieved": "2026-11-18",
+      "supports": "second source: third-party Series X stands commonly add cooling fans, controller charging and USB ports"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع طرف ثالث وليس من Microsoft.",
+    "en": "A third-party product, not made by Microsoft.",
+    "ckb": "بەرهەمێکی لایەنی سێیەمە، هی Microsoft نییە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "The shop's name 'XBOX SERIES X STAND FORX' gives no maker; 'FORX' is read as 'for X'",
+      "Features (fans, charging, USB ports) and colour",
+      "No product image of the exact item"
+    ]
+  }
+}

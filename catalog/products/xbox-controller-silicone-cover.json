@@ -1,0 +1,79 @@
+{
+  "slug": "xbox-controller-silicone-cover",
+  "group": "xbox-vr",
+  "kind": "accessory",
+  "platform": "xbox",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "غطاء سيليكون ليد Xbox Series",
+    "en": "Silicone Cover for Xbox Series Controller",
+    "ckb": "بەرگی سیلیکۆن بۆ دەسکی Xbox Series"
+  },
+  "short": {
+    "ar": "يحمي اليد من الخدوش والعرق ويحسّن المسكة",
+    "en": "Guards the controller against scratches and sweat, adds grip",
+    "ckb": "دەسک لە خەت و ئارەقە دەپارێزێت و گرتنی باشتر دەکات"
+  },
+  "description": {
+    "ar": "غلاف من السيليكون الناعم يُلبس على يد Xbox Wireless Controller (يد Xbox Series X|S)، يحميها من الخدوش والأوساخ والعرق ويجعل مسكتها أثبت. فتحاته على مقاس الأزرار والمنافذ فلا يعيق اللعب أو الشحن.",
+    "en": "A soft silicone skin that slips over the Xbox Wireless Controller (the Xbox Series X|S controller), protecting it from scratches, dirt and sweat and giving a firmer grip. Its openings match the buttons and ports, so it does not get in the way of play or charging.",
+    "ckb": "بەرگێکی سیلیکۆنی نەرم کە لەسەر Xbox Wireless Controller (دەسکی Xbox Series X|S) دادەنرێت، لە خەت، پیسی و ئارەقە دەیپارێزێت و گرتنی جێگیرتر دەکات. کونەکانی بە قەبارەی دوگمە و دەروازەکانن، بۆیە ڕێگری لە یاری یان شەحن ناکات."
+  },
+  "highlights": [
+    { "ar": "لـ Xbox Wireless Controller (Series X|S)", "en": "For the Xbox Wireless Controller (Series X|S)", "ckb": "بۆ Xbox Wireless Controller (Series X|S)" },
+    { "ar": "يحمي من الخدوش والعرق", "en": "Guards against scratches and sweat", "ckb": "لە خەت و ئارەقە دەپارێزێت" },
+    { "ar": "مسكة أثبت", "en": "Firmer grip", "ckb": "گرتنی جێگیرتر" }
+  ],
+  "specs": [
+    { "key": "material", "label": { "ar": "المادة", "en": "Material", "ckb": "ماددە" }, "value": { "ar": "سيليكون", "en": "Silicone", "ckb": "سیلیکۆن" } },
+    { "key": "fits", "label": { "ar": "يناسب", "en": "Fits", "ckb": "گونجاوە بۆ" }, "value": { "ar": "Xbox Wireless Controller (Series X|S)", "en": "Xbox Wireless Controller (Series X|S)", "ckb": "Xbox Wireless Controller (Series X|S)" } }
+  ],
+  "variants": [
+    {
+      "sku": "XBX-CTRL-SIL",
+      "sheetRow": 229,
+      "title": {
+        "ar": "غطاء سيليكون ليد Xbox Series",
+        "en": "Silicone Cover for Xbox Series Controller",
+        "ckb": "بەرگی سیلیکۆن بۆ دەسکی Xbox Series"
+      },
+      "options": { "material": "Silicone" },
+      "isDefault": true
+    }
+  ],
+  "related": [
+    { "slug": "xbox-wireless-controller", "kind": "setup" },
+    { "slug": "dobe-xbox-dual-charging-dock", "kind": "accessory" },
+    { "slug": "xbox-series-console-skin", "kind": "accessory" }
+  ],
+  "sources": [
+    {
+      "url": "https://www.xbox.com/en-US/accessories/controllers/xbox-wireless-controller",
+      "title": "Xbox Wireless Controller",
+      "publisher": "Microsoft (Xbox)",
+      "retrieved": "2026-11-18",
+      "supports": "the controller this cover is made for"
+    },
+    {
+      "url": "https://www.amazon.com/s?k=xbox+series+controller+silicone+cover",
+      "title": "Xbox Series controller silicone covers (marketplace listings)",
+      "publisher": "Amazon",
+      "retrieved": "2026-11-18",
+      "supports": "second source: silicone skins for the Xbox Series X|S controller, scratch and sweat protection, grip"
+    }
+  ],
+  "notes": {
+    "ar": "منتج من صنع طرف ثالث وليس من Microsoft. اليد غير مرفقة.",
+    "en": "A third-party product, not made by Microsoft. The controller is not included.",
+    "ckb": "بەرهەمێکی لایەنی سێیەمە، هی Microsoft نییە. دەسکەکە لەگەڵی نییە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Maker, colour and whether thumb-grip caps are included",
+      "No product image of the exact item"
+    ]
+  }
+}

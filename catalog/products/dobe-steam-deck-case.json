@@ -1,0 +1,275 @@
+{
+  "slug": "dobe-steam-deck-case",
+  "group": "handheld-pc-accessories",
+  "kind": "accessory",
+  "platform": "pc_handheld",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "غطاء حماية DOBE لجهاز Steam Deck",
+    "en": "DOBE Protective Case for Steam Deck",
+    "ckb": "کەیسی پاراستنی DOBE بۆ Steam Deck"
+  },
+  "short": {
+    "ar": "3 أنواع: TPU أسود · PC شفاف · سيليكون",
+    "en": "3 types: black TPU · clear PC · silicone",
+    "ckb": "3 جۆر: TPUی ڕەش · PCی ڕوون · سیلیکۆن"
+  },
+  "description": {
+    "ar": "أغطية DOBE التي تبقى على جهاز Steam Deck أثناء اللعب، بثلاثة أنواع: TY‑2830 من TPU أسود بنقش على الظهر، وTY‑2835 شفاف من بلاستيك PC، وTY‑2836 من السيليكون الناعم. فتحاتها دقيقة على الأزرار والمنافذ ولا تعيق الشحن.",
+    "en": "DOBE cases that stay on the Steam Deck while you play, in three types: TY‑2830 in black TPU with a patterned back, TY‑2835 in clear PC plastic, and TY‑2836 in soft silicone. Their cut-outs line up with the buttons and ports and do not get in the way of charging.",
+    "ckb": "کەیسەکانی DOBE کە لە کاتی یاریدا لەسەر Steam Deck دەمێننەوە، بە سێ جۆر: TY‑2830 لە TPUی ڕەش بە نەخش لە پشتەوە، TY‑2835 ی ڕوون لە پلاستیکی PC، و TY‑2836 لە سیلیکۆنی نەرم. کونەکانیان لەگەڵ دوگمە و دەروازەکان ڕێکن و ڕێگری لە شەحن ناکەن."
+  },
+  "highlights": [
+    {
+      "ar": "ثلاثة أنواع: TPU وPC شفاف وسيليكون",
+      "en": "Three types: TPU, clear PC and silicone",
+      "ckb": "سێ جۆر: TPU، PCی ڕوون و سیلیکۆن"
+    },
+    {
+      "ar": "فتحات دقيقة للأزرار والمنافذ",
+      "en": "Precise openings for buttons and ports",
+      "ckb": "کونی ورد بۆ دوگمە و دەروازەکان"
+    },
+    {
+      "ar": "لا تعيق الشحن",
+      "en": "Do not block charging",
+      "ckb": "ڕێگری لە شەحن ناکەن"
+    },
+    {
+      "ar": "تبقى على الجهاز أثناء اللعب",
+      "en": "Stay on while you play",
+      "ckb": "لە کاتی یاریدا لەسەر ئامێرەکە دەمێننەوە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Steam Deck",
+        "en": "Steam Deck",
+        "ckb": "Steam Deck"
+      }
+    },
+    {
+      "key": "material",
+      "label": {
+        "ar": "الخامة",
+        "en": "Material",
+        "ckb": "کەرەستە"
+      },
+      "value": {
+        "ar": "TPU (TY‑2830) · PC (TY‑2835) · سيليكون (TY‑2836)",
+        "en": "TPU (TY‑2830) · PC (TY‑2835) · Silicone (TY‑2836)",
+        "ckb": "TPU (TY‑2830) · PC (TY‑2835) · سیلیکۆن (TY‑2836)"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "غطاء الحماية (الجهاز غير مشمول)",
+      "en": "Protective case (console not included)",
+      "ckb": "کەیسی پاراستن (ئامێر لەگەڵیدا نییە)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TY-2830",
+      "sheetRow": 176,
+      "title": {
+        "ar": "TPU أسود · TY‑2830",
+        "en": "Black TPU · TY‑2830",
+        "ckb": "TPUی ڕەش · TY‑2830"
+      },
+      "options": {
+        "type": "TPU",
+        "color": "Black"
+      },
+      "modelNumber": "TY-2830",
+      "isDefault": true,
+      "images": [
+        "dobe-steam-deck-case--1"
+      ]
+    },
+    {
+      "sku": "DOBE-TY-2835",
+      "sheetRow": 177,
+      "title": {
+        "ar": "شفاف · TY‑2835",
+        "en": "Clear · TY‑2835",
+        "ckb": "ڕوون · TY‑2835"
+      },
+      "options": {
+        "type": "PC",
+        "color": "Clear"
+      },
+      "modelNumber": "TY-2835",
+      "images": [
+        "dobe-steam-deck-case--2"
+      ]
+    },
+    {
+      "sku": "DOBE-TY-2836",
+      "sheetRow": 178,
+      "title": {
+        "ar": "سيليكون · TY‑2836",
+        "en": "Silicone · TY‑2836",
+        "ckb": "سیلیکۆن · TY‑2836"
+      },
+      "options": {
+        "type": "Silicone"
+      },
+      "modelNumber": "TY-2836",
+      "images": [
+        "dobe-steam-deck-case--3"
+      ],
+      "notes": {
+        "ar": "يُصنع بعدة ألوان (منها الأسود والأخضر)؛ لون القطعة المتوفرة غير محدد في القائمة.",
+        "en": "Made in several colours (black and green among them); the stocked unit's colour is not stated.",
+        "ckb": "بە چەند ڕەنگێک دروست دەکرێت (ڕەش و سەوز لەناویاندا)؛ ڕەنگی ئەوەی لە کۆگادایە دیار نییە."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "steam-deck-lcd",
+      "status": "verified",
+      "note": {
+        "ar": "DOBE تصممها لجهاز Steam Deck",
+        "en": "DOBE makes them for the Steam Deck",
+        "ckb": "DOBE بۆ Steam Deck دروستیان دەکات"
+      },
+      "source": "https://www.dobe-game.com/en/productshow-68-1040.html"
+    },
+    {
+      "deviceModel": "steam-deck-oled",
+      "status": "unverified",
+      "note": {
+        "ar": "صُممت قبل نسخة OLED؛ DOBE لا تذكرها",
+        "en": "Designed before the OLED model; DOBE does not list it",
+        "ckb": "پێش وەشانی OLED دیزاین کراون؛ DOBE ناوی نابات"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "steam-deck-lcd",
+      "kind": "setup"
+    },
+    {
+      "slug": "steam-deck-oled",
+      "kind": "setup"
+    },
+    {
+      "slug": "dobe-steam-deck-tempered-glass-ty-3802",
+      "kind": "accessory"
+    },
+    {
+      "slug": "jys-steam-deck-clear-case-sd003",
+      "kind": "alternative"
+    },
+    {
+      "slug": "jys-steam-deck-carrying-case-sd001",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "dobe-steam-deck-case--1",
+      "file": ".cache/product-images/dobe-steam-deck-case/1.jpg",
+      "sourceUrl": "https://www.dobe-game.com/uploads/image/20221017/1666005390.jpg",
+      "sourcePage": "https://www.dobe-game.com/en/productshow-68-1040.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "غطاء DOBE TY‑2830 الأسود على Steam Deck من الأمام والخلف",
+        "en": "The black DOBE TY‑2830 case on a Steam Deck, front and back",
+        "ckb": "کەیسی ڕەشی DOBE TY‑2830 لەسەر Steam Deck، پێشەوە و پشتەوە"
+      },
+      "credit": "DOBE (Shenzhen Yuyuanxin Electronic Technology)",
+      "width": 1000,
+      "height": 1000,
+      "transparent": false
+    },
+    {
+      "key": "dobe-steam-deck-case--2",
+      "file": ".cache/product-images/dobe-steam-deck-case/2.jpg",
+      "sourceUrl": "https://www.dobe-game.com/uploads/image/20221017/1666007769.jpg",
+      "sourcePage": "https://www.dobe-game.com/en/productshow-68-1041.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "غطاء DOBE TY‑2835 الشفاف على Steam Deck",
+        "en": "The clear DOBE TY‑2835 case on a Steam Deck",
+        "ckb": "کەیسی ڕوونی DOBE TY‑2835 لەسەر Steam Deck"
+      },
+      "credit": "DOBE (Shenzhen Yuyuanxin Electronic Technology)",
+      "width": 1000,
+      "height": 1000,
+      "transparent": false
+    },
+    {
+      "key": "dobe-steam-deck-case--3",
+      "file": ".cache/product-images/dobe-steam-deck-case/3.jpg",
+      "sourceUrl": "https://www.dobe-game.com/uploads/image/20221018/1666067046.jpg",
+      "sourcePage": "https://www.dobe-game.com/en/productshow-68-1046.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "غطاء DOBE TY‑2836 السيليكون باللون الأخضر على Steam Deck",
+        "en": "The DOBE TY‑2836 silicone case in green on a Steam Deck",
+        "ckb": "کەیسی سیلیکۆنی DOBE TY‑2836 بە سەوز لەسەر Steam Deck"
+      },
+      "credit": "DOBE (Shenzhen Yuyuanxin Electronic Technology)",
+      "width": 1000,
+      "height": 1000,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dobe-game.com/en/productshow-68-1040.html",
+      "title": "Protective Case TY-2830 – For Steam Deck",
+      "publisher": "DOBE (Shenzhen Yuyuanxin Electronic Technology Co., Ltd.)",
+      "retrieved": "2026-11-18",
+      "supports": "model TY-2830 Steam Deck protective case; images show TPU material, precise holes, charging unaffected"
+    },
+    {
+      "url": "https://www.dobe-game.com/en/productshow-68-1041.html",
+      "title": "Protective Case TY-2835 – For Steam Deck",
+      "publisher": "DOBE (Shenzhen Yuyuanxin Electronic Technology Co., Ltd.)",
+      "retrieved": "2026-11-18",
+      "supports": "model TY-2835 Steam Deck protective case; images show clear PC material"
+    },
+    {
+      "url": "https://www.dobe-game.com/en/productshow-68-1046.html",
+      "title": "Silicone Case TY-2836 – For Steam Deck",
+      "publisher": "DOBE (Shenzhen Yuyuanxin Electronic Technology Co., Ltd.)",
+      "retrieved": "2026-11-18",
+      "supports": "model TY-2836 Steam Deck silicone case, colour options in images"
+    },
+    {
+      "url": "https://ecommerce.datablitz.com.ph/products/dobe-transparent-protective-case-for-steam-deck-ty-2835",
+      "title": "Dobe Transparent Protective Case For Steam Deck TY-2835",
+      "publisher": "Datablitz (retailer, Philippines)",
+      "retrieved": "2026-11-18",
+      "supports": "second source: TY-2835 transparent case; TY-2830 protective case and TY-2836 silicone (black) case listed by the same shop"
+    }
+  ],
+  "notes": {
+    "ar": "في قائمة المالك ثلاثة أسطر: «STEAM DECK CASE DOBE» و«…TRANSPARENT DOBE» و«…SILICON CASE DOBE»؛ جُمعت هنا كأنواع لمنتج واحد.",
+    "en": "The owner's list has three lines — \"STEAM DECK CASE DOBE\", \"…TRANSPARENT DOBE\" and \"…SILICON CASE DOBE\" — gathered here as types of one product.",
+    "ckb": "لیستی خاوەن سێ هێڵی هەیە — «STEAM DECK CASE DOBE»، «…TRANSPARENT DOBE» و «…SILICON CASE DOBE» — لێرە وەک جۆرەکانی یەک بەرهەم کۆکراونەتەوە."
+  },
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "That the plain \"STEAM DECK CASE DOBE\" line is the TY-2830 TPU case (DOBE's only other Steam Deck case types are the clear and silicone ones)",
+      "Colour of the stocked silicone case",
+      "Fit with the Steam Deck OLED"
+    ]
+  }
+}

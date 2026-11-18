@@ -1,0 +1,271 @@
+{
+  "slug": "jys-usb-hub-sdm007",
+  "group": "handheld-pc-accessories",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "JYS",
+  "status": "available",
+  "name": {
+    "ar": "موزع USB رباعي JYS‑SDM007",
+    "en": "JYS‑SDM007 4‑Port USB Mini Hub",
+    "ckb": "هەبی USBی چوار دەروازەی JYS‑SDM007"
+  },
+  "short": {
+    "ar": "يدخل في USB‑A · ‏3 × USB‑A 3.0 + ‏1 × USB‑C · ‏5 Gb/s",
+    "en": "Plugs into USB‑A · 3 × USB‑A 3.0 + 1 × USB‑C · 5 Gb/s",
+    "ckb": "لە USB‑A دادەنرێت · ‏3 × USB‑A 3.0 + ‏1 × USB‑C · ‏5 Gb/s"
+  },
+  "description": {
+    "ar": "موزع USB صغير من JYS بلا كابل، يركَّب مباشرة في منفذ USB‑A 3.0 في جهاز PS5 أو Steam Machine أو الحاسوب، ويضيف ثلاثة منافذ USB‑A 3.0 ومنفذ USB‑C للبيانات بسرعة حتى 5 Gb/s. فيه ضوء LED يبيّن أنه يعمل، ويصلح للماوس والكيبورد والأيدي والفلاشات والأقراص.",
+    "en": "A small cable-free USB hub from JYS that plugs straight into a USB‑A 3.0 port on a PS5, Steam Machine or PC and adds three USB‑A 3.0 ports and one USB‑C data port at up to 5 Gb/s. An LED shows it is on; use it for a mouse, keyboard, controllers, flash drives or disks.",
+    "ckb": "هەبێکی USBی بچووکی JYS بەبێ وایەر کە ڕاستەوخۆ لە دەروازەی USB‑A 3.0ی PS5، Steam Machine یان کۆمپیوتەر دادەنرێت و سێ دەروازەی USB‑A 3.0 و یەک دەروازەی USB‑Cی داتا زیاد دەکات بە خێرایی تا 5 Gb/s. چرایەکی LED نیشانی دەدات کە کار دەکات؛ بۆ ماوس، کیبۆرد، کۆنتڕۆڵەر، فلاش و دیسک."
+  },
+  "highlights": [
+    {
+      "ar": "4 منافذ: ‏3 × USB‑A 3.0 و1 × USB‑C",
+      "en": "4 ports: 3 × USB‑A 3.0 and 1 × USB‑C",
+      "ckb": "4 دەروازە: ‏3 × USB‑A 3.0 و 1 × USB‑C"
+    },
+    {
+      "ar": "نقل بيانات حتى 5 Gb/s",
+      "en": "Data transfer up to 5 Gb/s",
+      "ckb": "گواستنەوەی داتا تا 5 Gb/s"
+    },
+    {
+      "ar": "يركَّب مباشرة بلا كابل",
+      "en": "Plugs in directly, no cable",
+      "ckb": "ڕاستەوخۆ دادەنرێت، بێ وایەر"
+    },
+    {
+      "ar": "للـPS5 وSteam Machine والحاسوب حسب JYS",
+      "en": "For PS5, Steam Machine and PC, per JYS",
+      "ckb": "بۆ PS5، Steam Machine و کۆمپیوتەر بەپێی JYS"
+    },
+    {
+      "ar": "المنافذ للبيانات وليست لشحن الجهاز المضيف",
+      "en": "Ports carry data; it does not charge the host",
+      "ckb": "دەروازەکان بۆ داتان؛ ئامێری سەرەکی شەحن ناکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "JYS‑SDM007‑V2 / JYS‑SDM007",
+        "en": "JYS‑SDM007‑V2 / JYS‑SDM007",
+        "ckb": "JYS‑SDM007‑V2 / JYS‑SDM007"
+      }
+    },
+    {
+      "key": "connector",
+      "label": {
+        "ar": "التوصيل",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "قابس USB‑A 3.0 ذكر",
+        "en": "USB‑A 3.0 male plug",
+        "ckb": "پلاگی USB‑A 3.0"
+      }
+    },
+    {
+      "key": "ports",
+      "label": {
+        "ar": "المنافذ",
+        "en": "Ports",
+        "ckb": "دەروازەکان"
+      },
+      "value": {
+        "ar": "3 × USB‑A 3.0 + ‏1 × USB‑C (بيانات)",
+        "en": "3 × USB‑A 3.0 + 1 × USB‑C (data)",
+        "ckb": "3 × USB‑A 3.0 + ‏1 × USB‑C (داتا)"
+      }
+    },
+    {
+      "key": "speed",
+      "label": {
+        "ar": "سرعة النقل",
+        "en": "Transfer speed",
+        "ckb": "خێرایی گواستنەوە"
+      },
+      "value": {
+        "ar": "5 Gb/s",
+        "en": "5 Gb/s",
+        "ckb": "5 Gb/s"
+      }
+    },
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "PS5، Steam Machine، الحاسوب واللابتوب بمنفذ USB‑A",
+        "en": "PS5, Steam Machine, PCs and laptops with USB‑A",
+        "ckb": "PS5، Steam Machine، کۆمپیوتەر و لاپتۆپی خاوەن USB‑A"
+      }
+    },
+    {
+      "key": "color",
+      "label": {
+        "ar": "اللون",
+        "en": "Colour",
+        "ckb": "ڕەنگ"
+      },
+      "value": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "موزع USB",
+      "en": "USB hub",
+      "ckb": "هەبی USB"
+    },
+    {
+      "ar": "كيس قماشي للحفظ (حسب صورة العلبة)",
+      "en": "Drawstring pouch (as pictured with the box)",
+      "ckb": "کیسەی قوماشی (وەک وێنەی قوتووەکە)"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "JYS-SDM007",
+      "sheetRow": 21,
+      "title": {
+        "ar": "موزع USB رباعي JYS‑SDM007",
+        "en": "JYS‑SDM007 4‑Port USB Mini Hub",
+        "ckb": "هەبی USBی چوار دەروازەی JYS‑SDM007"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "JYS-SDM007-V2",
+      "barcodes": [
+        "5904647834675"
+      ],
+      "isDefault": true,
+      "images": [
+        "jys-usb-hub-sdm007--1"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "أي حاسوب أو لابتوب فيه منفذ USB‑A",
+        "en": "Any PC or laptop with a USB‑A port",
+        "ckb": "هەر کۆمپیوتەر یان لاپتۆپێک کە USB‑A هەبێت"
+      },
+      "source": "https://www.systembank.pl/hub-adapter-usb-3-0-4w1-3x-usb-a-1x-usb-c-5-gb-s-do-ps5-pc-steam-machine-jys-sdm007-v2-p11944.html"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "unverified",
+      "note": {
+        "ar": "JYS تذكر PS5؛ يركَّب في منفذ USB‑A",
+        "en": "JYS lists PS5; it plugs into a USB‑A port",
+        "ckb": "JYS ناوی PS5 دەبات؛ لە دەروازەی USB‑A دادەنرێت"
+      }
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "unverified",
+      "note": {
+        "ar": "JYS تذكر PS5؛ يركَّب في منفذ USB‑A",
+        "en": "JYS lists PS5; it plugs into a USB‑A port",
+        "ckb": "JYS ناوی PS5 دەبات؛ لە دەروازەی USB‑A دادەنرێت"
+      }
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "unverified",
+      "note": {
+        "ar": "JYS تذكر PS5؛ يركَّب في منفذ USB‑A",
+        "en": "JYS lists PS5; it plugs into a USB‑A port",
+        "ckb": "JYS ناوی PS5 دەبات؛ لە دەروازەی USB‑A دادەنرێت"
+      }
+    },
+    {
+      "deviceModel": "steam-deck-oled",
+      "status": "incompatible",
+      "note": {
+        "ar": "لا يوجد في Steam Deck منفذ USB‑A؛ يحتاج محوّل USB‑C",
+        "en": "The Steam Deck has no USB‑A port; it would need a USB‑C adapter",
+        "ckb": "Steam Deck دەروازەی USB‑Aی نییە؛ پێویستی بە ئەداپتەری USB‑C دەبێت"
+      },
+      "source": "https://www.systembank.pl/hub-adapter-usb-3-0-4w1-3x-usb-a-1x-usb-c-5-gb-s-do-ps5-pc-steam-machine-jys-sdm007-v2-p11944.html"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-pro",
+      "kind": "setup"
+    }
+  ],
+  "images": [
+    {
+      "key": "jys-usb-hub-sdm007--1",
+      "file": ".cache/product-images/jys-usb-hub-sdm007/1.jpg",
+      "sourceUrl": "https://www.systembank.pl/img/opis/11944/hub-adapter-usb-3-0-4w1-3x-usb-a-1x-usb-c-5-gb-s-do-ps5-pc-steam-machine-jys-sdm007-v2_o11944_1.jpg",
+      "sourcePage": "https://www.systembank.pl/hub-adapter-usb-3-0-4w1-3x-usb-a-1x-usb-c-5-gb-s-do-ps5-pc-steam-machine-jys-sdm007-v2-p11944.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "موزع JYS SDM007 مع العلبة والكيس",
+        "en": "The JYS SDM007 hub with its box and pouch",
+        "ckb": "هەبی JYS SDM007 لەگەڵ قوتوو و کیسەکەی"
+      },
+      "credit": "JYS Electronics",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.systembank.pl/hub-adapter-usb-3-0-4w1-3x-usb-a-1x-usb-c-5-gb-s-do-ps5-pc-steam-machine-jys-sdm007-v2-p11944.html",
+      "title": "Hub Adapter USB 3.0 4w1 3x USB-A 1x USB-C 5 Gb/s do PS5 / PC Steam Machine / JYS-SDM007-V2",
+      "publisher": "SystemBank (JYS distributor, Poland)",
+      "retrieved": "2026-11-18",
+      "supports": "model JYS-SDM007-V2 / JYS-SDM007, USB-A 3.0 male input, 3 × USB-A 3.0 + 1 × USB-C data, 5 Gb/s, LED, for PS5 / Steam Machine / PC, black, EAN 5904647834675, product image"
+    },
+    {
+      "url": "https://www.morele.net/jys-hub-usb-3-0-4w1-do-ps5-pc-jys-sdm007-v2-sb11944-600229454/",
+      "title": "JYS Hub USB 3.0 4w1 do PS5 / PC JYS-SDM007-V2 (SB11944)",
+      "publisher": "Morele.net (retailer, Poland)",
+      "retrieved": "2026-11-18",
+      "supports": "second source: 4-in-1 USB 3.0 hub, 3 × USB-A + 1 × USB-C, 5 Gb/s, for PS5 / PC"
+    }
+  ],
+  "notes": {
+    "ar": "اسم المنتج في قائمة المالك يذكره بين إكسسوارات الأجهزة المحمولة، لكنه يحتاج منفذ USB‑A؛ أجهزة Steam Deck وROG Ally فيها منافذ USB‑C فقط.",
+    "en": "The owner's list files it with handheld accessories, but it needs a USB‑A port; the Steam Deck and ROG Ally have only USB‑C ports.",
+    "ckb": "لیستی خاوەن لەگەڵ ئامێرە دەستییەکان داینراوە، بەڵام پێویستی بە دەروازەی USB‑A هەیە؛ Steam Deck و ROG Ally تەنها USB‑Cیان هەیە."
+  },
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "No JYS web page found; facts come from JYS's Polish distributor and retailers",
+      "Exact fit on each PS5 model's USB-A port position",
+      "Whether the stocked unit is the V2 revision"
+    ]
+  }
+}

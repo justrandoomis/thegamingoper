@@ -1,0 +1,248 @@
+{
+  "slug": "dobe-controller-carry-case",
+  "group": "ps5-bags-cases-skins",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "DOBE",
+  "status": "available",
+  "name": {
+    "ar": "حقيبة يد التحكم DOBE",
+    "en": "DOBE Controller Carry Case",
+    "ckb": "جانتای دەسکی یاری DOBE"
+  },
+  "short": {
+    "ar": "حقيبة صلبة بسحّاب لذراع DualSense وأذرع Xbox وSwitch Pro",
+    "en": "Zippered hard case for a DualSense, Xbox or Switch Pro controller",
+    "ckb": "جانتای ڕەقی زیپدار بۆ دەسکی DualSense، Xbox یان Switch Pro"
+  },
+  "description": {
+    "ar": "حقيبة صغيرة صلبة من DOBE تحفظ يد تحكم واحدة من الصدمات والغبار في البيت أو السفر. من الخارج قماش EVA مغطّى بطبقة PU مقاومة للماء، ومن الداخل قالب على شكل اليد وجيب شبكي للكابل. تناسب يد DualSense ويد PS4 وأذرع Xbox وSwitch Pro.",
+    "en": "A small hard case from DOBE that keeps one controller safe from knocks and dust at home or on the road. The outside is EVA with a water-resistant PU coating; inside there is a controller-shaped tray and a mesh pocket for a cable. It fits the DualSense, the PS4 controller, Xbox controllers and the Switch Pro Controller.",
+    "ckb": "جانتایەکی بچووکی ڕەقی DOBE کە دەسکێکی یاری لە لێدان و تۆز دەپارێزێت لە ماڵەوە یان لە گەشتدا. دەرەوەی EVAیە بە چینێکی PUی بەرگری ئاو، ناوەوەشی شوێنێکی بە شێوەی دەسک و گیرفانێکی تۆڕی بۆ کێبڵ هەیە. بۆ DualSense، دەسکی PS4، دەسکەکانی Xbox و Switch Pro Controller دەگونجێت."
+  },
+  "highlights": [
+    {
+      "ar": "تحمي يد تحكم واحدة من الصدمات والغبار",
+      "en": "Protects one controller from knocks and dust",
+      "ckb": "دەسکێک لە لێدان و تۆز دەپارێزێت"
+    },
+    {
+      "ar": "تناسب DualSense ويد PS4 وأذرع Xbox وSwitch Pro",
+      "en": "Fits DualSense, PS4, Xbox and Switch Pro controllers",
+      "ckb": "بۆ دەسکەکانی DualSense، PS4، Xbox و Switch Pro دەگونجێت"
+    },
+    {
+      "ar": "غلاف EVA مع طبقة PU مقاومة للماء وسحّاب ومقبض",
+      "en": "EVA shell with water-resistant PU coating, zip and carry handle",
+      "ckb": "قاڵبی EVA بە چینی PUی بەرگری ئاو، زیپ و دەسگرە"
+    },
+    {
+      "ar": "وزن خفيف نحو 245 غرام",
+      "en": "Light, about 245 g",
+      "ckb": "سووک، نزیکەی 245 گرام"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "TY-18177",
+        "en": "TY-18177",
+        "ckb": "TY-18177"
+      }
+    },
+    {
+      "key": "material",
+      "label": {
+        "ar": "المادة",
+        "en": "Material",
+        "ckb": "ماددە"
+      },
+      "value": {
+        "ar": "EVA مقاوم للصدمات مع طبقة PU",
+        "en": "Shockproof EVA with PU coating",
+        "ckb": "EVAی بەرگری لێدان بە چینی PU"
+      }
+    },
+    {
+      "key": "fits",
+      "label": {
+        "ar": "يناسب",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "DualSense، يد PS4، Xbox Series و Xbox One، Switch Pro",
+        "en": "DualSense, PS4 controller, Xbox Series and Xbox One, Switch Pro",
+        "ckb": "DualSense، دەسکی PS4، Xbox Series و Xbox One، Switch Pro"
+      }
+    },
+    {
+      "key": "weight",
+      "label": {
+        "ar": "الوزن",
+        "en": "Weight",
+        "ckb": "کێش"
+      },
+      "value": {
+        "ar": "نحو 245 غرام",
+        "en": "About 245 g",
+        "ckb": "نزیکەی 245 گرام"
+      }
+    },
+    {
+      "key": "color",
+      "label": {
+        "ar": "اللون",
+        "en": "Colour",
+        "ckb": "ڕەنگ"
+      },
+      "value": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "حقيبة يد التحكم",
+      "en": "Controller carry case",
+      "ckb": "جانتای دەسکی یاری"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DOBE-TY-18177",
+      "sheetRow": 85,
+      "title": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "TY-18177",
+      "isDefault": true,
+      "images": [
+        "dobe-controller-carry-case--1"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "تحمل يد DualSense، لا الجهاز",
+        "en": "Holds the DualSense controller, not the console",
+        "ckb": "دەسکی DualSense هەڵدەگرێت، نەک کۆنسۆڵەکە"
+      },
+      "source": "https://www.pbtech.com/product/GAMDBE3583/DOBE-Controller-Carry-Case-Black-Suits-XBOX-Switch"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "verified",
+      "note": {
+        "ar": "تحمل يد DualSense، لا الجهاز",
+        "en": "Holds the DualSense controller, not the console",
+        "ckb": "دەسکی DualSense هەڵدەگرێت، نەک کۆنسۆڵەکە"
+      },
+      "source": "https://www.pbtech.com/product/GAMDBE3583/DOBE-Controller-Carry-Case-Black-Suits-XBOX-Switch"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "تحمل يد DualSense، لا الجهاز",
+        "en": "Holds the DualSense controller, not the console",
+        "ckb": "دەسکی DualSense هەڵدەگرێت، نەک کۆنسۆڵەکە"
+      },
+      "source": "https://www.pbtech.com/product/GAMDBE3583/DOBE-Controller-Carry-Case-Black-Suits-XBOX-Switch"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "verified",
+      "note": {
+        "ar": "تحمل يد DualSense، لا الجهاز",
+        "en": "Holds the DualSense controller, not the console",
+        "ckb": "دەسکی DualSense هەڵدەگرێت، نەک کۆنسۆڵەکە"
+      },
+      "source": "https://www.pbtech.com/product/GAMDBE3583/DOBE-Controller-Carry-Case-Black-Suits-XBOX-Switch"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "verified",
+      "note": {
+        "ar": "تحمل يد DualSense، لا الجهاز",
+        "en": "Holds the DualSense controller, not the console",
+        "ckb": "دەسکی DualSense هەڵدەگرێت، نەک کۆنسۆڵەکە"
+      },
+      "source": "https://www.pbtech.com/product/GAMDBE3583/DOBE-Controller-Carry-Case-Black-Suits-XBOX-Switch"
+    }
+  ],
+  "related": [
+    {
+      "slug": "dualsense",
+      "kind": "setup"
+    },
+    {
+      "slug": "ps5-pro-carrying-bag",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "dobe-controller-carry-case--1",
+      "file": ".cache/product-images/dobe-controller-carry-case/2.jpg",
+      "sourceUrl": "https://www.pbtech.com/imgprod/G/A/GAMDBE3583__2.jpg",
+      "sourcePage": "https://www.pbtech.com/product/GAMDBE3583/DOBE-Controller-Carry-Case-Black-Suits-XBOX-Switch",
+      "kind": "hero",
+      "alt": {
+        "ar": "الحقيبة من الأعلى",
+        "en": "The case from above",
+        "ckb": "جانتاکە لە سەرەوە"
+      },
+      "credit": "DOBE",
+      "width": 1600,
+      "height": 1600,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.pbtech.com/product/GAMDBE3583/DOBE-Controller-Carry-Case-Black-Suits-XBOX-Switch",
+      "title": "DOBE Controller Carry Case (Black) Suits XBOX, Switch Pro, PS5 and PS4 Controllers",
+      "publisher": "PB Tech",
+      "retrieved": "2026-11-18",
+      "supports": "brand DOBE, model TY-18177, EVA + PU material, zip and handle, compatible controllers, weight 245 g, contents, product images"
+    },
+    {
+      "url": "https://ecommerce.datablitz.com.ph/products/dobe-controller-storage-bag-for-ps4-ps5-nintendo-switch-xboxone-xbox-series-s-x-google-controller-black-ty-18177",
+      "title": "Dobe Controller Storage Bag for PS4/PS5/Nintendo Switch/XboxOne/Xbox Series S/X/Google Controller (Black) TY-18177",
+      "publisher": "DataBlitz",
+      "retrieved": "2026-11-18",
+      "supports": "second confirmation of model TY-18177, colour black and the compatible controllers"
+    }
+  ],
+  "notes": {
+    "ar": "حقيبة ليد تحكم واحدة فقط؛ الجهاز لا يدخل فيها.",
+    "en": "Holds one controller only; the console does not fit.",
+    "ckb": "تەنها یەک دەسک هەڵدەگرێت؛ کۆنسۆڵ تێیدا جێ نابێتەوە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "No DOBE maker page for TY-18177 was found; facts come from two retailers",
+      "Which DOBE bag the shop stocks as 'PS5 BAG DOBE' was inferred from its price (a controller bag; DOBE's console case TP5-5511 sells for about twice as much)",
+      "Exact dimensions"
+    ]
+  }
+}

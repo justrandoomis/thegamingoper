@@ -1,0 +1,64 @@
+{
+  "key": "reanimal--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/reanimal/2-240.4fcd264c.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/reanimal/2-480.9bc164e7.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/reanimal/2-720.540cd5b7.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/reanimal/2-960.6fd6cc2b.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/reanimal/2-1440.e86df866.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/reanimal/2-240.03f5162e.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/reanimal/2-480.a30c2a25.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/reanimal/2-720.997c967a.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/reanimal/2-960.2b1fa24c.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/reanimal/2-1440.e6c620d8.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAACwAwCdASoUAAsAPxF0sFCsJqSisAgBgCIJYgCdABucNmoRUHYCwAD+7qFR4xJ+L4tUjdGCXjlWo/4np1ZtllUoYBEAAA==",
+  "dominant": "#010a17",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "THQ Nordic",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202601/2110/ca5913bd394e560acf4e8f9dc8e98a0df31b07278ade9e3f.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP4389-PPSA23372_00-ANIMALGAMEGLOBAL"
+  },
+  "input": "02631713dad3654b"
+}

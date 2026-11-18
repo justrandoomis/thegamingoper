@@ -1,0 +1,111 @@
+{
+  "slug": "switch-accessory-kit-24-in-1",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "طقم ملحقات 24 في 1 لجهاز Nintendo Switch",
+    "en": "24‑in‑1 Accessory Kit for Nintendo Switch",
+    "ckb": "کۆمەڵەی پاشکۆی 24 لە 1 بۆ Nintendo Switch"
+  },
+  "short": {
+    "ar": "حقيبة وواقي شاشة وقطع إضافية في علبة واحدة",
+    "en": "Bag, screen protector and add-ons in one box",
+    "ckb": "جانتا، پارێزەری شاشە و پارچەی زیادە لە یەک قوتوودا"
+  },
+  "description": {
+    "ar": "طقم ملحقات غير رسمي يجمع 24 قطعة لجهاز Nintendo Switch: عادةً حقيبة حمل وواقي شاشة وأغطية وقبضات وقطع أخرى. المحتوى الدقيق يختلف من مصنّع لآخر — راجع العلبة.",
+    "en": "An unofficial 24-piece accessory kit for Nintendo Switch: usually a carrying bag, screen protector, covers, grips and other pieces. The exact contents differ by maker — check the box.",
+    "ckb": "کۆمەڵەیەکی پاشکۆی نافەرمیی 24 پارچەیی بۆ Nintendo Switch: زۆربەی جار جانتا، پارێزەری شاشە، بەرگ، دەسگرە و پارچەی تر. ناوەڕۆکی ورد بەپێی دروستکەر جیاوازە — قوتووەکە ببینە."
+  },
+  "highlights": [
+    {
+      "ar": "عدة ملحقات في علبة واحدة",
+      "en": "Many accessories in one box",
+      "ckb": "چەندین پاشکۆ لە یەک قوتوودا"
+    },
+    {
+      "ar": "ليس منتجًا رسميًا من Nintendo",
+      "en": "Not an official Nintendo product",
+      "ckb": "بەرهەمی فەرمیی Nintendo نییە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "pieces",
+      "label": {
+        "ar": "عدد القطع",
+        "en": "Pieces",
+        "ckb": "ژمارەی پارچە"
+      },
+      "value": {
+        "ar": "24",
+        "en": "24",
+        "ckb": "24"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "SW-KIT-24IN1",
+      "sheetRow": 198,
+      "title": {
+        "ar": "طقم ملحقات 24 في 1 لجهاز Nintendo Switch",
+        "en": "24‑in‑1 Accessory Kit for Nintendo Switch",
+        "ckb": "کۆمەڵەی پاشکۆی 24 لە 1 بۆ Nintendo Switch"
+      },
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch",
+      "status": "unverified",
+      "note": {
+        "ar": "حسب ورقة المخزن «SW KIT»",
+        "en": "Per the stock sheet \"SW KIT\"",
+        "ckb": "بەپێی لیستی کۆگا «SW KIT»"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch",
+      "kind": "setup"
+    },
+    {
+      "slug": "nintendo-switch-oled",
+      "kind": "setup"
+    },
+    {
+      "slug": "switch-joy-con-charging-dock",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://carrefouruae.com/mafuae/en/nintendo-accessories/accessories-bundle-for-nintendo-switch-oled-model-2021-super-kit-with-carrying-case-screen-protector-steering-wheels-joycon-grips-charging-dock-playstand-protective-case-and-more-23-in-1-/p/3233001947637",
+      "title": "Accessories bundle for Nintendo Switch OLED – super kit (23 in 1)",
+      "publisher": "Carrefour UAE",
+      "retrieved": "2026-11-18",
+      "supports": "typical contents of multi-piece Switch accessory kits"
+    },
+    {
+      "url": "https://aio.lv/en/product--jys-sb6915--4821763",
+      "title": "Accessory set for Nintendo Switch OLED JYS 10-in-1",
+      "publisher": "AIO.lv",
+      "retrieved": "2026-11-18",
+      "supports": "second example of Switch accessory sets"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Maker and exact 24 pieces",
+      "Whether the kit is for Switch, Switch OLED or both"
+    ]
+  }
+}

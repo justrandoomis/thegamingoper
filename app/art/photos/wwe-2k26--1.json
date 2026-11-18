@@ -1,0 +1,62 @@
+{
+  "key": "wwe-2k26--1",
+  "view": "hero",
+  "width": 1067,
+  "height": 1600,
+  "aspect": 0.6669,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/wwe-2k26/1-240.8cb1cb3d.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/wwe-2k26/1-480.d976a64b.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/wwe-2k26/1-720.6bdd9e37.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/wwe-2k26/1-960.c66ec137.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/wwe-2k26/1-240.c73988a7.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/wwe-2k26/1-480.16fd8fbf.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/wwe-2k26/1-720.1ee33ef6.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/wwe-2k26/1-960.ecf5314f.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/wwe-2k26/1-1067.d231962c.jpg",
+    "width": 1067,
+    "height": 1600,
+    "type": "image/jpeg"
+  },
+  "placeholder": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAADwAwCdASoNABQAPxFysFAsJqSisAgBgCIJaAAAXGnk100GwY/3v5oAAP7MamgDo71fWNyGzcF/AOtb+4YrAzSppQoS407POBx4XYa4zbMWiBWLfp+3pqgLV3RK9DNMrax9k/behSA9BJHqvs6AAA==",
+  "dominant": "#040306",
+  "transparent": false,
+  "background": null,
+  "kind": "box-art",
+  "credit": "2K",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202601/1209/f0440827160fa1f2f757f957b32b09d8ca7bd02311f43146.png",
+    "page": "https://store.playstation.com/en-gb/product/UP1001-PPSA34299_00-WWE2K26000000000"
+  },
+  "input": "eb6b6d6131e67c60"
+}

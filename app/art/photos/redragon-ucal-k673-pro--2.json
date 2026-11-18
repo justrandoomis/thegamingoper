@@ -1,0 +1,64 @@
+{
+  "key": "redragon-ucal-k673-pro--2",
+  "view": "hero",
+  "width": 1546,
+  "height": 753,
+  "aspect": 2.0531,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/redragon-ucal-k673-pro/2-240.1d1e65fc.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-ucal-k673-pro/2-480.51451894.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-ucal-k673-pro/2-720.8183b927.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-ucal-k673-pro/2-960.cccf3f7f.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/redragon-ucal-k673-pro/2-1440.5cfbd3c1.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/redragon-ucal-k673-pro/2-240.cc88f80c.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-ucal-k673-pro/2-480.63288eff.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-ucal-k673-pro/2-720.37f3558d.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-ucal-k673-pro/2-960.b488cdab.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/redragon-ucal-k673-pro/2-1440.bd04b95b.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRtIAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSE8AAAART6C2kaQ2+R185j2QEREB9fCTuC7YxrYVhZ2UUihhLQE13X9sJDXYgfTro4aI/k8AG81lmoieptjX/63r0HikAhIr4jd4uS91uojawkYBAFZQOCBcAAAAsAMAnQEqFAAKAD8RcLBQLCYkorAIAYAiCWcAAF3P7Jwr2PNfmAAA9Y7WGg0hur0i399gTRV/1RBZvlQICMHwCkWRfTZTZKPl4qr0p+Oxv60g3lvuFtaPyGFYAAA=",
+  "dominant": "#e7e7e7",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Redragon",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/RedragonK673PRO75_WirelessGasketRGBKeyboard_2.png",
+    "page": "https://redragonshop.com/products/ucal-k673-pro-75-keyboard"
+  },
+  "input": "f7de5a75e80a2672"
+}

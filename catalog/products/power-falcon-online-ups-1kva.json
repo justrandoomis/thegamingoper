@@ -1,0 +1,92 @@
+{
+  "slug": "power-falcon-online-ups-1kva",
+  "group": "power-cables-storage-misc",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "ups-power",
+  "brand": "Power Falcon",
+  "status": "available",
+  "name": {
+    "ar": "جهاز UPS أونلاين 1KVA من Power Falcon",
+    "en": "Power Falcon Online UPS 1KVA",
+    "ckb": "ئامێری UPSی ئۆنلاینی 1KVAی Power Falcon"
+  },
+  "short": {
+    "ar": "تحويل مزدوج · صفر زمن تحويل · موجة جيبية نقية · شاشة LCD",
+    "en": "Double conversion · zero transfer time · pure sine wave · LCD",
+    "ckb": "گۆڕینی دووانە · سفر کاتی گواستنەوە · شەپۆلی سینیی پاک · شاشەی LCD"
+  },
+  "description": {
+    "ar": "جهاز UPS أونلاين حقيقي بقدرة 1KVA يعمل بالتحويل المزدوج: يمر التيار دائماً عبر الجهاز فيخرج نظيفاً بموجة جيبية نقية، وعند انقطاع الكهرباء لا يوجد أي زمن تحويل فلا ينطفئ الجهاز ولا يعيد التشغيل. هذا النوع أفضل حماية لجهاز ألعاب أو حاسوب قوي مع كهرباء المولدات المتقلبة. شاشة LCD تعرض الحالة، وتكفي البطارية نحو 10–15 دقيقة عند نصف الحمل للحفظ والإطفاء الآمن.",
+    "en": "A true online 1KVA UPS using double conversion: power always passes through the unit and comes out clean as a pure sine wave, and when the mains drops there is no transfer time at all, so nothing switches off or reboots. This type gives the best protection for a console or a powerful PC on unstable generator power. An LCD shows the status, and the battery gives about 10–15 minutes at half load to save and shut down safely.",
+    "ckb": "ئامێرێکی UPSی ئۆنلاینی ڕاستەقینە بە توانای 1KVA کە بە گۆڕینی دووانە کار دەکات: کارەبا هەمیشە بە ئامێرەکەدا تێدەپەڕێت و بە شەپۆلی سینیی پاک پاک دەردەچێت، و کاتێک کارەبا دەبڕێت هیچ کاتی گواستنەوە نییە، بۆیە هیچ شتێک ناکوژێتەوە و دووبارە هەڵناکرێتەوە. ئەم جۆرە باشترین پاراستنە بۆ کۆنسۆڵ یان کۆمپیوتەرێکی بەهێز لەگەڵ کارەبای ناجێگیری مۆلیدە. شاشەی LCD بارودۆخەکە پیشان دەدات، و پاتری لە نیوەی باردا نزیکەی 10–15 خولەک بەس دەکات بۆ پاشەکەوتکردن و کوژاندنەوەی سەلامەت."
+  },
+  "highlights": [
+    { "ar": "أونلاين حقيقي بالتحويل المزدوج", "en": "True online double conversion", "ckb": "ئۆنلاینی ڕاستەقینە بە گۆڕینی دووانە" },
+    { "ar": "صفر زمن تحويل عند الانقطاع", "en": "Zero transfer time on a power cut", "ckb": "سفر کاتی گواستنەوە لە کاتی بڕانی کارەبا" },
+    { "ar": "خرج بموجة جيبية نقية", "en": "Pure sine wave output", "ckb": "دەرچووی شەپۆلی سینیی پاک" },
+    { "ar": "شاشة LCD وحماية من الحمل الزائد", "en": "LCD panel and overload protection", "ckb": "شاشەی LCD و پاراستن لە بارگرانی" },
+    { "ar": "نحو 10–15 دقيقة عند نصف الحمل", "en": "About 10–15 minutes at half load", "ckb": "نزیکەی 10–15 خولەک لە نیوەی باردا" }
+  ],
+  "specs": [
+    { "key": "type", "label": { "ar": "النوع", "en": "Type", "ckb": "جۆر" }, "value": { "ar": "أونلاين بالتحويل المزدوج", "en": "Online, double conversion", "ckb": "ئۆنلاین، گۆڕینی دووانە" } },
+    { "key": "capacity", "label": { "ar": "القدرة", "en": "Capacity", "ckb": "توانا" }, "value": { "ar": "1KVA", "en": "1KVA", "ckb": "1KVA" } },
+    { "key": "transfer", "label": { "ar": "زمن التحويل", "en": "Transfer time", "ckb": "کاتی گواستنەوە" }, "value": { "ar": "0 ملي ثانية", "en": "0 ms", "ckb": "0 میلی چرکە" } },
+    { "key": "waveform", "label": { "ar": "شكل الموجة", "en": "Waveform", "ckb": "شێوەی شەپۆل" }, "value": { "ar": "جيبية نقية", "en": "Pure sine wave", "ckb": "سینیی پاک" } },
+    { "key": "runtime", "label": { "ar": "مدة البطارية", "en": "Battery runtime", "ckb": "ماوەی پاتری" }, "value": { "ar": "نحو 10–15 دقيقة عند نصف الحمل", "en": "About 10–15 min at half load", "ckb": "نزیکەی 10–15 خولەک لە نیوەی باردا" } },
+    { "key": "cable", "label": { "ar": "كابل الدخل", "en": "Input cable", "ckb": "کێبڵی هاتوو" }, "value": { "ar": "1.8 متر", "en": "1.8 m", "ckb": "1.8 مەتر" } }
+  ],
+  "variants": [
+    {
+      "sku": "PF-ONLINE-1KVA-V1",
+      "sheetRow": 217,
+      "title": { "ar": "الإصدار 1", "en": "Version 1", "ckb": "وەشانی 1" },
+      "options": { "capacity": "1KVA", "version": "1" },
+      "isDefault": true,
+      "notes": {
+        "ar": "يظهر في قائمة المخزن مرتين بسعرين مختلفين؛ اسأل المتجر عن الفرق بين الإصدارين.",
+        "en": "Listed twice in the stock list at two prices; ask the store what differs between the two versions.",
+        "ckb": "لە لیستی کۆگادا دوو جار بە دوو نرخی جیاواز هاتووە؛ جیاوازیی نێوان دوو وەشانەکە لە فرۆشگا بپرسە."
+      }
+    },
+    {
+      "sku": "PF-ONLINE-1KVA-V2",
+      "sheetRow": 218,
+      "title": { "ar": "الإصدار 2", "en": "Version 2", "ckb": "وەشانی 2" },
+      "options": { "capacity": "1KVA", "version": "2" },
+      "isDefault": false
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    { "slug": "power-falcon-ups", "kind": "alternative" },
+    { "slug": "star-power-ups-2000va", "kind": "alternative" },
+    { "slug": "playstation-5-pro", "kind": "setup" }
+  ],
+  "images": [],
+  "sources": [
+    {
+      "url": "https://www.lezzoo.com/erbil/m/ari-gaming-1542/power-falcon-online-ups-1kva-2445940",
+      "title": "Power Falcon Online UPS 1KVA",
+      "publisher": "Ari Gaming on Lezzoo (Erbil retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "true online double conversion, 0 ms transfer, pure sine wave, LCD, overload protection, 1.8 m input cable, 10-15 min at half load"
+    },
+    {
+      "url": "https://www.elryan.com/en/power-falcon-online-ups-2kva-double-conversion-instant-protection-black-832994.html",
+      "title": "Power Falcon - Online UPS 2KVA - Double Conversion & Instant Protection - Black",
+      "publisher": "Elryan (Iraqi retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "Power Falcon's online range uses double conversion with instant (no-break) protection"
+    }
+  ],
+  "verification": {
+    "checkedBy": "power-cables-storage-misc",
+    "secondSource": true,
+    "unverified": [
+      "Owner sheet lists \"UPS 1K ONLINE FALCON\" (260,000 IQD) and \"UPS 1K ONLINE FALCON QQ\" (116,000 IQD) with no other difference; they are kept as Version 1 and Version 2",
+      "Wattage, battery count/size and model number",
+      "No maker website or clean maker image found"
+    ]
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "slug": "powera-twin-charging-station-dualsense",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "PowerA",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة الشحن PowerA Twin Charging Station لـ DualSense",
+    "en": "PowerA Twin Charging Station for DualSense",
+    "ckb": "وێستگەی شەحنی PowerA Twin Charging Station بۆ DualSense"
+  },
+  "short": {
+    "ar": "مرخّصة رسمياً لـ PS5 · يدان معاً · محوّل كهرباء AC",
+    "en": "Officially licensed for PS5 · Two controllers · AC adapter",
+    "ckb": "مۆڵەتی فەرمی PS5 · دوو کۆنتڕۆڵەر · ئەداپتەری AC"
+  },
+  "description": {
+    "ar": "قاعدة شحن من PowerA مرخّصة رسمياً لـ PlayStation 5، تشحن يدَي DualSense معاً. تضغط اليد للأسفل فتبدأ الشحن وتضيء القاعدة، وتعمل بمحوّل كهرباء خاص فلا تشغل منافذ الجهاز.",
+    "en": "PowerA's officially licensed PlayStation 5 station that charges two DualSense controllers at once. Snap a controller down to start charging and light the base; it runs from its own AC adapter, so the console's ports stay free.",
+    "ckb": "وێستگەیەکی PowerA بە مۆڵەتی فەرمی PlayStation 5 کە دوو DualSense پێکەوە شەحن دەکات. کۆنتڕۆڵەر بۆ خوارەوە دابگرە بۆ دەستپێکردنی شەحن؛ بە ئەداپتەری کارەبای خۆی کار دەکات."
+  },
+  "highlights": [
+    {
+      "ar": "مرخّصة رسمياً من PlayStation",
+      "en": "Officially licensed by PlayStation",
+      "ckb": "مۆڵەتی فەرمی PlayStation"
+    },
+    {
+      "ar": "تشحن يدَي DualSense معاً",
+      "en": "Charges two DualSense controllers together",
+      "ckb": "دوو DualSense پێکەوە شەحن دەکات"
+    },
+    {
+      "ar": "محوّل AC مرفق",
+      "en": "AC adapter included",
+      "ckb": "ئەداپتەری AC لەگەڵیدایە"
+    },
+    {
+      "ar": "ضمان محدود لسنتين من PowerA",
+      "en": "Two‑year limited warranty from PowerA",
+      "ckb": "گەرەنتی سنووردار بۆ دوو ساڵ لە PowerA"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "1516956‑01",
+        "en": "1516956‑01",
+        "ckb": "1516956‑01"
+      }
+    },
+    {
+      "key": "controllers",
+      "label": {
+        "ar": "عدد الأيدي",
+        "en": "Controllers",
+        "ckb": "ژمارەی کۆنتڕۆڵەر"
+      },
+      "value": {
+        "ar": "2 × DualSense",
+        "en": "2 × DualSense",
+        "ckb": "2 × DualSense"
+      }
+    },
+    {
+      "key": "power",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "وزە"
+      },
+      "value": {
+        "ar": "محوّل AC (مرفق)",
+        "en": "AC adapter (included)",
+        "ckb": "ئەداپتەری AC (لەگەڵیدایە)"
+      }
+    },
+    {
+      "key": "warranty",
+      "label": {
+        "ar": "الضمان",
+        "en": "Warranty",
+        "ckb": "گەرەنتی"
+      },
+      "value": {
+        "ar": "سنتان، ضمان محدود من PowerA",
+        "en": "2 years, PowerA limited warranty",
+        "ckb": "2 ساڵ، گەرەنتی سنووردار لە PowerA"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قاعدة الشحن",
+      "en": "Charging station",
+      "ckb": "وێستگەی شەحن"
+    },
+    {
+      "ar": "محوّل AC",
+      "en": "AC adapter",
+      "ckb": "ئەداپتەری AC"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "POWERA-1516956",
+      "title": {
+        "ar": "قاعدة الشحن PowerA Twin Charging Station لـ DualSense",
+        "en": "PowerA Twin Charging Station for DualSense",
+        "ckb": "وێستگەی شەحنی PowerA Twin Charging Station بۆ DualSense"
+      },
+      "options": {
+        "color": "White"
+      },
+      "modelNumber": "1516956-01",
+      "barcodes": [
+        "617885024009"
+      ],
+      "sheetRow": 101,
+      "isDefault": true,
+      "images": [
+        "powera-twin-charging-station-dualsense--1",
+        "powera-twin-charging-station-dualsense--2"
+      ]
+    }
+  ],
+  "related": [
+    {
+      "slug": "dualsense",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-edge",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-charging-station",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ipega-pg-p5003-charging-station",
+      "kind": "alternative"
+    },
+    {
+      "slug": "dobe-ps5-dual-charging-dock",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ps5-controller-dual-charging-dock",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "powera-twin-charging-station-dualsense--1",
+      "file": ".cache/product-images/powera-twin-charging-station-dualsense/1.png",
+      "sourceUrl": "https://media.accobrands.com/media/1500-1500/578099.jpg",
+      "sourcePage": "https://www.powera.com/p/playstation/playstation-5/charging/twin-charging-station-for-dualsense-wireless-controllers-1516956-01",
+      "kind": "hero",
+      "alt": {
+        "ar": "قاعدة PowerA وعليها يدا DualSense",
+        "en": "The PowerA station with two DualSense controllers",
+        "ckb": "وێستگەی PowerA لەگەڵ دوو DualSense"
+      },
+      "credit": "PowerA (ACCO Brands)",
+      "width": 1500,
+      "height": 1320,
+      "transparent": true
+    },
+    {
+      "key": "powera-twin-charging-station-dualsense--2",
+      "file": ".cache/product-images/powera-twin-charging-station-dualsense/2.png",
+      "sourceUrl": "https://media.accobrands.com/media/1500-1500/578098.jpg",
+      "sourcePage": "https://www.powera.com/p/playstation/playstation-5/charging/twin-charging-station-for-dualsense-wireless-controllers-1516956-01",
+      "kind": "angle",
+      "alt": {
+        "ar": "القاعدة فارغة",
+        "en": "The empty station",
+        "ckb": "وێستگەکە بە بەتاڵی"
+      },
+      "credit": "PowerA (ACCO Brands)",
+      "width": 1500,
+      "height": 1410,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.powera.com/p/playstation/playstation-5/charging/twin-charging-station-for-dualsense-wireless-controllers-1516956-01",
+      "title": "Twin Charging Station for DualSense Wireless Controllers",
+      "publisher": "PowerA (official site)",
+      "retrieved": "2026-11-18",
+      "supports": "officially licensed, charges 2 DualSense, snap-down design, powered by AC adapter, two-year limited warranty, UPC, pictures"
+    },
+    {
+      "url": "https://www.currys.co.uk/products/powera-ps5-dualsense-twin-charging-station-white-10270528.html",
+      "title": "POWERA PS5 DualSense Twin Charging Station - White",
+      "publisher": "Currys (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "fact-check: AC adapter in the box, 2-year guarantee, white"
+    }
+  ],
+  "notes": {
+    "ar": "اليدان غير مرفقتين. شكل قابس المحوّل يختلف حسب منطقة البيع.",
+    "en": "Controllers not included. The adapter's plug type depends on the sales region.",
+    "ckb": "کۆنتڕۆڵەرەکان لەگەڵیدا نین. جۆری پلاکی ئەداپتەر بەپێی ناوچە جیاوازە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "Regional model number of the unit in stock (PowerA lists 1516956-01/-04; other regions use PSPW0387-01)",
+      "DualSense Edge fit (only some retailers say so)"
+    ]
+  }
+}

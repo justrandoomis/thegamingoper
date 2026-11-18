@@ -1,0 +1,64 @@
+{
+  "key": "mortal-kombat-1--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/mortal-kombat-1/2-240.1c1878df.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/mortal-kombat-1/2-480.0a8a8935.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/mortal-kombat-1/2-720.d98a6711.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/mortal-kombat-1/2-960.38d6f348.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/mortal-kombat-1/2-1440.e796c945.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/mortal-kombat-1/2-240.cbfae5e6.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/mortal-kombat-1/2-480.07b98d4d.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/mortal-kombat-1/2-720.3c471ac5.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/mortal-kombat-1/2-960.52302303.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/mortal-kombat-1/2-1440.566e57e4.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAAAwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJQAALgt+8EqUAAP6jchYcglUAcbZHDZpJ8xdeL3ZJ1fm7dk2enPLxLGH6Mt4SKnxbgXrPP4AAAA==",
+  "dominant": "#020101",
+  "transparent": false,
+  "background": "#000000",
+  "kind": "screenshot",
+  "credit": "Warner Bros. Games",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202305/1918/593e02c3500e5746bf667da7298bc5f731384f5db7c2e3bf.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP1018-PPSA07571_00-MKONE00000000000"
+  },
+  "input": "93a7343cf0156e46"
+}

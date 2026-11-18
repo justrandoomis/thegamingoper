@@ -1,0 +1,64 @@
+{
+  "key": "it-takes-two--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/it-takes-two/2-240.a7c2e813.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/it-takes-two/2-480.0acbf7bd.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/it-takes-two/2-720.ef758480.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/it-takes-two/2-960.d0bea169.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/it-takes-two/2-1440.5f9c2166.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/it-takes-two/2-240.46647c3e.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/it-takes-two/2-480.cd4f2555.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/it-takes-two/2-720.e0faa8dd.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/it-takes-two/2-960.d0f611ff.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/it-takes-two/2-1440.129cb558.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJagCdEf/gE1z52Z3XL2ywAP5lk77gnyQdxLhyEgIJbPb9hztg0OOc67EDDce9L3r4OFqrSbSnpZgpAzG4vG/bZ0rQikat0d5e2QwX16i9TlaxJUdUDpf589bjIAAA",
+  "dominant": "#eab79a",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Electronic Arts",
+  "source": {
+    "url": "https://gmedia.playstation.com/is/image/SIEPDC/it-takes-two-screen-01-ps5-en-29jan21?$1600px$",
+    "page": "https://www.playstation.com/en-gb/games/it-takes-two/"
+  },
+  "input": "3d27378e7775181a"
+}

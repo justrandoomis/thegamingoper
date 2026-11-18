@@ -1,0 +1,194 @@
+{
+  "slug": "maono-dm30",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Maono",
+  "category": "microphones",
+  "status": "available",
+  "name": {
+    "ar": "مايكروفون Maono DM30",
+    "en": "Maono DM30",
+    "ckb": "مایکرۆفۆنی Maono DM30"
+  },
+  "short": {
+    "ar": "مايكروفون USB‑C مكثف · قلبي · إضاءة RGB",
+    "en": "USB-C condenser mic · cardioid · RGB",
+    "ckb": "مایکی USB‑Cی کۆندێنسەر · دڵی · RGB"
+  },
+  "description": {
+    "ar": "مايكروفون USB مكثف من Maono للألعاب والبث، بنمط التقاط قلبي يركز على صوتك من الأمام. فيه مقبض واحد للكتم وحساسية المايكروفون وصوت السماعة، ومخرج سماعة 3.5 ملم، وإضاءة RGB قابلة للبرمجة، مع برنامج Maono Link للمعادل وضبط الصوت.",
+    "en": "A Maono USB condenser microphone for gaming and streaming, with a cardioid pattern that focuses on your voice from the front. One knob handles mute, mic gain and headphone volume; it has a 3.5 mm headphone jack, programmable RGB and the Maono Link app for EQ and sound tuning.",
+    "ckb": "مایکرۆفۆنێکی USBی کۆندێنسەری Maono بۆ یاری و پەخش، بە شێوازی دڵی کە سەرنج دەخاتە سەر دەنگەکەت لە پێشەوە. یەک دوگمەی بازنەیی بێدەنگکردن و هەستیاری مایک و دەنگی هێدفۆن کۆنترۆڵ دەکات؛ دەرچەی هێدفۆنی 3.5 ملم، RGBی بەرنامەبۆکراو و بەرنامەی Maono Linkی هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "نمط قلبي يقلل أصوات الخلفية",
+      "en": "Cardioid pattern cuts background noise",
+      "ckb": "شێوازی دڵی دەنگی دەوروبەر کەم دەکاتەوە"
+    },
+    {
+      "ar": "مقبض 3 في 1: كتم وحساسية وصوت السماعة",
+      "en": "3-in-1 knob: mute, gain, headphone volume",
+      "ckb": "دوگمەی 3 لە 1: بێدەنگ، هەستیاری، دەنگی هێدفۆن"
+    },
+    {
+      "ar": "مخرج سماعة 3.5 ملم للمراقبة",
+      "en": "3.5 mm headphone monitoring",
+      "ckb": "دەرچەی هێدفۆنی 3.5 ملم"
+    },
+    {
+      "ar": "برنامج Maono Link للمعادل والضغط والإضاءة",
+      "en": "Maono Link app for EQ, compressor and lighting",
+      "ckb": "بەرنامەی Maono Link بۆ EQ و ڕووناکی"
+    },
+    {
+      "ar": "يعمل مع Windows وmacOS",
+      "en": "Works with Windows and macOS",
+      "ckb": "لەگەڵ Windows و macOS کار دەکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "pattern",
+      "label": {
+        "ar": "نمط الالتقاط",
+        "en": "Pickup pattern",
+        "ckb": "شێوازی وەرگرتن"
+      },
+      "value": {
+        "ar": "قلبي (Cardioid)",
+        "en": "Cardioid",
+        "ckb": "دڵی (Cardioid)"
+      }
+    },
+    {
+      "key": "audio",
+      "label": {
+        "ar": "جودة الصوت",
+        "en": "Audio",
+        "ckb": "کوالیتی دەنگ"
+      },
+      "value": {
+        "ar": "24 بت / 48 كيلوهرتز",
+        "en": "24-bit / 48 kHz",
+        "ckb": "24 بیت / 48 کیلۆهێرتز"
+      }
+    },
+    {
+      "key": "frequency",
+      "label": {
+        "ar": "الاستجابة الترددية",
+        "en": "Frequency response",
+        "ckb": "وەڵامی لەرەلەر"
+      },
+      "value": {
+        "ar": "20 هرتز – 20 كيلوهرتز",
+        "en": "20 Hz–20 kHz",
+        "ckb": "20 هێرتز – 20 کیلۆهێرتز"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "USB‑C، مخرج سماعة 3.5 ملم",
+        "en": "USB-C, 3.5 mm headphone output",
+        "ckb": "USB‑C، دەرچەی هێدفۆنی 3.5 ملم"
+      }
+    },
+    {
+      "key": "build",
+      "label": {
+        "ar": "الهيكل",
+        "en": "Build",
+        "ckb": "پێکهاتە"
+      },
+      "value": {
+        "ar": "جسم معدني بقاعدة قابلة للفك تناسب حوامل 3/8 و5/8 إنش",
+        "en": "Metal body, removable base fits 3/8\" and 5/8\" mounts",
+        "ckb": "لەشی کانزا، بنکەی لابراو بۆ هەڵگری 3/8 و 5/8 ئینج"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "MAONO-DM30",
+      "title": {
+        "ar": "مايكروفون Maono DM30",
+        "en": "Maono DM30",
+        "ckb": "مایکرۆفۆنی Maono DM30"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "DM30",
+      "isDefault": true,
+      "sheetRow": 50
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "USB، يعمل أيضاً على macOS.",
+        "en": "USB; also works on macOS.",
+        "ckb": "USB؛ لەسەر macOSیش کار دەکات."
+      },
+      "source": "https://www.maono.com/blogs/news/maono-dm30-usb-condenser-microphone-introduction"
+    }
+  ],
+  "related": [
+    {
+      "slug": "hyperx-quadcast",
+      "kind": "upsell"
+    },
+    {
+      "slug": "redragon-gm306",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.maono.com/blogs/news/maono-dm30-usb-condenser-microphone-introduction",
+      "title": "Maono DM30 USB Condenser Microphone: Features and Benefits",
+      "publisher": "Maono",
+      "retrieved": "2026-11-18",
+      "supports": "USB condenser, cardioid, metal body, removable base for 3/8\" and 5/8\" threads, Windows and macOS, 3-in-1 knob (gain, headphone volume, mute), 3.5 mm output, RGB mode button, USB-C port, companion software"
+    },
+    {
+      "url": "https://www.maono.com/blogs/news/dm30-dm30rgb-gamerwave-and-pd200x-gaming-microphone-comparision",
+      "title": "Maono DM30, DM30RGB, GamerWave, PD200X USB Gaming Microphone Comparison",
+      "publisher": "Maono",
+      "retrieved": "2026-11-18",
+      "supports": "DM30 vs DM30RGB difference (DM30 lighting on the bottom only), plug-and-play cardioid USB, one-button mute"
+    },
+    {
+      "url": "https://www.techporn.ph/maono-dm30-rgb-usb-condenser-microphone-review/",
+      "title": "MAONO DM30 RGB USB condenser microphone review",
+      "publisher": "TechPorn",
+      "retrieved": "2026-11-18",
+      "supports": "independent confirmation: 24-bit/48 kHz, 20 Hz–20 kHz, Maono Link software"
+    }
+  ],
+  "notes": {
+    "ar": "يوجد موديل آخر باسم DM30RGB تغطي إضاءته المايكروفون كله؛ أما DM30 فإضاءته في الأسفل فقط.",
+    "en": "There is also a DM30RGB whose lighting covers the whole mic; on the DM30 the lighting is only at the bottom.",
+    "ckb": "مۆدێلێکی تر بە ناوی DM30RGB هەیە کە ڕووناکییەکەی هەموو مایکەکە دادەپۆشێت؛ لە DM30 تەنها لە خوارەوەیە."
+  },
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Maono's DM30 product page is no longer online; facts come from Maono's own articles and a review",
+      "Colour of the unit in stock",
+      "No clean official product image found",
+      "Box contents"
+    ]
+  }
+}

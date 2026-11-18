@@ -7,6 +7,7 @@
  * platform lists use. A model takes its name from this table and everything else — specifications,
  * pictures, release date, fact line — from the catalogue product that is that device (`product`,
  * plus `variant` when one product covers two models: the 2020 PS5 disc and Digital Editions).
+ * `ps4` (the PlayStation 4 family) has no product either: the store sells PS4 games and accessories, not the console.
  * `windows-pc` is the generic target of the catalogue's PC compatibility notes; it has no product,
  * belongs to the inactive "pc" platform (not in the storefront menus) and carries no specifications.
  *
@@ -56,6 +57,7 @@ export const DEMO_GENERATIONS: readonly GenerationSeed[] = [
   { slug: "switch-2", platform: "nintendo", name: same("Nintendo Switch 2") },
   { slug: "switch", platform: "nintendo", name: t3("عائلة Nintendo Switch", "Nintendo Switch family", "خێزانی Nintendo Switch") },
   { slug: "ps5", platform: "playstation", name: t3("جيل PlayStation 5", "PlayStation 5 generation", "نەوەی PlayStation 5") },
+  { slug: "ps4", platform: "playstation", name: t3("جيل PlayStation 4", "PlayStation 4 generation", "نەوەی PlayStation 4") },
   { slug: "xbox-series", platform: "xbox", name: same("Xbox Series X|S") },
   { slug: "steam-deck", platform: "handheld", name: same("Steam Deck") },
   { slug: "rog-ally", platform: "handheld", name: same("ROG Ally") },
@@ -109,6 +111,21 @@ export const DEMO_DEVICE_MODELS: readonly DeviceModelSeed[] = [
     deviceKind: "console",
     product: "playstation-5",
     variant: "PS5-ORIG-DIGITAL",
+  },
+  // The PlayStation 4 family (PS4, PS4 Slim, PS4 Pro): the target of the owner's PS4 games and accessories. The store
+  // sells no PS4 console, so the model has no product of its own (no specifications, pictures or trade-in guide).
+  {
+    slug: "ps4",
+    platform: "playstation",
+    generation: "ps4",
+    name: same("PlayStation 4"),
+    deviceKind: "console",
+    product: null,
+    summary: t3(
+      "عائلة PlayStation 4: الطراز الأصلي و Slim و Pro. ألعاب PS4 وإكسسواراتها في المتجر تشير إليها.",
+      "The PlayStation 4 family: the original model, Slim and Pro. The store's PS4 games and accessories point here.",
+      "خێزانی PlayStation 4: مۆدێلی ڕەسەن و Slim و Pro. یارییەکان و پاشکۆکانی PS4 لە فرۆشگاکەدا ئاماژە بەمە دەکەن.",
+    ),
   },
   // A remote player, not a console — but it is graded with the console checklist (screen, battery, sticks).
   { slug: "ps-portal", platform: "playstation", generation: "ps5", name: same("PlayStation Portal"), deviceKind: "console", product: "playstation-portal" },

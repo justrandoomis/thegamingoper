@@ -1,0 +1,154 @@
+{
+  "slug": "dxracer-formula-series",
+  "group": "chairs",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "gaming-chairs",
+  "brand": "DXRacer",
+  "family": "dxracer-chairs",
+  "status": "available",
+  "name": {
+    "ar": "كرسي ألعاب DXRacer Formula",
+    "en": "DXRacer Formula Series Gaming Chair",
+    "ckb": "کورسیی یاری DXRacer Formula"
+  },
+  "short": {
+    "ar": "كرسي DXRacer الكلاسيكي · إطار فولاذي · ظهر يميل من 90° إلى 135°",
+    "en": "DXRacer's classic chair · All-steel frame · 90°–135° recline",
+    "ckb": "کورسیی کلاسیکی DXRacer · چوارچێوەی پۆڵا · پشت 90° تا 135° دەچەمێتەوە"
+  },
+  "description": {
+    "ar": "Formula هي السلسلة الأصلية من DXRacer بشكل مقعد السباق وفتحتي الرأس. هيكلها فولاذي، والظهر يميل من 90° إلى 135° مع وضع الهزاز، والمقعد مجنح ليحيط بالجسم. تأتي مع وسادة رأس من جل التبريد ووسادة لأسفل الظهر، وتتوفر بجلد صناعي أو بقماش مقاوم للماء.",
+    "en": "Formula is DXRacer's original series, with the racing-seat shape and two openings at the top of the backrest. It has a steel frame, a backrest that reclines from 90° to 135° with a rocking mode, and a winged seat that holds you in place. It comes with a cooling-gel head pillow and a lumbar pillow, in PVC leatherette or water-resistant fabric.",
+    "ckb": "Formula زنجیرە ڕەسەنەکەی DXRacerە، بە شێوەی کورسیی ڕەیسینگ و دوو کونی سەرەوەی پشت. چوارچێوەکەی پۆڵایە، پشتەکەی لە 90° تا 135° دەچەمێتەوە لەگەڵ دۆخی هەژاندن، و کورسییەکەی باڵدارە بۆ ئەوەی جەستە بگرێت. سەرینی سەری جێلی سارد و سەرینی پشتی لەگەڵدایە، بە چەرمی دەستکرد یان قوماشی دژە ئاو."
+  },
+  "highlights": [
+    { "ar": "هيكل فولاذي بالكامل", "en": "All-steel frame", "ckb": "چوارچێوەی تەواو پۆڵا" },
+    { "ar": "ظهر يميل من 90° إلى 135° مع وضع الهزاز", "en": "Backrest reclines 90°–135°, with a rocking mode", "ckb": "پشت لە 90° تا 135° دەچەمێتەوە، لەگەڵ دۆخی هەژاندن" },
+    { "ar": "وسادة رأس بجل التبريد ووسادة لأسفل الظهر", "en": "Cooling-gel head pillow and lumbar pillow", "ckb": "سەرینی سەری جێلی سارد و سەرینی پشت" },
+    { "ar": "مقعد مجنح ومساند ذراع قابلة لتعديل الارتفاع", "en": "Winged seat and height-adjustable armrests", "ckb": "کورسیی باڵدار و دەستەی بەرزیگۆڕ" },
+    { "ar": "مكبس غاز Class 4", "en": "Class 4 gas lift", "ckb": "گازی Class 4" }
+  ],
+  "specs": [
+    { "key": "series", "label": { "ar": "السلسلة", "en": "Series", "ckb": "زنجیرە" }, "value": { "ar": "DXRacer Formula", "en": "DXRacer Formula", "ckb": "DXRacer Formula" } },
+    { "key": "frame", "label": { "ar": "الهيكل", "en": "Frame", "ckb": "چوارچێوە" }, "value": { "ar": "فولاذ (أنابيب بسماكة 1.5 ملم)", "en": "Steel (1.5 mm tube walls)", "ckb": "پۆڵا (بۆری 1.5 ملم)" } },
+    { "key": "recline", "label": { "ar": "ميلان الظهر", "en": "Recline", "ckb": "چەمانەوەی پشت" }, "value": { "ar": "90° – 135°", "en": "90° – 135°", "ckb": "90° – 135°" } },
+    { "key": "armrests", "label": { "ar": "مساند الذراع", "en": "Armrests", "ckb": "دەستەکان" }, "value": { "ar": "2D (ارتفاع)", "en": "2D (height)", "ckb": "2D (بەرزی)" } },
+    { "key": "base", "label": { "ar": "القاعدة", "en": "Base", "ckb": "بنکە" }, "value": { "ar": "مكبس غاز Class 4", "en": "Class 4 gas lift", "ckb": "گازی Class 4" } }
+  ],
+  "inTheBox": [
+    { "ar": "الكرسي (يحتاج تركيباً)", "en": "The chair (needs assembly)", "ckb": "کورسییەکە (پێویستی بە بەستنەوە هەیە)" },
+    { "ar": "وسادة رأس ووسادة لأسفل الظهر", "en": "Head pillow and lumbar pillow", "ckb": "سەرینی سەر و سەرینی پشت" }
+  ],
+  "variants": [
+    {
+      "sku": "DXR-FORMULA-FABRIC-BLACK",
+      "sheetRow": 33,
+      "title": { "ar": "أسود · قماش", "en": "Black · Fabric", "ckb": "ڕەش · قوماش" },
+      "options": { "color": "Black", "material": "Water-resistant fabric" },
+      "modelNumber": "GC/LFD01FBCFBB/N",
+      "isDefault": true,
+      "images": ["dxracer-formula-series--1", "dxracer-formula-series--2"]
+    },
+    {
+      "sku": "DXR-FORMULA-NW",
+      "sheetRow": 32,
+      "title": { "ar": "أسود وأبيض", "en": "Black and white", "ckb": "ڕەش و سپی" },
+      "options": { "color": "Black / White", "material": "PVC leatherette" },
+      "modelNumber": "FORMULA-L-D23-LTC-NW",
+      "isDefault": false,
+      "images": ["dxracer-formula-series--3"]
+    },
+    {
+      "sku": "DXR-FORMULA-NWR",
+      "sheetRow": 29,
+      "title": { "ar": "أحمر وأبيض وأسود", "en": "Red, white and black", "ckb": "سوور، سپی و ڕەش" },
+      "options": { "color": "Red / White / Black" },
+      "isDefault": false,
+      "notes": { "ar": "لم نجد صورة رسمية لهذا اللون؛ الصور المعروضة لألوان أخرى من السلسلة نفسها.", "en": "No official picture of this colour was found; the pictures show other colours of the same series.", "ckb": "وێنەی فەرمیی ئەم ڕەنگە نەدۆزرایەوە؛ وێنەکان ڕەنگی تری هەمان زنجیرەن." }
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    { "slug": "dxracer-prince-series", "kind": "alternative" },
+    { "slug": "dxracer-drifting-series", "kind": "upsell" },
+    { "slug": "dxracer-master-series", "kind": "upsell" }
+  ],
+  "images": [
+    {
+      "key": "dxracer-formula-series--1",
+      "file": ".cache/product-images/dxracer-formula-series/1.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/7fb86bbd-1306-4a0e-bd5c-4c9bd5cd11bb-1.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/formula?sku=GC/LFD01FBCFBB/N",
+      "kind": "hero",
+      "alt": { "ar": "كرسي DXRacer Formula بقماش أسود من الأمام", "en": "DXRacer Formula chair in black fabric, front view", "ckb": "کورسیی DXRacer Formula بە قوماشی ڕەش، لە پێشەوە" },
+      "credit": "DXRacer",
+      "width": 2000, "height": 2400, "transparent": true
+    },
+    {
+      "key": "dxracer-formula-series--2",
+      "file": ".cache/product-images/dxracer-formula-series/2.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/8b1bbf2a-b1bd-4fa9-84ed-18f778170185-2.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/formula?sku=GC/LFD01FBCFBB/N",
+      "kind": "angle",
+      "alt": { "ar": "كرسي Formula الأسود من الجانب", "en": "The black fabric Formula chair from an angle", "ckb": "کورسیی Formula ـی ڕەش لە لاوە" },
+      "credit": "DXRacer",
+      "width": 853, "height": 1024, "transparent": true
+    },
+    {
+      "key": "dxracer-formula-series--3",
+      "file": ".cache/product-images/dxracer-formula-series/3.png",
+      "sourceUrl": "https://www.maxgaming.com/bilder/artiklar/zoom/32123_1.jpg",
+      "sourcePage": "https://www.maxgaming.com/en/dxracer-formula/formula-l-black-white-pvc-leather",
+      "kind": "angle",
+      "alt": { "ar": "كرسي Formula بالأسود والأبيض", "en": "The black and white Formula chair", "ckb": "کورسیی Formula بە ڕەش و سپی" },
+      "credit": "DXRacer (product render, via MaxGaming)",
+      "width": 1600, "height": 1280, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dxracer.com/products/gaming-chairs/formula",
+      "title": "Formula Series Racing Gaming Chair",
+      "publisher": "DXRacer USA",
+      "retrieved": "2026-11-18",
+      "supports": "series features (original DXRacer chair, two-eyes design, all-steel frame with 1.5 mm tubes, 2D armrests, winged seat, cooling gel headrest, lumbar pillow, 90°–135° recline with rocking), black water-resistant fabric model GC/LFD01FBCFBB/N, images"
+    },
+    {
+      "url": "https://www.dxracer.com/specifications/gaming-chairs/formula",
+      "title": "FORMULA Series Specifications",
+      "publisher": "DXRacer USA",
+      "retrieved": "2026-11-18",
+      "supports": "adjustments, Class 4 hydraulics"
+    },
+    {
+      "url": "https://www.maxgaming.com/en/dxracer-formula/formula-l-black-white-pvc-leather",
+      "title": "DXRacer FORMULA L Black & White PVC Leather",
+      "publisher": "MaxGaming",
+      "retrieved": "2026-11-18",
+      "supports": "black and white PVC leather version (maker part FORMULA-L-D23-LTC-NW-X1), image"
+    },
+    {
+      "url": "https://www.maxgaming.com/en/dxracer-formula/formula-l-black-fabric",
+      "title": "DXRacer FORMULA L Black Fabric",
+      "publisher": "MaxGaming",
+      "retrieved": "2026-11-18",
+      "supports": "second source for the black fabric version (FORMULA-L-D23-FBCFBB-N-X1)"
+    }
+  ],
+  "notes": {
+    "ar": "الكرسي يصل مفككاً ويحتاج تركيباً بسيطاً. مقاس L حسب صفحات الصانع.",
+    "en": "The chair arrives flat-packed and needs simple assembly. It is the L (regular) size on the maker's pages.",
+    "ckb": "کورسییەکە بە جیاکراوەیی دێت و پێویستی بە بەستنەوەیەکی سادە هەیە. بەپێی پەڕەکانی دروستکەر قەبارەی L ـە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "The owner's sheet calls these chairs \"IGC\"; no gaming-chair brand of that name was found. The series names and colour codes (NW, N) are DXRacer's, so the rows are treated as DXRacer chairs",
+      "Row 29 \"I.G.C RED WHITE AND BLACK\" names no series; it is assumed to be a Formula because its price (312,000 IQD) matches the Formula rows. DXRacer has sold black/white/red Formula chairs, but no current DXRacer page for that colour was found",
+      "Black-and-white model number comes from a retailer listing, not a DXRacer page",
+      "Maximum load and recommended height not confirmed on a DXRacer page; base material (nylon or aluminium) differs between Formula versions"
+    ]
+  }
+}

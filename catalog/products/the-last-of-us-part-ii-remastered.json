@@ -1,0 +1,371 @@
+{
+  "slug": "the-last-of-us-part-ii-remastered",
+  "group": "games-ps5-xbox",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "PlayStation Studios",
+  "status": "available",
+  "releaseDate": "2024-01-19",
+  "name": {
+    "ar": "The Last of Us Part II Remastered",
+    "en": "The Last of Us Part II Remastered",
+    "ckb": "The Last of Us Part II Remastered"
+  },
+  "short": {
+    "ar": "PS5 · قرص · النسخة المحسّنة مع طور No Return",
+    "en": "PS5 · disc · remastered, with No Return mode",
+    "ckb": "PS5 · دیسک · وەشانی باشترکراو لەگەڵ شێوازی No Return"
+  },
+  "description": {
+    "ar": "النسخة المحسّنة لـ PS5 من The Last of Us Part II من Naughty Dog. تتابع Ellie في رحلة انتقام عنيفة في عالم ما بعد الوباء. تضيف طور No Return بأسلوب roguelike، ومراحل Lost Levels من مرحلة التطوير، وتحسينات في الرسوميات والصوت.",
+    "en": "Naughty Dog's PS5 remaster of The Last of Us Part II. Follow Ellie on a violent journey of revenge in a post-pandemic world. It adds the roguelike No Return mode, Lost Levels from development, and better visuals and audio.",
+    "ckb": "وەشانی باشترکراوی PS5 ی The Last of Us Part II لە Naughty Dog. شوێن Ellie دەکەویت لە گەشتێکی تۆڵەسەندنی توندوتیژدا لە جیهانی دوای پەتا. شێوازی roguelike ی No Return، قۆناغەکانی Lost Levels لە کاتی دروستکردن، و باشترکردنی وێنە و دەنگ زیاد دەکات."
+  },
+  "highlights": [
+    {
+      "ar": "طور No Return الجديد: جولات بقاء عشوائية.",
+      "en": "New No Return mode: randomised survival runs.",
+      "ckb": "شێوازی نوێی No Return: گەڕی مانەوەی هەڕەمەکی."
+    },
+    {
+      "ar": "القصة للاعب واحد وتعمل بدون إنترنت.",
+      "en": "Single-player story, plays offline.",
+      "ckb": "چیرۆکی تاکەکەسی، بێ ئینتەرنێت کار دەکات."
+    },
+    {
+      "ar": "التصنيف PEGI 18.",
+      "en": "Rated PEGI 18.",
+      "ckb": "پۆلێنی PEGI 18."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": {
+        "ar": "تاريخ الإصدار",
+        "en": "Release date",
+        "ckb": "بەرواری دەرچوون"
+      },
+      "value": {
+        "ar": "19 كانون الثاني 2024",
+        "en": "19 January 2024",
+        "ckb": "19ی کانوونی دووەمی 2024"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": {
+        "ar": "الأجهزة",
+        "en": "Platforms",
+        "ckb": "ئامێرەکان"
+      },
+      "value": {
+        "ar": "PS5 فقط (نسخة PS4 منفصلة)",
+        "en": "PS5 only (the PS4 version is separate)",
+        "ckb": "تەنها PS5 (وەشانی PS4 جیایە)"
+      }
+    },
+    {
+      "key": "format",
+      "label": {
+        "ar": "نوع النسخة الفيزيائية",
+        "en": "Physical format",
+        "ckb": "جۆری وەشانی فیزیکی"
+      },
+      "value": {
+        "ar": "قرص PS5",
+        "en": "PS5 disc",
+        "ckb": "دیسکی PS5"
+      }
+    },
+    {
+      "key": "players",
+      "label": {
+        "ar": "عدد اللاعبين",
+        "en": "Players",
+        "ckb": "ژمارەی یاریزان"
+      },
+      "value": {
+        "ar": "لاعب واحد",
+        "en": "1 player",
+        "ckb": "1 یاریزان"
+      }
+    },
+    {
+      "key": "online",
+      "label": {
+        "ar": "الإنترنت والاشتراكات",
+        "en": "Internet and subscriptions",
+        "ckb": "ئینتەرنێت و بەشداریکردن"
+      },
+      "value": {
+        "ar": "تعمل بدون إنترنت ولا تحتاج اشتراكاً؛ التحديثات تحتاج إنترنت.",
+        "en": "Plays offline with no subscription; updates need internet.",
+        "ckb": "بێ ئینتەرنێت و بێ بەشداریکردن کار دەکات؛ نوێکردنەوەکان ئینتەرنێتیان پێویستە."
+      }
+    },
+    {
+      "key": "arabic",
+      "label": {
+        "ar": "اللغة العربية",
+        "en": "Arabic",
+        "ckb": "زمانی عەرەبی"
+      },
+      "value": {
+        "ar": "غير مؤكد",
+        "en": "Not confirmed",
+        "ckb": "دڵنیا نەکراوەتەوە"
+      }
+    },
+    {
+      "key": "age",
+      "label": {
+        "ar": "التصنيف العمري",
+        "en": "Age rating",
+        "ckb": "پۆلێنی تەمەن"
+      },
+      "value": {
+        "ar": "PEGI 18",
+        "en": "PEGI 18",
+        "ckb": "PEGI 18"
+      }
+    },
+    {
+      "key": "developer",
+      "label": {
+        "ar": "المطوّر والناشر",
+        "en": "Developer and publisher",
+        "ckb": "گەشەپێدەر و بڵاوکەرەوە"
+      },
+      "value": {
+        "ar": "Naughty Dog / Sony Interactive Entertainment",
+        "en": "Naughty Dog / Sony Interactive Entertainment",
+        "ckb": "Naughty Dog / Sony Interactive Entertainment"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة لجهاز PS5",
+      "en": "PS5 game disc",
+      "ckb": "دیسکی یارییەکە بۆ PS5"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "TLOU2R-PS5-STD",
+      "title": {
+        "ar": "لجهاز PS5 · Standard Edition",
+        "en": "PS5 · Standard Edition",
+        "ckb": "بۆ PS5 · Standard Edition"
+      },
+      "options": {
+        "platform": "PS5",
+        "edition": "Standard",
+        "format": "Disc"
+      },
+      "isDefault": true,
+      "sheetRow": 158,
+      "images": [
+        "the-last-of-us-part-ii-remastered--1",
+        "the-last-of-us-part-ii-remastered--2",
+        "the-last-of-us-part-ii-remastered--3"
+      ],
+      "notes": {
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": [
+      "ps5",
+      "ps5-slim",
+      "ps5-pro",
+      "ps5-slim-digital"
+    ],
+    "genres": [
+      {
+        "ar": "أكشن ومغامرة",
+        "en": "Action-adventure",
+        "ckb": "ئاکشن و سەرکێشی"
+      },
+      {
+        "ar": "رعب",
+        "en": "Horror",
+        "ckb": "ترسناک"
+      }
+    ],
+    "players": "1",
+    "online": {
+      "ar": "تعمل بدون إنترنت ولا تحتاج اشتراكاً؛ التحديثات تحتاج إنترنت.",
+      "en": "Plays offline with no subscription; updates need internet.",
+      "ckb": "بێ ئینتەرنێت و بێ بەشداریکردن کار دەکات؛ نوێکردنەوەکان ئینتەرنێتیان پێویستە."
+    },
+    "ageRating": {
+      "pegi": 18
+    },
+    "arabic": "unknown",
+    "physicalFormat": "disc",
+    "developer": "Naughty Dog",
+    "publisher": "Sony Interactive Entertainment"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "قرص PS5.",
+        "en": "PS5 disc.",
+        "ckb": "دیسکی PS5."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP9000-PPSA15508_00-THELASTOFUSPART2"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "يعمل على الموديل الذي فيه قارئ أقراص.",
+        "en": "Works on the model with a disc drive.",
+        "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP9000-PPSA15508_00-THELASTOFUSPART2"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": {
+        "ar": "القرص يحتاج قارئ الأقراص الإضافي.",
+        "en": "The disc needs the add-on Disc Drive.",
+        "ckb": "دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": {
+        "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.",
+        "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "marvels-wolverine",
+      "kind": "alternative"
+    },
+    {
+      "slug": "god-of-war-ragnarok",
+      "kind": "alternative"
+    },
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense",
+      "kind": "accessory"
+    },
+    {
+      "slug": "ps5-disc-drive",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "the-last-of-us-part-ii-remastered--1",
+      "file": ".cache/product-images/the-last-of-us-part-ii-remastered/1.png",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202312/0117/7f1d9478fabee95562ace660b90e89b0d87a620e1950874a.png",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP9000-PPSA15508_00-THELASTOFUSPART2",
+      "kind": "box-art",
+      "alt": {
+        "ar": "غلاف The Last of Us Part II Remastered",
+        "en": "The Last of Us Part II Remastered cover art",
+        "ckb": "وێنەی بەرگی The Last of Us Part II Remastered"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 1440,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "the-last-of-us-part-ii-remastered--2",
+      "file": ".cache/product-images/the-last-of-us-part-ii-remastered/2.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202401/1716/08d00d4843264b463fbb4ba5ae5ca6fea5ed300e10c670ed.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP9000-PPSA15508_00-THELASTOFUSPART2",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من The Last of Us Part II Remastered",
+        "en": "The Last of Us Part II Remastered screenshot",
+        "ckb": "وێنەیەک لە ناو یاری The Last of Us Part II Remastered"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "the-last-of-us-part-ii-remastered--3",
+      "file": ".cache/product-images/the-last-of-us-part-ii-remastered/3.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202401/1716/bd53476a8f51d9bddc94762833022e996869da36b7fcaa21.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP9000-PPSA15508_00-THELASTOFUSPART2",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من The Last of Us Part II Remastered",
+        "en": "The Last of Us Part II Remastered screenshot",
+        "ckb": "وێنەیەک لە ناو یاری The Last of Us Part II Remastered"
+      },
+      "credit": "Sony Interactive Entertainment",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://store.playstation.com/en-gb/product/EP9000-PPSA15508_00-THELASTOFUSPART2",
+      "title": "The Last of Us Part II Remastered — PlayStation Store (UK)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "PS5, release 19 Jan 2024, PEGI 18, No Return mode, Lost Levels, cover art and screenshots",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-ae/games/the-last-of-us-part-ii-remastered/",
+      "title": "The Last of Us Part II Remastered — PlayStation (UAE)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "game overview, PS5 features",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/",
+      "title": "Disc Drive for PS5 Digital Edition consoles",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "the add-on drive works only with PS5 Pro and the slim PS5 Digital Edition, so the original 2020 Digital Edition cannot play discs"
+    }
+  ],
+  "verification": {
+    "checkedBy": "games-ps5-xbox research 2026-11-18",
+    "secondSource": true,
+    "unverified": [
+      "Arabic support is taken from the PlayStation Store language list; the languages on a given disc depend on its region.",
+      "No EAN/UPC barcode recorded.",
+      "The sheet says 'THE LAST OF US REMASTERED' under PS5; the PS5 disc with 'Remastered' in its name is The Last of Us Part II Remastered (The Last of Us Remastered is a PS4 game). Confirm on the box.",
+      "Arabic: the game is not sold on the UAE PlayStation Store page we could read, and the UK list has no Arabic; Middle East discs may differ."
+    ]
+  }
+}

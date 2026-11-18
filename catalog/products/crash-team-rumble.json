@@ -1,0 +1,387 @@
+{
+  "slug": "crash-team-rumble",
+  "group": "games-ps5-xbox",
+  "kind": "game",
+  "platform": "playstation",
+  "brand": "Activision",
+  "status": "available",
+  "releaseDate": "2023-06-20",
+  "name": {
+    "ar": "Crash Team Rumble",
+    "en": "Crash Team Rumble",
+    "ckb": "Crash Team Rumble"
+  },
+  "short": {
+    "ar": "PS5 · قرص · 4 ضد 4 أونلاين فقط",
+    "en": "PS5 · disc · online-only 4v4",
+    "ckb": "PS5 · دیسک · تەنها ئۆنلاین 4 بەرامبەر 4"
+  },
+  "description": {
+    "ar": "لعبة جماعية أونلاين من عالم Crash Bandicoot، يتنافس فيها فريقان من أربعة لاعبين على جمع الفواكه وإيصالها إلى منطقة فريقهم. كل شخصية لها دور: مهاجم أو مدافع أو داعم. اللعبة أونلاين فقط وتحتاج اشتراك PlayStation Plus.",
+    "en": "An online team game from the Crash Bandicoot world: two teams of four race to collect Wumpa fruit and bank it in their zone. Every character has a role — scorer, blocker or booster. It is online only and needs PlayStation Plus.",
+    "ckb": "یارییەکی تیمی ئۆنلاین لە جیهانی Crash Bandicoot: دوو تیمی چوار کەسی کێبڕکێ دەکەن بۆ کۆکردنەوەی میوە و گەیاندنی بۆ ناوچەی تیمەکەیان. هەر کارەکتەرێک ڕۆڵێکی هەیە: تۆمارکەر، بەربەست یان یارمەتیدەر. تەنها ئۆنلاینە و PlayStation Plus ی پێویستە."
+  },
+  "highlights": [
+    {
+      "ar": "أونلاين فقط: تحتاج إنترنت واشتراك PlayStation Plus للعب.",
+      "en": "Online only: needs internet and PlayStation Plus to play.",
+      "ckb": "تەنها ئۆنلاین: بۆ یاریکردن ئینتەرنێت و PlayStation Plus پێویستە."
+    },
+    {
+      "ar": "آخر تحديث محتوى صدر في آذار 2024؛ لا مواسم جديدة بعده.",
+      "en": "The last content update came in March 2024; no new seasons after it.",
+      "ckb": "دوایین نوێکردنەوەی ناوەڕۆک لە ئازاری 2024 دا بوو؛ دوای ئەوە وەرزی نوێ نییە."
+    },
+    {
+      "ar": "تدعم العربية بالكامل: دبلجة وترجمة وقوائم، حسب قائمة لغات PlayStation Store في المنطقة.",
+      "en": "Full Arabic: voice, subtitles and menus, per the regional PlayStation Store language list.",
+      "ckb": "عەرەبی بە تەواوی: دەنگ، ژێرنووس و مێنیو، بەپێی لیستی زمانەکانی PlayStation Store ی ناوچەکە."
+    },
+    {
+      "ar": "التصنيف PEGI 7.",
+      "en": "Rated PEGI 7.",
+      "ckb": "پۆلێنی PEGI 7."
+    }
+  ],
+  "specs": [
+    {
+      "key": "release",
+      "label": {
+        "ar": "تاريخ الإصدار",
+        "en": "Release date",
+        "ckb": "بەرواری دەرچوون"
+      },
+      "value": {
+        "ar": "20 حزيران 2023",
+        "en": "20 June 2023",
+        "ckb": "20ی حوزەیرانی 2023"
+      }
+    },
+    {
+      "key": "platforms",
+      "label": {
+        "ar": "الأجهزة",
+        "en": "Platforms",
+        "ckb": "ئامێرەکان"
+      },
+      "value": {
+        "ar": "PS5 (اللعبة متوفرة أيضاً على PS4)",
+        "en": "PS5 (the game is also on PS4)",
+        "ckb": "PS5 (یارییەکە لەسەر PS4 یش هەیە)"
+      }
+    },
+    {
+      "key": "format",
+      "label": {
+        "ar": "نوع النسخة الفيزيائية",
+        "en": "Physical format",
+        "ckb": "جۆری وەشانی فیزیکی"
+      },
+      "value": {
+        "ar": "قرص PS5",
+        "en": "PS5 disc",
+        "ckb": "دیسکی PS5"
+      }
+    },
+    {
+      "key": "players",
+      "label": {
+        "ar": "عدد اللاعبين",
+        "en": "Players",
+        "ckb": "ژمارەی یاریزان"
+      },
+      "value": {
+        "ar": "4 ضد 4 أونلاين",
+        "en": "4v4 online",
+        "ckb": "4 بەرامبەر 4 ئۆنلاین"
+      }
+    },
+    {
+      "key": "online",
+      "label": {
+        "ar": "الإنترنت والاشتراكات",
+        "en": "Internet and subscriptions",
+        "ckb": "ئینتەرنێت و بەشداریکردن"
+      },
+      "value": {
+        "ar": "أونلاين فقط: تحتاج إنترنت واشتراك PlayStation Plus.",
+        "en": "Online only: needs internet and a PlayStation Plus membership.",
+        "ckb": "تەنها ئۆنلاین: ئینتەرنێت و بەشداریکردنی PlayStation Plus پێویستە."
+      }
+    },
+    {
+      "key": "arabic",
+      "label": {
+        "ar": "اللغة العربية",
+        "en": "Arabic",
+        "ckb": "زمانی عەرەبی"
+      },
+      "value": {
+        "ar": "صوت وترجمة وقوائم بالعربية (حسب منطقة النسخة)",
+        "en": "Arabic voice, subtitles and menus (depends on the region of the copy)",
+        "ckb": "دەنگ، ژێرنووس و مێنیوی عەرەبی (بەپێی ناوچەی وەشانەکە)"
+      }
+    },
+    {
+      "key": "age",
+      "label": {
+        "ar": "التصنيف العمري",
+        "en": "Age rating",
+        "ckb": "پۆلێنی تەمەن"
+      },
+      "value": {
+        "ar": "PEGI 7",
+        "en": "PEGI 7",
+        "ckb": "PEGI 7"
+      }
+    },
+    {
+      "key": "developer",
+      "label": {
+        "ar": "المطوّر والناشر",
+        "en": "Developer and publisher",
+        "ckb": "گەشەپێدەر و بڵاوکەرەوە"
+      },
+      "value": {
+        "ar": "Toys for Bob / Activision",
+        "en": "Toys for Bob / Activision",
+        "ckb": "Toys for Bob / Activision"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "قرص اللعبة لجهاز PS5",
+      "en": "PS5 game disc",
+      "ckb": "دیسکی یارییەکە بۆ PS5"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "CTRUMBLE-PS5-STD",
+      "title": {
+        "ar": "لجهاز PS5 · Standard Edition",
+        "en": "PS5 · Standard Edition",
+        "ckb": "بۆ PS5 · Standard Edition"
+      },
+      "options": {
+        "platform": "PS5",
+        "edition": "Standard",
+        "format": "Disc"
+      },
+      "isDefault": true,
+      "sheetRow": 104,
+      "images": [
+        "crash-team-rumble--1",
+        "crash-team-rumble--2",
+        "crash-team-rumble--3"
+      ],
+      "notes": {
+        "ar": "على PS5 Pro وPS5 Slim Digital Edition تحتاج قارئ الأقراص الإضافي. جهاز PS5 Digital Edition الأصلي (2020) لا يشغّل الأقراص.",
+        "en": "PS5 Pro and the PS5 Slim Digital Edition need the add-on Disc Drive. The original PS5 Digital Edition (2020) cannot play discs.",
+        "ckb": "PS5 Pro و PS5 Slim Digital Edition پێویستیان بە Disc Drive ی زیادە هەیە. PS5 Digital Edition ی ڕەسەن (2020) ناتوانێت دیسک بخوێنێتەوە."
+      }
+    }
+  ],
+  "game": {
+    "platforms": [
+      "ps5",
+      "ps5-slim",
+      "ps5-pro",
+      "ps5-slim-digital"
+    ],
+    "genres": [
+      {
+        "ar": "متعدد اللاعبين أونلاين",
+        "en": "Online multiplayer",
+        "ckb": "فرەیاریزانی ئۆنلاین"
+      },
+      {
+        "ar": "منصات",
+        "en": "Platformer",
+        "ckb": "پلاتفۆرمەر"
+      }
+    ],
+    "players": "2-8 online (4v4)",
+    "online": {
+      "ar": "أونلاين فقط: تحتاج إنترنت واشتراك PlayStation Plus.",
+      "en": "Online only: needs internet and a PlayStation Plus membership.",
+      "ckb": "تەنها ئۆنلاین: ئینتەرنێت و بەشداریکردنی PlayStation Plus پێویستە."
+    },
+    "ageRating": {
+      "pegi": 7
+    },
+    "arabic": "voice+subtitles+interface",
+    "physicalFormat": "disc",
+    "developer": "Toys for Bob",
+    "publisher": "Activision"
+  },
+  "compatibility": [
+    {
+      "deviceModel": "ps5",
+      "status": "verified",
+      "note": {
+        "ar": "قرص PS5.",
+        "en": "PS5 disc.",
+        "ckb": "دیسکی PS5."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP0002-PPSA06660_00-CTR23STDEDITION1"
+    },
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "note": {
+        "ar": "يعمل على الموديل الذي فيه قارئ أقراص.",
+        "en": "Works on the model with a disc drive.",
+        "ckb": "لەسەر ئەو جۆرەی دیسک خوێنەری هەیە کار دەکات."
+      },
+      "source": "https://store.playstation.com/en-gb/product/EP0002-PPSA06660_00-CTR23STDEDITION1"
+    },
+    {
+      "deviceModel": "ps5-pro",
+      "status": "partial",
+      "note": {
+        "ar": "القرص يحتاج قارئ الأقراص الإضافي.",
+        "en": "The disc needs the add-on Disc Drive.",
+        "ckb": "دیسکەکە پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "partial",
+      "note": {
+        "ar": "يحتاج قارئ الأقراص الإضافي.",
+        "en": "Needs the add-on Disc Drive.",
+        "ckb": "پێویستی بە Disc Drive ی زیادە هەیە."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    },
+    {
+      "deviceModel": "ps5-digital",
+      "status": "incompatible",
+      "note": {
+        "ar": "جهاز PS5 Digital Edition الأصلي (2020) بدون قارئ أقراص، ولا يدعم قارئ الأقراص الإضافي.",
+        "en": "The original PS5 Digital Edition (2020) has no disc drive and does not support the add-on Disc Drive.",
+        "ckb": "PS5 Digital Edition ی ڕەسەن (2020) دیسک خوێنەری نییە و Disc Drive ی زیادەش پشتگیری ناکات."
+      },
+      "source": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense",
+      "kind": "accessory"
+    },
+    {
+      "slug": "ps5-disc-drive",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "crash-team-rumble--1",
+      "file": ".cache/product-images/crash-team-rumble/1.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202402/1700/78f65d9e84d885b763499caf7f5cb6fddd74f434b6020a74.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP0002-PPSA06660_00-CTR23STDEDITION1",
+      "kind": "box-art",
+      "alt": {
+        "ar": "غلاف Crash Team Rumble",
+        "en": "Crash Team Rumble cover art",
+        "ckb": "وێنەی بەرگی Crash Team Rumble"
+      },
+      "credit": "Activision",
+      "width": 1440,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "crash-team-rumble--2",
+      "file": ".cache/product-images/crash-team-rumble/2.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202402/1623/abdb3f16ecf900395edbfcf76e5e667a9a772c53e94f6b5d.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP0002-PPSA06660_00-CTR23STDEDITION1",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Crash Team Rumble",
+        "en": "Crash Team Rumble screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Crash Team Rumble"
+      },
+      "credit": "Activision",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    },
+    {
+      "key": "crash-team-rumble--3",
+      "file": ".cache/product-images/crash-team-rumble/3.jpg",
+      "sourceUrl": "https://image.api.playstation.com/vulcan/ap/rnd/202402/1623/b65a259d1067ecf3ca835f1001aa409a39011610134577b6.jpg",
+      "sourcePage": "https://store.playstation.com/en-gb/product/EP0002-PPSA06660_00-CTR23STDEDITION1",
+      "kind": "screenshot",
+      "alt": {
+        "ar": "لقطة من Crash Team Rumble",
+        "en": "Crash Team Rumble screenshot",
+        "ckb": "وێنەیەک لە ناو یاری Crash Team Rumble"
+      },
+      "credit": "Activision",
+      "width": 3840,
+      "height": 2160,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://store.playstation.com/en-gb/product/EP0002-PPSA06660_00-CTR23STDEDITION1",
+      "title": "Crash Team Rumble — Standard Edition, PlayStation Store (UK)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "PS4/PS5, Activision, release 20 Jun 2023, PEGI 7, PS Plus required for online play, cover art and screenshots",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://store.playstation.com/en-ae/product/EP0002-PPSA06660_00-CTR23STDEDITION1",
+      "title": "Crash Team Rumble — PlayStation Store (UAE)",
+      "publisher": "Sony Interactive Entertainment",
+      "supports": "Arabic spoken and screen languages in the Middle East listing",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.videogameschronicle.com/news/crash-team-rumble-will-be-getting-no-more-content-updates-after-next-week",
+      "title": "Crash Team Rumble will be getting no more content updates after next week",
+      "publisher": "Video Games Chronicle",
+      "supports": "final content update on 4 March 2024, Season 3 last",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Crash_Team_Rumble",
+      "title": "Crash Team Rumble",
+      "publisher": "Wikipedia",
+      "supports": "fact-check: Toys for Bob, 4v4 roles, end of support",
+      "retrieved": "2026-11-18"
+    },
+    {
+      "url": "https://www.playstation.com/en-gb/accessories/ps5-disc-drive/",
+      "title": "Disc Drive for PS5 Digital Edition consoles",
+      "publisher": "Sony Interactive Entertainment",
+      "retrieved": "2026-11-18",
+      "supports": "the add-on drive works only with PS5 Pro and the slim PS5 Digital Edition, so the original 2020 Digital Edition cannot play discs"
+    }
+  ],
+  "notes": {
+    "ar": "أوقفت Activision تحديثات المحتوى بعد تحديث 4 آذار 2024، والخوادم بقيت تعمل حسب التقارير، لكن لا يوجد تعهّد رسمي بمدة تشغيلها. اللعبة لا تعمل بدون إنترنت.",
+    "en": "Activision stopped content updates after the 4 March 2024 update; reports say the servers stay online, but there is no official promise for how long. The game does not work offline.",
+    "ckb": "Activision دوای نوێکردنەوەی 4ی ئازاری 2024 نوێکردنەوەی ناوەڕۆکی ڕاگرت؛ بەپێی ڕاپۆرتەکان سێرڤەرەکان کار دەکەن، بەڵام هیچ بەڵێنێکی فەرمی نییە بۆ ماوەکەی. یارییەکە بێ ئینتەرنێت کار ناکات."
+  },
+  "verification": {
+    "checkedBy": "games-ps5-xbox research 2026-11-18",
+    "secondSource": true,
+    "unverified": [
+      "Arabic support is taken from the PlayStation Store language list; the languages on a given disc depend on its region.",
+      "No EAN/UPC barcode recorded.",
+      "Server shutdown date: none announced; servers reported online indefinitely, not promised by Activision.",
+      "Whether the Iraqi retail PS5 copy is a full disc or a code was not checked against a retailer listing."
+    ]
+  }
+}

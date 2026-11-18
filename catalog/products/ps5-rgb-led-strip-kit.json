@@ -1,0 +1,109 @@
+{
+  "slug": "ps5-rgb-led-strip-kit",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "category": "lighting",
+  "status": "available",
+  "name": {
+    "ar": "طقم شريط إضاءة RGB لجهاز PS5",
+    "en": "RGB LED Strip Kit for PS5",
+    "ckb": "کۆمەڵەی شریتی ڕووناکی RGB بۆ PS5"
+  },
+  "short": {
+    "ar": "إضاءة ملوّنة لجسم الجهاز · تعمل من منفذ USB",
+    "en": "Colour lighting for the console · USB powered",
+    "ckb": "ڕووناکی ڕەنگاوڕەنگ بۆ کۆنسۆڵ · بە USB"
+  },
+  "description": {
+    "ar": "شريط إضاءة LED ملوّن يلصق على جهاز PS5 ليضيف إضاءة RGB، ويعمل من منفذ USB في الجهاز.",
+    "en": "A colour LED strip that sticks onto the PS5 to add RGB lighting, powered from a console USB port.",
+    "ckb": "شریتێکی LEDی ڕەنگاوڕەنگ کە بە PS5ەوە دەلکێنرێت بۆ زیادکردنی ڕووناکی RGB، لە دەروازەی USBی کۆنسۆڵ کار دەکات."
+  },
+  "highlights": [
+    {
+      "ar": "إضاءة RGB بعدة ألوان",
+      "en": "Multi‑colour RGB lighting",
+      "ckb": "ڕووناکی RGBی چەند ڕەنگ"
+    },
+    {
+      "ar": "تعمل من منفذ USB",
+      "en": "Runs from USB",
+      "ckb": "بە USB کار دەکات"
+    }
+  ],
+  "specs": [
+    {
+      "key": "power",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "وزە"
+      },
+      "value": {
+        "ar": "منفذ USB",
+        "en": "USB port",
+        "ckb": "دەروازەی USB"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "PS5-RGB-LED-KIT",
+      "title": {
+        "ar": "طقم شريط إضاءة RGB لجهاز PS5",
+        "en": "RGB LED Strip Kit for PS5",
+        "ckb": "کۆمەڵەی شریتی ڕووناکی RGB بۆ PS5"
+      },
+      "sheetRow": 142,
+      "isDefault": true
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-5",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-slim-digital-edition",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-pro",
+      "kind": "setup"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ipega.hk/ps3ps4series/76-474.html",
+      "title": "PG-P5018 P5 host decoration strip",
+      "publisher": "iPega (official site)",
+      "retrieved": "2026-11-18",
+      "supports": "example of a USB-powered LED strip made for the PS5"
+    },
+    {
+      "url": "https://ipega.hk/ps3ps4series/76-606.html",
+      "title": "PG-P5S038A Colorful Remote Control Atmosphere Light",
+      "publisher": "iPega (official site)",
+      "retrieved": "2026-11-18",
+      "supports": "example of a PS5 RGB ambient light kit"
+    }
+  ],
+  "notes": {
+    "ar": "منتج بدون علامة معروفة؛ طول الشريط وطريقة التحكم غير مؤكدين.",
+    "en": "Unbranded product; strip length and control method not confirmed.",
+    "ckb": "بەرهەمی بێ براند؛ درێژی شریت و شێوازی کۆنترۆڵ دڵنیا نین."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "Maker, length, control (button or remote) and which PS5 model the kit is cut for"
+    ]
+  }
+}

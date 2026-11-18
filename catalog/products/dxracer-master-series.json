@@ -1,0 +1,194 @@
+{
+  "slug": "dxracer-master-series",
+  "group": "chairs",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "gaming-chairs",
+  "brand": "DXRacer",
+  "family": "dxracer-chairs",
+  "status": "available",
+  "name": {
+    "ar": "كرسي ألعاب DXRacer Master",
+    "en": "DXRacer Master Series Gaming Chair",
+    "ckb": "کورسیی یاری DXRacer Master"
+  },
+  "short": {
+    "ar": "كرسي DXRacer الفاخر · مساند 4D · دعم ظهر 4D · قاعدة ألمنيوم",
+    "en": "DXRacer's premium chair · 4D armrests · 4D lumbar support · Aluminium base",
+    "ckb": "کورسیی ناوازەی DXRacer · دەستەی 4D · پاڵپشتی پشتی 4D · بنکەی ئەلەمنیۆم"
+  },
+  "description": {
+    "ar": "Master هي سلسلة DXRacer الفاخرة للجلوس الطويل في اللعب أو العمل. فيها دعم مدمج لأسفل الظهر يتعدّل بأربعة اتجاهات، ومساند ذراع 4D، ومسند رأس من إسفنج الذاكرة يتعدّل ارتفاعه، وآلية إمالة متعددة الوظائف تقفل المقعد على الزاوية التي تريدها. الظهر يميل من 90° إلى 135° والقاعدة من الألمنيوم.",
+    "en": "Master is DXRacer's premium series for long hours of gaming or work. It has built-in lumbar support that adjusts four ways, 4D armrests, a height-adjustable memory-foam headrest and a multi-function tilt that locks the seat at the angle you like. The backrest reclines from 90° to 135° and the base is aluminium.",
+    "ckb": "Master زنجیرە ناوازەکەی DXRacerە بۆ دانیشتنی درێژ لە یاری یان کاردا. پاڵپشتی خوارەوەی پشتی تێدایە کە بە چوار ئاراستە ڕێک دەخرێت، دەستەی 4D، سەرپشتی ئیسفەنجی میمۆری کە بەرزییەکەی دەگۆڕدرێت، و میکانیزمی لاربوونەوە کە کورسییەکە لە گۆشەی دڵخوازت قفڵ دەکات. پشت لە 90° تا 135° دەچەمێتەوە و بنکەکەی ئەلەمنیۆمە."
+  },
+  "highlights": [
+    { "ar": "دعم مدمج لأسفل الظهر يتعدّل بأربعة اتجاهات (4D)", "en": "Built-in 4D lumbar support (up, down, forward, back)", "ckb": "پاڵپشتی پشتی 4D (سەرەوە، خوارەوە، پێشەوە، دواوە)" },
+    { "ar": "مساند ذراع 4D", "en": "4D armrests", "ckb": "دەستەی 4D" },
+    { "ar": "مسند رأس من إسفنج الذاكرة يتعدّل ارتفاعه", "en": "Height-adjustable memory-foam headrest", "ckb": "سەرپشتی ئیسفەنجی میمۆری بە بەرزیی گۆڕاو" },
+    { "ar": "إمالة متعددة الوظائف مع قفل، وظهر يميل من 90° إلى 135°", "en": "Multi-function tilt with lock; 90°–135° recline", "ckb": "لاربوونەوەی فرە کار لەگەڵ قفڵ؛ پشت 90° تا 135°" },
+    { "ar": "يتحمل حتى 150 كغ ويناسب طولاً حتى 190 سم", "en": "Up to 150 kg, for users up to 190 cm", "ckb": "تا 150 کگ، بۆ باڵای تا 190 سم" }
+  ],
+  "specs": [
+    { "key": "series", "label": { "ar": "السلسلة", "en": "Series", "ckb": "زنجیرە" }, "value": { "ar": "DXRacer Master", "en": "DXRacer Master", "ckb": "DXRacer Master" } },
+    { "key": "size", "label": { "ar": "المقاس", "en": "Size", "ckb": "قەبارە" }, "value": { "ar": "XL (Plus)", "en": "XL (Plus)", "ckb": "XL (Plus)" } },
+    { "key": "recline", "label": { "ar": "ميلان الظهر", "en": "Recline", "ckb": "چەمانەوەی پشت" }, "value": { "ar": "90° – 135° مع قفل الإمالة", "en": "90° – 135°, tilt lock", "ckb": "90° – 135°، قفڵی لاربوونەوە" } },
+    { "key": "armrests", "label": { "ar": "مساند الذراع", "en": "Armrests", "ckb": "دەستەکان" }, "value": { "ar": "4D", "en": "4D", "ckb": "4D" } },
+    { "key": "lumbar", "label": { "ar": "دعم الظهر", "en": "Lumbar support", "ckb": "پاڵپشتی پشت" }, "value": { "ar": "مدمج 4D", "en": "Built-in, 4D", "ckb": "ناوخۆیی، 4D" } },
+    { "key": "base", "label": { "ar": "القاعدة", "en": "Base", "ckb": "بنکە" }, "value": { "ar": "ألمنيوم، مكبس غاز Class 4", "en": "Aluminium, Class 4 gas lift", "ckb": "ئەلەمنیۆم، گازی Class 4" } },
+    { "key": "load", "label": { "ar": "الحمل الأقصى", "en": "Maximum load", "ckb": "زۆرترین کێش" }, "value": { "ar": "150 كغ", "en": "150 kg", "ckb": "150 کگ" } },
+    { "key": "userHeight", "label": { "ar": "طول المستخدم المناسب", "en": "Recommended user height", "ckb": "باڵای گونجاو" }, "value": { "ar": "حتى 190 سم", "en": "Up to 190 cm", "ckb": "تا 190 سم" } }
+  ],
+  "inTheBox": [
+    { "ar": "الكرسي (يحتاج تركيباً)", "en": "The chair (needs assembly)", "ckb": "کورسییەکە (پێویستی بە بەستنەوە هەیە)" }
+  ],
+  "variants": [
+    {
+      "sku": "DXR-MASTER-BLACK",
+      "sheetRow": 35,
+      "title": { "ar": "أسود بالكامل", "en": "All black", "ckb": "تەواو ڕەش" },
+      "options": { "color": "Black", "material": "EPU leatherette" },
+      "modelNumber": "GC/XLMF24LTA/N",
+      "barcodes": ["810027592842"],
+      "isDefault": true,
+      "images": ["dxracer-master-series--1", "dxracer-master-series--2"]
+    },
+    {
+      "sku": "DXR-MASTER-FABRIC-BLACK",
+      "sheetRow": 34,
+      "title": { "ar": "أسود · قماش", "en": "Black · Fabric", "ckb": "ڕەش · قوماش" },
+      "options": { "color": "Black", "material": "Fabric" },
+      "modelNumber": "MASTER-XL-F23-FBE-N",
+      "isDefault": false,
+      "images": ["dxracer-master-series--3"]
+    },
+    {
+      "sku": "DXR-MASTER-FABRIC-GREY",
+      "sheetRow": 36,
+      "title": { "ar": "رمادي · قماش", "en": "Grey · Fabric", "ckb": "خۆڵەمێشی · قوماش" },
+      "options": { "color": "Grey", "material": "Fabric" },
+      "modelNumber": "MASTER-XL-F23-FBE-G",
+      "isDefault": false,
+      "images": ["dxracer-master-series--4"]
+    },
+    {
+      "sku": "DXR-MASTER-NW",
+      "sheetRow": 37,
+      "title": { "ar": "أبيض وأسود", "en": "White and black", "ckb": "سپی و ڕەش" },
+      "options": { "color": "Black / White", "material": "EPU leatherette" },
+      "modelNumber": "MASTER-XL-F24-LTA-NW",
+      "isDefault": false,
+      "images": ["dxracer-master-series--5"]
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    { "slug": "dxracer-drifting-series", "kind": "alternative" },
+    { "slug": "dxracer-craft-starswar-edition", "kind": "alternative" },
+    { "slug": "dxracer-formula-series", "kind": "alternative" }
+  ],
+  "images": [
+    {
+      "key": "dxracer-master-series--1",
+      "file": ".cache/product-images/dxracer-master-series/1.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/06137052-ab18-403e-83e4-ec3fe5e6bdf7-1.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/master?sku=GC/XLMF24LTA/N",
+      "kind": "hero",
+      "alt": { "ar": "كرسي DXRacer Master الأسود من الأمام", "en": "Black DXRacer Master chair, front view", "ckb": "کورسیی DXRacer Master ـی ڕەش لە پێشەوە" },
+      "credit": "DXRacer",
+      "width": 800, "height": 960, "transparent": true
+    },
+    {
+      "key": "dxracer-master-series--2",
+      "file": ".cache/product-images/dxracer-master-series/2.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/76660160-5081-4595-82de-db6d79e93c3e-2.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/master?sku=GC/XLMF24LTA/N",
+      "kind": "angle",
+      "alt": { "ar": "كرسي Master الأسود من الجانب", "en": "The black Master chair from an angle", "ckb": "کورسیی Master ـی ڕەش لە لاوە" },
+      "credit": "DXRacer",
+      "width": 853, "height": 1024, "transparent": true
+    },
+    {
+      "key": "dxracer-master-series--3",
+      "file": ".cache/product-images/dxracer-master-series/3.jpg",
+      "sourceUrl": "https://www.maxgaming.com/bilder/artiklar/zoom/31700_1.jpg",
+      "sourcePage": "https://www.maxgaming.com/en/dxracer-master/dxracer-master-xl-black-fabric",
+      "kind": "angle",
+      "alt": { "ar": "كرسي Master بقماش أسود", "en": "The black fabric Master chair", "ckb": "کورسیی Master بە قوماشی ڕەش" },
+      "credit": "DXRacer (product render, via MaxGaming)",
+      "width": 1600, "height": 1280, "transparent": false
+    },
+    {
+      "key": "dxracer-master-series--4",
+      "file": ".cache/product-images/dxracer-master-series/4.jpg",
+      "sourceUrl": "https://www.maxgaming.com/bilder/artiklar/zoom/31701_1.jpg",
+      "sourcePage": "https://www.maxgaming.com/en/dxracer-master/dxracer-master-xl-grey-fabric",
+      "kind": "angle",
+      "alt": { "ar": "كرسي Master بقماش رمادي", "en": "The grey fabric Master chair", "ckb": "کورسیی Master بە قوماشی خۆڵەمێشی" },
+      "credit": "DXRacer (product render, via MaxGaming)",
+      "width": 1600, "height": 1280, "transparent": false
+    },
+    {
+      "key": "dxracer-master-series--5",
+      "file": ".cache/product-images/dxracer-master-series/5.png",
+      "sourceUrl": "https://www.maxgaming.com/bilder/artiklar/zoom/32114_1.jpg",
+      "sourcePage": "https://www.maxgaming.com/en/dxracer-master/master-xl-black-white-epu-leather",
+      "kind": "angle",
+      "alt": { "ar": "كرسي Master بالأسود والأبيض", "en": "The black and white Master chair", "ckb": "کورسیی Master بە ڕەش و سپی" },
+      "credit": "DXRacer (product render, via MaxGaming)",
+      "width": 1600, "height": 1280, "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dxracer.com/products/gaming-chairs/master",
+      "title": "Master Series Gaming Chair",
+      "publisher": "DXRacer USA",
+      "retrieved": "2026-11-18",
+      "supports": "series features (slow-rebound memory foam headrest, 4D lumbar support, 4D armrests, multi-function tilt, 90°–135° recline), black XL model GC/XLMF24LTA/N with barcode 810027592842, images"
+    },
+    {
+      "url": "https://www.dxracer.com/specifications/gaming-chairs/master",
+      "title": "MASTER Series Specifications",
+      "publisher": "DXRacer USA",
+      "retrieved": "2026-11-18",
+      "supports": "tilt lock, lumbar and armrest adjustments, Class 4 hydraulics, aluminium base"
+    },
+    {
+      "url": "https://www.maxgaming.com/en/dxracer-master/dxracer-master-xl-black-fabric",
+      "title": "DXRacer MASTER XL Black Fabric",
+      "publisher": "MaxGaming",
+      "retrieved": "2026-11-18",
+      "supports": "black fabric version (MASTER-XL-F23-FBE-N-X1), 150 kg maximum load, recommended height up to 190 cm, image"
+    },
+    {
+      "url": "https://www.maxgaming.com/en/dxracer-master/dxracer-master-xl-grey-fabric",
+      "title": "DXRacer MASTER Gaming Chair Grey Fabric XL",
+      "publisher": "MaxGaming",
+      "retrieved": "2026-11-18",
+      "supports": "grey fabric version (MASTER-XL-F23-FBE-G-X1), image"
+    },
+    {
+      "url": "https://www.maxgaming.com/en/dxracer-master/master-xl-black-white-epu-leather",
+      "title": "DXRacer MASTER XL Black & White EPU Leather",
+      "publisher": "MaxGaming",
+      "retrieved": "2026-11-18",
+      "supports": "black and white EPU leather version (MASTER-XL-F24-LTA-NW-X1), image"
+    }
+  ],
+  "notes": {
+    "ar": "الكرسي يصل مفككاً ويحتاج تركيباً. مقاس XL الكبير حسب صفحات الصانع والمتاجر.",
+    "en": "The chair arrives flat-packed and needs assembly. It is the large XL (Plus) size on the maker's and retailers' pages.",
+    "ckb": "کورسییەکە بە جیاکراوەیی دێت و پێویستی بە بەستنەوە هەیە. بەپێی پەڕەکانی دروستکەر و فرۆشگاکان قەبارەی گەورەی XL ـە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "The owner's sheet calls these chairs \"IGC\"; no gaming-chair brand of that name was found. The series name and colour codes (N, G, WH/BK) match DXRacer's Master, so the rows are treated as DXRacer chairs",
+      "Row 35 \"MASTER FULL BLACK BK-PFN\": the owner's code BK-PFN does not appear on DXRacer's pages; mapped to the all-black EPU leatherette Master (GC/XLMF24LTA/N) as the most likely match. It could also be the older black microfibre Master",
+      "Fabric and black-and-white model numbers come from a retailer listing, not a DXRacer page",
+      "Exact model year (2023 or 2024 Master) of the units in stock not confirmed"
+    ]
+  }
+}

@@ -1,0 +1,280 @@
+{
+  "slug": "gulikit-tmr-electromagnetic-joystick",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "GuliKit",
+  "status": "available",
+  "name": {
+    "ar": "عصا تحكم GuliKit TMR Electromagnetic Joystick",
+    "en": "GuliKit TMR Electromagnetic Joystick",
+    "ckb": "جۆیستیکی GuliKit TMR Electromagnetic Joystick"
+  },
+  "short": {
+    "ar": "عصا بديلة بحساس TMR ضد الانحراف — قطعة صيانة",
+    "en": "TMR anti-drift replacement stick — repair part",
+    "ckb": "جۆیستیکی جێگرەوە بە هەستەوەری TMR دژی لادان — پارچەی چاککردنەوە"
+  },
+  "description": {
+    "ar": "عصا تحكم بديلة من GuliKit بحساس مغناطيسي TMR لا يلامس ولا يتآكل، تُركّب مكان العصا الأصلية لعلاج مشكلة الانحراف (drift). تناسب يد Switch Pro و DualSense و DualSense Edge و DualShock 4 ويدي Xbox Series و Elite Series 2. التركيب يحتاج لحامًا وخبرة صيانة.",
+    "en": "A GuliKit replacement stick with a contactless, wear-free TMR magnetic sensor that goes in place of the original to fix stick drift. It fits the Switch Pro Controller, DualSense, DualSense Edge, DualShock 4, Xbox Series and Elite Series 2 controllers. Fitting needs soldering and repair skills.",
+    "ckb": "جۆیستیکێکی جێگرەوەی GuliKit بە هەستەوەری موگناتیسی TMR کە دەستی لێ نادات و ناساوێت، لە شوێنی جۆیستیکی ڕەسەن دادەنرێت بۆ چارەسەری لادان (drift). بۆ Switch Pro Controller، DualSense، DualSense Edge، DualShock 4 و دەسکەکانی Xbox Series و Elite Series 2 گونجاوە. دانانی پێویستی بە لحیم و شارەزایی چاککردنەوە هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "حساس TMR بلا تلامس — لا يتآكل",
+      "en": "Contactless TMR sensor — no wear",
+      "ckb": "هەستەوەری TMR بێ بەرکەوتن — ناساوێت"
+    },
+    {
+      "ar": "بديل مباشر دون تعديل الدائرة",
+      "en": "Direct replacement, no circuit changes",
+      "ckb": "جێگرەوەی ڕاستەوخۆ بێ گۆڕینی سووڕ"
+    },
+    {
+      "ar": "استهلاك طاقة منخفض مثل العصا الأصلية",
+      "en": "Low power draw like the original stick",
+      "ckb": "وزەی کەم وەک جۆیستیکی ڕەسەن"
+    },
+    {
+      "ar": "قطعة صيانة: يحتاج لحامًا ثم معايرة",
+      "en": "Repair part: needs soldering, then calibration",
+      "ckb": "پارچەی چاککردنەوە: پێویستی بە لحیم و پاشان ڕێکخستن هەیە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Switch Pro · DualSense · DualSense Edge · DualShock 4 · Xbox Series · Xbox Elite Series 2",
+        "en": "Switch Pro · DualSense · DualSense Edge · DualShock 4 · Xbox Series · Xbox Elite Series 2",
+        "ckb": "Switch Pro · DualSense · DualSense Edge · DualShock 4 · Xbox Series · Xbox Elite Series 2"
+      }
+    },
+    {
+      "key": "sensor",
+      "label": {
+        "ar": "الحساس",
+        "en": "Sensor",
+        "ckb": "هەستەوەر"
+      },
+      "value": {
+        "ar": "TMR (مقاومة مغناطيسية نفقية)",
+        "en": "TMR (tunnel magnetoresistance)",
+        "ckb": "TMR (بەرگری موگناتیسی تونێلی)"
+      }
+    },
+    {
+      "key": "install",
+      "label": {
+        "ar": "التركيب",
+        "en": "Fitting",
+        "ckb": "دانان"
+      },
+      "value": {
+        "ar": "لحام · معايرة بعد التركيب",
+        "en": "Soldering · calibrate after fitting",
+        "ckb": "لحیم · دوای دانان ڕێکبخە"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "GULIKIT-TMR-NS51",
+      "sheetRow": 208,
+      "title": {
+        "ar": "موديل NS51",
+        "en": "Model NS51",
+        "ckb": "مۆدێلی NS51"
+      },
+      "modelNumber": "NS51",
+      "options": {
+        "code": "NS51"
+      },
+      "isDefault": true,
+      "images": [
+        "gulikit-tmr-electromagnetic-joystick--1",
+        "gulikit-tmr-electromagnetic-joystick--2",
+        "gulikit-tmr-electromagnetic-joystick--3",
+        "gulikit-tmr-electromagnetic-joystick--4"
+      ]
+    },
+    {
+      "sku": "GULIKIT-TMR-TIC720",
+      "sheetRow": 209,
+      "title": {
+        "ar": "موديل TIC 720",
+        "en": "Model TIC 720",
+        "ckb": "مۆدێلی TIC 720"
+      },
+      "options": {
+        "code": "TIC 720"
+      },
+      "isDefault": false,
+      "notes": {
+        "ar": "رمز «TIC 720» من ورقة المخزن ولم نجده في صفحات GuliKit.",
+        "en": "The code \"TIC 720\" is from the stock sheet; we did not find it on GuliKit pages.",
+        "ckb": "کۆدی «TIC 720» لە لیستی کۆگاوەیە و لە پەڕەکانی GuliKit نەماندۆزییەوە."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch",
+      "status": "partial",
+      "note": {
+        "ar": "لـ Switch Pro Controller فقط (ليس Joy-Con)",
+        "en": "For the Switch Pro Controller only (not Joy-Con)",
+        "ckb": "تەنها بۆ Switch Pro Controller (نەک Joy-Con)"
+      },
+      "source": "https://gulikit.com/productinfo/1251251.html"
+    },
+    {
+      "deviceModel": "ps5",
+      "status": "partial",
+      "note": {
+        "ar": "لـ DualSense و DualSense Edge",
+        "en": "For DualSense and DualSense Edge",
+        "ckb": "بۆ DualSense و DualSense Edge"
+      },
+      "source": "https://gulikit.com/productinfo/1251251.html"
+    },
+    {
+      "deviceModel": "ps4",
+      "status": "partial",
+      "note": {
+        "ar": "لـ DualShock 4",
+        "en": "For DualShock 4",
+        "ckb": "بۆ DualShock 4"
+      },
+      "source": "https://gulikit.com/productinfo/1251251.html"
+    },
+    {
+      "deviceModel": "xbox-series-x",
+      "status": "partial",
+      "note": {
+        "ar": "ليدي Xbox Series و Elite Series 2",
+        "en": "For Xbox Series and Elite Series 2 controllers",
+        "ckb": "بۆ دەسکەکانی Xbox Series و Elite Series 2"
+      },
+      "source": "https://gulikit.com/productinfo/1251251.html"
+    }
+  ],
+  "related": [
+    {
+      "slug": "dualsense",
+      "kind": "accessory"
+    },
+    {
+      "slug": "xbox-wireless-controller",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "gulikit-tmr-electromagnetic-joystick--1",
+      "file": ".cache/product-images/gulikit-tmr-electromagnetic-joystick/1.jpg",
+      "sourceUrl": "https://img.website.xin/contents/sitefiles3604/18023503/images/10826452.jpg",
+      "sourcePage": "https://gulikit.com/productinfo/1251251.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "وحدتا عصا GuliKit TMR",
+        "en": "Two GuliKit TMR joystick modules",
+        "ckb": "دوو مۆدیوڵی جۆیستیکی GuliKit TMR"
+      },
+      "credit": "GuliKit",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "gulikit-tmr-electromagnetic-joystick--2",
+      "file": ".cache/product-images/gulikit-tmr-electromagnetic-joystick/2.jpg",
+      "sourceUrl": "https://img.website.xin/contents/sitefiles3604/18023503/images/10826454.jpg",
+      "sourcePage": "https://gulikit.com/productinfo/1251251.html",
+      "kind": "in-box",
+      "alt": {
+        "ar": "وحدتا العصا مع غطاءي KK Ring",
+        "en": "The two modules with KK Ring caps",
+        "ckb": "دوو مۆدیوڵەکە لەگەڵ سەرپۆشی KK Ring"
+      },
+      "credit": "GuliKit",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "gulikit-tmr-electromagnetic-joystick--3",
+      "file": ".cache/product-images/gulikit-tmr-electromagnetic-joystick/3.jpg",
+      "sourceUrl": "https://img.website.xin/contents/sitefiles3604/18023503/images/10826458.jpg",
+      "sourcePage": "https://gulikit.com/productinfo/1251251.html",
+      "kind": "angle",
+      "alt": {
+        "ar": "نسخة يد Xbox بلون أخضر مع الأغطية",
+        "en": "The Xbox version (green) with caps",
+        "ckb": "وەشانی Xbox (سەوز) لەگەڵ سەرپۆشەکان"
+      },
+      "credit": "GuliKit",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    },
+    {
+      "key": "gulikit-tmr-electromagnetic-joystick--4",
+      "file": ".cache/product-images/gulikit-tmr-electromagnetic-joystick/4.jpg",
+      "sourceUrl": "https://img.website.xin/contents/sitefiles3604/18023503/images/9415923.jpg",
+      "sourcePage": "https://gulikit.com/productinfo/1251251.html",
+      "kind": "detail",
+      "alt": {
+        "ar": "الوحدتان من الأمام",
+        "en": "The two modules from the front",
+        "ckb": "دوو مۆدیوڵەکە لە پێشەوە"
+      },
+      "credit": "GuliKit",
+      "width": 800,
+      "height": 800,
+      "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://gulikit.com/productinfo/1251251.html",
+      "title": "TMR Electromagnetic Joystick – GuliKit",
+      "publisher": "GuliKit",
+      "retrieved": "2026-11-18",
+      "supports": "TMR sensor, direct replacement, low power, compatibility list, calibration after fitting, repair use only, images"
+    },
+    {
+      "url": "https://ecommerce.datablitz.com.ph/products/gulikit-tmr-electromagnetic-joystick-for-switch-pro-controller-ns51",
+      "title": "Gulikit TMR Electromagnetic Joystick for Switch Pro Controller (NS51)",
+      "publisher": "Datablitz",
+      "retrieved": "2026-11-18",
+      "supports": "model code NS51"
+    },
+    {
+      "url": "https://manuals.plus/asin/B0D96F529K",
+      "title": "GuliKit NS51-PS5",
+      "publisher": "manuals.plus",
+      "retrieved": "2026-11-18",
+      "supports": "NS51 model family, 2 joystick modules and 2 KK Ring caps, soldering required"
+    }
+  ],
+  "notes": {
+    "ar": "في ورقة المخزن «TMR ELEC TRMAGNE» = TMR Electromagnetic. نسخ NS51 تختلف حسب اليد (PS5 أو PS4 أو Xbox أو Switch Pro) — تأكد من نسخة يدك قبل الشراء.",
+    "en": "On the stock sheet \"TMR ELEC TRMAGNE\" = TMR Electromagnetic. NS51 packs differ by controller (PS5, PS4, Xbox or Switch Pro) — check yours before buying.",
+    "ckb": "لە لیستی کۆگادا «TMR ELEC TRMAGNE» = TMR Electromagnetic. وەشانەکانی NS51 بەپێی دەسک جیاوازن (PS5، PS4، Xbox یان Switch Pro) — پێش کڕین وەشانی دەسکەکەت بپشکنە."
+  },
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "Which controller each stocked pack is for",
+      "What \"TIC 720\" refers to (not found on GuliKit pages)"
+    ]
+  }
+}

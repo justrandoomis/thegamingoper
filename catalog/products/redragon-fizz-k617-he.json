@@ -1,0 +1,204 @@
+{
+  "slug": "redragon-fizz-k617-he",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Redragon",
+  "category": "keyboards",
+  "status": "available",
+  "name": {
+    "ar": "كيبورد Redragon FIZZ K617 HE",
+    "en": "Redragon FIZZ K617 HE",
+    "ckb": "کیبۆردی Redragon FIZZ K617 HE"
+  },
+  "short": {
+    "ar": "60% · مفاتيح مغناطيسية · Rapid Trigger · 8000 هرتز",
+    "en": "60% · magnetic switches · Rapid Trigger · 8K polling",
+    "ckb": "60% · سویچی مەگناتیسی · Rapid Trigger · ‏8000 هێرتز"
+  },
+  "description": {
+    "ar": "كيبورد ألعاب صغير بحجم 60% من Redragon بمفاتيح مغناطيسية Hall Effect، تقدر تضبط نقطة التفعيل لكل زر من 0.1 حتى 3.4 ملم ومع خاصية Rapid Trigger. يعمل بكابل USB‑C بمعدل استجابة 8000 هرتز، ويدعم ضغطتين مختلفتين في زر واحد ووضع PRCS المشابه لـ Snap Tap.",
+    "en": "A compact 60% Redragon gaming keyboard with Hall Effect magnetic switches whose actuation point you set per key from 0.1 to 3.4 mm, with Rapid Trigger. It runs wired over USB-C at 8,000 Hz polling and supports two actions per key and PRCS, Redragon's Snap Tap-style mode.",
+    "ckb": "کیبۆردێکی یاری بچووکی 60%ی Redragon بە سویچی مەگناتیسی Hall Effect کە خاڵی کاراکردنی هەر دوگمەیەک لە 0.1 تا 3.4 ملم ڕێکدەخەیت، لەگەڵ Rapid Trigger. بە USB‑C و 8000 هێرتز کار دەکات و دوو کردار لە یەک دوگمەدا و شێوازی PRCS (وەک Snap Tap) پشتگیری دەکات."
+  },
+  "highlights": [
+    {
+      "ar": "مفاتيح مغناطيسية مع Rapid Trigger",
+      "en": "Magnetic Hall Effect switches with Rapid Trigger",
+      "ckb": "سویچی مەگناتیسی لەگەڵ Rapid Trigger"
+    },
+    {
+      "ar": "نقطة تفعيل قابلة للضبط 0.1–3.4 ملم",
+      "en": "Adjustable actuation 0.1–3.4 mm",
+      "ckb": "خاڵی کاراکردنی 0.1–3.4 ملم"
+    },
+    {
+      "ar": "معدل استجابة 8000 هرتز سلكي",
+      "en": "8,000 Hz wired polling",
+      "ckb": "8000 هێرتزی وایەری"
+    },
+    {
+      "ar": "حجم 60% بـ 61 زراً",
+      "en": "60% size, 61 keys",
+      "ckb": "قەبارەی 60%، ‏61 دوگمە"
+    }
+  ],
+  "specs": [
+    {
+      "key": "layout",
+      "label": {
+        "ar": "التصميم",
+        "en": "Layout",
+        "ckb": "شێوە"
+      },
+      "value": {
+        "ar": "60%، ‏61 زراً، تخطيط أمريكي",
+        "en": "60%, 61 keys, US layout",
+        "ckb": "60%، ‏61 دوگمە، ئەمریکی"
+      }
+    },
+    {
+      "key": "switches",
+      "label": {
+        "ar": "المفاتيح",
+        "en": "Switches",
+        "ckb": "سویچەکان"
+      },
+      "value": {
+        "ar": "مغناطيسية Hall Effect من Redragon (لا تتوافق مع مفاتيح HE من شركات أخرى)",
+        "en": "Redragon Hall Effect magnetic (not compatible with other brands' HE switches)",
+        "ckb": "مەگناتیسی Hall Effectی Redragon (لەگەڵ سویچی HEی کۆمپانیای تر ناگونجێت)"
+      }
+    },
+    {
+      "key": "actuation",
+      "label": {
+        "ar": "نقطة التفعيل",
+        "en": "Actuation",
+        "ckb": "خاڵی کاراکردن"
+      },
+      "value": {
+        "ar": "0.1–3.4 ملم بخطوات 0.1 ملم، Rapid Trigger",
+        "en": "0.1–3.4 mm in 0.1 mm steps, Rapid Trigger",
+        "ckb": "0.1–3.4 ملم بە هەنگاوی 0.1 ملم، Rapid Trigger"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "سلكي USB‑C إلى USB‑A، ‏8000 هرتز",
+        "en": "Wired USB-C to USB-A, 8,000 Hz",
+        "ckb": "وایەری USB‑C بۆ USB‑A، ‏8000 هێرتز"
+      }
+    },
+    {
+      "key": "lighting",
+      "label": {
+        "ar": "الإضاءة",
+        "en": "Lighting",
+        "ckb": "ڕووناکی"
+      },
+      "value": {
+        "ar": "RGB",
+        "en": "RGB",
+        "ckb": "RGB"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RD-K617GGB-HE",
+      "title": {
+        "ar": "رمادي متدرج",
+        "en": "Gradient Grey",
+        "ckb": "خۆڵەمێشی پلەدار"
+      },
+      "options": {
+        "color": "Gradient Grey"
+      },
+      "modelNumber": "K617GGB-RGB-MP",
+      "barcodes": [
+        "6950376734815"
+      ],
+      "isDefault": true,
+      "images": [
+        "redragon-fizz-k617-he--1"
+      ],
+      "sheetRow": 46,
+      "notes": {
+        "ar": "يسميه متجر Redragon الأمريكي «Gradient Black» ويسميه الموزعون «Mystic Grey» أو «Grey».",
+        "en": "Redragon's US store calls this colour \"Gradient Black\"; resellers call it \"Mystic Grey\" or \"Grey\".",
+        "ckb": "فرۆشگای ئەمریکیی Redragon پێی دەڵێت «Gradient Black»؛ فرۆشیاران «Mystic Grey» یان «Grey»."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "سلكي؛ البرنامج متاح لـ Windows.",
+        "en": "Wired; software for Windows.",
+        "ckb": "وایەری؛ بەرنامە بۆ Windows."
+      },
+      "source": "https://redragonshop.com/products/fizz-k617-he-magnetic-hall-effect-keyboard"
+    }
+  ],
+  "related": [
+    {
+      "slug": "gameon-aerox-gomk60-rs",
+      "kind": "alternative"
+    },
+    {
+      "slug": "redragon-storm-pro-m808-ks",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "redragon-fizz-k617-he--1",
+      "file": ".cache/product-images/redragon-fizz-k617-he/1.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/Redragon_FIZZ_K617_HE_Magnetic_Hall_Effect_Keyboard_-GB_3.png",
+      "sourcePage": "https://redragonshop.com/products/fizz-k617-he-magnetic-hall-effect-keyboard",
+      "kind": "hero",
+      "alt": {
+        "ar": "كيبورد Redragon FIZZ K617 HE باللون الرمادي المتدرج",
+        "en": "Redragon FIZZ K617 HE in gradient grey",
+        "ckb": "Redragon FIZZ K617 HE بە ڕەنگی خۆڵەمێشی پلەدار"
+      },
+      "credit": "Redragon",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://redragonshop.com/products/fizz-k617-he-magnetic-hall-effect-keyboard",
+      "title": "FIZZ K617 HE (Magnetic Hall Effect Keyboard)",
+      "publisher": "Redragon (official store)",
+      "retrieved": "2026-11-18",
+      "supports": "Hall Effect switches, Rapid Trigger, 0.1–3.4 mm actuation, PRCS, 8K polling, USB-A to USB-C cable, two actions per key, Black and Gradient Black versions, image"
+    },
+    {
+      "url": "https://dangerfield.com.au/products/k617ggb-rgb-mp-fizz-rt-61keykb",
+      "title": "Redragon K617GGB-RGB-MP Fizz Grey 60% Rapid Trigger Magnetic HE RGB Gaming Keyboard",
+      "publisher": "Dangerfield (Redragon reseller, Australia)",
+      "retrieved": "2026-11-18",
+      "supports": "model code K617GGB-RGB-MP = Fizz grey 61-key rapid-trigger magnetic keyboard, barcode 6950376734815"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Release date",
+      "Weight and dimensions"
+    ]
+  }
+}

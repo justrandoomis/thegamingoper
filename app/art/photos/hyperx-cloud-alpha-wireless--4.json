@@ -1,0 +1,64 @@
+{
+  "key": "hyperx-cloud-alpha-wireless--4",
+  "view": "hero",
+  "width": 1456,
+  "height": 1179,
+  "aspect": 1.2349,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-alpha-wireless/4-240.4360ac29.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-alpha-wireless/4-480.96678ff7.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-alpha-wireless/4-720.6810ca78.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-alpha-wireless/4-960.162110ed.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyperx-cloud-alpha-wireless/4-1440.7b59ac07.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-alpha-wireless/4-240.46e716bb.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-alpha-wireless/4-480.57c5dbb6.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-alpha-wireless/4-720.614e507d.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-alpha-wireless/4-960.46d7ea42.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyperx-cloud-alpha-wireless/4-1440.dd99198d.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRiABAABXRUJQVlA4WAoAAAAQAAAAEwAADwAAQUxQSH8AAAART6CgbSM3diT2vvuPiIA4nE/0BU5s23aTmx7ZAdnRQeKiKA6LwxXXm0RBfL3jfY85RPR/AiAN/L2+LS3j/qh91mgspXRQO0pjovRE8ENwtpQi+B5sgfrOYiqyluSqb+bdHUnON95pexK9k99fzIR98oFRQ76RO0BwfT1T6AYkAFZQOCB6AAAA8AMAnQEqFAAQAD8RcLBQLCYkorAIAYAiCWQAA+LqC54UG65PbZMG4AD+6+bnRCMdSPF0tapEPuI/aAI/lKI2K743V7QOG+KA62TDGvv0wAPwjF8DMgO53iGBzqPM3A+18ixpfwLAd+tK92J/3pYnHm1gAbmXZJ+EAAA=",
+  "dominant": "#050505",
+  "transparent": true,
+  "background": null,
+  "kind": "detail",
+  "credit": "HyperX (HP Inc.)",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_alpha_wireless_2_main_dongle.jpg",
+    "page": "https://hyperx.com/products/hyperx-cloud-alpha-wireless"
+  },
+  "input": "8bad1a16cf4717ba"
+}

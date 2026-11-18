@@ -1,0 +1,48 @@
+{
+  "key": "dualsense-edge-stick-module--2",
+  "view": "hero",
+  "width": 897,
+  "height": 849,
+  "aspect": 1.0565,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-edge-stick-module/2-240.63a0f30e.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-edge-stick-module/2-480.7de12eeb.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-edge-stick-module/2-720.a54bfd6b.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/dualsense-edge-stick-module/2-240.a39c965b.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/dualsense-edge-stick-module/2-480.c8cd04bb.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/dualsense-edge-stick-module/2-720.025c21a8.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRiABAABXRUJQVlA4WAoAAAAQAAAAEwAAEgAAQUxQSHAAAAART6CgjSQ1dhrwmfkjIsAnu9B/6nBi29ayHLy6DAHaPwUcGpXm1v5ElvQyfsf7yT+FiP5PANGJmVnBWUtS2WEplciy/0qXKZDIW4DUV4Gnrw9v3wI+vhWpgpWY6sPXy3HzdYm6RwyOV7PTsYlbq+UAVlA4IIoAAADQAwCdASoUABMAPxF+tlWsJ6SjKAgBgCIJZQAAH6XR8HuXBmTr8AAA/ttZnTHL/cWPF7uoG+Q0iBrH4TJxI0rFxBC54bsm7TrYF1pfooYIlXEKEAfN8fqnWHpZ4yMD2QBCRfR+cpcpVyfDBK8cPRXnUou3dVkwRppbD4F7W5U/arB+wow1tzlAAAA=",
+  "dominant": "#171a26",
+  "transparent": true,
+  "background": null,
+  "kind": "angle",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://image.api.playstation.com/media-direct/is/image/sierialto/stick-module-front?scl=1&fmt=png-alpha",
+    "page": "https://store.playstation.com/en-us/product/PSD001-PSDU01548_79-STICKMODUL4TDFBU"
+  },
+  "input": "02a69f759824fe21"
+}

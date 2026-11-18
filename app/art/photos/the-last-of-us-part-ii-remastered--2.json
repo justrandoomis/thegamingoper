@@ -1,0 +1,64 @@
+{
+  "key": "the-last-of-us-part-ii-remastered--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/the-last-of-us-part-ii-remastered/2-240.1b3fd638.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-last-of-us-part-ii-remastered/2-480.2bf75ced.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-last-of-us-part-ii-remastered/2-720.c6c64dc0.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-last-of-us-part-ii-remastered/2-960.1d938e8c.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/the-last-of-us-part-ii-remastered/2-1440.c10d2000.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/the-last-of-us-part-ii-remastered/2-240.8cccb434.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/the-last-of-us-part-ii-remastered/2-480.f9d081c7.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/the-last-of-us-part-ii-remastered/2-720.f1f2c7e5.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/the-last-of-us-part-ii-remastered/2-960.c17b5209.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/the-last-of-us-part-ii-remastered/2-1440.20dc99b5.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADwAwCdASoUAAsAPxFysFAsJqSisAgBgCIJYwCsABuldVQO7EzCmP1wAP7o7RRz+wCyWkWtWhGxmydW8QUd8OyzEkhETS5bFDhWPsWjnoKAAA==",
+  "dominant": "#261917",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Sony Interactive Entertainment",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202401/1716/08d00d4843264b463fbb4ba5ae5ca6fea5ed300e10c670ed.jpg",
+    "page": "https://store.playstation.com/en-gb/product/EP9000-PPSA15508_00-THELASTOFUSPART2"
+  },
+  "input": "3ac524488528e501"
+}

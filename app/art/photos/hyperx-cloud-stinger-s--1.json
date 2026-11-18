@@ -1,0 +1,70 @@
+{
+  "key": "hyperx-cloud-stinger-s--1",
+  "view": "hero",
+  "width": 1600,
+  "height": 1520,
+  "aspect": 1.0526,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-stinger-s/1-240.8a28c51f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-stinger-s/1-480.ec53ddaa.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-stinger-s/1-720.d34c7d2f.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-stinger-s/1-960.75b1aff0.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyperx-cloud-stinger-s/1-1440.9e4fb91e.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/hyperx-cloud-stinger-s/1-240.10a70b47.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/hyperx-cloud-stinger-s/1-480.77b39795.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/hyperx-cloud-stinger-s/1-720.b599912f.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/hyperx-cloud-stinger-s/1-960.f864c4c4.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/hyperx-cloud-stinger-s/1-1440.5a2785e4.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/hyperx-cloud-stinger-s/1-1200.5dd4f925.png",
+    "width": 1200,
+    "height": 1140,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRiwBAABXRUJQVlA4WAoAAAAQAAAAEwAAEgAAQUxQSH4AAAART6CobSM2Vgz99faIiAD9feXxcGLbttrccGS5U6hlcH8Ika2sjCuDZNDBO95PU4jo/wTA+rByVYJcqrJ0c1M06iChK4m/k9CX7kvxZiBlg4qMpOJMMgbQqGvNlrKUK8KGg1rhbReOIkXjdFX0AQyf5HXqAEDjvZ5A3XBaGjVWUDggiAAAADAEAJ0BKhQAEwA/EXyzVCwnpCMoCqmAIglpAAPkmQnU9W4K9QTVhtclQAD+8MuQhvqrC96LyWKga5jNvlk8n/HMrQSa/Ndqh0P3KyCNelwont2vR0X1evwAHIn8x6bQFL6y3OMGTd/3pu4PyoSRb+PO/D0F/xSQcvE/yxgjb/D42SHj16kAAAA=",
+  "dominant": "#181818",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "HyperX (HP Inc.), via Icecat",
+  "source": {
+    "url": "https://images.icecat.biz/img/gallery/4a8bac03ce9d5814c0a03e94f0ecb4e36f3fa648.jpg",
+    "page": "https://icecat.biz/en/p/hyperx/hhss1s-aa-bk-g/cloud-stinger-s-80427488.html"
+  },
+  "input": "a3f3d5bcdc27a37c"
+}

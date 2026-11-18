@@ -1,0 +1,64 @@
+{
+  "key": "metal-gear-solid-delta-snake-eater--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/metal-gear-solid-delta-snake-eater/2-240.5775e359.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/metal-gear-solid-delta-snake-eater/2-480.5eedfb8e.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/metal-gear-solid-delta-snake-eater/2-720.d393bd81.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/metal-gear-solid-delta-snake-eater/2-960.610693e4.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/metal-gear-solid-delta-snake-eater/2-1440.d849cd9c.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/metal-gear-solid-delta-snake-eater/2-240.2403fa38.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/metal-gear-solid-delta-snake-eater/2-480.afe37395.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/metal-gear-solid-delta-snake-eater/2-720.03e4c713.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/metal-gear-solid-delta-snake-eater/2-960.d3df80ce.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/metal-gear-solid-delta-snake-eater/2-1440.941178e3.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAADQAwCdASoUAAsAPxFysFAsJqSisAgBgCIJZQCzgB0cZdd41rZ+YAAA/qsTqS6sMDur3VAi0oGxwSqA+O6bl7unMv46POQXaDPKyo4JIBYqxn8AAAA=",
+  "dominant": "#090806",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Konami",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202406/0513/17ebc3943be34b5f2939be89cbe0224cb6497b6f0de6cbe1.jpg",
+    "page": "https://store.playstation.com/en-gb/product/JP0101-PPSA15304_00-MGSDELTAMAINGAME"
+  },
+  "input": "d354f403e5236136"
+}

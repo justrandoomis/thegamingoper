@@ -1,0 +1,210 @@
+{
+  "slug": "redragon-yorick-gs511",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "Redragon",
+  "category": "speakers",
+  "status": "available",
+  "name": {
+    "ar": "سماعات Redragon Yorick GS511",
+    "en": "Redragon Yorick GS511",
+    "ckb": "بڵندگۆی Redragon Yorick GS511"
+  },
+  "short": {
+    "ar": "سماعات 2.0 · بلوتوث 5.3 وUSB · RGB · تتحول إلى ساوند بار",
+    "en": "2.0 speakers · BT 5.3 + USB · RGB · soundbar mode",
+    "ckb": "بڵندگۆی 2.0 · بلووتوز 5.3 و USB · RGB · ساوندبار"
+  },
+  "description": {
+    "ar": "سماعات مكتب ستيريو 2.0 من Redragon تتصل بالبلوتوث 5.3 أو بوضع USB، وتأخذ الكهرباء من USB. تستخدمها منفصلتين على المكتب أو تركّبهما معاً كساوند بار تحت الشاشة أو التلفزيون، مع مقبض واحد للصوت والتشغيل وأوضاع الإضاءة والاتصال.",
+    "en": "Redragon 2.0 stereo desktop speakers that connect by Bluetooth 5.3 or in USB mode and take power over USB. Use them apart on the desk or join them into a soundbar under a monitor or TV, with one knob for volume, power, lighting and connection modes.",
+    "ckb": "بڵندگۆی ستێریۆی 2.0ی Redragon کە بە بلووتوز 5.3 یان شێوازی USB دەبەسترێن و کارەبا لە USB وەردەگرن. جیا لەسەر مێز یان پێکەوە وەک ساوندبار لە ژێر شاشە یان تەلەفزیۆن بەکاریان دەهێنیت، بە یەک دوگمە بۆ دەنگ و کوژاندنەوە و ڕووناکی و شێوازی پەیوەندی."
+  },
+  "highlights": [
+    {
+      "ar": "بلوتوث 5.3 ووضع USB",
+      "en": "Bluetooth 5.3 and USB mode",
+      "ckb": "بلووتوز 5.3 و شێوازی USB"
+    },
+    {
+      "ar": "قطعتان منفصلتان أو ساوند بار واحد",
+      "en": "Two units or one soundbar",
+      "ckb": "دوو یەکە یان یەک ساوندبار"
+    },
+    {
+      "ar": "سماعات بقطر 2 إنش",
+      "en": "2-inch drivers",
+      "ckb": "دەنگدەری 2 ئینج"
+    },
+    {
+      "ar": "إضاءة RGB",
+      "en": "RGB lighting",
+      "ckb": "ڕووناکی RGB"
+    }
+  ],
+  "specs": [
+    {
+      "key": "channels",
+      "label": {
+        "ar": "القنوات",
+        "en": "Channels",
+        "ckb": "کەناڵ"
+      },
+      "value": {
+        "ar": "2.0 ستيريو، سماعات 2 إنش",
+        "en": "2.0 stereo, 2\" drivers",
+        "ckb": "2.0 ستێریۆ، دەنگدەری 2 ئینج"
+      }
+    },
+    {
+      "key": "connection",
+      "label": {
+        "ar": "الاتصال",
+        "en": "Connection",
+        "ckb": "پەیوەندی"
+      },
+      "value": {
+        "ar": "بلوتوث 5.3، وضع USB",
+        "en": "Bluetooth 5.3, USB mode",
+        "ckb": "بلووتوز 5.3، شێوازی USB"
+      }
+    },
+    {
+      "key": "power",
+      "label": {
+        "ar": "التغذية",
+        "en": "Power",
+        "ckb": "کارەبا"
+      },
+      "value": {
+        "ar": "USB",
+        "en": "USB",
+        "ckb": "USB"
+      }
+    },
+    {
+      "key": "cable",
+      "label": {
+        "ar": "الكابل بين السماعتين",
+        "en": "Cable between units",
+        "ckb": "کێبڵی نێوان دوو یەکە"
+      },
+      "value": {
+        "ar": "حتى 106 سم",
+        "en": "Up to 106 cm (41.7\")",
+        "ckb": "تا 106 سم"
+      }
+    },
+    {
+      "key": "lighting",
+      "label": {
+        "ar": "الإضاءة",
+        "en": "Lighting",
+        "ckb": "ڕووناکی"
+      },
+      "value": {
+        "ar": "RGB",
+        "en": "RGB",
+        "ckb": "RGB"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "RD-GS511",
+      "title": {
+        "ar": "أسود",
+        "en": "Black",
+        "ckb": "ڕەش"
+      },
+      "options": {
+        "color": "Black"
+      },
+      "modelNumber": "GS511",
+      "isDefault": true,
+      "images": [
+        "redragon-yorick-gs511--1",
+        "redragon-yorick-gs511--2"
+      ],
+      "sheetRow": 175
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "عبر وضع USB أو بلوتوث.",
+        "en": "Through USB mode or Bluetooth.",
+        "ckb": "لە ڕێگەی USB یان بلووتوز."
+      },
+      "source": "https://redragonshop.com/products/yorick-gs511"
+    }
+  ],
+  "related": [
+    {
+      "slug": "redragon-stentor-gs500",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "redragon-yorick-gs511--1",
+      "file": ".cache/product-images/redragon-yorick-gs511/1.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0012/4957/4961/products/RedragonGS511WirelessRGBDesktopSpeakers_2.png",
+      "sourcePage": "https://redragonshop.com/products/yorick-gs511",
+      "kind": "hero",
+      "alt": {
+        "ar": "سماعتا Redragon Yorick GS511 منفصلتان بإضاءة RGB",
+        "en": "Redragon Yorick GS511 as two speakers with RGB",
+        "ckb": "Redragon Yorick GS511 وەک دوو بڵندگۆ بە RGB"
+      },
+      "credit": "Redragon",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    },
+    {
+      "key": "redragon-yorick-gs511--2",
+      "file": ".cache/product-images/redragon-yorick-gs511/2.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0012/4957/4961/products/RedragonGS511WirelessRGBDesktopSpeakers_1.png",
+      "sourcePage": "https://redragonshop.com/products/yorick-gs511",
+      "kind": "angle",
+      "alt": {
+        "ar": "السماعتان مركبتان كساوند بار",
+        "en": "Both units joined as a soundbar",
+        "ckb": "دوو یەکەکە پێکەوە وەک ساوندبار"
+      },
+      "credit": "Redragon",
+      "width": 1600,
+      "height": 1600,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://redragonshop.com/products/yorick-gs511",
+      "title": "YORICK GS511",
+      "publisher": "Redragon (official store)",
+      "retrieved": "2026-11-18",
+      "supports": "BT 5.3 and USB mode, USB powered, 2-inch drivers, 2.0 stereo, two-in-one split/soundbar shape, all-in-one knob for volume, power, RGB and modes, 41.7\" cable between units, images"
+    },
+    {
+      "url": "https://dangerfield.com.au/products/gs511-yorick-sound-bar",
+      "title": "Redragon GS511 Yorick sound bar",
+      "publisher": "Dangerfield (Redragon reseller, Australia)",
+      "retrieved": "2026-11-18",
+      "supports": "confirmation: Bluetooth 5.3, USB powered 2.0 RGB speaker / soundbar"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Output power",
+      "Dimensions",
+      "Release date (Redragon listing created April 2023)"
+    ]
+  }
+}

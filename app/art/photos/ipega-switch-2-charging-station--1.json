@@ -1,0 +1,54 @@
+{
+  "key": "ipega-switch-2-charging-station--1",
+  "view": "hero",
+  "width": 767,
+  "height": 531,
+  "aspect": 1.4444,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ipega-switch-2-charging-station/1-240.7f612b88.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-switch-2-charging-station/1-480.ce563622.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-switch-2-charging-station/1-720.655e561f.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ipega-switch-2-charging-station/1-240.5c2f0608.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ipega-switch-2-charging-station/1-480.88a09a0a.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ipega-switch-2-charging-station/1-720.7ec3a837.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/ipega-switch-2-charging-station/1-767.103b6c13.png",
+    "width": 767,
+    "height": 531,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRjoBAABXRUJQVlA4WAoAAAAQAAAAEwAADQAAQUxQSGEAAAART6CgjSQ1dRL4mTEiAnDpzb+WCEe1bS3ZxafeAAqQwCqwaGBTlwSsbwr8cvNiFSL6PwF4aYZZDsBMi5UUEtDwfNpfLQC2C+HdUchmd0UjEjdaxMs6AA6StS8BiKbKl/ASAFZQOCCyAAAAEAUAnQEqFAAOAD8RcrBQLCakorAIAYAiCWxMAFNN8NAA3P+7qvYo8o4mTR/G1oJQAAD+66KEs+m3j0i67FA4l2RB6Xvmxmj/UcAVTDCrS1ARo793knJus7dxg/bCHtBrwR/mjA79f59Mj31iAE8VKX+Rrvv6Cj8raKpphbuBwt+Eib7anC4N/jS//qgGquufNLyGXHff4LN6E/28b4eDvOhI8M5dnj/6Gl7DCqP+BrgAAA==",
+  "dominant": "#292929",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "iPega",
+  "source": {
+    "url": "https://ipega.hk/uploads/202507/6888864c8cb1c.jpg",
+    "page": "https://ipega.hk/switch2series/102-682.html"
+  },
+  "input": "c1b2c2a59c373128"
+}

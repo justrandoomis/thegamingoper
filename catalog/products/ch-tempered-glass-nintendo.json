@@ -1,0 +1,166 @@
+{
+  "slug": "ch-tempered-glass-nintendo",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "CH",
+  "status": "available",
+  "name": {
+    "ar": "واقي شاشة زجاجي CH لأجهزة Nintendo Switch",
+    "en": "CH Tempered Glass for Nintendo Switch",
+    "ckb": "پارێزەری شاشەی شووشەیی CH بۆ Nintendo Switch"
+  },
+  "short": {
+    "ar": "زجاج مقسّى بمقاس كل جهاز: Switch 2 و OLED و Lite",
+    "en": "Tempered glass sized for Switch 2, OLED or Lite",
+    "ckb": "شووشەی بەهێزکراو بە قەبارەی Switch 2 و OLED و Lite"
+  },
+  "description": {
+    "ar": "واقي شاشة زجاجي من ماركة CH يحمي شاشة الجهاز من الخدوش. لكل جهاز مقاسه: Nintendo Switch 2 (7.9 بوصة)، و Switch OLED (7 بوصات)، و Switch Lite (5.5 بوصة) — اختر نسخة جهازك.",
+    "en": "A CH tempered-glass screen protector that guards the screen against scratches. Each console has its own size: Nintendo Switch 2 (7.9 inch), Switch OLED (7 inch) and Switch Lite (5.5 inch) — pick the one for your console.",
+    "ckb": "پارێزەری شاشەی شووشەیی CH کە شاشە لە خەت دەپارێزێت. هەر ئامێرێک قەبارەی خۆی هەیە: Nintendo Switch 2 (7.9 ئینج)، Switch OLED (7 ئینج) و Switch Lite (5.5 ئینج) — وەشانی ئامێرەکەت هەڵبژێرە."
+  },
+  "highlights": [
+    {
+      "ar": "زجاج مقسّى يحمي من الخدوش",
+      "en": "Tempered glass that guards against scratches",
+      "ckb": "شووشەی بەهێزکراو کە لە خەت دەپارێزێت"
+    },
+    {
+      "ar": "نسخة مستقلة لكل جهاز — المقاسات لا تتبادل",
+      "en": "A separate version per console — sizes are not interchangeable",
+      "ckb": "وەشانێکی جیا بۆ هەر ئامێرێک — قەبارەکان ئاڵوگۆڕ ناکرێن"
+    }
+  ],
+  "specs": [
+    {
+      "key": "type",
+      "label": {
+        "ar": "النوع",
+        "en": "Type",
+        "ckb": "جۆر"
+      },
+      "value": {
+        "ar": "زجاج مقسّى",
+        "en": "Tempered glass",
+        "ckb": "شووشەی بەهێزکراو"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "CH-GLASS-NS2",
+      "sheetRow": 188,
+      "title": {
+        "ar": "لجهاز Nintendo Switch 2",
+        "en": "For Nintendo Switch 2",
+        "ckb": "بۆ Nintendo Switch 2"
+      },
+      "options": {
+        "device": "Nintendo Switch 2"
+      },
+      "isDefault": true
+    },
+    {
+      "sku": "CH-GLASS-OLED",
+      "sheetRow": 199,
+      "title": {
+        "ar": "لجهاز Switch OLED",
+        "en": "For Switch OLED",
+        "ckb": "بۆ Switch OLED"
+      },
+      "options": {
+        "device": "Nintendo Switch OLED"
+      },
+      "isDefault": false
+    },
+    {
+      "sku": "CH-GLASS-LITE",
+      "sheetRow": 196,
+      "title": {
+        "ar": "لجهاز Switch Lite",
+        "en": "For Switch Lite",
+        "ckb": "بۆ Switch Lite"
+      },
+      "options": {
+        "device": "Nintendo Switch Lite"
+      },
+      "isDefault": false
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "unverified",
+      "note": {
+        "ar": "نسخة Switch 2 فقط",
+        "en": "Switch 2 version only",
+        "ckb": "تەنها وەشانی Switch 2"
+      }
+    },
+    {
+      "deviceModel": "switch-oled",
+      "status": "unverified",
+      "note": {
+        "ar": "نسخة OLED فقط",
+        "en": "OLED version only",
+        "ckb": "تەنها وەشانی OLED"
+      }
+    },
+    {
+      "deviceModel": "switch-lite",
+      "status": "unverified",
+      "note": {
+        "ar": "نسخة Lite فقط",
+        "en": "Lite version only",
+        "ckb": "تەنها وەشانی Lite"
+      }
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "nintendo-switch-oled",
+      "kind": "setup"
+    },
+    {
+      "slug": "nintendo-switch-lite",
+      "kind": "setup"
+    },
+    {
+      "slug": "ipega-glass-screen-pro-switch-2",
+      "kind": "alternative"
+    },
+    {
+      "slug": "jys-switch-2-tempered-glass",
+      "kind": "alternative"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch-2/tech-specs/",
+      "title": "Nintendo Switch 2 – Tech Specs",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-18",
+      "supports": "Switch 2 screen size 7.9 inch"
+    },
+    {
+      "url": "https://www.nintendo.com/us/gaming-systems/switch/tech-specs/",
+      "title": "Nintendo Switch – Tech Specs",
+      "publisher": "Nintendo of America",
+      "retrieved": "2026-11-18",
+      "supports": "Switch OLED 7-inch and Switch Lite 5.5-inch screens"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": false,
+    "unverified": [
+      "Maker behind the \"CH\" brand code (no maker page found)",
+      "Thickness, hardness and pack count"
+    ]
+  }
+}

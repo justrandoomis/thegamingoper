@@ -1,0 +1,64 @@
+{
+  "key": "battlefield-2042--2",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/battlefield-2042/2-240.b9f3535f.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/battlefield-2042/2-480.8b964992.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/battlefield-2042/2-720.d6e349ae.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/battlefield-2042/2-960.9fce375f.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/battlefield-2042/2-1440.283954f1.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/battlefield-2042/2-240.b9a32cbd.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/battlefield-2042/2-480.dbf6da38.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/battlefield-2042/2-720.d72ffb24.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/battlefield-2042/2-960.b177131a.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/battlefield-2042/2-1440.a736721e.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAAAwBACdASoUAAsAPxFysFAsJqSisAgBgCIJZQC/7CBR9bgA8Q33uQoK4QAA/ujuA2hTgDEmlOdG1KT75hdiBFuZMMEO6DRsSdCNVvbFhJ8YFFeHRWuSs6S+Mfm55evojZR4eIGowAA=",
+  "dominant": "#f6f6f5",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Electronic Arts",
+  "source": {
+    "url": "https://store-images.s-microsoft.com/image/apps.64407.13688248615848426.f8c77e38-18b5-4ba9-9c32-8691e34a6773.e1af01e5-6473-4799-8d93-c005774aa6f3",
+    "page": "https://www.xbox.com/en-US/games/store/battlefield-2042-xbox-one-xbox-series-x-s/9NMGP6S6NJPR"
+  },
+  "input": "579acc9919ebac89"
+}

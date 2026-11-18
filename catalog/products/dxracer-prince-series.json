@@ -1,0 +1,185 @@
+{
+  "slug": "dxracer-prince-series",
+  "group": "chairs",
+  "kind": "accessory",
+  "platform": "multi",
+  "category": "gaming-chairs",
+  "brand": "DXRacer",
+  "family": "dxracer-chairs",
+  "status": "available",
+  "name": {
+    "ar": "كرسي ألعاب DXRacer Prince",
+    "en": "DXRacer Prince Series Gaming Chair",
+    "ckb": "کورسیی یاری DXRacer Prince"
+  },
+  "short": {
+    "ar": "كرسي سباق للمبتدئين · إطار فولاذي · ظهر يميل من 90° إلى 135°",
+    "en": "Entry racing-style chair · All-steel frame · 90°–135° recline",
+    "ckb": "کورسیی ستایلی ڕەیسینگ بۆ دەستپێکردن · چوارچێوەی پۆڵا · پشت 90° تا 135° دەچەمێتەوە"
+  },
+  "description": {
+    "ar": "Prince هي سلسلة DXRacer الاقتصادية بتصميم مقاعد السباق وفتحتي الرأس المعروفتين. هيكلها فولاذي بالكامل، والظهر يميل من 90° إلى 135° مع وضع الهزاز، والمساند ترتفع وتنخفض (2D). تأتي مع وسادة للرأس وأخرى لأسفل الظهر، وتتوفر بجلد صناعي أو بقماش حسب اللون.",
+    "en": "Prince is DXRacer's entry series, with the racing-seat shape and the two openings at the top of the backrest. It has an all-steel frame, a backrest that reclines from 90° to 135° with a rocking mode, and 2D armrests that move up and down. A head pillow and a lumbar pillow come with it, and it is covered in PVC leatherette or fabric depending on the colour.",
+    "ckb": "Prince زنجیرەی سەرەتایی DXRacerە، بە شێوەی کورسیی ڕەیسینگ و دوو کونەکەی سەرەوەی پشت. چوارچێوەکەی تەواو پۆڵایە، پشتەکەی لە 90° تا 135° دەچەمێتەوە لەگەڵ دۆخی هەژاندن، و دەستەکانی بەرز و نزم دەبنەوە (2D). سەرینی سەر و سەرینی خوارەوەی پشت لەگەڵیدان، و بەپێی ڕەنگ چەرمی دەستکرد یان قوماشە."
+  },
+  "highlights": [
+    { "ar": "هيكل فولاذي بالكامل", "en": "All-steel frame", "ckb": "چوارچێوەی تەواو پۆڵا" },
+    { "ar": "ظهر يميل من 90° إلى 135° مع وضع الهزاز", "en": "Backrest reclines 90°–135°, with a rocking mode", "ckb": "پشت لە 90° تا 135° دەچەمێتەوە، لەگەڵ دۆخی هەژاندن" },
+    { "ar": "مساند ذراع 2D قابلة لتعديل الارتفاع", "en": "2D armrests (height adjustable)", "ckb": "دەستەی 2D کە بەرزییەکەی دەگۆڕدرێت" },
+    { "ar": "وسادة رأس ووسادة لأسفل الظهر مرفقتان", "en": "Head pillow and lumbar pillow included", "ckb": "سەرینی سەر و سەرینی پشت لەگەڵیدان" },
+    { "ar": "مكبس غاز Class 4 لضبط ارتفاع المقعد", "en": "Class 4 gas lift for seat height", "ckb": "گازی Class 4 بۆ بەرزیی کورسی" }
+  ],
+  "specs": [
+    { "key": "series", "label": { "ar": "السلسلة", "en": "Series", "ckb": "زنجیرە" }, "value": { "ar": "DXRacer Prince", "en": "DXRacer Prince", "ckb": "DXRacer Prince" } },
+    { "key": "frame", "label": { "ar": "الهيكل", "en": "Frame", "ckb": "چوارچێوە" }, "value": { "ar": "فولاذ بالكامل", "en": "All steel", "ckb": "تەواو پۆڵا" } },
+    { "key": "recline", "label": { "ar": "ميلان الظهر", "en": "Recline", "ckb": "چەمانەوەی پشت" }, "value": { "ar": "90° – 135°", "en": "90° – 135°", "ckb": "90° – 135°" } },
+    { "key": "armrests", "label": { "ar": "مساند الذراع", "en": "Armrests", "ckb": "دەستەکان" }, "value": { "ar": "2D (ارتفاع)", "en": "2D (height)", "ckb": "2D (بەرزی)" } },
+    { "key": "base", "label": { "ar": "القاعدة", "en": "Base", "ckb": "بنکە" }, "value": { "ar": "نايلون، مكبس غاز Class 4", "en": "Nylon, Class 4 gas lift", "ckb": "نایلۆن، گازی Class 4" } },
+    { "key": "load", "label": { "ar": "الحمل الأقصى", "en": "Maximum load", "ckb": "زۆرترین کێش" }, "value": { "ar": "150 كغ (حسب صفحة نسخة القماش الرمادي)", "en": "150 kg (per the grey fabric model's listing)", "ckb": "150 کگ (بەپێی پەڕەی وەشانی قوماشی خۆڵەمێشی)" } },
+    { "key": "userHeight", "label": { "ar": "طول المستخدم المناسب", "en": "Recommended user height", "ckb": "باڵای گونجاو" }, "value": { "ar": "حتى 185 سم", "en": "Up to 185 cm", "ckb": "تا 185 سم" } }
+  ],
+  "inTheBox": [
+    { "ar": "الكرسي (يحتاج تركيباً)", "en": "The chair (needs assembly)", "ckb": "کورسییەکە (پێویستی بە بەستنەوە هەیە)" },
+    { "ar": "وسادة رأس ووسادة لأسفل الظهر", "en": "Head pillow and lumbar pillow", "ckb": "سەرینی سەر و سەرینی پشت" }
+  ],
+  "variants": [
+    {
+      "sku": "DXR-PRINCE-NR",
+      "sheetRow": 38,
+      "title": { "ar": "أسود وأحمر", "en": "Black and red", "ckb": "ڕەش و سوور" },
+      "options": { "color": "Black / Red", "material": "PVC leatherette" },
+      "modelNumber": "GC/LPF24LTC/NR",
+      "isDefault": true,
+      "images": ["dxracer-prince-series--1", "dxracer-prince-series--2"]
+    },
+    {
+      "sku": "DXR-PRINCE-GREY-FABRIC",
+      "sheetRow": 39,
+      "title": { "ar": "رمادي · قماش", "en": "Grey · Fabric", "ckb": "خۆڵەمێشی · قوماش" },
+      "options": { "color": "Grey", "material": "Fabric" },
+      "modelNumber": "PRINCE-L-F24-FBC-G",
+      "isDefault": false,
+      "images": ["dxracer-prince-series--5"]
+    },
+    {
+      "sku": "DXR-PRINCE-PW",
+      "sheetRow": 40,
+      "title": { "ar": "وردي وأبيض", "en": "Pink and white", "ckb": "پەمەیی و سپی" },
+      "options": { "color": "Pink / White" },
+      "isDefault": false,
+      "notes": { "ar": "لم نجد صورة رسمية لهذا اللون؛ الصور المعروضة لألوان أخرى من السلسلة نفسها.", "en": "No official picture of this colour was found; the pictures show other colours of the same series.", "ckb": "وێنەی فەرمیی ئەم ڕەنگە نەدۆزرایەوە؛ وێنەکان ڕەنگی تری هەمان زنجیرەن." }
+    },
+    {
+      "sku": "DXR-PRINCE-BLACK",
+      "sheetRow": 16,
+      "title": { "ar": "أسود بالكامل", "en": "All black", "ckb": "تەواو ڕەش" },
+      "options": { "color": "Black" },
+      "isDefault": false,
+      "images": ["dxracer-prince-series--3", "dxracer-prince-series--4"]
+    }
+  ],
+  "compatibility": [],
+  "related": [
+    { "slug": "dxracer-formula-series", "kind": "upsell" },
+    { "slug": "dxracer-drifting-series", "kind": "upsell" },
+    { "slug": "dxracer-master-series", "kind": "upsell" }
+  ],
+  "images": [
+    {
+      "key": "dxracer-prince-series--1",
+      "file": ".cache/product-images/dxracer-prince-series/1.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/881449ba-f921-4e60-a785-3073801b2314-1.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/prince?sku=GC/LPF24LTC/NR",
+      "kind": "hero",
+      "alt": { "ar": "كرسي DXRacer Prince باللونين الأسود والأحمر من الأمام", "en": "DXRacer Prince chair in black and red, front view", "ckb": "کورسیی DXRacer Prince بە ڕەش و سوور، لە پێشەوە" },
+      "credit": "DXRacer",
+      "width": 853, "height": 1024, "transparent": true
+    },
+    {
+      "key": "dxracer-prince-series--2",
+      "file": ".cache/product-images/dxracer-prince-series/2.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/8ce22876-484a-4620-a91f-2a0f9e248da6-3.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/prince?sku=GC/LPF24LTC/NR",
+      "kind": "angle",
+      "alt": { "ar": "كرسي Prince الأسود والأحمر من الجانب", "en": "The black and red Prince chair from an angle", "ckb": "کورسیی Prince ـی ڕەش و سوور لە لاوە" },
+      "credit": "DXRacer",
+      "width": 853, "height": 1024, "transparent": true
+    },
+    {
+      "key": "dxracer-prince-series--3",
+      "file": ".cache/product-images/dxracer-prince-series/3.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/5b4057b6-a6bb-4049-934a-f3d97a9449a4-1.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/prince?sku=GC/LPF24LTC/N.N.N",
+      "kind": "angle",
+      "alt": { "ar": "كرسي Prince الأسود بالكامل من الأمام", "en": "The all-black Prince chair, front view", "ckb": "کورسیی Prince ـی تەواو ڕەش لە پێشەوە" },
+      "credit": "DXRacer",
+      "width": 853, "height": 1024, "transparent": true
+    },
+    {
+      "key": "dxracer-prince-series--4",
+      "file": ".cache/product-images/dxracer-prince-series/4.png",
+      "sourceUrl": "https://nex-img.dxracer.cc/20001/1b1e16e5-dc9d-4965-bf5b-bcc0ac198a4e-3.png",
+      "sourcePage": "https://www.dxracer.com/products/gaming-chairs/prince?sku=GC/LPF24LTC/N.N.N",
+      "kind": "angle",
+      "alt": { "ar": "كرسي Prince الأسود بالكامل من الجانب", "en": "The all-black Prince chair from an angle", "ckb": "کورسیی Prince ـی تەواو ڕەش لە لاوە" },
+      "credit": "DXRacer",
+      "width": 853, "height": 1024, "transparent": true
+    },
+    {
+      "key": "dxracer-prince-series--5",
+      "file": ".cache/product-images/dxracer-prince-series/5.jpg",
+      "sourceUrl": "https://www.maxgaming.com/bilder/artiklar/zoom/31145_1.jpg",
+      "sourcePage": "https://www.maxgaming.com/en/dxracer-prince/prince-l-grey-fabric",
+      "kind": "angle",
+      "alt": { "ar": "كرسي Prince بقماش رمادي مع الوسادتين", "en": "The grey fabric Prince chair with its pillows", "ckb": "کورسیی Prince بە قوماشی خۆڵەمێشی لەگەڵ سەرینەکان" },
+      "credit": "DXRacer (product render, via MaxGaming)",
+      "width": 1600, "height": 1280, "transparent": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.dxracer.com/products/gaming-chairs/prince",
+      "title": "Prince Series Black Racing Gaming Chair",
+      "publisher": "DXRacer USA",
+      "retrieved": "2026-11-18",
+      "supports": "series features (two-eyes design, all-steel frame, 2D armrests, 90°–135° recline, cooling gel headrest, lumbar pillow), current colours with model numbers GC/LPF24LTC/NR (black red) and GC/LPF24LTC/N.N.N (black), images"
+    },
+    {
+      "url": "https://www.dxracer.com/specifications/gaming-chairs/prince",
+      "title": "PRINCE Series Specifications",
+      "publisher": "DXRacer USA",
+      "retrieved": "2026-11-18",
+      "supports": "adjustments (seat height, 360° rotation, headrest and armrest height), Class 4 hydraulics, nylon base"
+    },
+    {
+      "url": "https://www.maxgaming.com/en/dxracer-prince/prince-l-grey-fabric",
+      "title": "DXRacer PRINCE Gaming Chair Grey Fabric L",
+      "publisher": "MaxGaming",
+      "retrieved": "2026-11-18",
+      "supports": "grey fabric version exists (maker part PRINCE-L-F24-FBC-G-X1), 150 kg maximum load, recommended height up to 185 cm, steel frame, grey fabric image"
+    },
+    {
+      "url": "https://tlggaming.com/dx-racer-p132-prince-pink-white",
+      "title": "DXRacer P132 Prince Series Gaming Chair Pink-White",
+      "publisher": "TLG Gaming",
+      "retrieved": "2026-11-18",
+      "supports": "a pink-white Prince (P132) version is sold"
+    }
+  ],
+  "notes": {
+    "ar": "الكرسي يصل مفككاً ويحتاج تركيباً بسيطاً. مقاس L حسب صفحات الصانع.",
+    "en": "The chair arrives flat-packed and needs simple assembly. It is the L (regular) size on the maker's pages.",
+    "ckb": "کورسییەکە بە جیاکراوەیی دێت و پێویستی بە بەستنەوەیەکی سادە هەیە. بەپێی پەڕەکانی دروستکەر قەبارەی L ـە."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "The owner's sheet calls these chairs \"IGC\"; no gaming-chair brand of that name was found. The series names (Prince, Formula, Master, Drifting) and colour codes (NR, PW, G, N, NW) are DXRacer's, so the rows are treated as DXRacer chairs",
+      "Row 16 \"FULL BLACK CHAIR\" (no brand on the sheet, 224,000 IQD) is assumed to be the all-black Prince: it is priced just under the other Prince rows and DXRacer sells an all-black Prince (GC/LPF24LTC/N.N.N)",
+      "Pink-and-white version: model number (P132 / GC/LPF132LTC/PW in older listings) and cover material (PVC or PU) not confirmed on a DXRacer page; no official picture found",
+      "Grey fabric version's model number comes from a retailer listing (PRINCE-L-F24-FBC-G-X1), not a DXRacer page",
+      "Exact model year of the units in stock (older P132 or current F24 Prince) not confirmed"
+    ]
+  }
+}

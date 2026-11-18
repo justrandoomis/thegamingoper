@@ -1,0 +1,70 @@
+{
+  "key": "redragon-ucal-k673-pro--1",
+  "view": "hero",
+  "width": 1587,
+  "height": 765,
+  "aspect": 2.0745,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/redragon-ucal-k673-pro/1-240.663013ac.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-ucal-k673-pro/1-480.1e6d364a.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-ucal-k673-pro/1-720.1bfc9c7f.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-ucal-k673-pro/1-960.ce1f1dc0.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/redragon-ucal-k673-pro/1-1440.998f611f.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/redragon-ucal-k673-pro/1-240.0e47dfb3.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/redragon-ucal-k673-pro/1-480.1c91b68f.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/redragon-ucal-k673-pro/1-720.948702a4.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/redragon-ucal-k673-pro/1-960.a4a1ec5c.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/redragon-ucal-k673-pro/1-1440.0fd9ee97.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/redragon-ucal-k673-pro/1-1200.29efc4b4.png",
+    "width": 1200,
+    "height": 578,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRrgAAABXRUJQVlA4WAoAAAAQAAAAEwAACQAAQUxQSDQAAAARL6CgbRum/Bm2u0AejYgIfPQQCgEAbboAGeRQBgnkz7M/gYj+TwAsdsUw1W1KP3RMFRYBVlA4IF4AAABQAwCdASoUAAoAPxFysVCsJqSisAgBgCIJZwAAPbH9K9QZAAD75GxzhvXodV0Yc8M7ZzyXIn5GZEvHWeUEMstuU7Ts8dAUqnfdTRkThlVE3XtgxQqMexiI+LEePwAA",
+  "dominant": "#e6e6e7",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Redragon",
+  "source": {
+    "url": "https://cdn.shopify.com/s/files/1/0012/4957/4961/files/RedragonK673PRO75_WirelessGasketRGBKeyboard_1.png",
+    "page": "https://redragonshop.com/products/ucal-k673-pro-75-keyboard"
+  },
+  "input": "7d94f934b2675c88"
+}

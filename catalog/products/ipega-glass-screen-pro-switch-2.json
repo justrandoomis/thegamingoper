@@ -1,0 +1,238 @@
+{
+  "slug": "ipega-glass-screen-pro-switch-2",
+  "group": "nintendo-accessories",
+  "kind": "accessory",
+  "platform": "nintendo",
+  "brand": "iPega",
+  "status": "available",
+  "name": {
+    "ar": "واقي شاشة iPega Glass Screen Pro لجهاز Nintendo Switch 2",
+    "en": "iPega Glass Screen Pro for Nintendo Switch 2",
+    "ckb": "پارێزەری شاشەی iPega Glass Screen Pro بۆ Nintendo Switch 2"
+  },
+  "short": {
+    "ar": "طقم زجاج مقسّى PG-SW2023 مع أدوات التركيب",
+    "en": "PG-SW2023 tempered glass set with fitting kit",
+    "ckb": "کۆمەڵەی شووشەی PG-SW2023 لەگەڵ ئامرازی دانان"
+  },
+  "description": {
+    "ar": "طقم واقي شاشة من الزجاج المقسّى من iPega (موديل PG-SW2023) لشاشة Nintendo Switch 2. في العلبة الزجاج مع مناديل التنظيف وملصقات إزالة الغبار وقطعة قماش لتركيب نظيف.",
+    "en": "An iPega tempered-glass screen protector set (model PG-SW2023) for the Nintendo Switch 2 screen. The box has the glass plus cleaning wipes, dust-removal stickers and a cloth for a clean fit.",
+    "ckb": "کۆمەڵەی پارێزەری شاشەی شووشەی بەهێزکراوی iPega (مۆدێلی PG-SW2023) بۆ شاشەی Nintendo Switch 2. لە قوتووەکەدا شووشەکە لەگەڵ دەستەسڕی پاککردنەوە، لکێنەری لابردنی تۆز و پەڕۆیەک هەیە بۆ دانانێکی پاک."
+  },
+  "highlights": [
+    {
+      "ar": "زجاج مقسّى لشاشة Switch 2",
+      "en": "Tempered glass for the Switch 2 screen",
+      "ckb": "شووشەی بەهێزکراو بۆ شاشەی Switch 2"
+    },
+    {
+      "ar": "أدوات تنظيف وتركيب داخل العلبة",
+      "en": "Cleaning and fitting kit in the box",
+      "ckb": "ئامرازی پاککردنەوە و دانان لە قوتووەکەدا"
+    },
+    {
+      "ar": "من iPega، صانع ملحقات ألعاب",
+      "en": "By iPega, a game accessory maker",
+      "ckb": "لە iPega، دروستکەری پاشکۆی یاری"
+    }
+  ],
+  "specs": [
+    {
+      "key": "compatibility",
+      "label": {
+        "ar": "التوافق",
+        "en": "Fits",
+        "ckb": "گونجاوە بۆ"
+      },
+      "value": {
+        "ar": "Nintendo Switch 2",
+        "en": "Nintendo Switch 2",
+        "ckb": "Nintendo Switch 2"
+      }
+    },
+    {
+      "key": "model",
+      "label": {
+        "ar": "الموديل",
+        "en": "Model",
+        "ckb": "مۆدێل"
+      },
+      "value": {
+        "ar": "PG-SW2023",
+        "en": "PG-SW2023",
+        "ckb": "PG-SW2023"
+      }
+    },
+    {
+      "key": "type",
+      "label": {
+        "ar": "النوع",
+        "en": "Type",
+        "ckb": "جۆر"
+      },
+      "value": {
+        "ar": "زجاج مقسّى",
+        "en": "Tempered glass",
+        "ckb": "شووشەی بەهێزکراو"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "واقي شاشة زجاجي",
+      "en": "Glass screen protector",
+      "ckb": "پارێزەری شاشەی شووشەیی"
+    },
+    {
+      "ar": "مناديل تنظيف مبللة وجافة",
+      "en": "Wet and dry cleaning wipes",
+      "ckb": "دەستەسڕی تەڕ و وشک"
+    },
+    {
+      "ar": "ملصقات إزالة الغبار",
+      "en": "Dust-removal stickers",
+      "ckb": "لکێنەری لابردنی تۆز"
+    },
+    {
+      "ar": "قطعة قماش للتنظيف",
+      "en": "Cleaning cloth",
+      "ckb": "پەڕۆی پاککردنەوە"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "IPEGA-PG-SW2023",
+      "sheetRow": 189,
+      "title": {
+        "ar": "واقي شاشة iPega Glass Screen Pro لجهاز Nintendo Switch 2",
+        "en": "iPega Glass Screen Pro for Nintendo Switch 2",
+        "ckb": "پارێزەری شاشەی iPega Glass Screen Pro بۆ Nintendo Switch 2"
+      },
+      "modelNumber": "PG-SW2023",
+      "isDefault": true,
+      "images": [
+        "ipega-glass-screen-pro-switch-2--1",
+        "ipega-glass-screen-pro-switch-2--2",
+        "ipega-glass-screen-pro-switch-2--3",
+        "ipega-glass-screen-pro-switch-2--4"
+      ]
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "switch-2",
+      "status": "verified",
+      "note": {
+        "ar": "لشاشة Switch 2",
+        "en": "For the Switch 2 screen",
+        "ckb": "بۆ شاشەی Switch 2"
+      },
+      "source": "https://ipega.hk/switch2series/102-627.html"
+    }
+  ],
+  "related": [
+    {
+      "slug": "nintendo-switch-2",
+      "kind": "setup"
+    },
+    {
+      "slug": "ch-tempered-glass-nintendo",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ipega-switch-2-charging-station",
+      "kind": "accessory"
+    }
+  ],
+  "images": [
+    {
+      "key": "ipega-glass-screen-pro-switch-2--1",
+      "file": ".cache/product-images/ipega-glass-screen-pro-switch-2/1.png",
+      "sourceUrl": "https://ipega.hk/uploads/202505/683919a7e7635.png",
+      "sourcePage": "https://ipega.hk/switch2series/102-627.html",
+      "kind": "hero",
+      "alt": {
+        "ar": "واقي الشاشة الزجاجي أمام شاشة Switch 2",
+        "en": "The glass protector in front of the Switch 2 screen",
+        "ckb": "پارێزەری شووشەیی لە پێش شاشەی Switch 2"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": true
+    },
+    {
+      "key": "ipega-glass-screen-pro-switch-2--2",
+      "file": ".cache/product-images/ipega-glass-screen-pro-switch-2/2.png",
+      "sourceUrl": "https://ipega.hk/uploads/202505/683919add7be8.png",
+      "sourcePage": "https://ipega.hk/switch2series/102-627.html",
+      "kind": "angle",
+      "alt": {
+        "ar": "الزجاج فوق شاشة الجهاز من زاوية",
+        "en": "The glass over the console screen at an angle",
+        "ckb": "شووشەکە لەسەر شاشەی ئامێرەکە لە گۆشەیەکەوە"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": true
+    },
+    {
+      "key": "ipega-glass-screen-pro-switch-2--3",
+      "file": ".cache/product-images/ipega-glass-screen-pro-switch-2/3.png",
+      "sourceUrl": "https://ipega.hk/uploads/202505/683919ae34e44.png",
+      "sourcePage": "https://ipega.hk/switch2series/102-627.html",
+      "kind": "angle",
+      "alt": {
+        "ar": "الزجاج على الشاشة من الجانب",
+        "en": "The glass on the screen from the side",
+        "ckb": "شووشەکە لەسەر شاشە لە لاوە"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": true
+    },
+    {
+      "key": "ipega-glass-screen-pro-switch-2--4",
+      "file": ".cache/product-images/ipega-glass-screen-pro-switch-2/4.png",
+      "sourceUrl": "https://ipega.hk/uploads/202505/683919ad99887.png",
+      "sourcePage": "https://ipega.hk/switch2series/102-627.html",
+      "kind": "in-box",
+      "alt": {
+        "ar": "محتويات العلبة: الزجاج وأدوات التنظيف",
+        "en": "In the box: the glass and cleaning kit",
+        "ckb": "ناو قوتوو: شووشە و ئامرازی پاککردنەوە"
+      },
+      "credit": "iPega",
+      "width": 800,
+      "height": 800,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ipega.hk/switch2series/102-627.html",
+      "title": "PG-SW2023 Switch2 Tempered Film Set",
+      "publisher": "Shenzhen Ipega Electronic Technology",
+      "retrieved": "2026-11-18",
+      "supports": "model, Switch 2 tempered glass set, product and box images (box: \"Glass Screen Pro\", contents)"
+    },
+    {
+      "url": "https://ecommerce.datablitz.com.ph/products/ipega-glass-screen-pro-premium-tempered-glass-protection-set-for-nintendo-switch-2-pg-sw2023",
+      "title": "Ipega Glass Screen Pro Premium Tempered Glass Protection Set for Nintendo Switch 2 (PG-SW2023)",
+      "publisher": "Datablitz",
+      "retrieved": "2026-11-18",
+      "supports": "product name \"Glass Screen Pro\" for PG-SW2023, Switch 2"
+    }
+  ],
+  "verification": {
+    "checkedBy": "catalogue research",
+    "secondSource": true,
+    "unverified": [
+      "Number of glass sheets in the box",
+      "Thickness and hardness rating"
+    ]
+  }
+}

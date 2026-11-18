@@ -1,0 +1,62 @@
+{
+  "key": "sandisk-ultra-microsd--1",
+  "view": "hero",
+  "width": 1409,
+  "height": 1066,
+  "aspect": 1.3218,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-ultra-microsd/1-240.489e2887.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-ultra-microsd/1-480.bc8df489.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-ultra-microsd/1-720.56f48d61.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-ultra-microsd/1-960.7986ea22.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/sandisk-ultra-microsd/1-240.928faf53.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/sandisk-ultra-microsd/1-480.a68d6777.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/sandisk-ultra-microsd/1-720.7df8a98d.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/sandisk-ultra-microsd/1-960.a0c9f6ca.webp"
+      }
+    ]
+  },
+  "share": {
+    "src": "/products/sandisk-ultra-microsd/1-1200.55173fd6.png",
+    "width": 1200,
+    "height": 908,
+    "type": "image/png"
+  },
+  "placeholder": "data:image/webp;base64,UklGRuIAAABXRUJQVlA4WAoAAAAQAAAAEwAADgAAQUxQSEsAAAART6CkkSQ2+A56hceefUQEKR6Txwu2tW3DMhN6tRhyHUhlQqEShK8E6v3zUEBE/yfAwiGpuD/FWIe632F+Qu9F51hGbKmQLQAldAMAVlA4IHAAAAAwBACdASoUAA8APxFwsFAsJiSisAgBgCIJbACdFQA5/8BrFiHzd4YNZwAA/W2IKm+MY2U0TIAdfAn/FgkT7iEMW+Z7yZ/814hxfbKISe4dYvL4Egdt6uq9GnybhrcbB7dcs/FO4UvASN98pluMgwAA",
+  "dominant": "#74747b",
+  "transparent": true,
+  "background": null,
+  "kind": "hero",
+  "credit": "Sandisk",
+  "source": {
+    "url": "https://www.sandisk.com/content/dam/store/en-us/assets/products/memory-cards/ultra-uhs-i-microsd-120/gallery/ultra-uhs-i-microsd-120-1tb-front.png",
+    "page": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-ultra-uhs-i-microsd?sku=SDSQUAC-1T00-GN6MA"
+  },
+  "input": "7c0ca710d2a39dcf"
+}

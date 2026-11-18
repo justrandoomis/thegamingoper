@@ -1,0 +1,125 @@
+{
+  "slug": "dualsense-thumb-grips",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "Generic",
+  "status": "available",
+  "name": {
+    "ar": "أغطية عصي التحكم ليد DualSense",
+    "en": "Thumbstick Grips for DualSense",
+    "ckb": "قاپی جۆیستیک بۆ DualSense"
+  },
+  "short": {
+    "ar": "قبضة أفضل وارتفاع إضافي لعصي التحكم · تناسب PS5 وPS4",
+    "en": "Better grip and extra stick height · Fit PS5 and PS4 controllers",
+    "ckb": "گرتنی باشتر و بەرزی زیاتر بۆ جۆیستیک · بۆ PS5 و PS4"
+  },
+  "description": {
+    "ar": "أغطية مطاطية تركب فوق عصي التحكم في يد DualSense لتمنع انزلاق الإبهام، وبعضها يرفع العصا قليلاً لتصويب أدق في ألعاب التصويب. نسختان: طقم بنمط Freek ‏(75‑76) وطقم أغطية عادية.",
+    "en": "Rubber caps that fit over the DualSense thumbsticks to stop your thumbs slipping; some raise the stick a little for finer aim in shooters. Two versions: a Freek‑style set (75‑76) and a set of plain grip caps.",
+    "ckb": "قاپی لاستیکی کە لەسەر جۆیستیکی DualSense دادەنرێت بۆ ئەوەی پەنجە نەخلیسکێت؛ هەندێکیان جۆیستیک کەمێک بەرز دەکەنەوە بۆ ئامانجگرتنی وردتر. دوو وەشان: کۆمەڵەی شێوەی Freek (75‑76) و کۆمەڵەی قاپی ئاسایی."
+  },
+  "highlights": [
+    {
+      "ar": "تمنع انزلاق الإبهام",
+      "en": "Stop thumbs slipping",
+      "ckb": "ڕێگری لە خلیسکانی پەنجە دەکات"
+    },
+    {
+      "ar": "تركيب وإزالة بدون أدوات",
+      "en": "Fit and remove without tools",
+      "ckb": "بەبێ ئامراز دادەنرێت و لادەبرێت"
+    },
+    {
+      "ar": "تناسب عصي PS5 وPS4",
+      "en": "Fit PS5 and PS4 sticks",
+      "ckb": "بۆ جۆیستیکی PS5 و PS4"
+    }
+  ],
+  "specs": [
+    {
+      "key": "fits",
+      "label": {
+        "ar": "يتوافق مع",
+        "en": "Works with",
+        "ckb": "گونجاوە لەگەڵ"
+      },
+      "value": {
+        "ar": "DualSense (PS5) وDualShock 4 (PS4)",
+        "en": "DualSense (PS5) and DualShock 4 (PS4)",
+        "ckb": "DualSense (PS5) و DualShock 4 (PS4)"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "DS-THUMB-FREEK-75-76",
+      "title": {
+        "ar": "نمط Freek ‏(75‑76)",
+        "en": "Freek style (75‑76)",
+        "ckb": "شێوەی Freek (75‑76)"
+      },
+      "options": {
+        "type": "Freek 75-76"
+      },
+      "sheetRow": 119,
+      "isDefault": true
+    },
+    {
+      "sku": "DS-THUMB-GRIPS",
+      "title": {
+        "ar": "أغطية عادية",
+        "en": "Grip caps",
+        "ckb": "قاپی ئاسایی"
+      },
+      "options": {
+        "type": "Grip caps"
+      },
+      "sheetRow": 121
+    }
+  ],
+  "related": [
+    {
+      "slug": "dualsense",
+      "kind": "setup"
+    },
+    {
+      "slug": "dualsense-edge",
+      "kind": "setup"
+    },
+    {
+      "slug": "ipega-pg-p5042-battery-pack",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.currys.co.uk/products/kontrol-freek-noslip-thumb-grips-for-ps5-pack-of-8-10258175.html",
+      "title": "KONTROL FREEK No-Slip Thumb Grips for PS5 - Pack of 8",
+      "publisher": "Currys (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "what thumb grips do: soft non-slip caps for PS5 sticks"
+    },
+    {
+      "url": "https://maxgaming.com/en/ps5-thumbstick-grips/fps-freek-battle-royale-purple-ps5-ps4",
+      "title": "FPS Freek Battle Royale (PS5/PS4)",
+      "publisher": "MaxGaming (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "Freek-style raised thumbsticks fit PS5 and PS4 controllers"
+    }
+  ],
+  "notes": {
+    "ar": "ليست من إنتاج KontrolFreek؛ «Freek» يصف شكل الأغطية فقط.",
+    "en": "Not made by KontrolFreek; 'Freek' only describes the cap style.",
+    "ckb": "بەرهەمی KontrolFreek نییە؛ «Freek» تەنها شێوەی قاپەکان دەناسێنێت."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": false,
+    "unverified": [
+      "Maker, pack size and heights of both sets ('PS5 FREEK 75-76-' and 'PS5 GRIPS CONTROL' on the owner's sheet)",
+      "Whether row 121 is thumbstick caps or a different grip accessory"
+    ]
+  }
+}

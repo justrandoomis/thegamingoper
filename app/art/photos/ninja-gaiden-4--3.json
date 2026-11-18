@@ -1,0 +1,64 @@
+{
+  "key": "ninja-gaiden-4--3",
+  "view": "hero",
+  "width": 1600,
+  "height": 900,
+  "aspect": 1.7778,
+  "variants": {
+    "avif": [
+      {
+        "w": 240,
+        "src": "/products/ninja-gaiden-4/3-240.789788dc.avif"
+      },
+      {
+        "w": 480,
+        "src": "/products/ninja-gaiden-4/3-480.33430113.avif"
+      },
+      {
+        "w": 720,
+        "src": "/products/ninja-gaiden-4/3-720.b832d28d.avif"
+      },
+      {
+        "w": 960,
+        "src": "/products/ninja-gaiden-4/3-960.96610b13.avif"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ninja-gaiden-4/3-1440.430b00a6.avif"
+      }
+    ],
+    "webp": [
+      {
+        "w": 240,
+        "src": "/products/ninja-gaiden-4/3-240.e5d12eaf.webp"
+      },
+      {
+        "w": 480,
+        "src": "/products/ninja-gaiden-4/3-480.9dac2cc4.webp"
+      },
+      {
+        "w": 720,
+        "src": "/products/ninja-gaiden-4/3-720.cad1d80f.webp"
+      },
+      {
+        "w": 960,
+        "src": "/products/ninja-gaiden-4/3-960.a7d606f6.webp"
+      },
+      {
+        "w": 1440,
+        "src": "/products/ninja-gaiden-4/3-1440.697ce11c.webp"
+      }
+    ]
+  },
+  "placeholder": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAACwAwCdASoUAAsAPxF0sVCsJqSisAgBgCIJTDwIwsQAP++9WDK8AAD+7uOB/2VrD1n7ak9alyODXBFWfofXoKygUyX3wa38FaOEAAAA",
+  "dominant": "#020309",
+  "transparent": false,
+  "background": null,
+  "kind": "screenshot",
+  "credit": "Microsoft / Koei Tecmo",
+  "source": {
+    "url": "https://image.api.playstation.com/vulcan/ap/rnd/202508/1213/bff0fbe31e562d14474cecd83b6b5b6327683c18b32dcf3f.jpeg",
+    "page": "https://store.playstation.com/en-gb/product/UP6312-PPSA25258_00-0173149685884705"
+  },
+  "input": "57df4f9403d544be"
+}

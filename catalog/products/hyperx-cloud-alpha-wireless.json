@@ -1,0 +1,87 @@
+{
+  "slug": "hyperx-cloud-alpha-wireless",
+  "group": "controllers-audio",
+  "kind": "headset",
+  "platform": "multi",
+  "brand": "HyperX",
+  "status": "available",
+  "releaseDate": "2022-04-11",
+  "name": { "ar": "سماعة HyperX Cloud Alpha Wireless", "en": "HyperX Cloud Alpha Wireless", "ckb": "هێدسێتی HyperX Cloud Alpha Wireless" },
+  "short": {
+    "ar": "لاسلكية 2.4 غيغاهرتز · بطارية حتى 300 ساعة · DTS Headphone:X",
+    "en": "2.4 GHz wireless · Up to 300 h battery · DTS Headphone:X",
+    "ckb": "بێتەلی 2.4 گیگاهێرتز · پاتری تا 300 کاتژمێر · DTS Headphone:X"
+  },
+  "description": {
+    "ar": "سماعة ألعاب لاسلكية من HyperX تتصل بمحوّل USB بتردد 2.4 غيغاهرتز، وأهم ما فيها بطارية تدوم حتى 300 ساعة بشحنة واحدة (عند صوت 50%). فيها سماعات Dual Chamber بقطر 50 ملم تفصل الصوت الجهير عن الأصوات المتوسطة والعالية، ومايكروفون قابل للفصل مع إلغاء ضوضاء، وهيكل من الألمنيوم مع وسائد إسفنج ذكي. على الكمبيوتر تدعم الصوت المحيطي DTS Headphone:X وبرنامج NGENUITY لضبط الصوت ومعرفة البطارية.",
+    "en": "A wireless gaming headset from HyperX that connects through a 2.4 GHz USB adapter, best known for a battery that lasts up to 300 hours on one charge (at 50% volume). It has 50 mm Dual Chamber drivers that keep the bass apart from the mids and highs, a detachable noise-cancelling mic, and an aluminium frame with memory-foam cushions. On PC it supports DTS Headphone:X spatial audio and the NGENUITY app for EQ and battery level.",
+    "ckb": "هێدسێتێکی بێتەلی HyperX کە بە ئەداپتەری USBی 2.4 گیگاهێرتز دەبەسترێت، و گرنگترین خاڵی پاترییەکەیەتی کە تا 300 کاتژمێر بە یەک شەحن دەمێنێت (لە دەنگی 50%). دەنگدەری Dual Chamberی 50 ملمی هەیە کە بەیس لە دەنگی ناوەند و بەرز جیا دەکاتەوە، مایکی لابراوی لابردنی ژاوەژاو، و چوارچێوەی ئەلەمنیۆم لەگەڵ بالیشتی فۆمی یادەوەری. لەسەر PC پشتگیری DTS Headphone:X و ئەپی NGENUITY دەکات بۆ ڕێکخستنی دەنگ و بینینی پاتری."
+  },
+  "highlights": [
+    { "ar": "بطارية حتى 300 ساعة بشحنة واحدة (عند صوت 50%)", "en": "Up to 300 hours on one charge (at 50% volume)", "ckb": "تا 300 کاتژمێر بە یەک شەحن (لە دەنگی 50%)" },
+    { "ar": "لاسلكية بمحوّل USB بتردد 2.4 غيغاهرتز ومدى حتى 20 متراً", "en": "2.4 GHz wireless via USB adapter, range up to 20 m", "ckb": "بێتەل بە ئەداپتەری USBی 2.4 گیگاهێرتز، مەودا تا 20 مەتر" },
+    { "ar": "سماعات HyperX Dual Chamber بقطر 50 ملم", "en": "50 mm HyperX Dual Chamber drivers", "ckb": "دەنگدەری HyperX Dual Chamber بە قەبارەی 50 ملم" },
+    { "ar": "صوت محيطي DTS Headphone:X على الكمبيوتر", "en": "DTS Headphone:X spatial audio on PC", "ckb": "دەنگی دەوروبەری DTS Headphone:X لەسەر PC" },
+    { "ar": "مايكروفون قابل للفصل مع إلغاء ضوضاء وغطاء إسفنجي", "en": "Detachable noise-cancelling mic with pop filter", "ckb": "مایکی لابراو لەگەڵ لابردنی ژاوەژاو و فلتەری فۆم" }
+  ],
+  "specs": [
+    { "key": "model", "label": { "ar": "رقم القطعة", "en": "Part number", "ckb": "ژمارەی پارچە" }, "value": { "ar": "4P5D4AA (أسود وأحمر)", "en": "4P5D4AA (Black‑Red)", "ckb": "4P5D4AA (ڕەش و سوور)" } },
+    { "key": "connection", "label": { "ar": "الاتصال", "en": "Connection", "ckb": "پەیوەندی" }, "value": { "ar": "لاسلكي 2.4 غيغاهرتز عبر محوّل USB، مدى حتى 20 متراً", "en": "2.4 GHz wireless through a USB adapter, up to 20 m range", "ckb": "بێتەلی 2.4 گیگاهێرتز بە ئەداپتەری USB، مەودا تا 20 مەتر" } },
+    { "key": "drivers", "label": { "ar": "السماعات الداخلية", "en": "Drivers", "ckb": "دەنگدەرەکان" }, "value": { "ar": "ديناميكية 50 ملم بمغناطيس نيوديميوم، 15 هرتز حتى 21 كيلوهرتز", "en": "Dynamic 50 mm, neodymium magnets, 15 Hz–21 kHz", "ckb": "داینامیکی 50 ملم، موگناتیسی نیۆدیمیۆم، 15 هێرتز تا 21 کیلۆهێرتز" } },
+    { "key": "microphone", "label": { "ar": "المايكروفون", "en": "Microphone", "ckb": "مایکرۆفۆن" }, "value": { "ar": "مكثف ثنائي الاتجاه مع إلغاء ضوضاء، قابل للفصل", "en": "Electret condenser, bi-directional, noise-cancelling, detachable", "ckb": "کۆندێنسەری دوو ئاڕاستە، لابردنی ژاوەژاو، لابراو" } },
+    { "key": "battery", "label": { "ar": "البطارية", "en": "Battery", "ckb": "پاتری" }, "value": { "ar": "حتى 300 ساعة، الشحن الكامل 4.5 ساعات", "en": "Up to 300 hours, 4.5 hours to charge", "ckb": "تا 300 کاتژمێر، 4.5 کاتژمێر بۆ شەحنی تەواو" } },
+    { "key": "build", "label": { "ar": "الهيكل", "en": "Build", "ckb": "پێکهاتە" }, "value": { "ar": "إطار ألمنيوم، أكواب مغلقة، وسائد إسفنج ذكي وجلد صناعي", "en": "Aluminium frame, closed-back earcups, memory foam and leatherette cushions", "ckb": "چوارچێوەی ئەلەمنیۆم، گوێگری داخراو، بالیشتی فۆمی یادەوەری و چەرمی دەستکرد" } },
+    { "key": "weight", "label": { "ar": "الوزن", "en": "Weight", "ckb": "کێش" }, "value": { "ar": "نحو 0.7 رطل (حوالي 320 غرام)", "en": "About 0.7 lb (around 320 g)", "ckb": "نزیکەی 0.7 پاوەند (نزیکەی 320 گرام)" } },
+    { "key": "warranty", "label": { "ar": "ضمان الشركة", "en": "Maker's warranty", "ckb": "گەرەنتی کۆمپانیا" }, "value": { "ar": "سنتان (حسب HyperX)", "en": "2 years (per HyperX)", "ckb": "2 ساڵ (بەپێی HyperX)" } }
+  ],
+  "inTheBox": [
+    { "ar": "السماعة اللاسلكية", "en": "Wireless headset", "ckb": "هێدسێتی بێتەل" },
+    { "ar": "محوّل USB لاسلكي", "en": "USB wireless adapter", "ckb": "ئەداپتەری بێتەلی USB" },
+    { "ar": "كابل شحن USB", "en": "USB charge cable", "ckb": "کێبڵی شەحنی USB" },
+    { "ar": "مايكروفون قابل للفصل مع غطاء إسفنجي", "en": "Detachable mic with pop filter", "ckb": "مایکی لابراو لەگەڵ فلتەری فۆم" },
+    { "ar": "دليل البدء السريع", "en": "Quick start guide", "ckb": "ڕێبەری دەستپێکی خێرا" }
+  ],
+  "variants": [
+    {
+      "sku": "HX-CLOUDALPHA-WL-BLKRED",
+      "sheetRow": 22,
+      "title": { "ar": "أسود وأحمر", "en": "Black‑Red", "ckb": "ڕەش و سوور" },
+      "options": { "color": "Black-Red" },
+      "modelNumber": "4P5D4AA",
+      "barcodes": ["196188046036"],
+      "isDefault": true,
+      "images": ["hyperx-cloud-alpha-wireless--1", "hyperx-cloud-alpha-wireless--2", "hyperx-cloud-alpha-wireless--3", "hyperx-cloud-alpha-wireless--4", "hyperx-cloud-alpha-wireless--5"]
+    }
+  ],
+  "compatibility": [
+    { "deviceModel": "windows-pc", "status": "verified", "note": { "ar": "HyperX تذكر الكمبيوتر كجهاز متوافق؛ DTS وNGENUITY على Windows فقط.", "en": "HyperX lists PC as the compatible device; DTS and NGENUITY are Windows only.", "ckb": "HyperX PC وەک ئامێری گونجاو دەناسێنێت؛ DTS و NGENUITY تەنها لەسەر Windows." }, "source": "https://hyperx.com/products/hyperx-cloud-alpha-wireless" },
+    { "deviceModel": "ps5", "status": "unverified", "note": { "ar": "محوّل USB قد يعمل مع PS5 لكن HyperX لا تذكره في صفحة المنتج.", "en": "The USB adapter may work with a PS5, but HyperX does not list it on the product page.", "ckb": "ئەداپتەری USB لەوانەیە لەگەڵ PS5 کار بکات، بەڵام HyperX لە پەڕەی بەرهەمەکەدا ناوی ناهێنێت." } },
+    { "deviceModel": "ps5-slim", "status": "unverified", "note": { "ar": "غير مذكورة رسمياً.", "en": "Not officially listed.", "ckb": "بە فەرمی نەناسێنراوە." } }
+  ],
+  "related": [
+    { "slug": "hyperx-cloud-iii-s-wireless", "kind": "alternative" },
+    { "slug": "hyperx-cloud-stinger-s", "kind": "alternative" },
+    { "slug": "hyperx-cloud-earbuds-ii", "kind": "accessory" }
+  ],
+  "images": [
+    { "key": "hyperx-cloud-alpha-wireless--1", "file": ".cache/product-images/hyperx-cloud-alpha-wireless/1.jpg", "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_alpha_wireless_1_main_99b8c28d-57bd-42df-bc89-b1d776d5d1d5.jpg", "sourcePage": "https://hyperx.com/products/hyperx-cloud-alpha-wireless", "kind": "hero", "alt": { "ar": "سماعة HyperX Cloud Alpha Wireless السوداء والحمراء مع المايكروفون", "en": "Black and red HyperX Cloud Alpha Wireless with its mic", "ckb": "HyperX Cloud Alpha Wirelessی ڕەش و سوور لەگەڵ مایکەکەی" }, "credit": "HyperX (HP Inc.)", "width": 1600, "height": 1600, "transparent": false },
+    { "key": "hyperx-cloud-alpha-wireless--2", "file": ".cache/product-images/hyperx-cloud-alpha-wireless/2.jpg", "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_alpha_wireless_3_side_c069d966-dd8c-4a71-afbe-73394c4a44e9.jpg", "sourcePage": "https://hyperx.com/products/hyperx-cloud-alpha-wireless", "kind": "angle", "alt": { "ar": "السماعة من الجانب", "en": "The headset from the side", "ckb": "هێدسێتەکە لە لاوە" }, "credit": "HyperX (HP Inc.)", "width": 1600, "height": 1600, "transparent": false },
+    { "key": "hyperx-cloud-alpha-wireless--3", "file": ".cache/product-images/hyperx-cloud-alpha-wireless/3.jpg", "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_alpha_wireless_4_front.jpg", "sourcePage": "https://hyperx.com/products/hyperx-cloud-alpha-wireless", "kind": "angle", "alt": { "ar": "السماعة من الأمام", "en": "The headset from the front", "ckb": "هێدسێتەکە لە پێشەوە" }, "credit": "HyperX (HP Inc.)", "width": 1600, "height": 1600, "transparent": false },
+    { "key": "hyperx-cloud-alpha-wireless--4", "file": ".cache/product-images/hyperx-cloud-alpha-wireless/4.jpg", "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_alpha_wireless_2_main_dongle.jpg", "sourcePage": "https://hyperx.com/products/hyperx-cloud-alpha-wireless", "kind": "detail", "alt": { "ar": "السماعة مع محوّل USB اللاسلكي", "en": "The headset with its USB wireless adapter", "ckb": "هێدسێتەکە لەگەڵ ئەداپتەری بێتەلی USB" }, "credit": "HyperX (HP Inc.)", "width": 1600, "height": 1600, "transparent": false },
+    { "key": "hyperx-cloud-alpha-wireless--5", "file": ".cache/product-images/hyperx-cloud-alpha-wireless/5.jpg", "sourceUrl": "https://cdn.shopify.com/s/files/1/0561/8345/5901/files/hyperx_cloud_alpha_wireless_6_accessories_20_3_b2ff45ee-28d7-48fa-8919-23580540a82d.jpg", "sourcePage": "https://hyperx.com/products/hyperx-cloud-alpha-wireless", "kind": "in-box", "alt": { "ar": "محتويات العلبة: السماعة والمايكروفون والمحوّل والكابل", "en": "In the box: headset, mic, adapter and cable", "ckb": "ناوەڕۆکی قوتوو: هێدسێت، مایک، ئەداپتەر و کێبڵ" }, "credit": "HyperX (HP Inc.)", "width": 1600, "height": 1600, "transparent": false }
+  ],
+  "sources": [
+    { "url": "https://hyperx.com/products/hyperx-cloud-alpha-wireless", "title": "HyperX Cloud Alpha – Wireless Gaming Headset", "publisher": "HyperX (HP Inc.)", "retrieved": "2026-11-18", "supports": "part number 4P5D4AA, UPC, colour, specs (drivers, mic, battery, charge time, range, weight), what's in the box, PC compatibility, 2-year warranty, images" },
+    { "url": "https://www.tomshardware.com/reviews/hyperx-cloud-alpha-wireless-headset-review", "title": "HyperX Cloud Alpha Wireless Review: Unprecedented Battery Life", "publisher": "Tom's Hardware", "retrieved": "2026-11-18", "supports": "300-hour battery claim, DTS Headphone:X, release in 2022" },
+    { "url": "https://www.windowscentral.com/hyperx-cloud-alpha-wireless-gaming-headset-promises-300-hours-battery-life", "title": "HyperX Cloud Alpha Wireless gaming headset promises up to 300 hours of battery life", "publisher": "Windows Central", "retrieved": "2026-11-18", "supports": "launch, $199.99 MSRP, DTS spatial audio" },
+    { "url": "https://www.businesswire.com/news/home/20220411005017/en/", "title": "HyperX Now Shipping Award-Winning Alpha Wireless Gaming Headset with up to 300 Hours of Battery Life", "publisher": "HyperX (Business Wire)", "retrieved": "2026-11-18", "supports": "shipping from 11 April 2022 (CES release had planned February)" }
+  ],
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+            "PS5/PS4 use over the USB adapter (not listed by HyperX)",
+      "Weight in grams (HyperX states 0.7 lb)"
+    ]
+  }
+}

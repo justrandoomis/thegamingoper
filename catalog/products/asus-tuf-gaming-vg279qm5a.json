@@ -1,0 +1,262 @@
+{
+  "slug": "asus-tuf-gaming-vg279qm5a",
+  "group": "pc-peripherals",
+  "kind": "accessory",
+  "platform": "multi",
+  "brand": "ASUS",
+  "category": "monitors",
+  "status": "available",
+  "name": {
+    "ar": "شاشة ASUS TUF Gaming VG279QM5A",
+    "en": "ASUS TUF Gaming VG279QM5A",
+    "ckb": "شاشەی ASUS TUF Gaming VG279QM5A"
+  },
+  "short": {
+    "ar": "27 بوصة · Full HD · ‏240Hz · Fast IPS",
+    "en": "27\" · Full HD · 240 Hz · Fast IPS",
+    "ckb": "27 ئینج · Full HD · ‏240Hz · Fast IPS"
+  },
+  "description": {
+    "ar": "شاشة ألعاب من ASUS بحجم 27 بوصة ودقة 1920×1080 ولوحة Fast IPS بمعدل تحديث 240 هرتز وزمن استجابة يبدأ من 0.3 ملي ثانية. تدعم HDR10 وAdaptive‑Sync وELMB Sync، وفيها منفذا HDMI 2.0 ومنفذ DisplayPort 1.4 ومخرج سماعة.",
+    "en": "A 27-inch ASUS gaming monitor with a 1920×1080 Fast IPS panel, 240 Hz refresh and response from 0.3 ms. It supports HDR10, Adaptive-Sync and ELMB Sync, with two HDMI 2.0 ports, one DisplayPort 1.4 and a headphone jack.",
+    "ckb": "شاشەیەکی یاری ASUS بە قەبارەی 27 ئینج و پانێڵی Fast IPSی 1920×1080، ڕێژەی نوێبوونەوەی 240 هێرتز و کاتی وەڵامدانەوە لە 0.3 ملی چرکەوە. HDR10 و Adaptive‑Sync و ELMB Sync پشتگیری دەکات، دوو HDMI 2.0 و یەک DisplayPort 1.4 و دەرچەی هێدفۆنی هەیە."
+  },
+  "highlights": [
+    {
+      "ar": "شاشة 27 بوصة بمعدل تحديث 240 هرتز",
+      "en": "27-inch screen at 240 Hz",
+      "ckb": "شاشەی 27 ئینج بە 240 هێرتز"
+    },
+    {
+      "ar": "زمن استجابة 1 ملي ثانية GTG و0.3 ملي ثانية كحد أدنى",
+      "en": "1 ms GTG, 0.3 ms minimum response",
+      "ckb": "1 ملی چرکە GTG و 0.3 ملی چرکە کەمترین"
+    },
+    {
+      "ar": "ELMB Sync مع Adaptive‑Sync لحركة أوضح",
+      "en": "ELMB Sync with Adaptive-Sync for clearer motion",
+      "ckb": "ELMB Sync لەگەڵ Adaptive‑Sync بۆ جووڵەی ڕوونتر"
+    },
+    {
+      "ar": "دعم HDR10 وتغطية 99% من sRGB",
+      "en": "HDR10 support, 99% sRGB",
+      "ckb": "پشتگیری HDR10، ‏99%ی sRGB"
+    }
+  ],
+  "specs": [
+    {
+      "key": "display",
+      "label": {
+        "ar": "الشاشة",
+        "en": "Display",
+        "ckb": "شاشە"
+      },
+      "value": {
+        "ar": "27 بوصة، 1920×1080، Fast IPS، سطح مضاد للانعكاس",
+        "en": "27\", 1920×1080, Fast IPS, anti-glare",
+        "ckb": "27 ئینج، 1920×1080، Fast IPS، ڕووکاری دژە درەوشانەوە"
+      }
+    },
+    {
+      "key": "refresh",
+      "label": {
+        "ar": "معدل التحديث",
+        "en": "Refresh rate",
+        "ckb": "ڕێژەی نوێبوونەوە"
+      },
+      "value": {
+        "ar": "240 هرتز",
+        "en": "240 Hz",
+        "ckb": "240 هێرتز"
+      }
+    },
+    {
+      "key": "response",
+      "label": {
+        "ar": "زمن الاستجابة",
+        "en": "Response time",
+        "ckb": "کاتی وەڵامدانەوە"
+      },
+      "value": {
+        "ar": "1 ملي ثانية (GTG)، ‏0.3 ملي ثانية (الحد الأدنى)",
+        "en": "1 ms (GTG), 0.3 ms (min.)",
+        "ckb": "1 ملی چرکە (GTG)، ‏0.3 ملی چرکە (کەمترین)"
+      }
+    },
+    {
+      "key": "brightness",
+      "label": {
+        "ar": "السطوع والتباين",
+        "en": "Brightness and contrast",
+        "ckb": "ڕووناکی و جیاوازی"
+      },
+      "value": {
+        "ar": "300 شمعة/م²، تباين 1000:1، HDR10",
+        "en": "300 cd/m², 1000:1 contrast, HDR10",
+        "ckb": "300 cd/m²، جیاوازی 1000:1، HDR10"
+      }
+    },
+    {
+      "key": "ports",
+      "label": {
+        "ar": "المنافذ",
+        "en": "Ports",
+        "ckb": "دەرچەکان"
+      },
+      "value": {
+        "ar": "2× HDMI 2.0، ‏1× DisplayPort 1.4، مخرج سماعة",
+        "en": "2× HDMI 2.0, 1× DisplayPort 1.4, earphone jack",
+        "ckb": "2× HDMI 2.0، 1× DisplayPort 1.4، دەرچەی هێدفۆن"
+      }
+    },
+    {
+      "key": "sync",
+      "label": {
+        "ar": "مزامنة الصورة",
+        "en": "Adaptive sync",
+        "ckb": "هاوکاتکردنی وێنە"
+      },
+      "value": {
+        "ar": "Adaptive‑Sync و ELMB Sync",
+        "en": "Adaptive-Sync, ELMB Sync",
+        "ckb": "Adaptive‑Sync و ELMB Sync"
+      }
+    },
+    {
+      "key": "stand",
+      "label": {
+        "ar": "الحامل",
+        "en": "Stand",
+        "ckb": "پایە"
+      },
+      "value": {
+        "ar": "إمالة من ‎-5° حتى +23°، تثبيت جداري VESA ‏100×100",
+        "en": "Tilt -5° to +23°, VESA 100×100 wall mount",
+        "ckb": "لاربوونەوە لە ‎-5° تا +23°، VESA ‏100×100"
+      }
+    },
+    {
+      "key": "weight",
+      "label": {
+        "ar": "الوزن",
+        "en": "Weight",
+        "ckb": "کێش"
+      },
+      "value": {
+        "ar": "4.5 كغ مع الحامل",
+        "en": "4.5 kg with stand",
+        "ckb": "4.5 کگ لەگەڵ پایە"
+      }
+    }
+  ],
+  "inTheBox": [
+    {
+      "ar": "الشاشة والحامل",
+      "en": "Monitor and stand",
+      "ckb": "شاشە و پایە"
+    },
+    {
+      "ar": "كابل كهرباء",
+      "en": "Power cord",
+      "ckb": "کێبڵی کارەبا"
+    },
+    {
+      "ar": "كابل DisplayPort",
+      "en": "DisplayPort cable",
+      "ckb": "کێبڵی DisplayPort"
+    },
+    {
+      "ar": "مفك براغي على شكل L",
+      "en": "L-shaped screwdriver",
+      "ckb": "دەرنەفیسی شێوە L"
+    },
+    {
+      "ar": "دليل التشغيل السريع وبطاقة الضمان",
+      "en": "Quick start guide and warranty card",
+      "ckb": "ڕێبەری خێرا و کارتی گەرەنتی"
+    }
+  ],
+  "variants": [
+    {
+      "sku": "ASUS-VG279QM5A",
+      "title": {
+        "ar": "شاشة ASUS TUF Gaming VG279QM5A",
+        "en": "ASUS TUF Gaming VG279QM5A",
+        "ckb": "شاشەی ASUS TUF Gaming VG279QM5A"
+      },
+      "options": {
+        "size": "27\""
+      },
+      "modelNumber": "VG279QM5A",
+      "isDefault": true,
+      "images": [
+        "asus-tuf-gaming-vg279qm5a--1"
+      ],
+      "sheetRow": 48,
+      "notes": {
+        "ar": "لاحقة ‎-IQ في اسم المخزن تعني نسخة السوق العراقية.",
+        "en": "The -IQ suffix in the stock name marks the Iraqi-market unit.",
+        "ckb": "پاشگری ‎-IQ لە ناوی کۆگادا یەکەی بازاڕی عێراق دەردەخات."
+      }
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "windows-pc",
+      "status": "verified",
+      "note": {
+        "ar": "عبر DisplayPort أو HDMI.",
+        "en": "Over DisplayPort or HDMI.",
+        "ckb": "لە ڕێگەی DisplayPort یان HDMI."
+      },
+      "source": "https://www.asus.com/me-en/displays-desktops/monitors/tuf-gaming/tuf-gaming-vg279qm5a/techspec/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "asus-tuf-gaming-vg249qm1a",
+      "kind": "alternative"
+    }
+  ],
+  "images": [
+    {
+      "key": "asus-tuf-gaming-vg279qm5a--1",
+      "file": ".cache/product-images/asus-tuf-gaming-vg279qm5a/1.png",
+      "sourceUrl": "https://dlcdnwebimgs.asus.com/gain/71dfd7d0-700c-4b98-a9b6-e21ad184b996/",
+      "sourcePage": "https://www.asus.com/me-en/displays-desktops/monitors/tuf-gaming/tuf-gaming-vg279qm5a/",
+      "kind": "hero",
+      "alt": {
+        "ar": "شاشة ASUS TUF Gaming VG279QM5A من الأمام",
+        "en": "ASUS TUF Gaming VG279QM5A from the front",
+        "ckb": "شاشەی ASUS TUF Gaming VG279QM5A لە پێشەوە"
+      },
+      "credit": "ASUS",
+      "width": 2400,
+      "height": 2400,
+      "transparent": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.asus.com/me-en/displays-desktops/monitors/tuf-gaming/tuf-gaming-vg279qm5a/techspec/",
+      "title": "TUF Gaming VG279QM5A – Tech Specs",
+      "publisher": "ASUS",
+      "retrieved": "2026-11-18",
+      "supports": "27\" 1920×1080 Fast IPS, 300 cd/m², 1000:1, 99% sRGB, 1 ms GTG / 0.3 ms min, 240 Hz, HDR10, ports, ELMB Sync, Adaptive-Sync, tilt, VESA, weight, box contents, image"
+    },
+    {
+      "url": "https://www.bhphotovideo.com/c/product/1964283-REG/asus_tuf_gaming_vg279qm5a_27.html",
+      "title": "ASUS TUF Gaming VG279QM5A 27\" Full HD HDR 240 Hz Gaming Monitor",
+      "publisher": "B&H Photo",
+      "retrieved": "2026-11-18",
+      "supports": "independent confirmation of 27\" 240 Hz Full HD HDR model"
+    }
+  ],
+  "verification": {
+    "checkedBy": "pc-peripherals research",
+    "secondSource": true,
+    "unverified": [
+      "Exact launch date"
+    ]
+  }
+}

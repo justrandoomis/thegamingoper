@@ -1,6 +1,35 @@
 {
   "$comment": "Per-image options for scripts/products/images.mjs, decided by looking at the result on the contact sheets (.shots/catalog). Key = catalogue image key. Options: cutout false (keep opaque), holes true (cut out closed windows of pure background colour) or [[x, y], …] (only the windows at these points, shares of the picture: white print elsewhere stays), extend true (the object touches the frame of a plain canvas: extend it, then cut out), clean true (transparent source: drop a baked shadow or glow and stray specks), pad <share> (padding instead of 0.06), trim false (opaque photo keeps its whole frame), crop [left, top, right, bottom] (shares of the original cut off first). Every entry says why.",
 
+  "jys-usb-hub-sdm007--1": { "crop": [0.1, 0.05, 0.45, 0.08], "why": "JYS's picture sets the hub beside a console and its white retail box; cropping to the hub alone lets it be cut out (the white box is almost the background colour)." },
+  "jys-rog-ally-carrying-case-x152--1": { "crop": [0.03, 0.03, 0.03, 0.41], "holes": true, "why": "Keep the closed case at the top of JYS's collage (the two small views below touch each other); the handle loop is a closed window of background." },
+  "jys-steam-deck-clear-case-sd003--1": { "holes": true, "why": "Clear case fitted on the Steam Deck, front and back: the kickstand and grips leave closed windows of background." },
+  "dobe-steam-deck-tempered-glass-ty-3802--1": { "crop": [0.05, 0.3, 0.05, 0.3], "why": "DOBE's square canvas has wide empty white bands above and below the Steam Deck; cropping them lets the console be cut out cleanly." },
+  "dobe-rog-ally-tempered-glass-ty-3836--1": { "holes": true, "why": "The two glass sheets overlap; cut out the background between them." },
+
+  "dobe-ps5-dual-charging-dock--1": { "opaque": true, "why": "White DOBE dock and white DualSense rendered on pure white with a floor reflection: the cut finds 68% of the outline too faint, and a flood cut eats the white controller grips; kept opaque (#ffffff, ΔE 5.1 from --niche)." },
+  "dobe-ps5-dual-charging-dock--2": { "opaque": true, "why": "Same DOBE white-on-white render set as dobe-ps5-dual-charging-dock--1 (faint white outline)." },
+  "dobe-ps5-dual-charging-dock--3": { "opaque": true, "why": "Same DOBE white-on-white render set as dobe-ps5-dual-charging-dock--1 (faint white outline)." },
+  "dobe-ps5-dual-charging-dock--4": { "opaque": true, "why": "DOBE retail box with white panels on white: faint outline, kept opaque." },
+  "dobe-tp5-3536b-cooling-stand--1": { "opaque": true, "why": "White PS5 Slim, white stand and white controllers on pure white: the outline is too faint to cut safely; kept opaque." },
+  "dobe-tp5-3536b-cooling-stand--2": { "opaque": true, "why": "Same DOBE white-on-white render set as dobe-tp5-3536b-cooling-stand--1." },
+  "dobe-tp5-3536b-cooling-stand--3": { "opaque": true, "why": "Same DOBE white-on-white render set as dobe-tp5-3536b-cooling-stand--1." },
+  "dobe-tp5-3536b-cooling-stand--4": { "opaque": true, "why": "Box-contents picture with white parts and red captions on white: kept opaque." },
+  "ipega-pg-p5003-charging-station--1": { "opaque": true, "why": "White station with white DualSense controllers on pure white: faint outline; a flood cut eats the controllers' white edges. Kept opaque." },
+  "ipega-pg-p5003-charging-station--2": { "opaque": true, "why": "White station with clear blue holders on white: faint outline, kept opaque." },
+  "ipega-pg-p5003-charging-station--3": { "opaque": true, "why": "Top view of the white station on white: faint outline, kept opaque." },
+  "ipega-pg-p5003-charging-station--4": { "opaque": true, "why": "Retail box render on white: kept opaque." },
+  "ipega-pg-p5036-usb-hub--2": { "opaque": true, "why": "Black hub on white that touches the edge of iPega's photo once the patent line under it is cropped off; kept opaque (hub--1 cut out fine)." },
+  "ipega-pg-p5042-battery-pack--1": { "opaque": true, "why": "White battery pack on white: 21% of the outline too faint to cut safely; kept opaque." },
+  "ipega-pg-p5042-battery-pack--2": { "opaque": true, "why": "Pack on a white DualSense on white: faint outline, kept opaque." },
+  "ipega-pg-p5042-battery-pack--3": { "opaque": true, "why": "Pack on a DualSense with white grips on white: faint outline, kept opaque." },
+  "ipega-pg-p5042-battery-pack--4": { "opaque": true, "why": "White pack, pad and cable on white: faint outline, kept opaque." },
+  "ipega-pg-p5042-battery-pack--5": { "opaque": true, "why": "Retail box render with white panels on near-white: kept opaque." },
+  "ipega-pg-p5s007-horizontal-stand--1": { "opaque": true, "why": "White-topped PS5 Slim on the stand, on pure white: the console's white cover has no visible outline; kept opaque." },
+  "ipega-pg-p5s007-horizontal-stand--2": { "opaque": true, "why": "Same as ipega-pg-p5s007-horizontal-stand--1 (white console cover on white)." },
+  "ipega-pg-p5s021-horizontal-stand--1": { "opaque": true, "why": "White PS5 Slim on the white stand, on pure white: faint outline; kept opaque." },
+  "ipega-pg-p5s021-horizontal-stand--2": { "opaque": true, "why": "White console cover on white (black stand): faint outline, kept opaque." },
+
   "donkey-kong-bananza--1": { "extend": true, "why": "The cover touches the top and bottom of its white 2000 px square canvas, so it was left as a white square; extending the canvas lets the pack shot be cut out like the other Switch 2 covers." },
   "kirby-air-riders--1": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
   "mario-kart-world--1": { "extend": true, "why": "Cover on a white square canvas it touches at the top and bottom (same Nintendo template as donkey-kong-bananza--1)." },
@@ -44,5 +73,15 @@
   "nintendo-switch-2--4": { "extend": true, "holes": [[0.084, 0.5857]], "why": "The tabletop scene touches the left and right edges of its white 2000 px square (console and Joy-Con are whole, just touching), so it stayed a white box in the dark well (QA 2026-11-13). Extended, it cuts out cleanly; the one closed window of background — the triangle inside the kickstand, centred at (0.084, 0.586) — is opened by its point, because holes true would also open the white «2 / NINTENDO SWITCH» on the screen (checked on magenta, both floors and a zoom of the stand)." },
   "playstation-5-slim--5": { "crop": [0.275, 0, 0.275, 0], "why": "An opaque white 900 px photo sits inside a 2000 px transparent canvas, so it was drawn as a hard white rectangle; cropped to the photo it is treated as an opaque photo on white (framed, rounded)." },
 
-  "playstation-store-gift-card--1": { "opaque": true, "why": "The gift card's face (Sony's card faceplate, 1600×1067): a printed card fills its own rectangle by design, like box art — the storefront draws it as a card (84% of the well, --r-xs corners, design v2 §7.3 and §7.6), so there is no background to cut out." }
+  "playstation-store-gift-card--1": { "opaque": true, "why": "The gift card's face (Sony's card faceplate, 1600×1067): a printed card fills its own rectangle by design, like box art — the storefront draws it as a card (84% of the well, --r-xs corners, design v2 §7.3 and §7.6), so there is no background to cut out." },
+
+  "hyperx-cloud-alpha-wireless--1": { "holes": true, "why": "Black and red headset: the white inside the headband arch and the red cages is background; nothing on the product is white." },
+  "hyperx-cloud-alpha-wireless--4": { "holes": true, "why": "Black and red headset with USB adapter: the white inside the headband and cages is background." },
+  "hyperx-cloud-alpha-wireless--5": { "holes": true, "why": "Black and red headset, mic and coiled cable: the white inside the headband and cable loops is background." },
+  "hyperx-cloud-stinger-s--1": { "holes": true, "why": "All-black headset (grey steel sliders): the white inside the headband arch is background." },
+  "hyperx-cloud-stinger-s--2": { "holes": true, "why": "All-black headset: the white between headband and earcups is background." },
+  "hyperx-cloud-stinger-s--4": { "holes": true, "why": "All-black headset and USB adapter: the white inside the headband and cable loop is background." },
+  "new-pokemon-snap--1": {"extend":true,"why":"Cover touches top and bottom of Nintendo's white 1200x675 packshot canvas."},
+  "paper-mario-the-origami-king--1": {"extend":true,"why":"Cover touches top and bottom of Nintendo's white 1200x675 packshot canvas."},
+  "mario-tennis-aces--1": {"extend":true,"why":"Cover touches top and bottom of Nintendo's white 1200x675 packshot canvas."}
 }

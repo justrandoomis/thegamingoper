@@ -1,0 +1,167 @@
+{
+  "slug": "ipega-pg-p5s039-horizontal-stand",
+  "group": "ps5-chargers-stands-cooling",
+  "kind": "accessory",
+  "platform": "playstation",
+  "brand": "iPega",
+  "status": "available",
+  "name": {
+    "ar": "قاعدة أفقية بمروحة iPega PG‑P5S039 لجهاز PS5 Slim",
+    "en": "iPega PG‑P5S039 Horizontal Cooling Stand for PS5 Slim",
+    "ckb": "ستاندی ئاسۆیی بە پانکەی iPega PG‑P5S039 بۆ PS5 Slim"
+  },
+  "short": {
+    "ar": "وضع أفقي · مروحة تبريد · شحن يدين · حامل سماعة",
+    "en": "Lies flat · Cooling fan · Charges two controllers · Headset holder",
+    "ckb": "ئاسۆیی · پانکە · شەحنی دوو کۆنتڕۆڵەر · هەڵگری هێدسێت"
+  },
+  "description": {
+    "ar": "قاعدة من iPega يوضع عليها جهاز PS5 Slim أفقياً، وفيها مروحة تبريد ومكانان لشحن يدَي DualSense وحامل للسماعة، فتجمع ملحقات اللعب في مكان واحد.",
+    "en": "An iPega base that holds the PS5 Slim lying flat, with a cooling fan, two DualSense charging spots and a headset holder, keeping your setup in one place.",
+    "ckb": "بنکەیەکی iPega کە PS5 Slim بە ئاسۆیی هەڵدەگرێت، لەگەڵ پانکە، دوو شوێنی شەحنی DualSense و هەڵگری هێدسێت."
+  },
+  "highlights": [
+    {
+      "ar": "للوضع الأفقي لجهاز PS5 Slim",
+      "en": "For the PS5 Slim lying flat",
+      "ckb": "بۆ PS5 Slim بە ئاسۆیی"
+    },
+    {
+      "ar": "مروحة تبريد",
+      "en": "Cooling fan",
+      "ckb": "پانکەی ساردکردنەوە"
+    },
+    {
+      "ar": "شحن يدين، نحو 3.5 ساعات",
+      "en": "Charges two controllers, about 3.5 hours",
+      "ckb": "شەحنی دوو کۆنتڕۆڵەر، نزیکەی 3.5 کاتژمێر"
+    },
+    {
+      "ar": "حامل سماعة",
+      "en": "Headset holder",
+      "ckb": "هەڵگری هێدسێت"
+    }
+  ],
+  "specs": [
+    {
+      "key": "model",
+      "label": {
+        "ar": "رقم الطراز",
+        "en": "Model number",
+        "ckb": "ژمارەی مۆدێل"
+      },
+      "value": {
+        "ar": "PG‑P5S039",
+        "en": "PG‑P5S039",
+        "ckb": "PG‑P5S039"
+      }
+    },
+    {
+      "key": "charging",
+      "label": {
+        "ar": "الشحن",
+        "en": "Charging",
+        "ckb": "شەحن"
+      },
+      "value": {
+        "ar": "يدان DualSense، نحو 3.5 ساعات",
+        "en": "2 DualSense, about 3.5 hours",
+        "ckb": "2 DualSense، نزیکەی 3.5 کاتژمێر"
+      }
+    },
+    {
+      "key": "current",
+      "label": {
+        "ar": "الطاقة",
+        "en": "Power",
+        "ckb": "وزە"
+      },
+      "value": {
+        "ar": "تيار التشغيل 2.2A",
+        "en": "2.2A operating current",
+        "ckb": "تەوژمی کارکردن 2.2A"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "sku": "IPEGA-PG-P5S039",
+      "title": {
+        "ar": "قاعدة أفقية بمروحة iPega PG‑P5S039 لجهاز PS5 Slim",
+        "en": "iPega PG‑P5S039 Horizontal Cooling Stand for PS5 Slim",
+        "ckb": "ستاندی ئاسۆیی بە پانکەی iPega PG‑P5S039 بۆ PS5 Slim"
+      },
+      "modelNumber": "PG-P5S039",
+      "sheetRow": 152,
+      "isDefault": true
+    }
+  ],
+  "compatibility": [
+    {
+      "deviceModel": "ps5-slim",
+      "status": "verified",
+      "source": "https://phoneiverse.com/hem-hushall/gaming/pg-p5s039-playstation-5-slim-horisontell-dockningsstation/"
+    },
+    {
+      "deviceModel": "ps5-slim-digital",
+      "status": "verified",
+      "source": "https://phoneiverse.com/hem-hushall/gaming/pg-p5s039-playstation-5-slim-horisontell-dockningsstation/"
+    }
+  ],
+  "related": [
+    {
+      "slug": "playstation-5-slim",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-slim-digital-edition",
+      "kind": "setup"
+    },
+    {
+      "slug": "playstation-5-pro",
+      "kind": "setup"
+    },
+    {
+      "slug": "ipega-pg-p5s021-horizontal-stand",
+      "kind": "alternative"
+    },
+    {
+      "slug": "ipega-pg-p5s007-horizontal-stand",
+      "kind": "alternative"
+    },
+    {
+      "slug": "pulse-elite",
+      "kind": "accessory"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://phoneiverse.com/hem-hushall/gaming/pg-p5s039-playstation-5-slim-horisontell-dockningsstation/",
+      "title": "PG-P5S039 PlayStation 5 Slim horisontell dockningsstation",
+      "publisher": "Phoneiverse (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "model, PS5 Slim horizontal docking station, headphone stand, 2.2A operating current, about 3.5 h controller charging"
+    },
+    {
+      "url": "https://ayoubcomputers.com/ipega-rgb-horizontal-cooling-stand-with-charging-station-headset-holder-for-ps5-slim-pro",
+      "title": "iPega RGB Horizontal Cooling Stand with Charging Station & Headset Holder for PS5 Slim/Pro",
+      "publisher": "Ayoub Computers (retailer)",
+      "retrieved": "2026-11-18",
+      "supports": "fact-check: iPega horizontal stand with built-in fans, dual charger, headset hook, RGB (no model number given)"
+    }
+  ],
+  "notes": {
+    "ar": "الجهاز واليدان والسماعة غير مرفقة.",
+    "en": "Console, controllers and headset not included.",
+    "ckb": "کۆنسۆڵ، کۆنتڕۆڵەر و هێدسێت لەگەڵیدا نین."
+  },
+  "verification": {
+    "checkedBy": "research",
+    "secondSource": true,
+    "unverified": [
+      "iPega's own site does not list PG-P5S039; facts come from retailers",
+      "Number and speed of fans, RGB lighting, PS5 Pro fit",
+      "No clean picture tied to this model number was found"
+    ]
+  }
+}

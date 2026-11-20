@@ -1,10 +1,10 @@
 /**
  * The home page below the hero — Design System v2 §6.1 in v2.1's look (client notes 1–4), in its order:
  *
- *   CategoryStrip      the icon strip right under the hero (the client's reference): glass icon tiles with the kinds'
- *                      line icons — consoles, games, controllers, headsets, accessories, gift cards, used, repair — only
- *                      departments that exist, each to its real listing (one scrolling row of tiles below 1024, one
- *                      row of compact clay pills from 1024 — lead decision 2)
+ *   CategoryStrip      the department doors right under the hero (owner reference 2026-11-20): dark square tiles,
+ *                      a real product cut-out framing a dark label with the name — consoles, games, controllers,
+ *                      headsets, accessories, gift cards, used, repair — only departments that exist, each to its real
+ *                      listing (one scrolling row below 1024, all sharing one row from 1024)
  *   PlatformDoors      «تسوّق حسب المنصّة»: the four platform tiles (2×2 on phones, 4-up from 768) with their real counts,
  *                      on the ambient light
  *   TrustFacts         the trust strip: only facts that are true in the settings (delivery fee, COD, transfers, guest, warranty) as animated cells
@@ -22,14 +22,14 @@
  * before JavaScript, none under reduced motion). Every shelf says the rule it follows, never "trending" or "customers
  * also bought": the store has no such data. An empty shelf is not drawn.
  */
-import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
+import { Art } from "~/art/Art";
 import type { IconName } from "~/art/Icon";
 import { LocaleLink, useLocale, useT } from "~/i18n/react";
 import type { ProductCardData, UsedUnitCardData } from "~/lib/dto";
 import { Bubble, BubbleGroup } from "~/motion";
 import { RecommendationShelves as SharedRecommendationShelves, type RecommendationResult } from "~/routes/storefront/devices/components/RecommendationShelves";
-import { IconTile } from "~/routes/storefront/shell/CategoriesSheet";
 import { sheetCategories } from "~/routes/storefront/shell/chrome";
 import { usePlatformName } from "~/routes/storefront/shell/MegaMenu";
 import type { NavCategory, NavPlatform, ShellPayments } from "~/routes/storefront/shell/types";
@@ -53,7 +53,7 @@ import { UsedUnitCard } from "~/ui/UsedUnitCard";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { toast } from "~/ui/toast-store";
 import { forgetRecentlyViewed, handDeviceListToAccount, readRecentlyViewed } from "./personal";
-import { MIN_SHELF, RELEASE_LIMIT, releaseItemOf, tileArt, type StripItem } from "./view";
+import { MIN_SHELF, RELEASE_LIMIT, releaseItemOf, STRIP_ART, tileArt, type StripItem } from "./view";
 
 /** How wide a card's picture is drawn: 2.15 cards on phones, 3.2 from 768, 4-up from 1024, 5-up (240px) from 1280. */
 const CARD_SIZES = "(min-width: 1280px) 240px, (min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw";
@@ -71,10 +71,10 @@ export function ViewAll({ to, children }: { to: string; children?: ReactNode }) 
 // ───────────────────────────────────────────────────────────────── the icon strip
 
 /**
- * The departments as the client's reference draws them under the hero: glass icon tiles (the shell's `IconTile`, the
- * categories sheet's own tile — one look for the same doors) with the kinds' red line icons, no counts. One scrolling
- * row below 1024 (the fifth tile peeks on phones); from 1024 the same tiles drawn as one row of 48px clay pills, the
- * icon beside the name (home.css), so the platform tiles show on a laptop's first screen. Dark: glass.
+ * The departments as the owner's reference draws them (2026-11-20, C:/tamref): a dark square tile in both themes, the
+ * department's own product cut-out large behind a dark rounded label (./view STRIP_ART), so the product shows around
+ * it, and the name in big white type on the label — real text in the page's language, not baked into a picture. One
+ * scrolling row below 1024 (the third tile peeks on phones); from 1024 every door shares one row.
  */
 export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
   const t = useT("home");
@@ -84,13 +84,31 @@ export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
       {/* a tile that takes the keyboard focus scrolls fully into the row (the row only, never the page): the browser's
           own scroll left the fourth tile half out of a 390px row */}
       <ul className="home-strip__list" onFocus={revealFocusedItem}>
-        {items.map((item, index) => (
-          <IconTile key={item.key} to={item.href} icon={item.icon} label={t(`strip.${item.key}`)} order={index} />
+        {items.map((item) => (
+          <li key={item.key} className="grid">
+            <LocaleLink to={item.href} className="home-door" data-press="soft">
+              {STRIP_ART[item.key].map((art) => (
+                <Art
+                  key={art.key}
+                  name={art.key}
+                  alt=""
+                  sizes={DOOR_SIZES}
+                  fetchPriority="low"
+                  className="home-door__art"
+                  style={{ "--w": `${art.w}%`, "--x": `${art.x ?? 0}%`, "--y": `${art.y ?? 0}%`, "--r": `${art.r ?? 0}deg` } as CSSProperties}
+                />
+              ))}
+              <span className="home-door__label">{t(`strip.${item.key}`)}</span>
+            </LocaleLink>
+          </li>
         ))}
       </ul>
     </nav>
   );
 }
+
+/** A door's picture is at most ~1.3× its tile: 132px tiles on phones, 150px from 768, up to ~200px from 1024. */
+const DOOR_SIZES = "(min-width: 1024px) 260px, (min-width: 768px) 200px, 176px";
 
 // ───────────────────────────────────────────────────────────────── platform tiles
 

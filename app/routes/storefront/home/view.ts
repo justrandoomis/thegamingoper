@@ -380,6 +380,32 @@ export type StripKey = "devices" | "games" | "controllers" | "headsets" | "acces
 /** One door of the icon strip under the hero: a real listing and its kind icon. */
 export type StripItem = { key: StripKey; href: string; icon: IconName };
 
+/**
+ * One product cut-out on a strip tile (owner reference 2026-11-20, C:\tamref: a dark square, a real product framing a
+ * dark label with the department's name): the photo key, its width in % of the tile, where its centre sits (x, y: %
+ * of the tile from the tile's centre; x is physical — the photos do not mirror in RTL) and a tilt in degrees.
+ */
+export type StripArt = { key: string; w: number; x?: number; y?: number; r?: number };
+
+/**
+ * Each door's picture, drawn behind its label so the product shows around it (the controller's grips at both sides,
+ * the headset's band over the top). Every key is a catalogue photo — transparent cut-outs, except the gift card, a flat
+ * card Art frames on its own — and a door whose photo is missing draws Art's placeholder block, never a broken image.
+ */
+export const STRIP_ART: Readonly<Record<StripKey, readonly StripArt[]>> = {
+  devices: [{ key: "nintendo-switch-2--2", w: 118, y: -12 }],
+  games: [
+    { key: "mario-kart-world--1", w: 44, x: -18, y: -8, r: -12 },
+    { key: "ghost-of-yotei--1", w: 52, x: 16, y: -6, r: 10 },
+  ],
+  controllers: [{ key: "dualsense--1", w: 132, y: 6 }],
+  headsets: [{ key: "hyperx-cloud-alpha-wireless--1", w: 112, y: 14 }],
+  accessories: [{ key: "nintendo-switch-2-carrying-case--1", w: 130, x: 6, y: -6 }],
+  topup: [{ key: "playstation-store-gift-card--1", w: 96, y: -4, r: -8 }],
+  used: [{ key: "playstation-5-slim--1", w: 56, y: -6, r: -6 }],
+  repair: [{ key: "dualsense-edge-stick-module--1", w: 62, y: -26, r: -10 }],
+};
+
 /** The strip's doors in order (the client's reference: glass icon tiles), with the catalogue kind each one opens. */
 const STRIP: readonly { key: StripKey; kind: string | null; icon: IconName; href?: string }[] = [
   { key: "devices", kind: "consoles", icon: "kind-console" },

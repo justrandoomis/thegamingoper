@@ -62,12 +62,13 @@ import {
   resolveFocus,
   splitHeadline,
   stripItems,
+  STRIP_ART,
   tileArt,
   twoLineEm,
   wordsShown,
   type HeroBreakpoint,
 } from "~/routes/storefront/home/view";
-import { productPhotos } from "~/art";
+import { getPhoto, productPhotos } from "~/art";
 import { PLATFORMS } from "~/ui/PlatformLed";
 import { createTestDb, type TestDb } from "./helpers/db";
 import { fixtures } from "./helpers/factories";
@@ -1047,30 +1048,30 @@ describe("the home page's stylesheet: laptops' first screen, dark glass, the pho
     return found.join("\n");
   };
 
-  // lead decision 2: the top of the platform tiles shows on a 1440 × 900 first screen (they started at 919px behind a
-  // 116px row of tiles and a 72px gap; measured 815px now)
-  it("from 1024 the icon strip is one row of 48px clay pills, the kind icon beside the name, and the platform tiles follow it closely", () => {
-    const laptop = "@media (min-width: 64rem)";
-    const pill = block(laptop, ".home-strip .shell-itile");
-    expect(pill).toMatch(/flex-direction:\s*row/);
-    expect(pill).toMatch(/min-block-size:\s*48px/);
-    expect(pill).toMatch(/border-radius:\s*var\(--r-full\)/);
-    expect(block(laptop, ".home-strip .shell-itile__ico > svg")).toMatch(/inline-size:\s*20px/);
-    expect(block(laptop, ".home-strip .shell-itile__name")).toMatch(/white-space:\s*nowrap/);
-    expect(block(laptop, ".home-top + .home-platforms")).toMatch(/margin-block-start:\s*calc\(var\(--s-8\) - var\(--gap-section\)\)/);
-    // the phones' strip keeps its tiles
-    expect(block("", ".home-strip__list")).toMatch(/grid-auto-columns:\s*96px/);
-  });
-
-  // client note 3: on the plain dark floor the strip's tiles read as flat grey cards
-  it("dark: the strip's tiles are glass — a brighter veil and rim, the banner's light spilling under them, a red light behind each icon", () => {
-    const glass = block("", '[data-theme="dark"] .home-strip');
-    expect(glass).toMatch(/--card-veil:\s*color-mix\(in oklab, var\(--on-color\) 10%, transparent\)/);
-    expect(glass).toMatch(/--card-face:/);
-    expect(block("", '[data-theme="dark"] .home-strip .shell-itile__ico::before')).toMatch(/radial-gradient/);
-    // owner request 2026-11-17: no glow around the hero any more (the light and the spill under the strip are gone)
+  // owner reference 2026-11-20 (C:/tamref): dark square doors, a product cut-out behind a dark label with the name
+  it("the department doors are dark squares: the product behind a dark label, the name as real text sized by the tile", () => {
+    const door = block("", ".home-door");
+    expect(door).toMatch(/aspect-ratio:\s*1/);
+    expect(door).toMatch(/container-type:\s*inline-size/);
+    expect(door).toMatch(/overflow:\s*hidden/);
+    expect(block("", ".home-door__art")).toMatch(/z-index:\s*0/);
+    const label = block("", ".home-door__label");
+    expect(label).toMatch(/z-index:\s*1/);
+    expect(label).toMatch(/font-size:\s*[\d.]+cqi/);
+    expect(label).toMatch(/text-wrap:\s*balance/);
+    // phones scroll one row of 132px doors; from 1024 they share the row; the platform tiles still follow closely
+    expect(block("", ".home-strip__list")).toMatch(/grid-auto-columns:\s*132px/);
+    expect(block("@media (min-width: 64rem)", ".home-strip__list")).toMatch(/grid-auto-columns:\s*minmax\(0, 1fr\)/);
+    expect(block("@media (min-width: 64rem)", ".home-top + .home-platforms")).toMatch(/margin-block-start:\s*calc\(var\(--s-8\) - var\(--gap-section\)\)/);
     expect(css).not.toMatch(/home-hero__(light|spill|ambient)/);
     expect(block("", ".home-strip")).toMatch(/position:\s*relative/);
+  });
+
+  it("every strip door has a built catalogue photo", () => {
+    for (const [door, arts] of Object.entries(STRIP_ART)) {
+      expect(arts.length, door).toBeGreaterThan(0);
+      for (const art of arts) expect(getPhoto(art.key), `${door}: ${art.key}`).toBeDefined();
+    }
   });
 
   // owner request 2026-11-17 (the torn-paper reference): a full-width hero, the floor laid over its top and bottom as a

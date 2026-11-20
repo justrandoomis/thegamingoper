@@ -1920,24 +1920,21 @@ select.field__input {
   box-shadow: none;
   color: var(--ink-2);
 }
-/* the motion variant (home): five borderless ROWS, one per service — small words at the start, then the service's own
-   long horizontal looping scene (TrustMotion, 600×96, like a GIF). Words above the scene on phones. Centred and narrower
-   than the page — no card, no hairlines. */
+/* the motion variant (home): five borderless ROWS, one per service — small words above, then the service's own
+   horizontal looping scene (TrustMotion) running edge to edge of the screen (.home clips the overflow), with room
+   between the rows — no card, no hairlines. */
 .trust--motion {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--s-3);
-  max-inline-size: 60rem;
-  margin-inline: auto;
+  gap: var(--s-10);
   border-radius: 0;
   background: none;
   box-shadow: none;
 }
 .trust--motion .trust__cell {
   display: grid;
-  grid-template-columns: minmax(9rem, 13rem) minmax(0, 1fr);
-  align-items: center;
-  gap: var(--s-5);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-2);
   padding: 0;
   border: 0;
   text-align: start;
@@ -1957,19 +1954,18 @@ select.field__input {
   color: var(--ink-2);
   text-wrap: pretty;
 }
+/* full bleed: the screen's width, 96/1200 of it tall (the scene's own ratio), never under 60px on phones (the sides'
+   scenery crops there, the story in the middle stays) */
 .trust__motion {
   display: block;
-  inline-size: 100%;
-  aspect-ratio: 600 / 96;
+  inline-size: 100vw;
+  margin-inline: calc(50% - 50vw);
+  block-size: clamp(60px, 8vw, 160px);
   color: var(--ink);
 }
-@media (max-width: 39.99rem) {
+@media (max-width: 47.99rem) {
   .trust--motion {
-    gap: var(--s-4);
-  }
-  .trust--motion .trust__cell {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--s-1);
+    gap: var(--s-8);
   }
 }
 /* the words arrive once the strip is in view (TrustStrip arms it only with JavaScript and motion allowed) */
@@ -2035,7 +2031,7 @@ select.field__input {
   animation: tmo-road 0.4s linear infinite;
 }
 .tmo--delivery .tmo-drive {
-  animation: tmo-drive 6s linear infinite;
+  animation: tmo-drive 7s linear infinite;
 }
 .tmo--delivery .tmo-bounce {
   animation: tmo-bob 0.35s ease-in-out infinite alternate;
@@ -2054,7 +2050,7 @@ select.field__input {
 }
 .tmo--delivery .tmo-pin-pop {
   transform-origin: 50% 100%;
-  animation: tmo-pin-pop 6s ease-out infinite;
+  animation: tmo-pin-pop 7s ease-out infinite;
 }
 /* cash on delivery: parcel van → hand, banknotes hand → van, the seal pops */
 .tmo--cod .tmo-idle {
@@ -2086,6 +2082,9 @@ select.field__input {
 }
 .tmo--transfer .tmo-stamp {
   animation: tmo-stamp 4.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+.tmo--transfer .tmo-float {
+  animation: tmo-float 3.2s ease-in-out infinite alternate;
 }
 .tmo--transfer .tmo-card {
   animation: tmo-card 4.8s ease-out infinite;
@@ -2140,10 +2139,10 @@ select.field__input {
 }
 @keyframes tmo-drive {
   from {
-    transform: translateX(-360px);
+    transform: translateX(-660px);
   }
   to {
-    transform: translateX(380px);
+    transform: translateX(700px);
   }
 }
 @keyframes tmo-bob {
@@ -2343,6 +2342,14 @@ select.field__input {
   70%,
   82% {
     transform: scale(1.05);
+  }
+}
+@keyframes tmo-float {
+  from {
+    transform: translateY(4px) rotate(-6deg);
+  }
+  to {
+    transform: translateY(-6px) rotate(6deg);
   }
 }
 @keyframes tmo-ride {

@@ -567,15 +567,15 @@
   }
 
   /* ───────────────────────────── the department doors under the hero ─────────────────────────────
-   * Owner reference 2026-11-20 (C:/tamref): one square three.js render per door on its own near-black ground — the
-   * product and its name are one object inside the picture, so the door is only the picture, rounded, in both themes.
-   * Below 1024: one scrolling row (132px doors, the third peeks on a 390px phone; 150px from 768). From 1024 every
-   * door shares the row. */
+   * Owner 2026-11-20: only the three.js object — no tile, no ground, no border. Each door is a transparent render of
+   * a whole product (nothing cut at the edges) whose own dark panel carries the department's name, standing on the
+   * page's floor in both themes with its own soft contact shadow. Below 1024: one scrolling row (148px doors, the
+   * third peeks on a 390px phone; 164px from 768). From 1024 every door shares the row. */
   .home-strip__list {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 132px;
-    gap: 10px;
+    grid-auto-columns: 148px;
+    gap: 6px;
     margin-inline: calc(-1 * var(--gutter));
     padding: 4px var(--gutter) 12px;
     overflow-x: auto;
@@ -592,8 +592,8 @@
   }
   @media (min-width: 48rem) {
     .home-strip__list {
-      grid-auto-columns: 150px;
-      gap: var(--s-3);
+      grid-auto-columns: 164px;
+      gap: var(--s-2);
     }
   }
   @media (min-width: 64rem) {
@@ -605,41 +605,27 @@
     }
   }
   .home-door {
-    position: relative;
     display: block;
     aspect-ratio: 1;
-    overflow: hidden;
     border-radius: var(--r-lg);
-    background: #04050c;
-    box-shadow:
-      inset 0 0 0 1px rgb(255 255 255 / 0.05),
-      0 8px 20px -10px rgb(0 0 0 / 0.5);
-    transition: transform 200ms var(--ease-settle), box-shadow 200ms var(--ease-settle);
   }
   .home-door:focus-visible {
     outline: var(--focus-w) solid var(--focus);
-    outline-offset: 3px;
+    outline-offset: 2px;
   }
   .home-door__icon {
     display: block;
     inline-size: 100%;
     block-size: 100%;
-    object-fit: cover;
-    transition: transform 320ms var(--ease-settle);
+    object-fit: contain;
+    transition: transform 260ms var(--ease-settle);
   }
   @media (hover: hover) and (pointer: fine) {
-    .home-door:hover {
-      transform: translateY(-2px);
-      box-shadow:
-        inset 0 0 0 1px rgb(255 255 255 / 0.08),
-        0 14px 26px -12px rgb(0 0 0 / 0.6);
-    }
     .home-door:hover .home-door__icon {
-      transform: scale(1.04);
+      transform: translateY(-4px) scale(1.04);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .home-door,
     .home-door__icon {
       transition: none;
     }

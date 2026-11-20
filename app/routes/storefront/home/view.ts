@@ -381,8 +381,8 @@ export type StripKey = "devices" | "games" | "controllers" | "headsets" | "acces
 export type StripItem = { key: StripKey; href: string; icon: IconName };
 
 /**
- * Each door's icon (owner reference 2026-11-20, C:/tamref; owner: no generated pictures): a square three.js render
- * on a near-black ground — the product is modelled from primitives and its own dark panel carries the department's
+ * Each door's icon (owner reference 2026-11-20, C:/tamref; owner: no generated pictures): a transparent three.js
+ * render of the whole product, no tile behind it — the product is modelled from primitives and its own dark panel carries the department's
  * name in Kufam, so the name is part of the object, not a label over it. One picture per door and language
  * (`./doors/<door>.<locale>.webp`), drawn by scripts/home-doors (studio.js models and lights them, render.mjs
  * writes the files).

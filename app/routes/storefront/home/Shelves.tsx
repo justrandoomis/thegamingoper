@@ -1,8 +1,8 @@
 /**
  * The home page below the hero — Design System v2 §6.1 in v2.1's look (client notes 1–4), in its order:
  *
- *   CategoryStrip      the department doors right under the hero (owner reference 2026-11-20): dark square tiles,
- *                      a real product cut-out framing a dark label with the name — consoles, games, controllers,
+ *   CategoryStrip      the department doors right under the hero (owner reference 2026-11-20): square 3D icons,
+ *                      the product and its Arabic name one object — consoles, games, controllers,
  *                      headsets, accessories, gift cards, used, repair — only departments that exist, each to its real
  *                      listing (one scrolling row below 1024, all sharing one row from 1024)
  *   PlatformDoors      «تسوّق حسب المنصّة»: the four platform tiles (2×2 on phones, 4-up from 768) with their real counts,
@@ -22,9 +22,8 @@
  * before JavaScript, none under reduced motion). Every shelf says the rule it follows, never "trending" or "customers
  * also bought": the store has no such data. An empty shelf is not drawn.
  */
-import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 
-import { Art } from "~/art/Art";
 import type { IconName } from "~/art/Icon";
 import { LocaleLink, useLocale, useT } from "~/i18n/react";
 import type { ProductCardData, UsedUnitCardData } from "~/lib/dto";
@@ -53,7 +52,7 @@ import { UsedUnitCard } from "~/ui/UsedUnitCard";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { toast } from "~/ui/toast-store";
 import { forgetRecentlyViewed, handDeviceListToAccount, readRecentlyViewed } from "./personal";
-import { MIN_SHELF, RELEASE_LIMIT, releaseItemOf, STRIP_ART, tileArt, type StripItem } from "./view";
+import { MIN_SHELF, RELEASE_LIMIT, releaseItemOf, STRIP_ICON, tileArt, type StripItem } from "./view";
 
 /** How wide a card's picture is drawn: 2.15 cards on phones, 3.2 from 768, 4-up from 1024, 5-up (240px) from 1280. */
 const CARD_SIZES = "(min-width: 1280px) 240px, (min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw";
@@ -71,10 +70,10 @@ export function ViewAll({ to, children }: { to: string; children?: ReactNode }) 
 // ───────────────────────────────────────────────────────────────── the icon strip
 
 /**
- * The departments as the owner's reference draws them (2026-11-20, C:/tamref): a dark square tile in both themes, the
- * department's own product cut-out large behind a dark rounded label (./view STRIP_ART), so the product shows around
- * it, and the name in big white type on the label — real text in the page's language, not baked into a picture. One
- * scrolling row below 1024 (the third tile peeks on phones); from 1024 every door shares one row.
+ * The departments as the owner's reference draws them (2026-11-20, C:/tamref): one square 3D icon per door, the
+ * product and its Arabic name one object (./view STRIP_ICON). The picture is the whole door; its translated name is
+ * the link's accessible name (the baked name is Arabic in every language). One scrolling row below 1024 (the third
+ * door peeks on phones); from 1024 every door shares one row.
  */
 export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
   const t = useT("home");
@@ -87,18 +86,7 @@ export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
         {items.map((item) => (
           <li key={item.key} className="grid">
             <LocaleLink to={item.href} className="home-door" data-press="soft">
-              {STRIP_ART[item.key].map((art) => (
-                <Art
-                  key={art.key}
-                  name={art.key}
-                  alt=""
-                  sizes={DOOR_SIZES}
-                  fetchPriority="low"
-                  className="home-door__art"
-                  style={{ "--w": `${art.w}%`, "--x": `${art.x ?? 0}%`, "--y": `${art.y ?? 0}%`, "--r": `${art.r ?? 0}deg` } as CSSProperties}
-                />
-              ))}
-              <span className="home-door__label">{t(`strip.${item.key}`)}</span>
+              <img src={STRIP_ICON[item.key]} alt={t(`strip.${item.key}`)} width={512} height={512} decoding="async" className="home-door__icon" />
             </LocaleLink>
           </li>
         ))}
@@ -106,9 +94,6 @@ export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
     </nav>
   );
 }
-
-/** A door's picture is at most ~1.3× its tile: 132px tiles on phones, 150px from 768, up to ~200px from 1024. */
-const DOOR_SIZES = "(min-width: 1024px) 260px, (min-width: 768px) 200px, 176px";
 
 // ───────────────────────────────────────────────────────────────── platform tiles
 

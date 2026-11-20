@@ -567,11 +567,10 @@
   }
 
   /* ───────────────────────────── the department doors under the hero ─────────────────────────────
-   * Owner reference 2026-11-20 (C:/tamref): dark square tiles in both themes — a soft cool light behind a real product
-   * cut-out, the product drawn large behind a dark rounded label (the grips, the band, the dock show around it) and the
-   * department's name in big white type on the label. Below 1024: one scrolling row (132px tiles, the third peeks on a
-   * 390px phone; 150px from 768). From 1024 every door shares the row. The label's type follows the tile's own width
-   * (container units), so a long name (Sorani, English) wraps to two balanced lines instead of overflowing. */
+   * Owner reference 2026-11-20 (C:/tamref): one square 3D icon per door on its own near-black ground — the product
+   * and its Arabic name are one object inside the picture, so the door is only the picture, rounded, in both themes.
+   * Below 1024: one scrolling row (132px doors, the third peeks on a 390px phone; 150px from 768). From 1024 every
+   * door shares the row. */
   .home-strip__list {
     display: grid;
     grid-auto-flow: column;
@@ -606,80 +605,42 @@
     }
   }
   .home-door {
-    container-type: inline-size;
     position: relative;
-    isolation: isolate;
     display: block;
     aspect-ratio: 1;
     overflow: hidden;
     border-radius: var(--r-lg);
-    background:
-      radial-gradient(70% 55% at 50% 38%, rgb(120 135 190 / 0.28) 0%, transparent 70%),
-      radial-gradient(120% 90% at 50% 45%, #161a2a 0%, #07080f 72%);
+    background: #04050c;
     box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.06),
       inset 0 0 0 1px rgb(255 255 255 / 0.05),
       0 8px 20px -10px rgb(0 0 0 / 0.5);
-    color: #fff;
-    text-decoration: none;
     transition: transform 200ms var(--ease-settle), box-shadow 200ms var(--ease-settle);
   }
   .home-door:focus-visible {
     outline: var(--focus-w) solid var(--focus);
     outline-offset: 3px;
   }
-  .home-door__art {
-    position: absolute;
-    z-index: 0;
-    inset-block-start: calc(50% + var(--y, 0%));
-    left: calc(50% + var(--x, 0%));
-    inline-size: var(--w);
-    max-inline-size: none;
-    block-size: auto;
-    transform: translate(-50%, -50%) rotate(var(--r, 0deg));
-    filter: drop-shadow(0 0 1px rgb(255 255 255 / 0.28)) drop-shadow(0 12px 18px rgb(0 0 0 / 0.6));
+  .home-door__icon {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
     transition: transform 320ms var(--ease-settle);
-    pointer-events: none;
-  }
-  .home-door__label {
-    position: absolute;
-    z-index: 1;
-    inset-inline: 5%;
-    inset-block-start: 50%;
-    translate: 0 -50%;
-    display: grid;
-    place-items: center;
-    min-block-size: 30%;
-    padding: 3% 6%;
-    border-radius: 14% / 32%;
-    background: linear-gradient(180deg, #30333b 0%, #1a1c22 55%, #121318 100%);
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.22),
-      inset 0 -1px 0 rgb(0 0 0 / 0.6),
-      0 0 0 1px rgb(0 0 0 / 0.55),
-      0 10px 22px -6px rgb(0 0 0 / 0.85);
-    font-size: 11.8cqi;
-    font-weight: 800;
-    line-height: 1.15;
-    text-align: center;
-    text-wrap: balance;
-    text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
   }
   @media (hover: hover) and (pointer: fine) {
     .home-door:hover {
       transform: translateY(-2px);
       box-shadow:
-        inset 0 1px 0 rgb(255 255 255 / 0.1),
         inset 0 0 0 1px rgb(255 255 255 / 0.08),
         0 14px 26px -12px rgb(0 0 0 / 0.6);
     }
-    .home-door:hover .home-door__art {
-      transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(1.05);
+    .home-door:hover .home-door__icon {
+      transform: scale(1.04);
     }
   }
   @media (prefers-reduced-motion: reduce) {
     .home-door,
-    .home-door__art {
+    .home-door__icon {
       transition: none;
     }
   }

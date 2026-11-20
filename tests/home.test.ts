@@ -3,7 +3,7 @@
  * against a real, throw-away D1 with the demo catalogue. Expectations are derived from the database (platform order,
  * device-model order, stock states, release dates), not from product slugs, so they hold when the catalogue changes.
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { createElement, type ComponentType } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createRoutesStub } from "react-router";
@@ -62,13 +62,13 @@ import {
   resolveFocus,
   splitHeadline,
   stripItems,
-  STRIP_ART,
+  STRIP_ICON,
   tileArt,
   twoLineEm,
   wordsShown,
   type HeroBreakpoint,
 } from "~/routes/storefront/home/view";
-import { getPhoto, productPhotos } from "~/art";
+import { productPhotos } from "~/art";
 import { PLATFORMS } from "~/ui/PlatformLed";
 import { createTestDb, type TestDb } from "./helpers/db";
 import { fixtures } from "./helpers/factories";
@@ -1056,17 +1056,13 @@ describe("the home page's stylesheet: laptops' first screen, dark glass, the pho
     return found.join("\n");
   };
 
-  // owner reference 2026-11-20 (C:/tamref): dark square doors, a product cut-out behind a dark label with the name
-  it("the department doors are dark squares: the product behind a dark label, the name as real text sized by the tile", () => {
+  // owner reference 2026-11-20 (C:/tamref): square 3D icons, the product and its Arabic name one object
+  it("the department doors are square icon pictures: the picture is the whole door, no separate label", () => {
     const door = block("", ".home-door");
     expect(door).toMatch(/aspect-ratio:\s*1/);
-    expect(door).toMatch(/container-type:\s*inline-size/);
     expect(door).toMatch(/overflow:\s*hidden/);
-    expect(block("", ".home-door__art")).toMatch(/z-index:\s*0/);
-    const label = block("", ".home-door__label");
-    expect(label).toMatch(/z-index:\s*1/);
-    expect(label).toMatch(/font-size:\s*[\d.]+cqi/);
-    expect(label).toMatch(/text-wrap:\s*balance/);
+    expect(block("", ".home-door__icon")).toMatch(/object-fit:\s*cover/);
+    expect(css).not.toMatch(/home-door__label/);
     // phones scroll one row of 132px doors; from 1024 they share the row; the platform tiles still follow closely
     expect(block("", ".home-strip__list")).toMatch(/grid-auto-columns:\s*132px/);
     expect(block("@media (min-width: 64rem)", ".home-strip__list")).toMatch(/grid-auto-columns:\s*minmax\(0, 1fr\)/);
@@ -1075,10 +1071,10 @@ describe("the home page's stylesheet: laptops' first screen, dark glass, the pho
     expect(block("", ".home-strip")).toMatch(/position:\s*relative/);
   });
 
-  it("every strip door has a built catalogue photo", () => {
-    for (const [door, arts] of Object.entries(STRIP_ART)) {
-      expect(arts.length, door).toBeGreaterThan(0);
-      for (const art of arts) expect(getPhoto(art.key), `${door}: ${art.key}`).toBeDefined();
+  it("every strip door has its icon file", () => {
+    for (const key of ["devices", "games", "controllers", "headsets", "accessories", "topup", "used", "repair"] as const) {
+      expect(STRIP_ICON[key], key).toBeTruthy();
+      expect(existsSync(new URL(`../app/routes/storefront/home/doors/${key}.webp`, import.meta.url)), key).toBe(true);
     }
   });
 

@@ -9,6 +9,14 @@ import type { IconName } from "~/art/Icon";
 import type { ComingSoonItem } from "~/server/services/home.server";
 import { isPlatform, type Platform } from "~/ui/PlatformLed";
 import type { ReleaseItem } from "~/ui/ReleaseBand";
+import accessoriesIcon from "./doors/accessories.webp";
+import controllersIcon from "./doors/controllers.webp";
+import devicesIcon from "./doors/devices.webp";
+import gamesIcon from "./doors/games.webp";
+import headsetsIcon from "./doors/headsets.webp";
+import repairIcon from "./doors/repair.webp";
+import topupIcon from "./doors/topup.webp";
+import usedIcon from "./doors/used.webp";
 
 /** The part of a home platform these rules read (HomePlatform in ~/server/services/home.server). */
 export type FocusablePlatform = { slug: string; hero: { productId: string; pin?: unknown } | null; newArrivals: readonly string[] };
@@ -381,29 +389,21 @@ export type StripKey = "devices" | "games" | "controllers" | "headsets" | "acces
 export type StripItem = { key: StripKey; href: string; icon: IconName };
 
 /**
- * One product cut-out on a strip tile (owner reference 2026-11-20, C:\tamref: a dark square, a real product framing a
- * dark label with the department's name): the photo key, its width in % of the tile, where its centre sits (x, y: %
- * of the tile from the tile's centre; x is physical — the photos do not mirror in RTL) and a tilt in degrees.
+ * Each door's icon (owner reference 2026-11-20, C:/tamref): a square 3D render on a near-black ground where the
+ * product itself is widened into a dark panel that carries the department's Arabic name — the name is part of the
+ * object, not a label over it. Controllers, headsets and accessories are the owner's own pictures; the other five
+ * were generated to match that set. The Arabic name is baked in, so every language shows the same icon and the
+ * door's accessible name is the translated one (./Shelves CategoryStrip).
  */
-export type StripArt = { key: string; w: number; x?: number; y?: number; r?: number };
-
-/**
- * Each door's picture, drawn behind its label so the product shows around it (the controller's grips at both sides,
- * the headset's band over the top). Every key is a catalogue photo — transparent cut-outs, except the gift card, a flat
- * card Art frames on its own — and a door whose photo is missing draws Art's placeholder block, never a broken image.
- */
-export const STRIP_ART: Readonly<Record<StripKey, readonly StripArt[]>> = {
-  devices: [{ key: "nintendo-switch-2--2", w: 118, y: -12 }],
-  games: [
-    { key: "mario-kart-world--1", w: 44, x: -18, y: -8, r: -12 },
-    { key: "ghost-of-yotei--1", w: 52, x: 16, y: -6, r: 10 },
-  ],
-  controllers: [{ key: "dualsense--1", w: 132, y: 6 }],
-  headsets: [{ key: "hyperx-cloud-alpha-wireless--1", w: 112, y: 14 }],
-  accessories: [{ key: "nintendo-switch-2-carrying-case--1", w: 130, x: 6, y: -6 }],
-  topup: [{ key: "playstation-store-gift-card--1", w: 96, y: -4, r: -8 }],
-  used: [{ key: "playstation-5-slim--1", w: 56, y: -6, r: -6 }],
-  repair: [{ key: "dualsense-edge-stick-module--1", w: 62, y: -26, r: -10 }],
+export const STRIP_ICON: Readonly<Record<StripKey, string>> = {
+  devices: devicesIcon,
+  games: gamesIcon,
+  controllers: controllersIcon,
+  headsets: headsetsIcon,
+  accessories: accessoriesIcon,
+  topup: topupIcon,
+  used: usedIcon,
+  repair: repairIcon,
 };
 
 /** The strip's doors in order (the client's reference: glass icon tiles), with the catalogue kind each one opens. */

@@ -26,8 +26,9 @@ import { TrustMotion, type TrustMotionKey } from "./TrustMotion";
  * same facts as one 13px row with 16px icons (and «سياسة الإرجاع» when `returnsTo` is given). With no fact, nothing.
  * Amounts inside the sentences are first-strong isolates: the figure comes first in every language.
  *
- * The `motion` variant (home, under the platforms): the same facts (+ `warranty`) as small borderless vertical cells,
- * each with its own small wide looping scene (TrustMotion, like a GIF), centred and narrower than the page. The words
+ * The `motion` variant (home, under the platforms): the same facts (+ `warranty`) as five borderless ROWS, one per
+ * service: small words at the start, then the service's own long horizontal looping scene (TrustMotion, like a GIF);
+ * on phones the words sit above the scene. Centred and narrower than the page. The words
  * are small and arrive with a short animation, one cell after another, when the strip first scrolls into view (only
  * once JavaScript runs and motion is allowed; otherwise they are simply there).
  */
@@ -136,9 +137,11 @@ export function TrustStrip({ deliveryIqd = null, cod = false, transfer = false, 
       <ul ref={wordsRef} className={cx("trust trust--motion", className)}>
         {facts.map((fact, index) => (
           <li key={fact.key} className="trust__cell" style={{ "--i": index } as CSSProperties}>
+            <span className="trust__words">
+              <span className="trust__title">{fact.title}</span>
+              <span className="trust__text">{fact.text}</span>
+            </span>
             <TrustMotion name={fact.key} />
-            <span className="trust__title">{fact.title}</span>
-            <span className="trust__text">{fact.text}</span>
           </li>
         ))}
       </ul>

@@ -1920,28 +1920,32 @@ select.field__input {
   box-shadow: none;
   color: var(--ink-2);
 }
-/* the motion variant (home): small borderless vertical cells, each with a small WIDE looping scene (TrustMotion, like a
-   GIF) above small words; centred and narrower than the page — no card, no hairlines. One scrolling row on phones. */
+/* the motion variant (home): five borderless ROWS, one per service — small words at the start, then the service's own
+   long horizontal looping scene (TrustMotion, 600×96, like a GIF). Words above the scene on phones. Centred and narrower
+   than the page — no card, no hairlines. */
 .trust--motion {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-3);
-  max-inline-size: 58rem;
+  max-inline-size: 60rem;
   margin-inline: auto;
   border-radius: 0;
   background: none;
   box-shadow: none;
 }
 .trust--motion .trust__cell {
-  display: flex;
-  flex: 0 1 10.5rem;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(9rem, 13rem) minmax(0, 1fr);
   align-items: center;
-  gap: 2px;
-  min-inline-size: 0;
+  gap: var(--s-5);
   padding: 0;
   border: 0;
-  text-align: center;
+  text-align: start;
+}
+.trust__words {
+  display: grid;
+  gap: 2px;
+  min-inline-size: 0;
 }
 .trust--motion .trust__title {
   font: 600 var(--fs-tag) / 1.35 var(--font-text);
@@ -1949,31 +1953,23 @@ select.field__input {
   text-wrap: balance;
 }
 .trust--motion .trust__text {
-  font: 400 11px / 1.4 var(--font-text);
+  font: 400 11px / 1.45 var(--font-text);
   color: var(--ink-2);
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 .trust__motion {
   display: block;
   inline-size: 100%;
-  aspect-ratio: 160 / 64;
-  margin-block-end: var(--s-2);
+  aspect-ratio: 600 / 96;
   color: var(--ink);
 }
-@media (max-width: 47.99rem) {
+@media (max-width: 39.99rem) {
   .trust--motion {
-    justify-content: flex-start;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    padding-block-end: var(--s-1);
-  }
-  .trust--motion::-webkit-scrollbar {
-    display: none;
+    gap: var(--s-4);
   }
   .trust--motion .trust__cell {
-    flex: 0 0 8.5rem;
-    scroll-snap-align: start;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-1);
   }
 }
 /* the words arrive once the strip is in view (TrustStrip arms it only with JavaScript and motion allowed) */
@@ -1983,10 +1979,10 @@ select.field__input {
 }
 .trust--motion[data-in] :is(.trust__title, .trust__text) {
   animation: tmo-words 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  animation-delay: calc(var(--i, 0) * 110ms + 120ms);
+  animation-delay: calc(var(--i, 0) * 120ms + 120ms);
 }
 .trust--motion[data-in] .trust__text {
-  animation-delay: calc(var(--i, 0) * 110ms + 220ms);
+  animation-delay: calc(var(--i, 0) * 120ms + 220ms);
 }
 @keyframes tmo-words {
   to {
@@ -2026,112 +2022,128 @@ select.field__input {
 [dir="rtl"] .tmo .tmo-upright {
   transform: scaleX(-1);
 }
-/* delivery: the skyline and the road run backwards, the wind streaks, the truck bobs, the wheels turn */
+/* delivery: the truck crosses the row, city and road run behind, each pin pops as the truck reaches it */
 .tmo--delivery .tmo-far {
-  opacity: 0.28;
-  animation: tmo-pan 7s linear infinite;
+  opacity: 0.22;
+  animation: tmo-pan 24s linear infinite;
+}
+.tmo--delivery .tmo-cloud {
+  opacity: 0.4;
+  animation: tmo-drift 10s ease-in-out infinite alternate;
 }
 .tmo--delivery .tmo-road {
-  animation: tmo-road 0.45s linear infinite;
+  animation: tmo-road 0.4s linear infinite;
 }
-.tmo--delivery .tmo-wind path {
-  animation: tmo-wind 0.9s ease-in infinite;
+.tmo--delivery .tmo-drive {
+  animation: tmo-drive 6s linear infinite;
 }
-.tmo--delivery .tmo-wind path:nth-child(2) {
-  animation-delay: 0.3s;
-}
-.tmo--delivery .tmo-wind path:nth-child(3) {
-  animation-delay: 0.6s;
-}
-.tmo--delivery .tmo-truck {
+.tmo--delivery .tmo-bounce {
   animation: tmo-bob 0.35s ease-in-out infinite alternate;
 }
 .tmo--delivery .tmo-wheel {
-  animation: tmo-spin 0.6s linear infinite;
+  animation: tmo-spin 0.5s linear infinite;
 }
-/* cash on delivery: parcel → customer, banknote → courier, tick */
+.tmo--delivery .tmo-wind path {
+  animation: tmo-wind 0.8s ease-in infinite;
+}
+.tmo--delivery .tmo-wind path:nth-child(2) {
+  animation-delay: 0.27s;
+}
+.tmo--delivery .tmo-wind path:nth-child(3) {
+  animation-delay: 0.53s;
+}
+.tmo--delivery .tmo-pin-pop {
+  transform-origin: 50% 100%;
+  animation: tmo-pin-pop 6s ease-out infinite;
+}
+/* cash on delivery: parcel van → hand, banknotes hand → van, the seal pops */
+.tmo--cod .tmo-idle {
+  animation: tmo-bob 0.6s ease-in-out infinite alternate;
+}
 .tmo--cod .tmo-parcel {
-  animation: tmo-parcel 3.6s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+  animation: tmo-parcel 4.8s cubic-bezier(0.45, 0, 0.3, 1) infinite;
 }
-.tmo--cod .tmo-bill {
-  animation: tmo-bill 3.6s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+.tmo--cod .tmo-note {
+  animation: tmo-note 4.8s cubic-bezier(0.45, 0, 0.3, 1) infinite;
 }
-.tmo--cod .tmo-check {
-  animation: tmo-check-cod 3.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+.tmo--cod .tmo-seal {
+  animation: tmo-seal 4.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
 }
-/* transfer: three coins run phone → card, the card pulses, the tick pops */
-.tmo--transfer .tmo-coin {
-  animation: tmo-coin-run 1.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+.tmo--cod .tmo-spark-dot {
+  opacity: 0;
+  animation: tmo-burst 4.8s ease-out infinite;
 }
-.tmo--transfer .tmo-coin:nth-child(2) {
-  animation-delay: 0.6s;
+/* transfer: coins phone → receipt, the lens reviews, the stamp lands, coins receipt → card */
+.tmo--transfer .tmo-lane-a,
+.tmo--transfer .tmo-lane-b {
+  animation: tmo-lane 1.5s linear infinite;
 }
-.tmo--transfer .tmo-coin:nth-child(3) {
-  animation-delay: 1.2s;
+.tmo--transfer .tmo-lane-b-wrap {
+  animation: tmo-gate 4.8s linear infinite;
+}
+.tmo--transfer .tmo-lens {
+  animation: tmo-lens 4.8s ease-in-out infinite;
+}
+.tmo--transfer .tmo-stamp {
+  animation: tmo-stamp 4.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
 }
 .tmo--transfer .tmo-card {
-  animation: tmo-card-pulse 0.6s ease-out infinite;
+  animation: tmo-card 4.8s ease-out infinite;
 }
-.tmo--transfer .tmo-check {
-  animation: tmo-check-transfer 3.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
-}
-/* guest: the parcel rides the route, the pin hops when it lands */
+/* guest: the parcel rides the route, the stops light up as it passes, the pin hops on arrival */
 .tmo--guest .tmo-rider {
   transform-box: view-box;
   transform-origin: 0 0;
   offset-rotate: 0deg;
-  animation: tmo-ride 3s ease-in-out infinite;
+  animation: tmo-ride 5s ease-in-out infinite;
+}
+.tmo--guest .tmo-stop {
+  animation: tmo-stop 5s ease-out infinite;
 }
 .tmo--guest .tmo-pin {
   transform-origin: 50% 100%;
-  animation: tmo-hop 3s ease-in-out infinite;
+  animation: tmo-hop 5s ease-in-out infinite;
 }
 .tmo--guest .tmo-shadow {
-  animation: tmo-shadow 3s ease-in-out infinite;
+  animation: tmo-shadow 5s ease-in-out infinite;
 }
-/* warranty: rings ripple out from the controller, the badge pops, sparks twinkle */
-.tmo--warranty .tmo-ring {
-  animation: tmo-ring 2.4s ease-out infinite;
+/* warranty: the belt carries the devices under the shield; every 2s one is scanned */
+.tmo--warranty .tmo-belt {
+  animation: tmo-belt 6s linear infinite;
 }
-.tmo--warranty .tmo-ring--2 {
-  animation-delay: 1.2s;
+.tmo--warranty .tmo-roller {
+  animation: tmo-spin 1s linear infinite;
 }
-.tmo--warranty .tmo-pad {
-  animation: tmo-bob 0.9s ease-in-out infinite alternate;
+.tmo--warranty .tmo-beam {
+  animation: tmo-beam 2s ease-in-out infinite;
 }
-.tmo--warranty .tmo-badge {
-  animation: tmo-badge 2.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+.tmo--warranty .tmo-guard {
+  animation: tmo-guard 2s ease-out infinite;
 }
-.tmo--warranty .tmo-spark {
-  animation: tmo-spark 2.4s ease-in-out infinite;
-}
-.tmo--warranty .tmo-spark--2 {
-  animation-delay: 0.8s;
-}
-.tmo--warranty .tmo-spark--3 {
-  animation-delay: 1.6s;
+.tmo--warranty .tmo-twinkle {
+  animation: tmo-twinkle 2s ease-in-out infinite;
 }
 @keyframes tmo-pan {
   to {
-    transform: translateX(-160px);
+    transform: translateX(-600px);
+  }
+}
+@keyframes tmo-drift {
+  to {
+    transform: translateX(-30px);
   }
 }
 @keyframes tmo-road {
   to {
-    transform: translateX(-20px);
+    transform: translateX(-24px);
   }
 }
-@keyframes tmo-wind {
-  0% {
-    opacity: 0;
-    transform: translateX(8px);
+@keyframes tmo-drive {
+  from {
+    transform: translateX(-360px);
   }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-14px);
+  to {
+    transform: translateX(380px);
   }
 }
 @keyframes tmo-bob {
@@ -2144,103 +2156,193 @@ select.field__input {
     transform: rotate(360deg);
   }
 }
+@keyframes tmo-wind {
+  0% {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+}
+@keyframes tmo-pin-pop {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  4% {
+    transform: translateY(-8px) scale(1.2);
+  }
+  9% {
+    transform: translateY(0) scale(0.95, 1.05);
+  }
+  13%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
 @keyframes tmo-parcel {
-  0%,
-  8% {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  5% {
     opacity: 1;
     transform: translate(0, 0);
   }
-  22% {
-    transform: translate(44px, -12px);
+  20% {
+    transform: translate(218px, -28px);
   }
-  36%,
-  80% {
+  38%,
+  86% {
     opacity: 1;
-    transform: translate(92px, 0);
+    transform: translate(436px, -2px);
   }
-  92%,
+  94%,
   100% {
     opacity: 0;
-    transform: translate(92px, 0);
+    transform: translate(436px, -2px);
   }
 }
-@keyframes tmo-bill {
+@keyframes tmo-note {
   0%,
-  40% {
+  42% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  45% {
     opacity: 1;
     transform: translate(0, 0) rotate(0deg);
   }
-  54% {
-    transform: translate(-48px, -12px) rotate(-8deg);
+  60% {
+    transform: translate(-235px, -22px) rotate(-10deg);
   }
-  68%,
-  80% {
+  75%,
+  86% {
     opacity: 1;
-    transform: translate(-98px, 0) rotate(0deg);
+    transform: translate(-470px, 12px) rotate(0deg);
+  }
+  94%,
+  100% {
+    opacity: 0;
+    transform: translate(-470px, 12px);
+  }
+}
+@keyframes tmo-seal {
+  0%,
+  74% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  80%,
+  92% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+@keyframes tmo-burst {
+  0%,
+  78% {
+    opacity: 0;
+    transform: translateY(0) scale(0.4);
+  }
+  84% {
+    opacity: 1;
+    transform: translateY(-12px) scale(1);
   }
   92%,
   100% {
     opacity: 0;
-    transform: translate(-98px, 0);
+    transform: translateY(-18px) scale(0.6);
   }
 }
-@keyframes tmo-check-cod {
-  0%,
-  68% {
-    opacity: 0;
-    transform: scale(0.3);
-  }
-  76%,
-  90% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-}
-@keyframes tmo-coin-run {
+@keyframes tmo-lane {
   0% {
     opacity: 0;
-    transform: translateX(0) scale(0.6);
+    transform: translateX(0);
   }
-  15% {
+  10% {
     opacity: 1;
-    transform: translateX(8px) scale(1);
   }
-  85% {
-    opacity: 1;
-    transform: translateX(56px) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(64px) scale(0.6);
-  }
-}
-@keyframes tmo-card-pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  20% {
-    transform: scale(1.04);
-  }
-}
-@keyframes tmo-check-transfer {
-  0%,
-  50% {
-    opacity: 0;
-    transform: scale(0.3);
-  }
-  60%,
   90% {
     opacity: 1;
+    transform: translateX(170px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(186px);
+  }
+}
+@keyframes tmo-gate {
+  0%,
+  58% {
+    opacity: 0;
+  }
+  64%,
+  94% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes tmo-lens {
+  0%,
+  100% {
+    transform: translate(-14px, -6px);
+  }
+  15% {
+    transform: translate(16px, -4px);
+  }
+  30% {
+    transform: translate(-10px, 8px);
+  }
+  45% {
+    transform: translate(18px, 12px);
+  }
+  56%,
+  92% {
+    transform: translate(0, 0);
+  }
+}
+@keyframes tmo-stamp {
+  0%,
+  55% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+  62% {
+    opacity: 1;
+    transform: scale(0.9);
+  }
+  66%,
+  92% {
+    opacity: 1;
     transform: scale(1);
   }
   100% {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(1);
+  }
+}
+@keyframes tmo-card {
+  0%,
+  64%,
+  76%,
+  88%,
+  100% {
+    transform: scale(1);
+  }
+  70%,
+  82% {
+    transform: scale(1.05);
   }
 }
 @keyframes tmo-ride {
@@ -2248,80 +2350,95 @@ select.field__input {
     offset-distance: 0%;
     opacity: 0;
   }
-  8% {
+  5% {
     opacity: 1;
   }
-  62% {
+  70% {
     offset-distance: 100%;
     opacity: 1;
   }
-  72%,
+  78%,
   100% {
     offset-distance: 100%;
     opacity: 0;
+  }
+}
+@keyframes tmo-stop {
+  0% {
+    transform: scale(1);
+  }
+  5% {
+    transform: scale(1.25);
+  }
+  12%,
+  100% {
+    transform: scale(1);
   }
 }
 @keyframes tmo-hop {
   0%,
-  60%,
+  68%,
   100% {
     transform: translateY(0) scale(1);
   }
-  70% {
-    transform: translateY(-6px) scale(1.06);
+  74% {
+    transform: translateY(-8px) scale(1.06);
   }
   82% {
     transform: translateY(0) scale(0.96, 1.04);
   }
+  88% {
+    transform: translateY(0) scale(1);
+  }
 }
 @keyframes tmo-shadow {
   0%,
-  60%,
+  68%,
+  88%,
   100% {
     transform: scale(1);
     opacity: 0.18;
   }
-  70% {
+  74% {
     transform: scale(0.6);
     opacity: 0.08;
   }
 }
-@keyframes tmo-ring {
-  0% {
+@keyframes tmo-belt {
+  to {
+    transform: translateX(600px);
+  }
+}
+@keyframes tmo-beam {
+  0%,
+  100% {
     opacity: 0.9;
-    transform: scale(0.55);
   }
-  100% {
-    opacity: 0;
-    transform: scale(1.15);
+  22%,
+  80% {
+    opacity: 0.15;
   }
 }
-@keyframes tmo-badge {
+@keyframes tmo-guard {
   0%,
-  10% {
-    opacity: 0;
-    transform: scale(0.3) rotate(-15deg);
+  100% {
+    transform: scale(1.1);
   }
-  25%,
+  20%,
   85% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.85);
+    transform: scale(1);
   }
 }
-@keyframes tmo-spark {
+@keyframes tmo-twinkle {
   0%,
-  55%,
   100% {
-    opacity: 0;
-    transform: scale(0.4) rotate(0deg);
-  }
-  70% {
     opacity: 1;
     transform: scale(1) rotate(45deg);
+  }
+  30%,
+  70% {
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -2329,9 +2446,15 @@ select.field__input {
   .tmo * {
     animation: none !important;
   }
+  .tmo .tmo-spark-dot {
+    display: none;
+  }
 }
 [data-motion="reduced"] :is(.tmo, .tmo *) {
   animation: none !important;
+}
+[data-motion="reduced"] .tmo .tmo-spark-dot {
+  display: none;
 }
 /* fact rows: a 20px icon, a title, a line and an optional 44px link, between hairlines */
 .facts {

@@ -6,6 +6,7 @@ import { isolate } from "./BidiText";
 import { cx } from "./cx";
 import { iqdText, isIqd } from "./PriceTag";
 import { TextLink } from "./TextLink";
+import { TrustMotion, type TrustMotionKey } from "./TrustMotion";
 
 /**
  * The trust strip — Design System v2 §4.20: four HONEST facts in one paper card divided by hairlines (one row of four
@@ -24,6 +25,9 @@ import { TextLink } from "./TextLink";
  * A cell: a 40px --red-tint icon tile with a 22px --red-ink icon, a 15/600 title, a 13px line. The `line` variant is the
  * same facts as one 13px row with 16px icons (and «سياسة الإرجاع» when `returnsTo` is given). With no fact, nothing.
  * Amounts inside the sentences are first-strong isolates: the figure comes first in every language.
+ *
+ * The `motion` variant (home, under the platforms): the same facts (+ `warranty`) as small borderless vertical cells,
+ * each with its own looping motion-graphic icon (TrustMotion), centred and narrower than the page.
  */
 export type TrustStripProps = {
   /** The delivery fee from settings (integer IQD). Omit or null: the fact is not shown. */
@@ -37,13 +41,15 @@ export type TrustStripProps = {
   transfer?: boolean | { zaincash?: boolean; card?: boolean };
   /** Guest checkout is offered. */
   guest?: boolean;
+  /** motion: the warranty fact (each product's warranty is written on its own page). */
+  warranty?: boolean;
   /** line: the returns policy link (a locale-less path). */
   returnsTo?: string;
-  variant?: "card" | "line";
+  variant?: "card" | "line" | "motion";
   className?: string;
 };
 
-type Fact = { key: string; icon: IconName; title: ReactNode; text: ReactNode; short: ReactNode };
+type Fact = { key: TrustMotionKey; icon: IconName; title: ReactNode; text: ReactNode; short: ReactNode };
 
 /** Which transfer methods the fact names: both, one of them, or none (no fact). Pure. */
 export function transferMethods(transfer: TrustStripProps["transfer"]): "both" | "zaincash" | "card" | null {
@@ -55,7 +61,7 @@ export function transferMethods(transfer: TrustStripProps["transfer"]): "both" |
   return null;
 }
 
-export function TrustStrip({ deliveryIqd = null, cod = false, transfer = false, guest = false, returnsTo, variant = "card", className }: TrustStripProps) {
+export function TrustStrip({ deliveryIqd = null, cod = false, transfer = false, guest = false, warranty = false, returnsTo, variant = "card", className }: TrustStripProps) {
   const t = useT("ui-shop");
   const f = useFormat();
   const facts: Fact[] = [];
@@ -70,6 +76,7 @@ export function TrustStrip({ deliveryIqd = null, cod = false, transfer = false, 
     facts.push({ key: "transfer", icon: "credit-card", title, text: t("trust.transferText"), short: title });
   }
   if (guest) facts.push({ key: "guest", icon: "user", title: t("trust.guest"), text: t("trust.guestText"), short: t("trust.guest") });
+  if (warranty && variant === "motion") facts.push({ key: "warranty", icon: "shield-check", title: t("trust.warranty"), text: t("trust.warrantyText"), short: t("trust.warranty") });
 
   if (variant === "line") {
     const line = facts.filter((fact) => fact.key !== "delivery");
@@ -96,6 +103,19 @@ export function TrustStrip({ deliveryIqd = null, cod = false, transfer = false, 
   }
 
   if (facts.length === 0) return null;
+  if (variant === "motion") {
+    return (
+      <ul className={cx("trust trust--motion", className)}>
+        {facts.map((fact) => (
+          <li key={fact.key} className="trust__cell">
+            <TrustMotion name={fact.key} />
+            <span className="trust__title">{fact.title}</span>
+            <span className="trust__text">{fact.text}</span>
+          </li>
+        ))}
+      </ul>
+    );
+  }
   return (
     <ul className={cx("trust", className)}>
       {facts.map((fact) => (

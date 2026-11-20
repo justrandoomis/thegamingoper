@@ -290,6 +290,8 @@ export default defineMessages({
       guest: "اطلب بدون حساب",
       guestText: "وتتبّع طلبك برقمه ورقم موبايلك",
       returns: "سياسة الإرجاع",
+      warranty: "الضمان",
+      warrantyText: "مدة ضمان كل منتج مكتوبة في صفحته",
     },
     release: {
       title: "قريباً",
@@ -617,6 +619,8 @@ export default defineMessages({
       guest: "Order without an account",
       guestText: "Track it with its number and your mobile number",
       returns: "Returns policy",
+      warranty: "Warranty",
+      warrantyText: "Each product's warranty is on its page",
     },
     release: {
       title: "Coming soon",
@@ -944,6 +948,8 @@ export default defineMessages({
       guest: "بەبێ هەژمار داوا بکە",
       guestText: "و بە ژمارەکەی و ژمارەی مۆبایلەکەت بەدوایدا بچۆ",
       returns: "سیاسەتی گەڕاندنەوە",
+      warranty: "گەرەنتی",
+      warrantyText: "ماوەی گەرەنتیی هەر بەرهەمێک لە پەڕەکەیدا نووسراوە",
     },
     release: {
       title: "بەم زووانە",

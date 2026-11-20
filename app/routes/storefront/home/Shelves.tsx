@@ -7,7 +7,7 @@
  *                      row of compact clay pills from 1024 — lead decision 2)
  *   PlatformDoors      «تسوّق حسب المنصّة»: the four platform tiles (2×2 on phones, 4-up from 768) with their real counts,
  *                      on the ambient light
- *   TrustFacts         the trust strip: only facts that are true in the settings (delivery fee, COD, transfers, guest)
+ *   TrustFacts         the trust strip: only facts that are true in the settings (delivery fee, COD, transfers, guest, warranty) as animated cells
  *   NewArrivals        «وصل حديثاً»: platform dot chips that filter the shelf in place (`?platform=`, no request) and
  *                      a rail of cards (5-up whole cards from 1280); never a «جديد» badge inside this shelf
  *   Releases           the release band «قريباً» (only with ≥ 2 dated items): no countdown, no pre-order key
@@ -132,7 +132,7 @@ export function TrustFacts({ deliveryFeeIqd, payments }: { deliveryFeeIqd: numbe
       </VisuallyHidden>
       {/* guest checkout is how the store works (no setting turns it off); the transfer fact names the methods that
           are switched on — both, or the one that is */}
-      <TrustStrip deliveryIqd={deliveryFeeIqd} cod={payments?.cod ?? false} transfer={{ zaincash: payments?.zaincash ?? false, card: payments?.card ?? false }} guest />
+      <TrustStrip deliveryIqd={deliveryFeeIqd} cod={payments?.cod ?? false} transfer={{ zaincash: payments?.zaincash ?? false, card: payments?.card ?? false }} guest warranty variant="motion" />
     </section>
   );
 }

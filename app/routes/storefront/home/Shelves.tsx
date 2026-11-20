@@ -1,8 +1,8 @@
 /**
  * The home page below the hero — Design System v2 §6.1 in v2.1's look (client notes 1–4), in its order:
  *
- *   CategoryStrip      the department doors right under the hero (owner reference 2026-11-20): square 3D icons,
- *                      the product and its Arabic name one object — consoles, games, controllers,
+ *   CategoryStrip      the department doors right under the hero (owner reference 2026-11-20): square three.js
+ *                      renders, the product and its name one object — consoles, games, controllers,
  *                      headsets, accessories, gift cards, used, repair — only departments that exist, each to its real
  *                      listing (one scrolling row below 1024, all sharing one row from 1024)
  *   PlatformDoors      «تسوّق حسب المنصّة»: the four platform tiles (2×2 on phones, 4-up from 768) with their real counts,
@@ -52,7 +52,7 @@ import { UsedUnitCard } from "~/ui/UsedUnitCard";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { toast } from "~/ui/toast-store";
 import { forgetRecentlyViewed, handDeviceListToAccount, readRecentlyViewed } from "./personal";
-import { MIN_SHELF, RELEASE_LIMIT, releaseItemOf, STRIP_ICON, tileArt, type StripItem } from "./view";
+import { MIN_SHELF, RELEASE_LIMIT, releaseItemOf, stripIcon, tileArt, type StripItem } from "./view";
 
 /** How wide a card's picture is drawn: 2.15 cards on phones, 3.2 from 768, 4-up from 1024, 5-up (240px) from 1280. */
 const CARD_SIZES = "(min-width: 1280px) 240px, (min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw";
@@ -70,13 +70,14 @@ export function ViewAll({ to, children }: { to: string; children?: ReactNode }) 
 // ───────────────────────────────────────────────────────────────── the icon strip
 
 /**
- * The departments as the owner's reference draws them (2026-11-20, C:/tamref): one square 3D icon per door, the
- * product and its Arabic name one object (./view STRIP_ICON). The picture is the whole door; its translated name is
- * the link's accessible name (the baked name is Arabic in every language). One scrolling row below 1024 (the third
- * door peeks on phones); from 1024 every door shares one row.
+ * The departments as the owner's reference draws them (2026-11-20, C:/tamref): one square three.js render per door,
+ * the product and its name one object (./view stripIcon), in the page's language. The picture is the whole door; the
+ * name is also the picture's alternative text. One scrolling row below 1024 (the third door peeks on phones); from
+ * 1024 every door shares one row.
  */
 export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
   const t = useT("home");
+  const locale = useLocale();
   if (items.length === 0) return null;
   return (
     <nav aria-label={t("strip.label")} className="home-strip">
@@ -86,7 +87,7 @@ export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
         {items.map((item) => (
           <li key={item.key} className="grid">
             <LocaleLink to={item.href} className="home-door" data-press="soft">
-              <img src={STRIP_ICON[item.key]} alt={t(`strip.${item.key}`)} width={512} height={512} decoding="async" className="home-door__icon" />
+              <img src={stripIcon(item.key, locale)} alt={t(`strip.${item.key}`)} width={640} height={640} decoding="async" className="home-door__icon" />
             </LocaleLink>
           </li>
         ))}

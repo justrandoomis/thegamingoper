@@ -567,8 +567,8 @@
   }
 
   /* ───────────────────────────── the department doors under the hero ─────────────────────────────
-   * Owner reference 2026-11-20 (C:/tamref): one square 3D icon per door on its own near-black ground — the product
-   * and its Arabic name are one object inside the picture, so the door is only the picture, rounded, in both themes.
+   * Owner reference 2026-11-20 (C:/tamref): one square three.js render per door on its own near-black ground — the
+   * product and its name are one object inside the picture, so the door is only the picture, rounded, in both themes.
    * Below 1024: one scrolling row (132px doors, the third peeks on a 390px phone; 150px from 768). From 1024 every
    * door shares the row. */
   .home-strip__list {

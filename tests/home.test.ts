@@ -61,8 +61,8 @@ import {
   releasePlatformOf,
   resolveFocus,
   splitHeadline,
+  stripIcon,
   stripItems,
-  STRIP_ICON,
   tileArt,
   twoLineEm,
   wordsShown,
@@ -1056,7 +1056,7 @@ describe("the home page's stylesheet: laptops' first screen, dark glass, the pho
     return found.join("\n");
   };
 
-  // owner reference 2026-11-20 (C:/tamref): square 3D icons, the product and its Arabic name one object
+  // owner reference 2026-11-20 (C:/tamref): square three.js renders, the product and its name one object
   it("the department doors are square icon pictures: the picture is the whole door, no separate label", () => {
     const door = block("", ".home-door");
     expect(door).toMatch(/aspect-ratio:\s*1/);
@@ -1071,10 +1071,14 @@ describe("the home page's stylesheet: laptops' first screen, dark glass, the pho
     expect(block("", ".home-strip")).toMatch(/position:\s*relative/);
   });
 
-  it("every strip door has its icon file", () => {
+  it("every strip door has its icon in every language", () => {
     for (const key of ["devices", "games", "controllers", "headsets", "accessories", "topup", "used", "repair"] as const) {
-      expect(STRIP_ICON[key], key).toBeTruthy();
-      expect(existsSync(new URL(`../app/routes/storefront/home/doors/${key}.webp`, import.meta.url)), key).toBe(true);
+      for (const locale of ["ar", "en", "ckb"]) {
+        expect(existsSync(new URL(`../app/routes/storefront/home/doors/${key}.${locale}.webp`, import.meta.url)), `${key}.${locale}`).toBe(true);
+        expect(stripIcon(key, locale), `${key}.${locale}`).toBeTruthy();
+      }
+      // a language without its own picture shows the Arabic one
+      expect(stripIcon(key, "xx")).toBe(stripIcon(key, "ar"));
     }
   });
 

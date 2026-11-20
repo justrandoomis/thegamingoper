@@ -9,14 +9,6 @@ import type { IconName } from "~/art/Icon";
 import type { ComingSoonItem } from "~/server/services/home.server";
 import { isPlatform, type Platform } from "~/ui/PlatformLed";
 import type { ReleaseItem } from "~/ui/ReleaseBand";
-import accessoriesIcon from "./doors/accessories.webp";
-import controllersIcon from "./doors/controllers.webp";
-import devicesIcon from "./doors/devices.webp";
-import gamesIcon from "./doors/games.webp";
-import headsetsIcon from "./doors/headsets.webp";
-import repairIcon from "./doors/repair.webp";
-import topupIcon from "./doors/topup.webp";
-import usedIcon from "./doors/used.webp";
 
 /** The part of a home platform these rules read (HomePlatform in ~/server/services/home.server). */
 export type FocusablePlatform = { slug: string; hero: { productId: string; pin?: unknown } | null; newArrivals: readonly string[] };
@@ -389,22 +381,18 @@ export type StripKey = "devices" | "games" | "controllers" | "headsets" | "acces
 export type StripItem = { key: StripKey; href: string; icon: IconName };
 
 /**
- * Each door's icon (owner reference 2026-11-20, C:/tamref): a square 3D render on a near-black ground where the
- * product itself is widened into a dark panel that carries the department's Arabic name — the name is part of the
- * object, not a label over it. Controllers, headsets and accessories are the owner's own pictures; the other five
- * were generated to match that set. The Arabic name is baked in, so every language shows the same icon and the
- * door's accessible name is the translated one (./Shelves CategoryStrip).
+ * Each door's icon (owner reference 2026-11-20, C:/tamref; owner: no generated pictures): a square three.js render
+ * on a near-black ground — the product is modelled from primitives and its own dark panel carries the department's
+ * name in Kufam, so the name is part of the object, not a label over it. One picture per door and language
+ * (`./doors/<door>.<locale>.webp`), drawn by scripts/home-doors (studio.js models and lights them, render.mjs
+ * writes the files).
  */
-export const STRIP_ICON: Readonly<Record<StripKey, string>> = {
-  devices: devicesIcon,
-  games: gamesIcon,
-  controllers: controllersIcon,
-  headsets: headsetsIcon,
-  accessories: accessoriesIcon,
-  topup: topupIcon,
-  used: usedIcon,
-  repair: repairIcon,
-};
+const DOOR_FILES = import.meta.glob<string>("./doors/*.webp", { eager: true, import: "default" });
+
+/** The icon of a door in a language (Arabic when that language has none). */
+export function stripIcon(key: StripKey, locale: string): string | undefined {
+  return DOOR_FILES[`./doors/${key}.${locale}.webp`] ?? DOOR_FILES[`./doors/${key}.ar.webp`];
+}
 
 /** The strip's doors in order (the client's reference: glass icon tiles), with the catalogue kind each one opens. */
 const STRIP: readonly { key: StripKey; kind: string | null; icon: IconName; href?: string }[] = [

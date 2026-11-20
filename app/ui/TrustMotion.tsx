@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 /**
  * The trust strip's motion scenes (home, `variant="motion"`): one FULL-BLEED horizontal looping scene per service. Each
@@ -22,7 +22,7 @@ const S = { fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap:
 const W = "var(--ground, #fff)";
 const VIEW = "-300 0 1200 96";
 
-function Scene({ name, children }: { name: TrustMotionKey; children: ReactElement | ReactElement[] }) {
+function Scene({ name, children }: { name: TrustMotionKey; children: ReactNode }) {
   return (
     <svg viewBox={VIEW} className={`tmo tmo--${name}`} preserveAspectRatio="xMidYMid slice">
       {children}
@@ -82,6 +82,10 @@ function Pin({ x, base, delay }: { x: number; base: number; delay: string }) {
   );
 }
 
+function Ping({ x, y, delay }: { x: number; y: number; delay: string }) {
+  return <circle className="tmo-ping" cx={x} cy={y} r={10} fill="none" stroke="var(--red-ink)" strokeWidth={1.5} style={{ animationDelay: delay }} />;
+}
+
 function Delivery() {
   return (
     <Scene name="delivery">
@@ -96,22 +100,44 @@ function Delivery() {
         <Skyline x={-600} />
         <Skyline x={0} />
         <Skyline x={600} />
-        <Skyline x={1200} />
       </g>
       <path {...S} strokeWidth={1.6} d="M-300 90h1200" />
-      <g className="tmo-road" {...S} strokeWidth={2}>
+      <g {...S} strokeWidth={2} opacity={0.6}>
         <path d={dashes(94, 24, 10)} />
       </g>
-      <Pin x={-130} base={88} delay="1.02s" />
-      <Pin x={170} base={88} delay="2.56s" />
-      <Pin x={330} base={88} delay="3.39s" />
-      <Pin x={490} base={88} delay="4.21s" />
-      <Pin x={790} base={88} delay="5.75s" />
+      {/* the governorates ping, one after another */}
+      <Ping x={-130} y={70} delay="0s" />
+      <Ping x={130} y={70} delay="0.6s" />
+      <Ping x={560} y={70} delay="1.2s" />
+      <Ping x={790} y={70} delay="1.8s" />
+      <Pin x={-130} base={88} delay="0s" />
+      <Pin x={130} base={88} delay="0.6s" />
+      <Pin x={560} base={88} delay="1.2s" />
+      <Pin x={790} base={88} delay="1.8s" />
+      {/* the customer's house, where the truck stops */}
+      <g {...S}>
+        <path d="M384 90V58l36-26 36 26v32" fill={W} />
+        <rect x="410" y="66" width="20" height="24" rx="2" className="tmo-tint" />
+        <path d="M392 64h12v10h-12z" strokeWidth={1.4} />
+        <path d="M436 64h12v10h-12z" strokeWidth={1.4} />
+      </g>
+      <g className="tmo-drop">
+        <rect x="262" y="34" width="18" height="16" rx="2" className="tmo-tint" {...S} />
+        <path {...S} d="M262 40h18M271 34v6" strokeWidth={1.3} />
+      </g>
+      <g className="tmo-seal">
+        <Tick cx={420} cy={20} r={9} />
+      </g>
       <g className="tmo-drive">
         <g className="tmo-wind" {...S} strokeWidth={1.8}>
           <path d="M226 56h16" />
           <path d="M218 66h22" />
           <path d="M228 76h12" />
+        </g>
+        <g fill="currentColor" opacity={0.25}>
+          <circle className="tmo-puff" cx="244" cy="80" r="3.5" />
+          <circle className="tmo-puff" cx="244" cy="80" r="3.5" style={{ animationDelay: "0.25s" }} />
+          <circle className="tmo-puff" cx="244" cy="80" r="3.5" style={{ animationDelay: "0.5s" }} />
         </g>
         <g className="tmo-bounce">
           <rect x="250" y="46" width="52" height="36" rx="3" className="tmo-tint" {...S} />
@@ -173,6 +199,7 @@ function Cash() {
         <path d="M598 80h-34l-24-13c-4-3-1-8 4-7l16 5" />
       </g>
       <path {...S} d="M120 60H520" strokeWidth={1.6} strokeDasharray="2 7" opacity={0.45} />
+      <circle className="tmo-land" cx="556" cy="66" r="14" fill="none" stroke="var(--red-ink)" strokeWidth={1.5} />
       <g className="tmo-parcel">
         <rect x="106" y="44" width="30" height="26" rx="3" className="tmo-tint" {...S} />
         <path {...S} d="M106 54h30M121 44v10" strokeWidth={1.5} />
@@ -238,6 +265,8 @@ function Transfer() {
         </g>
         <path {...S} d="M30 50h26M30 58h18M30 66h22" strokeWidth={1.4} />
       </g>
+      <circle className="tmo-send" cx="43" cy="29" r="16" fill="none" stroke="var(--red-ink)" strokeWidth={1.5} />
+      <circle className="tmo-receive" cx="552" cy="48" r="30" fill="none" stroke="var(--red-ink)" strokeWidth={1.5} />
       <path {...S} d="M72 49H262M338 49H512" strokeWidth={1.6} strokeDasharray="2 7" opacity={0.45} />
       <>
         {[0, 0.375, 0.75, 1.125].map((d) => (
@@ -302,6 +331,13 @@ function Guest() {
         <circle cx="420" cy="62" r="11" className="tmo-tint" {...S} />
         <path {...S} d="M413 58h9v7h-9zM422 60h3l3 3v2h-6z" strokeWidth={1.3} />
       </g>
+      <circle className="tmo-stop-ring" cx="236" cy="26" r="11" fill="none" stroke="var(--red-ink)" strokeWidth={1.5} style={{ animationDelay: "1.2s" }} />
+      <circle className="tmo-stop-ring" cx="420" cy="62" r="11" fill="none" stroke="var(--red-ink)" strokeWidth={1.5} style={{ animationDelay: "2.45s" }} />
+      {[3, 2, 1].map((k) => (
+        <g key={k} className="tmo-rider tmo-trail" style={{ offsetPath: `path('${ROUTE}')`, animationDelay: `${k * 0.07}s` }}>
+          <circle r={5 - k} className="tmo-solid" opacity={0.6 - k * 0.15} />
+        </g>
+      ))}
       <g className="tmo-rider" style={{ offsetPath: `path('${ROUTE}')` }}>
         <rect x="-7" y="-7" width="14" height="14" rx="2.5" className="tmo-solid" />
         <path d="M-7 -2h14M0 -7v5" stroke="#fff" strokeWidth={1.2} fill="none" />
@@ -315,32 +351,45 @@ function Guest() {
   );
 }
 
-function Controller({ x }: { x: number }) {
+/** The tick a device keeps once it has passed the scanner (`state`: never, always, or appears at a third / two thirds). */
+function Ok({ state }: { state: "none" | "all" | "a" | "b" }) {
+  if (state === "none") return null;
+  return (
+    <g className={`tmo-ok tmo-ok--${state}`}>
+      <Tick cx={24} cy={38} r={7} />
+    </g>
+  );
+}
+
+function Controller({ x, ok }: { x: number; ok: "none" | "all" | "a" | "b" }) {
   return (
     <g transform={`translate(${x} 0)`} className="tmo-static">
       <path {...S} className="tmo-tint" d="M-24 52h48c10 0 15 8 16 17l1 4c1 6-6 9-10 5l-8-8h-46l-8 8c-4 4-11 1-10-5l1-4c1-9 6-17 16-17z" />
       <path {...S} d="M-20 58v10M-25 63h10" strokeWidth={1.8} />
       <circle cx="16" cy="59" r="2.5" className="tmo-solid" />
       <circle cx="22" cy="66" r="2.5" fill="currentColor" />
+      <Ok state={ok} />
     </g>
   );
 }
-function Console({ x }: { x: number }) {
+function Console({ x, ok }: { x: number; ok: "none" | "all" | "a" | "b" }) {
   return (
     <g transform={`translate(${x} 0)`} className="tmo-static">
       <rect x="-17" y="42" width="34" height="38" rx="4" {...S} className="tmo-tint" />
       <path {...S} d="M-10 50h20M-10 56h12" strokeWidth={1.5} />
       <circle cx="10" cy="70" r="2.5" className="tmo-solid" />
+      <Ok state={ok} />
     </g>
   );
 }
-function Headset({ x }: { x: number }) {
+function Headset({ x, ok }: { x: number; ok: "none" | "all" | "a" | "b" }) {
   return (
     <g transform={`translate(${x} 0)`} className="tmo-static">
       <path {...S} d="M-17 70V60a17 17 0 0 1 34 0v10" strokeWidth={2.4} />
       <rect x="-26" y="60" width="12" height="20" rx="4" {...S} className="tmo-tint" />
       <rect x="14" y="60" width="12" height="20" rx="4" {...S} className="tmo-tint" />
       <circle cx="20" cy="70" r="2.5" className="tmo-solid" />
+      <Ok state={ok} />
     </g>
   );
 }
@@ -353,7 +402,10 @@ function Warranty() {
       <g className="tmo-belt">
         {Array.from({ length: 10 }, (_, i) => {
           const Device = DEVICES[i % 3];
-          return <Device key={i} x={-900 + i * 200} />;
+          const x = -900 + i * 200;
+          // a device is ticked once it is past the scanner (x 300): the belt moves it 600 in a loop
+          const ok = x >= 300 ? "all" : x === 100 ? "b" : x === -100 ? "a" : "none";
+          return <Device key={i} x={x} ok={ok} />;
         })}
       </g>
       <path {...S} d="M-300 84h1200M-300 92h1200" strokeWidth={1.6} />
@@ -364,6 +416,7 @@ function Warranty() {
           </g>
         ))}
       </>
+      <rect className="tmo-scan" x="268" y="40" width="64" height="2.5" rx="1.25" fill="var(--red-ink)" />
       <g className="tmo-guard">
         <path {...S} className="tmo-tint" d="M300 2l15 5v10c0 9-7 15-15 18-8-3-15-9-15-18V7z" />
         <g className="tmo-upright">

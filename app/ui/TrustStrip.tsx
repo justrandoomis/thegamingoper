@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
@@ -72,18 +72,27 @@ function useWordsEntrance(enabled: boolean) {
     if (!enabled || !list || typeof IntersectionObserver === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset.motion === "reduced") return;
     list.dataset.armed = "";
+    // each row: its words arrive the first time it is on screen; its scene runs only while it is on screen
     const observer = new IntersectionObserver(
       (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        list.dataset.in = "";
-        observer.disconnect();
+        for (const entry of entries) {
+          const row = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            row.dataset.in = "";
+            row.dataset.play = "";
+          } else {
+            delete row.dataset.play;
+          }
+        }
       },
-      { threshold: 0.35 },
+      { threshold: 0.2 },
     );
-    observer.observe(list);
+    const rows = Array.from(list.children) as HTMLElement[];
+    for (const row of rows) observer.observe(row);
     return () => {
       observer.disconnect();
       delete list.dataset.armed;
+      for (const row of rows) delete row.dataset.play;
     };
   }, [enabled]);
   return ref;
@@ -135,8 +144,8 @@ export function TrustStrip({ deliveryIqd = null, cod = false, transfer = false, 
   if (variant === "motion") {
     return (
       <ul ref={wordsRef} className={cx("trust trust--motion", className)}>
-        {facts.map((fact, index) => (
-          <li key={fact.key} className="trust__cell" style={{ "--i": index } as CSSProperties}>
+        {facts.map((fact) => (
+          <li key={fact.key} className="trust__cell">
             <span className="trust__words">
               <span className="trust__title">{fact.title}</span>
               <span className="trust__text">{fact.text}</span>

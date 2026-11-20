@@ -1968,23 +1968,27 @@ select.field__input {
     gap: var(--s-16);
   }
 }
-/* the words arrive once the strip is in view (TrustStrip arms it only with JavaScript and motion allowed) */
+/* each row's words arrive the first time the row is on screen (TrustStrip arms it only with JavaScript and motion allowed) */
 .trust--motion[data-armed] :is(.trust__title, .trust__text) {
   opacity: 0;
   transform: translateY(8px);
 }
-.trust--motion[data-in] :is(.trust__title, .trust__text) {
+.trust--motion[data-armed] .trust__cell[data-in] :is(.trust__title, .trust__text) {
   animation: tmo-words 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  animation-delay: calc(var(--i, 0) * 120ms + 120ms);
+  animation-delay: 120ms;
 }
-.trust--motion[data-in] .trust__text {
-  animation-delay: calc(var(--i, 0) * 120ms + 220ms);
+.trust--motion[data-armed] .trust__cell[data-in] .trust__text {
+  animation-delay: 220ms;
 }
 @keyframes tmo-words {
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+/* a row's scene only runs while the row is on screen (TrustStrip sets data-play; without JavaScript it always runs) */
+.trust--motion[data-armed] .trust__cell:not([data-play]) :is(.tmo, .tmo *) {
+  animation-play-state: paused;
 }
 /* the scenes */
 .tmo {
@@ -2021,23 +2025,34 @@ select.field__input {
 /* delivery: the truck crosses the row, city and road run behind, each pin pops as the truck reaches it */
 .tmo--delivery .tmo-far {
   opacity: 0.22;
-  animation: tmo-pan 24s linear infinite;
 }
 .tmo--delivery .tmo-cloud {
   opacity: 0.4;
   animation: tmo-drift 10s ease-in-out infinite alternate;
 }
-.tmo--delivery .tmo-road {
-  animation: tmo-road 0.4s linear infinite;
-}
 .tmo--delivery .tmo-drive {
-  animation: tmo-drive 7s linear infinite;
+  animation: tmo-drive 8s infinite;
+}
+.tmo--delivery .tmo-wind {
+  animation: tmo-moving 8s linear infinite;
+}
+.tmo--delivery .tmo-puff {
+  animation: tmo-puff 0.75s ease-out infinite;
+}
+.tmo--delivery .tmo-drop {
+  animation: tmo-drop 8s infinite;
+}
+.tmo--delivery .tmo-seal {
+  animation: tmo-house-ok 8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+.tmo--delivery .tmo-ping {
+  animation: tmo-ping 2.4s ease-out infinite;
 }
 .tmo--delivery .tmo-bounce {
   animation: tmo-bob 0.35s ease-in-out infinite alternate;
 }
 .tmo--delivery .tmo-wheel {
-  animation: tmo-spin 0.5s linear infinite;
+  animation: tmo-roll 8s infinite;
 }
 .tmo--delivery .tmo-wind path {
   animation: tmo-wind 0.8s ease-in infinite;
@@ -2050,7 +2065,7 @@ select.field__input {
 }
 .tmo--delivery .tmo-pin-pop {
   transform-origin: 50% 100%;
-  animation: tmo-pin-pop 7s ease-out infinite;
+  animation: tmo-pin-pop 2.4s ease-out infinite;
 }
 /* cash on delivery: parcel van → hand, banknotes hand → van, the seal pops */
 .tmo--cod .tmo-idle {
@@ -2064,6 +2079,10 @@ select.field__input {
 }
 .tmo--cod .tmo-seal {
   animation: tmo-seal 4.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+.tmo--cod .tmo-land {
+  opacity: 0;
+  animation: tmo-land 4.8s ease-out infinite;
 }
 .tmo--cod .tmo-spark-dot {
   opacity: 0;
@@ -2083,6 +2102,13 @@ select.field__input {
 .tmo--transfer .tmo-stamp {
   animation: tmo-stamp 4.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
 }
+.tmo--transfer .tmo-send {
+  animation: tmo-ripple 1.5s ease-out infinite;
+}
+.tmo--transfer .tmo-receive {
+  opacity: 0;
+  animation: tmo-receive 4.8s ease-out infinite;
+}
 .tmo--transfer .tmo-float {
   animation: tmo-float 3.2s ease-in-out infinite alternate;
 }
@@ -2098,6 +2124,10 @@ select.field__input {
 }
 .tmo--guest .tmo-stop {
   animation: tmo-stop 5s ease-out infinite;
+}
+.tmo--guest .tmo-stop-ring {
+  opacity: 0;
+  animation: tmo-stop-ring 5s ease-out infinite;
 }
 .tmo--guest .tmo-pin {
   transform-origin: 50% 100%;
@@ -2116,33 +2146,135 @@ select.field__input {
 .tmo--warranty .tmo-beam {
   animation: tmo-beam 2s ease-in-out infinite;
 }
+.tmo--warranty .tmo-scan {
+  animation: tmo-scan 2s linear infinite;
+}
+.tmo--warranty .tmo-ok--a {
+  animation: tmo-ok-a 6s linear infinite;
+}
+.tmo--warranty .tmo-ok--b {
+  animation: tmo-ok-b 6s linear infinite;
+}
 .tmo--warranty .tmo-guard {
   animation: tmo-guard 2s ease-out infinite;
 }
 .tmo--warranty .tmo-twinkle {
   animation: tmo-twinkle 2s ease-in-out infinite;
 }
-@keyframes tmo-pan {
-  to {
-    transform: translateX(-600px);
-  }
-}
 @keyframes tmo-drift {
   to {
     transform: translateX(-30px);
   }
 }
-@keyframes tmo-road {
-  to {
-    transform: translateX(-24px);
+@keyframes tmo-drive {
+  0% {
+    transform: translateX(-700px);
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.35, 1);
+  }
+  34% {
+    transform: translateX(0);
+  }
+  62% {
+    transform: translateX(0);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.8, 0.4);
+  }
+  100% {
+    transform: translateX(720px);
   }
 }
-@keyframes tmo-drive {
+@keyframes tmo-roll {
+  0% {
+    transform: rotate(0deg);
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.35, 1);
+  }
+  34% {
+    transform: rotate(2520deg);
+  }
+  62% {
+    transform: rotate(2520deg);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.8, 0.4);
+  }
+  100% {
+    transform: rotate(5040deg);
+  }
+}
+@keyframes tmo-moving {
+  0%,
+  30%,
+  66%,
+  100% {
+    opacity: 1;
+  }
+  34%,
+  62% {
+    opacity: 0;
+  }
+}
+@keyframes tmo-puff {
   from {
-    transform: translateX(-660px);
+    opacity: 1;
+    transform: translate(0, 0) scale(0.6);
   }
   to {
-    transform: translateX(700px);
+    opacity: 0;
+    transform: translate(-16px, -10px) scale(2);
+  }
+}
+@keyframes tmo-drop {
+  0%,
+  36% {
+    opacity: 0;
+    transform: translate(0, 12px);
+  }
+  40% {
+    opacity: 1;
+    transform: translate(0, 0);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.6, 1);
+  }
+  48% {
+    transform: translate(74px, -26px) rotate(12deg);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.5);
+  }
+  56% {
+    transform: translate(148px, 40px) rotate(0deg) scale(1.1, 0.9);
+  }
+  60%,
+  90% {
+    opacity: 1;
+    transform: translate(148px, 40px) scale(1);
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: translate(148px, 40px) scale(0.9);
+  }
+}
+@keyframes tmo-house-ok {
+  0%,
+  57% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  63%,
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+@keyframes tmo-ping {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.3);
+  }
+  45%,
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
   }
 }
 @keyframes tmo-bob {
@@ -2219,15 +2351,30 @@ select.field__input {
   60% {
     transform: translate(-235px, -22px) rotate(-10deg);
   }
-  75%,
-  86% {
+  72% {
     opacity: 1;
-    transform: translate(-470px, 12px) rotate(0deg);
+    transform: translate(-440px, 6px) rotate(0deg) scale(0.85);
   }
-  94%,
+  80%,
   100% {
     opacity: 0;
-    transform: translate(-470px, 12px);
+    transform: translate(-470px, 12px) scale(0.4);
+  }
+}
+@keyframes tmo-land {
+  0%,
+  35% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  38% {
+    opacity: 0.9;
+    transform: scale(0.6);
+  }
+  52%,
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
   }
 }
 @keyframes tmo-seal {
@@ -2344,6 +2491,41 @@ select.field__input {
     transform: scale(1.05);
   }
 }
+@keyframes tmo-ripple {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.6);
+  }
+  60%,
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+@keyframes tmo-receive {
+  0%,
+  65% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  67% {
+    opacity: 0.9;
+    transform: scale(0.75);
+  }
+  78% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+  80% {
+    opacity: 0.9;
+    transform: scale(0.75);
+  }
+  91%,
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
 @keyframes tmo-float {
   from {
     transform: translateY(4px) rotate(-6deg);
@@ -2382,6 +2564,17 @@ select.field__input {
     transform: scale(1);
   }
 }
+@keyframes tmo-stop-ring {
+  0% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  14%,
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
 @keyframes tmo-hop {
   0%,
   68%,
@@ -2409,6 +2602,61 @@ select.field__input {
   74% {
     transform: scale(0.6);
     opacity: 0.08;
+  }
+}
+@keyframes tmo-scan {
+  0% {
+    opacity: 1;
+    transform: translateY(18px);
+  }
+  15% {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  80% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  84% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(18px);
+  }
+}
+/* a device at x -100 passes the scanner at two thirds of the belt's loop, one at x 100 at a third */
+@keyframes tmo-ok-a {
+  0%,
+  66.6% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  68.5% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+  71%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes tmo-ok-b {
+  0%,
+  33.3% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  35.2% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+  37.7%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 @keyframes tmo-belt {

@@ -731,7 +731,7 @@ describe("money — the browser cannot price anything, replay anything or pay tw
     expect(answer.status).toBe(302);
     const ref = decodeURIComponent(answer.location!.split("/order/")[1].split("?")[0]);
     const row = (await t.db.select().from(orders).where(eq(orders.ref, ref)).get())!;
-    expect(row).toMatchObject({ subtotalIqd: 400_000, shippingIqd: 5000, discountIqd: 0, totalIqd: 405_000, paidIqd: 0, status: "new", paymentStatus: "cod_due", customerId: null, couponId: null, isDemo: true });
+    expect(row).toMatchObject({ subtotalIqd: 400_000, shippingIqd: 5000, discountIqd: 0, totalIqd: 405_000, paidIqd: 0, status: "new", paymentStatus: "cod_due", customerId: null, couponId: null, isDemo: false });
   });
 
   test("a total the shopper did not see is refused with the fresh cart, and nothing is written", async () => {

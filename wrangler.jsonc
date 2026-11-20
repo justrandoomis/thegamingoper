@@ -24,7 +24,7 @@
 		"APP_ENV": "production",
 		"PUBLIC_ORIGIN": "https://tamtamgames.com",
 		/** "demo" shows the demo-data ribbon, flags orders as demo and sends noindex. Switch to "live" in admin-controlled deploy config when real catalogue data is in. */
-		"STORE_MODE": "demo",
+		"STORE_MODE": "live",
 		/** Seconds for the Strict-Transport-Security header; "0" keeps HSTS off until the owner opts in. */
 		"HSTS_MAX_AGE": "0"
 	},

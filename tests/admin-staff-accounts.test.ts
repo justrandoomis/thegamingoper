@@ -168,7 +168,7 @@ describe("admin 15 staff — accounts from the admin", () => {
 
     const employeeId = answer.employee!.id;
     const row = await t.db.select().from(employees).where(eq(employees.id, employeeId)).get();
-    expect(row).toMatchObject({ email: "sara.new@staff-accounts.test", name: "سارة الكاشير", phone: "0770 123 4567", jobTitle: "أمينة صندوق", status: "active", passwordHash: null, branchId: null, isDemo: true });
+    expect(row).toMatchObject({ email: "sara.new@staff-accounts.test", name: "سارة الكاشير", phone: "0770 123 4567", jobTitle: "أمينة صندوق", status: "active", passwordHash: null, branchId: null, isDemo: false });
     const given = await t.db.select({ roleId: employeeRoles.roleId }).from(employeeRoles).where(eq(employeeRoles.employeeId, employeeId));
     expect(given.map((one) => one.roleId)).toEqual([roleId("cashier")]);
     // the link is the one the welcome page takes; the token itself reaches no audit row

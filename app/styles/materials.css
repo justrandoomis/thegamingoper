@@ -991,6 +991,10 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   .ptile[data-gel="playstation"] .ptile__img {
     inset-inline-end: -8%;
   }
+  /* the Switch's raised game card stays clear of the «Nintendo» name */
+  .ptile[data-gel="nintendo"] .ptile__img {
+    inset-inline-end: -5%;
+  }
   [dir="rtl"] .ptile__img {
     object-position: 0% 100%;
   }

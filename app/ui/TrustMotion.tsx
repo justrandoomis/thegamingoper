@@ -1,62 +1,90 @@
 import type { ReactElement } from "react";
 
 /**
- * The trust strip's motion icons (home, `variant="motion"`): one small looping motion graphic per fact, drawn as inline
- * SVG and animated with CSS only (transform and opacity, `.tmo*` rules in components.css). Line work is `currentColor`
- * (--ink), the accents are the brand red. Decorative: every icon is aria-hidden — the fact's title says it. With reduced
- * motion the icons stand still in their resting pose.
+ * The trust strip's motion scenes (home, `variant="motion"`): one small WIDE looping scene per fact (160×64, like a
+ * short GIF), drawn as inline SVG and animated with CSS only (transform, opacity, offset-distance — `.tmo*` rules in
+ * components.css). Line work is `currentColor` (--ink), accents are --red-ink on --red-tint. Decorative: aria-hidden —
+ * the fact's title says it. The scenes are mirrored in RTL so everything travels in the reading direction. With reduced
+ * motion every scene stands still in its resting pose.
  */
 export type TrustMotionKey = "delivery" | "cod" | "transfer" | "guest" | "warranty";
 
-const S = { fill: "none", stroke: "currentColor", strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+const S = { fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+
+/** One block of the skyline, 160 wide; drawn twice side by side so the loop is seamless. */
+function Skyline({ x }: { x: number }) {
+  return (
+    <g transform={`translate(${x} 0)`} {...S} strokeWidth={1.5}>
+      <path d="M4 52V30h14v22M22 52V20h12v32M40 52V34h18v18M66 52V24h10l6 6v22M90 52V36h12v16M108 52V16h14v36M128 52V28h10v24M144 52V38h12v14" />
+      <path d="M26 26h4M26 32h4M26 38h4M112 22h6M112 28h6M112 34h6M70 32h2M70 38h2" strokeWidth={1.2} />
+    </g>
+  );
+}
 
 function Delivery() {
   return (
-    <svg viewBox="0 0 64 64" className="tmo tmo--delivery">
-      {/* speed lines rush backwards while the truck bobs on the road */}
-      <g className="tmo-lines" {...S} strokeWidth={2.2}>
-        <path d="M4 22h10" />
-        <path d="M2 30h8" />
-        <path d="M6 38h9" />
+    <svg viewBox="0 0 160 64" className="tmo tmo--delivery">
+      {/* the city scrolls by behind, the road dashes rush past, the truck bobs with its wheels turning */}
+      <g className="tmo-far">
+        <Skyline x={0} />
+        <Skyline x={160} />
+      </g>
+      <path {...S} strokeWidth={1.5} d="M0 54h160" />
+      <g className="tmo-road" {...S} strokeWidth={2}>
+        <path d="M0 60h8M20 60h8M40 60h8M60 60h8M80 60h8M100 60h8M120 60h8M140 60h8M160 60h8M180 60h8" />
+      </g>
+      <g className="tmo-wind" {...S} strokeWidth={1.8}>
+        <path d="M30 30h12" />
+        <path d="M24 38h14" />
+        <path d="M32 46h8" />
       </g>
       <g className="tmo-truck">
-        <path {...S} d="M16 18h24v24H16z" className="tmo-red-fill" />
-        <path {...S} d="M40 26h9l7 8v8H40z" />
-        <path {...S} d="M44 29h4l4 5h-8z" strokeWidth={1.8} />
+        <rect x="52" y="22" width="36" height="26" rx="2" className="tmo-tint" {...S} />
+        <path {...S} d="M88 30h14l10 10v8H88z" fill="var(--ground, #fff)" />
+        <path {...S} d="M93 34h7l6 6H93z" strokeWidth={1.5} />
+        <rect x="58" y="28" width="12" height="9" rx="1.5" className="tmo-solid" />
       </g>
-      <g className="tmo-wheel" style={{ transformOrigin: "24px 45px" }}>
-        <circle {...S} cx="24" cy="45" r="5" fill="var(--card-face, #fff)" />
-        <path {...S} d="M24 41v8M20 45h8" strokeWidth={1.6} />
+      <g className="tmo-wheel">
+        <circle {...S} cx="64" cy="50" r="5" fill="var(--ground, #fff)" />
+        <path {...S} d="M64 46.5v7M60.5 50h7" strokeWidth={1.4} />
       </g>
-      <g className="tmo-wheel" style={{ transformOrigin: "48px 45px" }}>
-        <circle {...S} cx="48" cy="45" r="5" fill="var(--card-face, #fff)" />
-        <path {...S} d="M48 41v8M44 45h8" strokeWidth={1.6} />
-      </g>
-      <defs>
-        <clipPath id="tmo-road-clip">
-          <rect x="0" y="50" width="64" height="8" />
-        </clipPath>
-      </defs>
-      <g clipPath="url(#tmo-road-clip)">
-        <path className="tmo-road" {...S} strokeWidth={2} d="M2 54h76" strokeDasharray="8 6" />
+      <g className="tmo-wheel">
+        <circle {...S} cx="100" cy="50" r="5" fill="var(--ground, #fff)" />
+        <path {...S} d="M100 46.5v7M96.5 50h7" strokeWidth={1.4} />
       </g>
     </svg>
   );
 }
 
+/** An open hand from the left edge, palm up. */
+function Hand() {
+  return (
+    <g {...S}>
+      <path d="M2 44c6-4 12-5 18-2l10 4c3 1 3 5-1 5H18" />
+      <path d="M2 54h24l16-9c3-2 1-6-3-5l-11 4" />
+    </g>
+  );
+}
+
 function Cash() {
   return (
-    <svg viewBox="0 0 64 64" className="tmo tmo--cod">
-      {/* a banknote slides into the hand, a coin drops and bounces */}
-      <g className="tmo-bill">
-        <rect {...S} x="14" y="12" width="36" height="20" rx="3" className="tmo-red-fill" />
-        <circle {...S} cx="32" cy="22" r="4.5" />
+    <svg viewBox="0 0 160 64" className="tmo tmo--cod">
+      {/* the parcel travels from the courier's hand to the customer's, the banknote goes back, a tick seals it */}
+      <Hand />
+      <g transform="translate(160 0) scale(-1 1)" className="tmo-static">
+        <Hand />
       </g>
-      <path {...S} d="M8 44c6-5 12-6 18-3l10 4c3 1 3 5-1 5H24" />
-      <path {...S} d="M8 54h28l18-10c3-2 1-6-3-5l-12 4" />
-      <g className="tmo-coin">
-        <circle {...S} cx="57" cy="12" r="5" className="tmo-red-stroke" />
-        <path {...S} d="M57 9.5v5" strokeWidth={2} className="tmo-red-stroke" />
+      <g className="tmo-parcel">
+        <rect x="18" y="22" width="18" height="16" rx="2" className="tmo-tint" {...S} />
+        <path {...S} d="M18 28h18M27 22v6" strokeWidth={1.5} />
+      </g>
+      <g className="tmo-bill">
+        <rect x="120" y="24" width="26" height="14" rx="2" {...S} fill="var(--ground, #fff)" />
+        <circle cx="133" cy="31" r="3" className="tmo-solid" />
+      </g>
+      <g className="tmo-check">
+        <circle cx="80" cy="22" r="9" className="tmo-solid" />
+        <g className="tmo-upright"><path d="M75.5 22l3 3 6-6.5" fill="none" stroke="#fff" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" /></g>
       </g>
     </svg>
   );
@@ -64,77 +92,103 @@ function Cash() {
 
 function Transfer() {
   return (
-    <svg viewBox="0 0 64 64" className="tmo tmo--transfer">
-      {/* a card tilts, signal arcs pulse out of it, a tick confirms the transfer */}
+    <svg viewBox="0 0 160 64" className="tmo tmo--transfer">
+      {/* money leaves the phone, runs along the line into the card; the card glows and confirms */}
+      <g className="tmo-phone">
+        <rect x="14" y="8" width="26" height="48" rx="5" {...S} />
+        <path {...S} d="M24 50h6" />
+        <rect x="19" y="16" width="16" height="12" rx="2" className="tmo-tint" {...S} strokeWidth={1.4} />
+        <g className="tmo-upright"><path {...S} d="M23 20h8l-8 5h8" strokeWidth={1.4} className="tmo-ink-red" /></g>
+        <path {...S} d="M19 34h16M19 40h10" strokeWidth={1.4} />
+      </g>
+      <path {...S} d="M46 32h60" strokeWidth={1.5} strokeDasharray="2 5" opacity={0.45} />
+      <g>
+        <circle className="tmo-coin tmo-solid" cx="48" cy="32" r="4" />
+        <circle className="tmo-coin tmo-solid" cx="48" cy="32" r="4" />
+        <circle className="tmo-coin tmo-solid" cx="48" cy="32" r="4" />
+      </g>
       <g className="tmo-card">
-        <rect {...S} x="6" y="18" width="38" height="26" rx="4" />
-        <path {...S} d="M6 26h38" strokeWidth={3.4} />
-        <rect x="11" y="32" width="8" height="6" rx="1.5" className="tmo-red-solid" />
-        <path {...S} d="M24 38h14" strokeWidth={1.8} />
+        <rect x="108" y="16" width="44" height="30" rx="4" {...S} fill="var(--ground, #fff)" />
+        <path {...S} d="M108 24h44" strokeWidth={3} />
+        <rect x="113" y="31" width="9" height="7" rx="1.5" className="tmo-solid" />
+        <path {...S} d="M127 38h18" strokeWidth={1.5} />
       </g>
-      <g {...S} className="tmo-red-stroke">
-        <path className="tmo-arc tmo-arc--1" d="M48 24a8 8 0 0 1 0 12" />
-        <path className="tmo-arc tmo-arc--2" d="M52 19a15 15 0 0 1 0 22" />
-        <path className="tmo-arc tmo-arc--3" d="M56 14a22 22 0 0 1 0 32" />
-      </g>
-      <g className="tmo-tick">
-        <circle cx="44" cy="48" r="8" className="tmo-red-solid" />
-        <path d="M40 48l3 3 5-6" fill="none" stroke="#fff" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" className="tmo-draw" />
+      <g className="tmo-check">
+        <circle cx="150" cy="46" r="7" className="tmo-solid" />
+        <g className="tmo-upright"><path d="M146.5 46l2.5 2.5 4.5-5" fill="none" stroke="#fff" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></g>
       </g>
     </svg>
   );
 }
 
+const ROUTE = "M42 40c18 0 18-20 40-20s22 22 46 8";
+
 function Guest() {
   return (
-    <svg viewBox="0 0 64 64" className="tmo tmo--guest">
-      {/* a phone shows the order's number, tracking dots travel along a path to the pin */}
+    <svg viewBox="0 0 160 64" className="tmo tmo--guest">
+      {/* the order number on the phone, the parcel rides the route across the map, the pin hops when it lands */}
+      <g {...S} strokeWidth={1} opacity={0.18}>
+        <path d="M48 8v52M80 8v52M112 8v52M144 8v52M44 16h112M44 36h112M44 56h112" />
+      </g>
       <g className="tmo-phone">
-        <rect {...S} x="8" y="10" width="22" height="40" rx="4" />
-        <path {...S} d="M16 44h6" strokeWidth={2} />
-        <path {...S} d="M13 20h12M13 26h8" strokeWidth={1.8} className="tmo-red-stroke" />
+        <rect x="10" y="10" width="26" height="46" rx="5" {...S} />
+        <path {...S} d="M20 50h6" />
+        <path {...S} d="M16 20h4M16 26h4M21 17l-2 12M25 17l-2 12" strokeWidth={1.4} className="tmo-ink-red" />
+        <path {...S} d="M16 36h14M16 42h9" strokeWidth={1.4} />
       </g>
-      <path {...S} strokeWidth={1.8} d="M30 40c8 0 8-14 18-14" strokeDasharray="2 5" opacity={0.5} />
-      <circle className="tmo-dot" cx="0" cy="0" r="2.6" style={{ offsetPath: "path('M30 40c8 0 8-14 18-14')" }} />
+      <path {...S} d={ROUTE} strokeWidth={1.8} strokeDasharray="3 5" opacity={0.5} />
+      <g className="tmo-rider" style={{ offsetPath: `path('${ROUTE}')` }}>
+        <rect x="-5" y="-5" width="10" height="10" rx="2" className="tmo-solid" />
+      </g>
+      <ellipse className="tmo-shadow" cx="138" cy="40" rx="6" ry="1.8" fill="currentColor" opacity={0.18} />
       <g className="tmo-pin">
-        <path {...S} d="M50 34s8-8 8-14a8 8 0 1 0-16 0c0 6 8 14 8 14z" className="tmo-red-fill" />
-        <circle cx="50" cy="20" r="2.6" fill="currentColor" />
+        <path {...S} d="M138 38s9-9 9-16a9 9 0 1 0-18 0c0 7 9 16 9 16z" className="tmo-tint" />
+        <circle cx="138" cy="22" r="3" fill="currentColor" />
       </g>
-      <ellipse className="tmo-shadow" cx="50" cy="38" rx="5" ry="1.6" fill="currentColor" opacity={0.18} />
     </svg>
   );
 }
 
 function Warranty() {
   return (
-    <svg viewBox="0 0 64 64" className="tmo tmo--warranty">
-      {/* the shield's tick pops in, a glint sweeps across */}
-      <defs>
-        <clipPath id="tmo-shield-clip">
-          <path d="M32 6l20 7v15c0 14-9 23-20 28C21 51 12 42 12 28V13z" />
-        </clipPath>
-      </defs>
-      <g className="tmo-shield">
-        <path {...S} d="M32 6l20 7v15c0 14-9 23-20 28C21 51 12 42 12 28V13z" className="tmo-red-fill" />
-        <g clipPath="url(#tmo-shield-clip)">
-          <rect className="tmo-glint" x="-6" y="0" width="8" height="64" fill="#fff" opacity={0.55} transform="skewX(-20)" />
-        </g>
-        <path {...S} strokeWidth={3} d="M23 30l6 6 12-13" className="tmo-draw tmo-red-stroke" />
+    <svg viewBox="0 0 160 64" className="tmo tmo--warranty">
+      {/* a protective field ripples out around the controller, the shield badge pops with its tick, sparks twinkle */}
+      <g className="tmo-ring">
+        <ellipse cx="80" cy="40" rx="44" ry="22" {...S} className="tmo-ink-red" strokeWidth={1.5} />
       </g>
-      <g className="tmo-spark" {...S} strokeWidth={2}>
-        <path d="M54 6v6M51 9h6" />
+      <g className="tmo-ring tmo-ring--2">
+        <ellipse cx="80" cy="40" rx="44" ry="22" {...S} className="tmo-ink-red" strokeWidth={1.5} />
+      </g>
+      <g className="tmo-pad">
+        <path
+          {...S}
+          className="tmo-tint"
+          d="M62 30h36c8 0 12 6 13 14l1 5c1 5-5 8-9 4l-6-6H63l-6 6c-4 4-10 1-9-4l1-5c1-8 5-14 13-14z"
+        />
+        <path {...S} d="M64 36v8M60 40h8" strokeWidth={1.8} />
+        <circle cx="94" cy="37" r="2" className="tmo-solid" />
+        <circle cx="99" cy="42" r="2" fill="currentColor" />
+      </g>
+      <g className="tmo-badge">
+        <path d="M118 8l12 4v8c0 8-5 13-12 16-7-3-12-8-12-16v-8z" className="tmo-solid" />
+        <g className="tmo-upright"><path d="M113 20l3.5 3.5 6.5-7" fill="none" stroke="#fff" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" /></g>
+      </g>
+      <g {...S} strokeWidth={1.6}>
+        <path className="tmo-spark" d="M26 14v8M22 18h8" />
+        <path className="tmo-spark tmo-spark--2" d="M144 44v6M141 47h6" />
+        <path className="tmo-spark tmo-spark--3" d="M40 50v6M37 53h6" />
       </g>
     </svg>
   );
 }
 
-const ICONS: Record<TrustMotionKey, () => ReactElement> = { delivery: Delivery, cod: Cash, transfer: Transfer, guest: Guest, warranty: Warranty };
+const SCENES: Record<TrustMotionKey, () => ReactElement> = { delivery: Delivery, cod: Cash, transfer: Transfer, guest: Guest, warranty: Warranty };
 
 export function TrustMotion({ name }: { name: TrustMotionKey }) {
-  const Art = ICONS[name];
+  const Scene = SCENES[name];
   return (
     <span className="trust__motion" aria-hidden="true">
-      <Art />
+      <Scene />
     </span>
   );
 }

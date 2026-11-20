@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
 import { Icon, type IconName } from "~/art/Icon";
 import { LocaleLink, useFormat, useT } from "~/i18n/react";
@@ -27,7 +27,9 @@ import { TrustMotion, type TrustMotionKey } from "./TrustMotion";
  * Amounts inside the sentences are first-strong isolates: the figure comes first in every language.
  *
  * The `motion` variant (home, under the platforms): the same facts (+ `warranty`) as small borderless vertical cells,
- * each with its own looping motion-graphic icon (TrustMotion), centred and narrower than the page.
+ * each with its own small wide looping scene (TrustMotion, like a GIF), centred and narrower than the page. The words
+ * are small and arrive with a short animation, one cell after another, when the strip first scrolls into view (only
+ * once JavaScript runs and motion is allowed; otherwise they are simply there).
  */
 export type TrustStripProps = {
   /** The delivery fee from settings (integer IQD). Omit or null: the fact is not shown. */
@@ -61,9 +63,35 @@ export function transferMethods(transfer: TrustStripProps["transfer"]): "both" |
   return null;
 }
 
+/** motion: hide the words until the strip is in view, then let them arrive (CSS `.trust--motion[data-in]`). */
+function useWordsEntrance(enabled: boolean) {
+  const ref = useRef<HTMLUListElement>(null);
+  useEffect(() => {
+    const list = ref.current;
+    if (!enabled || !list || typeof IntersectionObserver === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset.motion === "reduced") return;
+    list.dataset.armed = "";
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        list.dataset.in = "";
+        observer.disconnect();
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(list);
+    return () => {
+      observer.disconnect();
+      delete list.dataset.armed;
+    };
+  }, [enabled]);
+  return ref;
+}
+
 export function TrustStrip({ deliveryIqd = null, cod = false, transfer = false, guest = false, warranty = false, returnsTo, variant = "card", className }: TrustStripProps) {
   const t = useT("ui-shop");
   const f = useFormat();
+  const wordsRef = useWordsEntrance(variant === "motion");
   const facts: Fact[] = [];
   if (isIqd(deliveryIqd)) {
     const fee = <bdi className="nums">{iqdText(f, deliveryIqd)}</bdi>;
@@ -105,9 +133,9 @@ export function TrustStrip({ deliveryIqd = null, cod = false, transfer = false, 
   if (facts.length === 0) return null;
   if (variant === "motion") {
     return (
-      <ul className={cx("trust trust--motion", className)}>
-        {facts.map((fact) => (
-          <li key={fact.key} className="trust__cell">
+      <ul ref={wordsRef} className={cx("trust trust--motion", className)}>
+        {facts.map((fact, index) => (
+          <li key={fact.key} className="trust__cell" style={{ "--i": index } as CSSProperties}>
             <TrustMotion name={fact.key} />
             <span className="trust__title">{fact.title}</span>
             <span className="trust__text">{fact.text}</span>

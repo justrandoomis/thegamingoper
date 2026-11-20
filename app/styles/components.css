@@ -1920,14 +1920,13 @@ select.field__input {
   box-shadow: none;
   color: var(--ink-2);
 }
-/* the motion variant (home): small borderless vertical cells, each with a looping motion-graphic icon (TrustMotion);
-   centred and narrower than the page — no card, no hairlines */
+/* the motion variant (home): small borderless vertical cells, each with a small WIDE looping scene (TrustMotion, like a
+   GIF) above small words; centred and narrower than the page — no card, no hairlines. One scrolling row on phones. */
 .trust--motion {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: var(--s-3) var(--s-2);
-  max-inline-size: 56rem;
+  gap: var(--s-3);
+  max-inline-size: 58rem;
   margin-inline: auto;
   border-radius: 0;
   background: none;
@@ -1935,149 +1934,205 @@ select.field__input {
 }
 .trust--motion .trust__cell {
   display: flex;
+  flex: 0 1 10.5rem;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  inline-size: 9.5rem;
-  padding: var(--s-2);
+  min-inline-size: 0;
+  padding: 0;
   border: 0;
   text-align: center;
 }
 .trust--motion .trust__title {
-  font: var(--type-xs-strong);
+  font: 600 var(--fs-tag) / 1.35 var(--font-text);
+  color: var(--ink);
   text-wrap: balance;
 }
 .trust--motion .trust__text {
-  font-size: 0.75rem;
-  line-height: 1.45;
+  font: 400 11px / 1.4 var(--font-text);
+  color: var(--ink-2);
   text-wrap: balance;
 }
 .trust__motion {
   display: block;
-  inline-size: 56px;
-  block-size: 56px;
-  margin-block-end: var(--s-1);
+  inline-size: 100%;
+  aspect-ratio: 160 / 64;
+  margin-block-end: var(--s-2);
   color: var(--ink);
 }
+@media (max-width: 47.99rem) {
+  .trust--motion {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-block-end: var(--s-1);
+  }
+  .trust--motion::-webkit-scrollbar {
+    display: none;
+  }
+  .trust--motion .trust__cell {
+    flex: 0 0 8.5rem;
+    scroll-snap-align: start;
+  }
+}
+/* the words arrive once the strip is in view (TrustStrip arms it only with JavaScript and motion allowed) */
+.trust--motion[data-armed] :is(.trust__title, .trust__text) {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.trust--motion[data-in] :is(.trust__title, .trust__text) {
+  animation: tmo-words 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 110ms + 120ms);
+}
+.trust--motion[data-in] .trust__text {
+  animation-delay: calc(var(--i, 0) * 110ms + 220ms);
+}
+@keyframes tmo-words {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* the scenes */
 .tmo {
   display: block;
   inline-size: 100%;
   block-size: 100%;
-  overflow: visible;
+  overflow: hidden;
 }
 .tmo * {
   transform-box: fill-box;
   transform-origin: center;
 }
-.tmo .tmo-red-fill {
+/* an element placed with an SVG transform attribute keeps the SVG origin (the rule above would move it) */
+.tmo .tmo-static {
+  transform-box: view-box;
+  transform-origin: 0 0;
+}
+.tmo .tmo-tint {
   fill: var(--red-tint);
 }
-.tmo .tmo-red-stroke {
+.tmo .tmo-solid {
+  fill: var(--red-ink);
+}
+.tmo .tmo-ink-red {
   stroke: var(--red-ink);
 }
-.tmo .tmo-red-solid {
-  fill: var(--red-ink);
-}
-.tmo-dot {
-  fill: var(--red-ink);
-}
-[dir="rtl"] .tmo--delivery {
+[dir="rtl"] .tmo {
   transform: scaleX(-1);
 }
-@media (max-width: 47.99rem) {
-  .trust--motion {
-    gap: var(--s-2) 0;
-  }
-  .trust--motion .trust__cell {
-    inline-size: 33%;
-    min-inline-size: 6.5rem;
-    padding: var(--s-1);
-  }
-  .trust__motion {
-    inline-size: 48px;
-    block-size: 48px;
-  }
-  /* phones: icon + title only, so the strip stays small */
-  .trust--motion .trust__text {
-    display: none;
-  }
+/* ticks and letters stay readable inside a mirrored scene */
+[dir="rtl"] .tmo .tmo-upright {
+  transform: scaleX(-1);
 }
-/* delivery: the truck bobs, the wheels turn, the road and speed lines run backwards */
-.tmo--delivery .tmo-truck {
-  animation: tmo-bob 0.6s ease-in-out infinite alternate;
-}
-.tmo--delivery .tmo-wheel {
-  transform-box: view-box;
-  animation: tmo-spin 0.8s linear infinite;
+/* delivery: the skyline and the road run backwards, the wind streaks, the truck bobs, the wheels turn */
+.tmo--delivery .tmo-far {
+  opacity: 0.28;
+  animation: tmo-pan 7s linear infinite;
 }
 .tmo--delivery .tmo-road {
-  animation: tmo-road 0.7s linear infinite;
+  animation: tmo-road 0.45s linear infinite;
 }
-.tmo--delivery .tmo-lines path {
-  animation: tmo-dash 1.2s ease-in infinite;
+.tmo--delivery .tmo-wind path {
+  animation: tmo-wind 0.9s ease-in infinite;
 }
-.tmo--delivery .tmo-lines path:nth-child(2) {
-  animation-delay: 0.4s;
+.tmo--delivery .tmo-wind path:nth-child(2) {
+  animation-delay: 0.3s;
 }
-.tmo--delivery .tmo-lines path:nth-child(3) {
-  animation-delay: 0.8s;
+.tmo--delivery .tmo-wind path:nth-child(3) {
+  animation-delay: 0.6s;
 }
-/* cash: the bill slides down into the hand, the coin drops and bounces */
+.tmo--delivery .tmo-truck {
+  animation: tmo-bob 0.35s ease-in-out infinite alternate;
+}
+.tmo--delivery .tmo-wheel {
+  animation: tmo-spin 0.6s linear infinite;
+}
+/* cash on delivery: parcel → customer, banknote → courier, tick */
+.tmo--cod .tmo-parcel {
+  animation: tmo-parcel 3.6s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+}
 .tmo--cod .tmo-bill {
-  animation: tmo-bill 2.6s cubic-bezier(0.3, 0.7, 0.3, 1) infinite;
+  animation: tmo-bill 3.6s cubic-bezier(0.45, 0, 0.3, 1) infinite;
 }
-.tmo--cod .tmo-coin {
-  animation: tmo-coin 2.6s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+.tmo--cod .tmo-check {
+  animation: tmo-check-cod 3.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
 }
-/* transfer: the card tilts, the arcs pulse out one by one, the tick pops in */
+/* transfer: three coins run phone → card, the card pulses, the tick pops */
+.tmo--transfer .tmo-coin {
+  animation: tmo-coin-run 1.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+.tmo--transfer .tmo-coin:nth-child(2) {
+  animation-delay: 0.6s;
+}
+.tmo--transfer .tmo-coin:nth-child(3) {
+  animation-delay: 1.2s;
+}
 .tmo--transfer .tmo-card {
-  animation: tmo-tilt 2.8s ease-in-out infinite;
+  animation: tmo-card-pulse 0.6s ease-out infinite;
 }
-.tmo--transfer .tmo-arc {
-  animation: tmo-arc 1.4s ease-out infinite;
+.tmo--transfer .tmo-check {
+  animation: tmo-check-transfer 3.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
 }
-.tmo--transfer .tmo-arc--2 {
-  animation-delay: 0.2s;
-}
-.tmo--transfer .tmo-arc--3 {
-  animation-delay: 0.4s;
-}
-.tmo--transfer .tmo-tick {
-  animation: tmo-pop 2.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
-}
-.tmo--transfer .tmo-draw {
-  animation: tmo-draw 2.8s ease-out infinite;
-}
-/* guest: a dot travels from the phone to the pin, the pin hops */
-.tmo--guest .tmo-dot {
+/* guest: the parcel rides the route, the pin hops when it lands */
+.tmo--guest .tmo-rider {
   transform-box: view-box;
   transform-origin: 0 0;
   offset-rotate: 0deg;
-  animation: tmo-travel 2.4s ease-in-out infinite;
+  animation: tmo-ride 3s ease-in-out infinite;
 }
 .tmo--guest .tmo-pin {
   transform-origin: 50% 100%;
-  animation: tmo-hop 2.4s ease-in-out infinite;
+  animation: tmo-hop 3s ease-in-out infinite;
 }
 .tmo--guest .tmo-shadow {
-  animation: tmo-shadow 2.4s ease-in-out infinite;
+  animation: tmo-shadow 3s ease-in-out infinite;
 }
-.tmo--guest .tmo-phone {
-  animation: tmo-bob 1.2s ease-in-out infinite alternate;
+/* warranty: rings ripple out from the controller, the badge pops, sparks twinkle */
+.tmo--warranty .tmo-ring {
+  animation: tmo-ring 2.4s ease-out infinite;
 }
-/* warranty: the tick pops in, a glint sweeps, a spark twinkles */
-.tmo--warranty .tmo-draw {
-  animation: tmo-draw 3s ease-out infinite;
+.tmo--warranty .tmo-ring--2 {
+  animation-delay: 1.2s;
 }
-.tmo--warranty .tmo-glint {
-  transform-origin: 0 0;
-  animation: tmo-glint 3s ease-in-out infinite;
+.tmo--warranty .tmo-pad {
+  animation: tmo-bob 0.9s ease-in-out infinite alternate;
+}
+.tmo--warranty .tmo-badge {
+  animation: tmo-badge 2.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
 }
 .tmo--warranty .tmo-spark {
-  animation: tmo-spark 3s ease-in-out infinite;
+  animation: tmo-spark 2.4s ease-in-out infinite;
 }
-.tmo--warranty .tmo-shield {
-  animation: tmo-breathe 3s ease-in-out infinite;
+.tmo--warranty .tmo-spark--2 {
+  animation-delay: 0.8s;
+}
+.tmo--warranty .tmo-spark--3 {
+  animation-delay: 1.6s;
+}
+@keyframes tmo-pan {
+  to {
+    transform: translateX(-160px);
+  }
+}
+@keyframes tmo-road {
+  to {
+    transform: translateX(-20px);
+  }
+}
+@keyframes tmo-wind {
+  0% {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
 }
 @keyframes tmo-bob {
   to {
@@ -2089,94 +2144,54 @@ select.field__input {
     transform: rotate(360deg);
   }
 }
-@keyframes tmo-road {
-  to {
-    transform: translateX(-14px);
-  }
-}
-@keyframes tmo-dash {
-  0% {
-    opacity: 0;
-    transform: translateX(6px);
-  }
-  30% {
+@keyframes tmo-parcel {
+  0%,
+  8% {
     opacity: 1;
+    transform: translate(0, 0);
   }
+  22% {
+    transform: translate(44px, -12px);
+  }
+  36%,
+  80% {
+    opacity: 1;
+    transform: translate(92px, 0);
+  }
+  92%,
   100% {
     opacity: 0;
-    transform: translateX(-8px);
+    transform: translate(92px, 0);
   }
 }
 @keyframes tmo-bill {
   0%,
-  10% {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  30%,
-  70% {
-    opacity: 1;
-    transform: translateY(6px);
-  }
-  90%,
-  100% {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-}
-@keyframes tmo-coin {
-  0%,
-  35% {
-    opacity: 0;
-    transform: translateY(-14px);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(18px);
-  }
-  58% {
-    transform: translateY(11px);
-  }
-  66%,
-  85% {
-    opacity: 1;
-    transform: translateY(18px);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-}
-@keyframes tmo-tilt {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(-6deg) translateY(-1px);
-  }
-}
-@keyframes tmo-arc {
-  0% {
-    opacity: 0;
-    transform: translateX(-3px);
-  }
   40% {
     opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
   }
+  54% {
+    transform: translate(-48px, -12px) rotate(-8deg);
+  }
+  68%,
+  80% {
+    opacity: 1;
+    transform: translate(-98px, 0) rotate(0deg);
+  }
+  92%,
   100% {
     opacity: 0;
-    transform: translateX(2px);
+    transform: translate(-98px, 0);
   }
 }
-@keyframes tmo-pop {
+@keyframes tmo-check-cod {
   0%,
-  40% {
+  68% {
     opacity: 0;
     transform: scale(0.3);
   }
-  55%,
-  88% {
+  76%,
+  90% {
     opacity: 1;
     transform: scale(1);
   }
@@ -2185,31 +2200,62 @@ select.field__input {
     transform: scale(0.8);
   }
 }
-@keyframes tmo-draw {
-  0%,
-  45% {
+@keyframes tmo-coin-run {
+  0% {
     opacity: 0;
-    transform: scale(0.4) rotate(-12deg);
+    transform: translateX(0) scale(0.6);
   }
-  65%,
-  100% {
+  15% {
     opacity: 1;
-    transform: scale(1) rotate(0deg);
+    transform: translateX(8px) scale(1);
+  }
+  85% {
+    opacity: 1;
+    transform: translateX(56px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(64px) scale(0.6);
   }
 }
-@keyframes tmo-travel {
+@keyframes tmo-card-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.04);
+  }
+}
+@keyframes tmo-check-transfer {
+  0%,
+  50% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  60%,
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+@keyframes tmo-ride {
   0% {
     offset-distance: 0%;
     opacity: 0;
   }
-  10% {
+  8% {
     opacity: 1;
   }
-  70% {
+  62% {
     offset-distance: 100%;
     opacity: 1;
   }
-  80%,
+  72%,
   100% {
     offset-distance: 100%;
     opacity: 0;
@@ -2221,11 +2267,11 @@ select.field__input {
   100% {
     transform: translateY(0) scale(1);
   }
-  72% {
-    transform: translateY(-5px) scale(1.06);
+  70% {
+    transform: translateY(-6px) scale(1.06);
   }
-  84% {
-    transform: translateY(0) scale(0.97, 1.03);
+  82% {
+    transform: translateY(0) scale(0.96, 1.04);
   }
 }
 @keyframes tmo-shadow {
@@ -2235,40 +2281,47 @@ select.field__input {
     transform: scale(1);
     opacity: 0.18;
   }
-  72% {
+  70% {
     transform: scale(0.6);
     opacity: 0.08;
   }
 }
-@keyframes tmo-glint {
-  0%,
-  50% {
-    transform: skewX(-20deg) translateX(0);
+@keyframes tmo-ring {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.55);
   }
-  80%,
   100% {
-    transform: skewX(-20deg) translateX(72px);
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+@keyframes tmo-badge {
+  0%,
+  10% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-15deg);
+  }
+  25%,
+  85% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.85);
   }
 }
 @keyframes tmo-spark {
   0%,
-  60%,
+  55%,
   100% {
     opacity: 0;
     transform: scale(0.4) rotate(0deg);
   }
-  75% {
+  70% {
     opacity: 1;
     transform: scale(1) rotate(45deg);
-  }
-}
-@keyframes tmo-breathe {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  70% {
-    transform: scale(1.04);
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -127,6 +127,7 @@ function Delivery() {
         <rect x="262" y="34" width="18" height="16" rx="2" className="tmo-tint" {...S} />
         <path {...S} d="M262 40h18M271 34v6" strokeWidth={1.3} />
       </g>
+      <Glow cx={420} cy={22} r={34} className="tmo-glow--house" />
       <g className="tmo-seal">
         <Tick cx={420} cy={20} r={9} />
       </g>
@@ -142,12 +143,14 @@ function Delivery() {
           <circle className="tmo-puff" cx="244" cy="80" r="3.5" style={{ animationDelay: "0.25s" }} />
           <circle className="tmo-puff" cx="244" cy="80" r="3.5" style={{ animationDelay: "0.5s" }} />
         </g>
-        <g className="tmo-bounce">
-          <rect x="250" y="46" width="52" height="36" rx="3" className="tmo-tint" {...S} />
-          <path {...S} d="M302 56h18l14 14v12h-32z" fill={W} />
-          <path {...S} d="M307 60h11l9 9h-20z" strokeWidth={1.5} />
-          <rect x="258" y="54" width="18" height="12" rx="2" className="tmo-solid" />
-          <path {...S} d="M280 58h14M280 64h9" strokeWidth={1.4} />
+        <g className="tmo-tilt">
+          <g className="tmo-bounce">
+            <rect x="250" y="46" width="52" height="36" rx="3" className="tmo-tint" {...S} />
+            <path {...S} d="M302 56h18l14 14v12h-32z" fill={W} />
+            <path {...S} d="M307 60h11l9 9h-20z" strokeWidth={1.5} />
+            <rect x="258" y="54" width="18" height="12" rx="2" className="tmo-solid" />
+            <path {...S} d="M280 58h14M280 64h9" strokeWidth={1.4} />
+          </g>
         </g>
         <g className="tmo-wheel">
           <circle {...S} cx="266" cy="84" r="6" fill={W} />
@@ -218,6 +221,7 @@ function Cash() {
           </g>
         ))}
       </>
+      <Glow cx={320} cy={30} r={36} className="tmo-glow--cod" />
       <g className="tmo-seal">
         <Tick cx={320} cy={30} r={11} />
       </g>
@@ -271,7 +275,9 @@ function Transfer() {
         <g className="tmo-upright">
           <path {...S} d="M36 24h14l-14 10h14" strokeWidth={1.8} className="tmo-ink-red" />
         </g>
-        <path {...S} d="M30 50h26M30 58h18M30 66h22" strokeWidth={1.4} />
+        <path {...S} className="tmo-type" d="M30 50h26" strokeWidth={1.4} />
+        <path {...S} className="tmo-type" style={{ animationDelay: "0.2s" }} d="M30 58h18" strokeWidth={1.4} />
+        <path {...S} className="tmo-type" style={{ animationDelay: "0.4s" }} d="M30 66h22" strokeWidth={1.4} />
       </g>
       <circle className="tmo-send" cx="43" cy="29" r="16" fill="none" stroke="var(--red-ink)" strokeWidth={1.5} />
       <circle className="tmo-receive" cx="552" cy="48" r="30" fill="none" stroke="var(--red-ink)" strokeWidth={1.5} />
@@ -290,6 +296,7 @@ function Transfer() {
         <circle {...S} cx="296" cy="36" r="13" fill="var(--red-tint)" fillOpacity={0.55} />
         <path {...S} d="M305 46l10 10" strokeWidth={3} />
       </g>
+      <Glow cx={318} cy={66} r={36} className="tmo-glow--stamp" />
       <g className="tmo-stamp">
         <Tick cx={318} cy={66} r={12} />
       </g>
@@ -298,11 +305,15 @@ function Transfer() {
           <Coin key={d} x={342} y={49} delay={d} className="tmo-lane-b" />
         ))}
       </g>
+      <Glow cx={552} cy={48} r={62} className="tmo-glow--card" />
       <g className="tmo-card">
         <rect x="514" y="22" width="76" height="52" rx="7" {...S} fill={W} />
         <path {...S} d="M514 36h76" strokeWidth={4} />
         <rect x="524" y="48" width="14" height="11" rx="2" className="tmo-solid" />
         <path {...S} d="M546 60h34M546 52h20" strokeWidth={1.5} />
+        <g clipPath="url(#tmo-card-clip)">
+          <rect className="tmo-shine" x="490" y="16" width="30" height="64" fill="url(#tmo-shine)" />
+        </g>
       </g>
     </Scene>
   );
@@ -351,6 +362,7 @@ function Guest() {
         <rect x="-7" y="-7" width="14" height="14" rx="2.5" className="tmo-solid" />
         <path d="M-7 -2h14M0 -7v5" stroke="#fff" strokeWidth={1.2} fill="none" />
       </g>
+      <Glow cx={566} cy={60} r={38} className="tmo-glow--pin" />
       <ellipse className="tmo-shadow" cx="566" cy="88" rx="9" ry="2.4" fill="currentColor" opacity={0.18} />
       <g className="tmo-pin">
         <path {...S} d="M566 86s14-14 14-26a14 14 0 1 0-28 0c0 12 14 26 14 26z" className="tmo-tint" />
@@ -428,6 +440,7 @@ function Warranty() {
           </g>
         ))}
       </>
+      <Glow cx={300} cy={20} r={34} className="tmo-glow--guard" />
       <rect className="tmo-scan" x="268" y="40" width="64" height="2.5" rx="1.25" fill="var(--red-ink)" />
       <g className="tmo-guard">
         <path {...S} className="tmo-tint" d="M300 2l15 5v10c0 9-7 15-15 18-8-3-15-9-15-18V7z" />
@@ -465,9 +478,26 @@ export function TrustMotionDefs() {
           <stop offset="0.3" className="tmo-defs__red-mid" />
           <stop offset="1" className="tmo-defs__red-lo" />
         </linearGradient>
+        <radialGradient id="tmo-glow">
+          <stop offset="0" className="tmo-defs__glow-in" />
+          <stop offset="1" className="tmo-defs__glow-out" />
+        </radialGradient>
+        <linearGradient id="tmo-shine" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" className="tmo-defs__shine-out" />
+          <stop offset="0.5" className="tmo-defs__shine-in" />
+          <stop offset="1" className="tmo-defs__shine-out" />
+        </linearGradient>
+        <clipPath id="tmo-card-clip">
+          <rect x="514" y="22" width="76" height="52" rx="7" />
+        </clipPath>
       </defs>
     </svg>
   );
+}
+
+/** A soft red glow behind a success moment (`className` picks its timing in components.css). */
+function Glow({ cx, cy, r, className }: { cx: number; cy: number; r: number; className: string }) {
+  return <circle className={`tmo-glow ${className}`} cx={cx} cy={cy} r={r} fill="url(#tmo-glow)" />;
 }
 
 /** A soft contact shadow under an object standing on the ground. */

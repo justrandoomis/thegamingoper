@@ -1991,11 +1991,12 @@ select.field__input {
   animation-play-state: paused;
 }
 /* the scenes */
+/* overflow shows: glows may spill past the scene's top; the sides are the screen's edges (.home clips them) */
 .tmo {
   display: block;
   inline-size: 100%;
   block-size: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 .tmo * {
   transform-box: fill-box;
@@ -2030,6 +2031,26 @@ select.field__input {
 }
 .tmo-defs__red-lo {
   stop-color: var(--red-gloss-low);
+}
+.tmo-defs__glow-in {
+  stop-color: var(--red-gloss-mid);
+  stop-opacity: 0.32;
+}
+.tmo-defs__glow-out {
+  stop-color: var(--red-gloss-mid);
+  stop-opacity: 0;
+}
+.tmo-defs__shine-in {
+  stop-color: var(--on-red);
+  stop-opacity: 0.75;
+}
+.tmo-defs__shine-out {
+  stop-color: var(--on-red);
+  stop-opacity: 0;
+}
+/* a glow is only there for its moment */
+.tmo .tmo-glow {
+  opacity: 0;
 }
 .tmo {
   --tmo-line: color-mix(in oklab, var(--ink) 78%, transparent);
@@ -2081,6 +2102,14 @@ select.field__input {
 .tmo--delivery .tmo-ping {
   animation: tmo-ping 2.4s ease-out infinite;
 }
+.tmo--delivery .tmo-glow--house {
+  animation: tmo-glow-house 8s ease-out infinite;
+}
+/* the body leans into the brake and back as it pulls away (pivot: the wheels' line) */
+.tmo--delivery .tmo-tilt {
+  transform-origin: 50% 100%;
+  animation: tmo-tilt 8s ease-in-out infinite;
+}
 .tmo--delivery .tmo-bounce {
   animation: tmo-bob 0.35s ease-in-out infinite alternate;
 }
@@ -2113,6 +2142,9 @@ select.field__input {
 .tmo--cod .tmo-seal {
   animation: tmo-seal 4.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
 }
+.tmo--cod .tmo-glow--cod {
+  animation: tmo-glow-cod 4.8s ease-out infinite;
+}
 .tmo--cod .tmo-land {
   opacity: 0;
   animation: tmo-land 4.8s ease-out infinite;
@@ -2134,6 +2166,19 @@ select.field__input {
 }
 .tmo--transfer .tmo-stamp {
   animation: tmo-stamp 4.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+.tmo--transfer .tmo-type {
+  transform-origin: 0% 50%;
+  animation: tmo-type 1.5s cubic-bezier(0.3, 0.7, 0.3, 1) infinite;
+}
+.tmo--transfer .tmo-glow--stamp {
+  animation: tmo-glow-stamp 4.8s ease-out infinite;
+}
+.tmo--transfer .tmo-glow--card {
+  animation: tmo-glow-card 4.8s ease-out infinite;
+}
+.tmo--transfer .tmo-shine {
+  animation: tmo-shine 4.8s ease-in-out infinite;
 }
 .tmo--transfer .tmo-send {
   animation: tmo-ripple 1.5s ease-out infinite;
@@ -2158,6 +2203,9 @@ select.field__input {
 .tmo--guest .tmo-stop {
   animation: tmo-stop 5s ease-out infinite;
 }
+.tmo--guest .tmo-glow--pin {
+  animation: tmo-glow-pin 5s ease-out infinite;
+}
 .tmo--guest .tmo-stop-ring {
   opacity: 0;
   animation: tmo-stop-ring 5s ease-out infinite;
@@ -2178,6 +2226,9 @@ select.field__input {
 }
 .tmo--warranty .tmo-beam {
   animation: tmo-beam 2s ease-in-out infinite;
+}
+.tmo--warranty .tmo-glow--guard {
+  animation: tmo-glow-guard 2s ease-out infinite;
 }
 .tmo--warranty .tmo-scan {
   animation: tmo-scan 2s linear infinite;
@@ -2727,6 +2778,166 @@ select.field__input {
   70% {
     opacity: 0;
     transform: scale(0.4) rotate(0deg);
+  }
+}
+@keyframes tmo-tilt {
+  0%,
+  28%,
+  44%,
+  60%,
+  76%,
+  100% {
+    transform: rotate(0deg);
+  }
+  /* braking: the nose dips */
+  34% {
+    transform: rotate(2.5deg);
+  }
+  38% {
+    transform: rotate(-0.8deg);
+  }
+  /* pulling away: the nose lifts */
+  66% {
+    transform: rotate(-2deg);
+  }
+}
+@keyframes tmo-glow-house {
+  0%,
+  57% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  64% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  86% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+@keyframes tmo-glow-cod {
+  0%,
+  74% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  81% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  92% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+@keyframes tmo-type {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  35%,
+  80% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+@keyframes tmo-glow-stamp {
+  0%,
+  56% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  63% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  80% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  92%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+@keyframes tmo-glow-card {
+  0%,
+  64% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  72% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  86% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+}
+@keyframes tmo-shine {
+  0%,
+  66% {
+    transform: translateX(0) skewX(-20deg);
+  }
+  80%,
+  100% {
+    transform: translateX(110px) skewX(-20deg);
+  }
+}
+@keyframes tmo-glow-pin {
+  0%,
+  66% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  74% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  88% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+@keyframes tmo-glow-guard {
+  0% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  30%,
+  86% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.1);
   }
 }
 @media (prefers-reduced-motion: reduce) {

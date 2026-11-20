@@ -17,8 +17,8 @@
  *
  * What staff set in the content module (admin 17.01) arrives here: a pinned hero (getHomeData keeps a pin only while
  * its product can be bought and has a photo), the sections' order and what is hidden (the privacy panel always
- * shows; the trust strip follows the platform tiles when they lead, else the hero), and the banners of the home strip
- * under the trust strip (getStoreBanners: live, never demo, only links the store can open).
+ * shows; the banners of the home strip follow the platform tiles when they lead, else the hero — getStoreBanners: live,
+ * never demo, only links the store can open). The trust strip closes the page, under every section.
  *
  * "/old-name" — one path segment that is not a language — matches this route with an invalid locale (the layout
  * answers 404): a redirect staff set for that path is followed first (./content/redirect.server), and the page's
@@ -344,7 +344,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     recommendations: <RecommendationShelves result={recommendations} consent={prefs.consent} />,
     personal,
   };
-  // the trust strip follows the platform tiles when they lead (v2 §6.1), else the hero; the banners follow it
+  // the banners follow the platform tiles when they lead (v2 §6.1), else the hero; the trust strip closes the page
   const tilesLead = home.sections[0] === "platforms";
   const rest = tilesLead ? home.sections.slice(1) : home.sections;
 
@@ -359,11 +359,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
         {consentRow}
         {tilesLead ? sectionOf.platforms : null}
-        <TrustFacts deliveryFeeIqd={shell?.deliveryFeeIqd ?? null} payments={shell?.payments ?? null} />
         <StoreBanners banners={banners} label={t("banners.label")} ctaFallback={t("banners.open")} />
         {rest.map((kind) => (
           <Fragment key={kind}>{sectionOf[kind]}</Fragment>
         ))}
+        {/* the trust strip closes the page: the five service rows, each with its own scene (owner 2026-11-20) */}
+        <TrustFacts deliveryFeeIqd={shell?.deliveryFeeIqd ?? null} payments={shell?.payments ?? null} />
       </Sections>
       {overlays}
     </div>

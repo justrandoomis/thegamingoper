@@ -982,10 +982,14 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   }
   .ptile__img {
     inset-block: auto 14px;
-    inset-inline: auto -8%;
+    inset-inline: auto 0;
     inline-size: 58%;
     block-size: calc(100% + 22px);
     object-position: 100% 100%;
+  }
+  /* the tall PS5 keeps its place on the tile's edge, clear of the long «PlayStation» name */
+  .ptile[data-gel="playstation"] .ptile__img {
+    inset-inline-end: -8%;
   }
   [dir="rtl"] .ptile__img {
     object-position: 0% 100%;

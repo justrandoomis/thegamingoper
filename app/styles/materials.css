@@ -995,22 +995,22 @@ html:not([data-motion-ready]) .key:active > .key__cap {
      at the top instead it breaks out of the tile's top edge like the PS5 does */
   .ptile:not([data-gel="playstation"]) .ptile__img {
     inset-block: -38px auto;
-    inline-size: 62%;
+    inline-size: 46%;
     block-size: calc(100% + 38px);
     object-position: 100% 0%;
   }
   [dir="rtl"] .ptile:not([data-gel="playstation"]) .ptile__img {
     object-position: 0% 0%;
   }
-  /* the Switch photo is upright enough to be height-bound: kept to the tile's height so it pokes out as far as the PS5 */
+  /* the Switch photo is the bulkiest at this width: a little narrower so it clears the name */
   .ptile[data-gel="nintendo"] .ptile__img {
-    block-size: 100%;
+    inline-size: 44%;
   }
-  /* flat, wide hardware (a handheld, a monitor) is short: larger and tilted toward the tile's corner so it fills the
+  /* flat, wide hardware (a handheld, a monitor) is short: tilted toward the tile's corner so it fills the
      height instead of floating above an empty bottom */
   .ptile:is([data-gel="handheld"], [data-gel="pc"]) .ptile__img {
     inset-block-start: -30px;
-    inline-size: 72%;
+    inline-size: 50%;
     rotate: calc(-8deg * var(--dir));
     transform-origin: 50% 0%;
   }

@@ -45,8 +45,8 @@ export function RootNotFound({ locale }: { locale: Locale }) {
   );
 }
 
-/** The four doors, in the navigation's order. */
-const ROOT_PLATFORMS = ["nintendo", "playstation", "xbox", "handheld"] as const satisfies readonly Platform[];
+/** The five doors, in the navigation's order. */
+const ROOT_PLATFORMS = ["nintendo", "playstation", "xbox", "handheld", "pc"] as const satisfies readonly Platform[];
 
 export type RootNotFoundWords = NotFoundWords & { searchLabel: string; searchPlaceholder: string; searchSubmit: string; platforms: Record<Platform, string> };
 
@@ -65,7 +65,7 @@ export const ROOT_NOT_FOUND_WORDS: Record<Locale, RootNotFoundWords> = {
     searchLabel: "ابحث في المتجر",
     searchPlaceholder: "ابحث عن جهاز أو لعبة",
     searchSubmit: "ابحث",
-    platforms: { nintendo: "Nintendo", playstation: "PlayStation", xbox: "Xbox", handheld: "الأجهزة المحمولة" },
+    platforms: { nintendo: "Nintendo", playstation: "PlayStation", xbox: "Xbox", handheld: "الأجهزة المحمولة", pc: "الكمبيوتر" },
   },
   en: {
     title: "We could not find this page",
@@ -76,7 +76,7 @@ export const ROOT_NOT_FOUND_WORDS: Record<Locale, RootNotFoundWords> = {
     searchLabel: "Search the store",
     searchPlaceholder: "Search devices and games",
     searchSubmit: "Search",
-    platforms: { nintendo: "Nintendo", playstation: "PlayStation", xbox: "Xbox", handheld: "Handheld PCs" },
+    platforms: { nintendo: "Nintendo", playstation: "PlayStation", xbox: "Xbox", handheld: "Handheld PCs", pc: "PC" },
   },
   ckb: {
     title: "ئەم پەڕەیەمان نەدۆزییەوە",
@@ -87,6 +87,6 @@ export const ROOT_NOT_FOUND_WORDS: Record<Locale, RootNotFoundWords> = {
     searchLabel: "لە فرۆشگاکە بگەڕێ",
     searchPlaceholder: "بۆ ئامێر یان یارییەک بگەڕێ",
     searchSubmit: "بگەڕێ",
-    platforms: { nintendo: "Nintendo", playstation: "PlayStation", xbox: "Xbox", handheld: "ئامێرە دەستییەکان" },
+    platforms: { nintendo: "Nintendo", playstation: "PlayStation", xbox: "Xbox", handheld: "ئامێرە دەستییەکان", pc: "کۆمپیوتەر" },
   },
 };

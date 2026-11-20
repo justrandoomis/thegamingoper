@@ -23,7 +23,7 @@ One JSON file per product in `catalog/products/<slug>.json`, researched from off
   "slug": "nintendo-switch-2",                 // kebab-case, unique, stable
   "group": "nintendo-hardware",                // research group that owns the file
   "kind": "console",                           // console | handheld_pc | game | controller | headset | storage | accessory | vr | digital
-  "platform": "nintendo",                      // nintendo | playstation | xbox | pc_handheld | multi
+  "platform": "nintendo",                      // nintendo | playstation | xbox | pc_handheld | pc | multi
   "brand": "Nintendo",
   "category": "gaming-chairs",              // optional: a LEAF category slug of app/server/db/seed/demo/categories.ts; default by kind/platform (categoryOf)
   "deviceModel": "switch-2",                   // consoles / handhelds: the device this product IS (device hubs, compatibility targets)
@@ -100,7 +100,7 @@ Where the facts go (`app/server/db/seed/demo/import.ts`):
 | Catalogue | Database |
 |---|---|
 | `kind` | `products.kind`: `handheld_pc` → `console` (its device model has `device_kind = handheld_pc`), `vr` → `accessory` in the "vr" category; the research kind stays in `attributes.catalogue.kind` |
-| `platform` | `products.platform_id`: `pc_handheld` → the "handheld" platform; `multi` → none (multi-platform games go to the "multiplatform-games" category) |
+| `platform` | `products.platform_id`: `pc_handheld` → the "handheld" platform; `pc` → the "pc" platform (PC-only gear: keyboards, mice, mouse pads, monitors, microphones, speakers, chairs, lighting, gaming glasses — a product that also works with consoles stays `multi` and reaches the PC page through its `windows-pc` compatibility); `multi` → none (multi-platform games go to the "multiplatform-games" category) |
 | `deviceModel` / `family` | the product's `device_model_id`; when one `deviceModel` value is shared by different families (the MSI Claw line), each family is its own device model |
 | `specs` | `products.specs` as `{ [key]: { ar, en, ckb, label: { ar, en, ckb } } }`, in research order; the device model gets the specs of the product that is that device |
 | `highlights`, `inTheBox`, `notes`, `game`, variant notes, variant release dates, extra barcodes, `sources`, `verification.unverified`, `status`, `releaseDate` | `products.attributes` (`ProductAttributes` in import.ts) |

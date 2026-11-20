@@ -5,7 +5,7 @@
  *
  * Where each catalogue fact goes:
  *   kind            products.kind (handheld PCs → console, VR → accessory; attributes.catalogue.kind keeps the research kind)
- *   platform        products.platform_id (pc_handheld → handheld; multi → none)
+ *   platform        products.platform_id (pc_handheld → handheld; pc → pc; multi → none)
  *   deviceModel     products.device_model_id for the products that ARE a device (./devices.ts)
  *   specs           products.specs: { [key]: { ar, en, ckb, label: { ar, en, ckb } } } in research order
  *   highlights, inTheBox, notes, game, variant notes, variant release dates, extra barcodes, sources,
@@ -375,7 +375,7 @@ function platformsOf(product: CatalogProduct): PlatformSlug[] {
   const found = new Set<PlatformSlug>();
   for (const key of keys) {
     const model = DEMO_DEVICE_MODELS.find((entry) => entry.slug === key);
-    if (model && model.platform !== "pc") found.add(model.platform);
+    if (model) found.add(model.platform);
   }
   return [...found];
 }

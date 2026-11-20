@@ -2,7 +2,7 @@
   "slug": "twisted-minds-rgb-led-strip",
   "group": "power-cables-storage-misc",
   "kind": "accessory",
-  "platform": "multi",
+  "platform": "pc",
   "category": "lighting",
   "brand": "Twisted Minds",
   "status": "available",

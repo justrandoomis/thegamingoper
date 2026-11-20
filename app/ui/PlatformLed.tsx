@@ -24,7 +24,7 @@ import { cx } from "./cx";
  * 1.0: `solid` and `on` are accepted and ignored (a dot has one brightness). The 1.0 pictograms (`PlatformGlyph`) are
  * gone (§4.2, stage 4): platforms are recognised by name, colour and real photos.
  */
-export const PLATFORMS = ["nintendo", "playstation", "xbox", "handheld"] as const;
+export const PLATFORMS = ["nintendo", "playstation", "xbox", "handheld", "pc"] as const;
 export type Platform = (typeof PLATFORMS)[number];
 /** A platform, or "brand" (store-wide campaigns only). */
 export type Gel = Platform | "brand";
@@ -52,7 +52,7 @@ export function PlatformLed({ platform, bar = false, className, style }: Platfor
 
 export type PlatformLabelProps = {
   platform: Gel;
-  /** Visible name. Default: the platform's own name (Latin brand names stay Latin; "handheld" is translated). */
+  /** Visible name. Default: the platform's own name (Latin brand names stay Latin; "handheld" and "pc" are translated). */
   label?: string;
   /** 1.0 — ignored (pictograms are retired; v2.1 draws devices with <Icon name="device-…">). */
   glyph?: boolean;

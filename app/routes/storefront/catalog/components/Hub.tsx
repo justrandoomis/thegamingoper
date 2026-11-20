@@ -82,7 +82,7 @@ export function useHubLead(): string | null {
   return shell.payments.cod ? t("hub.lead", { fee }) : t("hub.leadNoCod", { fee });
 }
 
-/** «كل شيء عن أجهزة PlayStation» — one string per platform (the handheld platform reads «الأجهزة المحمولة»). */
+/** «كل شيء عن أجهزة PlayStation» — one string per platform (the handheld platform reads «الأجهزة المحمولة», PC «كل ما يعمل مع الكمبيوتر»). */
 export function useDevicesTitle(): (slug: string, name: string) => string {
   const t = useT("catalog");
   return (slug, name) => (isPlatform(slug) ? t(`hub.devices.${slug}`) : t("hub.devices.generic", { name }));
@@ -105,6 +105,10 @@ const KIND_ICON: Readonly<Record<string, IconName>> = {
   parts: "kind-repair",
   used: "kind-used",
   repair: "kind-repair",
+  // the owner's sheet departments (2026-11-18): PC gear, cables and power, lighting
+  pc: "device-pc",
+  cables: "plug",
+  lighting: "sparkle",
 };
 
 /** A department staff added under a kind the map does not know: its slug's words decide (else the grid). */

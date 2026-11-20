@@ -84,6 +84,7 @@ export default defineMessages({
       playstation: "PlayStation",
       xbox: "Xbox",
       handheld: "الأجهزة المحمولة",
+      pc: "الكمبيوتر",
     },
   },
   en: {
@@ -161,6 +162,7 @@ export default defineMessages({
       playstation: "PlayStation",
       xbox: "Xbox",
       handheld: "Handheld PCs",
+      pc: "PC",
     },
   },
   ckb: {
@@ -238,6 +240,7 @@ export default defineMessages({
       playstation: "PlayStation",
       xbox: "Xbox",
       handheld: "ئامێرە دەستییەکان",
+      pc: "کۆمپیوتەر",
     },
   },
 });

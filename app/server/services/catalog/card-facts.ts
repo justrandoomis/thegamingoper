@@ -125,6 +125,7 @@ const MODEL_SHORT_NAMES: Readonly<Record<string, string>> = {
   "legion-go": "Legion Go",
   "msi-claw-8-ex-ai-plus": "MSI Claw 8 EX AI+",
   "msi-claw-a8": "MSI Claw A8",
+  "windows-pc": "Windows PC",
 };
 
 /** A device model's short name (MODEL_SHORT_NAMES), else its full name as given. */
@@ -138,6 +139,8 @@ const PLATFORM_NAMES: Readonly<Record<string, L10n>> = {
   playstation: { ar: "PlayStation", en: "PlayStation", ckb: "PlayStation" },
   xbox: { ar: "Xbox", en: "Xbox", ckb: "Xbox" },
   handheld: { ar: "الأجهزة المحمولة", en: "Handheld PCs", ckb: "ئامێرە دەستییەکان" },
+  // the short Latin «PC» on the card line, as the Windows PC family already reads there («لوحة مفاتيح · PC»)
+  pc: { ar: "PC", en: "PC", ckb: "PC" },
 };
 
 /**

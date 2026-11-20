@@ -936,10 +936,19 @@
     margin-inline: var(--s-2);
     background: var(--line-2);
   }
-  /* 1024–1279: the row's room goes to the platforms; «الإكسسوارات» is in every mega menu */
+  /* the row's room goes to the platforms: with five (PC, 2026-11-20) «الإكسسوارات» ran under the demo chip at every
+     width the page grows to in English and Sorani (and below 1536 in Arabic); it is in every mega menu */
+  .shell-navitem--roomy {
+    display: none;
+  }
+  /* 1024–1279: the five platforms keep their names and chevrons; their glyph circles give way (Sorani's «الصيانة» went
+     under the demo chip) */
   @media (max-width: 79.99rem) {
-    .shell-navitem--roomy {
+    .shell-navitem--plat .shell-navitem__glyph {
       display: none;
+    }
+    .shell-navitem--plat {
+      padding-inline-start: 8px;
     }
   }
   .shell-navend {
@@ -1876,6 +1885,10 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--s-3);
+  }
+  /* an odd last platform (five since PC, 2026-11-20) takes the whole row */
+  .shell-csheet__tiles > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
   .shell-csheet__head {
     margin-block-end: var(--s-3);

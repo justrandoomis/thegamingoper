@@ -36,7 +36,7 @@ export function PagePreview({ title, blocks, lang, emptyText }: { title: L10n; b
   );
 }
 
-const GELS = new Set(["nintendo", "playstation", "xbox", "handheld"]);
+const GELS = new Set(["nintendo", "playstation", "xbox", "handheld", "pc"]);
 
 /** The photo's place on the band: at the inline end from 768px, a 200px box at the top on phones (the words go under it). */
 const MEDIA = "absolute inset-y-0 end-0 w-[42%] max-md:inset-x-0 max-md:bottom-auto max-md:h-[200px] max-md:w-auto";

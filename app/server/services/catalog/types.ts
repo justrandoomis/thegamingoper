@@ -33,7 +33,7 @@ export type CardSort = (typeof CARD_SORTS)[number];
 export const MAX_CARD_PAGE = 60;
 
 export type CardFilters = {
-  /** Platform slug(s): "nintendo" | "playstation" | "xbox" | "handheld" (any active platform). */
+  /** Platform slug(s): "nintendo" | "playstation" | "xbox" | "handheld" | "pc" (any active platform). */
   platform?: string | readonly string[];
   /** Category slug; the category's active sub-categories are included. */
   category?: string;

@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
  * round caps and joins (2px at 24px, the before's weight), in currentColor. <Icon name="device-playstation" /> renders
  * them inline, through the same API as the sprite (app/art/Icon.tsx).
  *
- *   device-*   the four platforms as neutral device silhouettes (never logos — the owner has not given logo rights,
+ *   device-*   the five platforms as neutral device silhouettes (never logos — the owner has not given logo rights,
  *              DESIGN.md §14): the before's PlatformGlyph pictograms (git ac1a104), redrawn at 2px
  *   kind-*     catalogue kinds: console, game, controller, headset, storage, charging, top-up card, accessory, used,
  *              repair — for category tiles, filters, the categories sheet
@@ -37,6 +37,13 @@ export const GLYPHS = {
       <rect x="2" y="6.5" width="20" height="11" rx="3.8" />
       <rect x="7.6" y="9" width="8.8" height="6" rx="1.2" />
       <path d="M4.9 10.6h.1M19 13.4h.1" />
+    </>
+  ),
+  // a monitor on its stand (2026-11-20, the PC platform)
+  "device-pc": (
+    <>
+      <rect x="2.5" y="4" width="19" height="12.5" rx="2.2" />
+      <path d="M12 16.5v3.5M8 20h8" />
     </>
   ),
   "kind-console": (
@@ -153,7 +160,7 @@ export const GLYPH_NAMES = Object.keys(GLYPHS) as GlyphName[];
 
 /** The glyphs by purpose — for the design-system page and for finding the right one. */
 export const GLYPH_GROUPS = {
-  devices: ["device-nintendo", "device-playstation", "device-xbox", "device-handheld"],
+  devices: ["device-nintendo", "device-playstation", "device-xbox", "device-handheld", "device-pc"],
   kinds: ["kind-console", "kind-game", "kind-controller", "kind-headset", "kind-storage", "kind-charging", "kind-topup", "kind-accessory", "kind-used", "kind-repair"],
   media: ["media-play", "media-pause"],
   status: ["status-info", "status-ok", "status-warning", "status-error", "status-offline"],

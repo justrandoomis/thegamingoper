@@ -1,7 +1,8 @@
 /**
  * «التصنيفات» on phones and tablets (Design v2.1 — the client's reference «التصنيفات» screens; v2 §5.10): a
  * full-height sheet —
- *   1. the four platforms as the kit's vivid compact platform tiles (2 × 2: colour, name, count, the hardware photo);
+ *   1. the platforms as the kit's vivid compact platform tiles (two to a row, an odd last one across: colour, name,
+ *      count, the hardware photo);
  *   2. «الأقسام»: the departments as glass icon tiles, three to a row (four in a sheet 520px wide or more; a short
  *      last row centred) — a red kind icon, the name and the
  *      count (controllers, headsets, storage, VR, gift cards, accessories, games — consoles and handheld PCs live inside
@@ -42,6 +43,10 @@ const CATEGORY_GLYPH: Record<(typeof SHEET_CATEGORY_KINDS)[number], IconName> = 
   vr: "eye",
   digital: "kind-topup",
   accessories: "kind-accessory",
+  pc: "device-pc",
+  chairs: "kind-accessory",
+  lighting: "sparkle",
+  cables: "plug",
   games: "kind-game",
 };
 const glyphOf = (kind: string): IconName => (kind in CATEGORY_GLYPH ? CATEGORY_GLYPH[kind as keyof typeof CATEGORY_GLYPH] : "squares-four");

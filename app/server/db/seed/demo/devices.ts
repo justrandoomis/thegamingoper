@@ -9,7 +9,7 @@
  * plus `variant` when one product covers two models: the 2020 PS5 disc and Digital Editions).
  * `ps4` (the PlayStation 4 family) has no product either: the store sells PS4 games and accessories, not the console.
  * `windows-pc` is the generic target of the catalogue's PC compatibility notes; it has no product,
- * belongs to the inactive "pc" platform (not in the storefront menus) and carries no specifications.
+ * belongs to the "pc" platform and carries no specifications (its hub lists what works with a PC).
  *
  * Specifications are stored as researched: `specs[key]` is the localized value and carries its
  * localized `label` (`{ ar, en, ckb, label: { ar, en, ckb } }`, see ./import.ts), so a device hub can
@@ -25,8 +25,10 @@ export type PlatformSlug = "nintendo" | "playstation" | "xbox" | "handheld" | "p
 
 /**
  * `accent` is the design-token name of the platform light (`--gel-<accent>`); `artKey` a product
- * photo key for the platform tile. The "pc" platform only anchors the generic Windows PC target and
- * is not shown in the storefront (is_active = 0).
+ * photo key for the platform tile. The "pc" platform (2026-11-20) groups the PC gear — keyboards, mice, mouse pads,
+ * monitors, microphones, speakers, chairs, lighting, gaming glasses (catalogue platform "pc") — and the multi-platform
+ * products whose researched compatibility names the generic Windows PC target, which it also anchors. Handheld PCs
+ * keep their own platform.
  */
 export type PlatformSeed = { slug: PlatformSlug; name: T3; accent: string; artKey: string | null; isActive: boolean };
 
@@ -37,7 +39,7 @@ export const DEMO_PLATFORMS: readonly PlatformSeed[] = [
   { slug: "playstation", name: same("PlayStation"), accent: "playstation", artKey: "playstation-5-slim--1", isActive: true },
   { slug: "xbox", name: same("Xbox"), accent: "xbox", artKey: "xbox-series-x--1", isActive: true },
   { slug: "handheld", name: t3("الأجهزة المحمولة", "Handheld PCs", "کۆمپیوتەری یاریی دەستی"), accent: "handheld", artKey: "steam-deck-oled--1", isActive: true },
-  { slug: "pc", name: t3("الحاسوب الشخصي", "PC", "کۆمپیوتەری کەسی"), accent: "brand", artKey: null, isActive: false },
+  { slug: "pc", name: t3("الكمبيوتر", "PC", "کۆمپیوتەر"), accent: "pc", artKey: "asus-tuf-gaming-vg279qm5a--1", isActive: true },
 ];
 
 /** Catalogue platform → store platform. "multi" products (sold for several platforms) have none. */
@@ -46,6 +48,7 @@ export const PLATFORM_OF_CATALOG: Record<CatalogProduct["platform"], PlatformSlu
   playstation: "playstation",
   xbox: "xbox",
   pc_handheld: "handheld",
+  pc: "pc",
   multi: null,
 };
 

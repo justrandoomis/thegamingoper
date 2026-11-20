@@ -530,8 +530,9 @@ describe("hub data", () => {
     }
     expect(links).toBeGreaterThan(0);
     // every seeded model has a photo: the menu shows pictures, not the glyph — except the PS4, which the store
-    // lists for its games and accessories only (no PS4 console product, so no researched photo)
-    expect(nav.platforms.flatMap((platform) => platform.devices).filter((link) => link.href !== "/device/ps4").every((link) => typeof link.artKey === "string" && /^[a-z0-9-]+--\d+$/.test(link.artKey))).toBe(true);
+    // lists for its games and accessories only (no PS4 console product, so no researched photo), and the generic Windows PC
+    // of the PC platform (2026-11-20: any PC, no product of its own)
+    expect(nav.platforms.flatMap((platform) => platform.devices).filter((link) => link.href !== "/device/ps4" && link.href !== "/device/windows-pc").every((link) => typeof link.artKey === "string" && /^[a-z0-9-]+--\d+$/.test(link.artKey))).toBe(true);
     // category and product links carry none (a NavCategory's own artKey is its tile photo)
     for (const platform of nav.platforms) for (const link of [...platform.games, ...platform.accessories, ...platform.consoles]) expect(link.artKey).toBeUndefined();
   });

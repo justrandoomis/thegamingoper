@@ -2,7 +2,7 @@
   "slug": "redragon-eisa-k686-pro-se",
   "group": "pc-peripherals",
   "kind": "accessory",
-  "platform": "multi",
+  "platform": "pc",
   "brand": "Redragon",
   "category": "keyboards",
   "status": "available",

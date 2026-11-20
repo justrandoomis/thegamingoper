@@ -2,7 +2,7 @@
   "slug": "redragon-stentor-gs500",
   "group": "pc-peripherals",
   "kind": "accessory",
-  "platform": "multi",
+  "platform": "pc",
   "brand": "Redragon",
   "category": "speakers",
   "status": "available",

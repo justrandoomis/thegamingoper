@@ -13,7 +13,8 @@ export type CatalogL10n = { ar: string; en: string; ckb: string };
 export const CATALOG_KINDS = ["console", "handheld_pc", "game", "controller", "headset", "storage", "accessory", "vr", "digital"] as const;
 export type CatalogKind = (typeof CATALOG_KINDS)[number];
 
-export const CATALOG_PLATFORMS = ["nintendo", "playstation", "xbox", "pc_handheld", "multi"] as const;
+/** "pc" = PC gear (keyboards, mice, monitors …; 2026-11-20); handheld PCs are "pc_handheld". */
+export const CATALOG_PLATFORMS = ["nintendo", "playstation", "xbox", "pc_handheld", "pc", "multi"] as const;
 export type CatalogPlatform = (typeof CATALOG_PLATFORMS)[number];
 
 /** Availability on the research date: preorder = date announced and orders open; upcoming = announced, no orders. */

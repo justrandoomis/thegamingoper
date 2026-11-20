@@ -79,6 +79,7 @@
   --color-dot-playstation: var(--dot-playstation);
   --color-dot-xbox: var(--dot-xbox);
   --color-dot-handheld: var(--dot-handheld);
+  --color-dot-pc: var(--dot-pc);
 
   /* radius — today's scale (§5.7) and its jobs */
   --radius-xs: var(--r-xs);

@@ -23,7 +23,7 @@
 import type { ImageRef, ProductCardData, ProductKind, StockState } from "~/lib/dto";
 
 /** Platform light of the stage (the four platforms the design system knows). */
-export type ProductGel = "nintendo" | "playstation" | "xbox" | "handheld";
+export type ProductGel = "nintendo" | "playstation" | "xbox" | "handheld" | "pc";
 
 export type ProductPlatform = {
   slug: string;

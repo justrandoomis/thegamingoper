@@ -57,8 +57,8 @@ import { gelOfPlatformName } from "~/server/services/catalog/product-types";
 
 // ───────────────────────────────────────────────────────────────── constants
 
-/** The four platforms of the key bank (DESIGN.md §2) — the same list as PLATFORMS in ~/ui/PlatformLed. */
-export const HOME_PLATFORMS = ["nintendo", "playstation", "xbox", "handheld"] as const;
+/** The five platforms of the key bank (DESIGN.md §2; PC since 2026-11-20) — the same list as PLATFORMS in ~/ui/PlatformLed. */
+export const HOME_PLATFORMS = ["nintendo", "playstation", "xbox", "handheld", "pc"] as const;
 export type HomePlatformSlug = (typeof HOME_PLATFORMS)[number];
 
 export const isHomePlatform = (value: unknown): value is HomePlatformSlug => typeof value === "string" && (HOME_PLATFORMS as readonly string[]).includes(value);

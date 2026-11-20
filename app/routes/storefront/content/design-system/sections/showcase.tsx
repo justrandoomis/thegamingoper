@@ -244,8 +244,9 @@ const TILE_ART: Record<Platform, string> = {
   playstation: "playstation-5-slim--1",
   xbox: "xbox-series-x--1",
   handheld: "lenovo-legion-go-2--1",
+  pc: "asus-tuf-gaming-vg279qm5a--1",
 };
-const TILE_COUNT: Record<Platform, number> = { nintendo: 39, playstation: 42, xbox: 28, handheld: 15 };
+const TILE_COUNT: Record<Platform, number> = { nintendo: 39, playstation: 42, xbox: 28, handheld: 15, pc: 31 };
 
 const photo = (artKey: string): ImageRef => ({ artKey, mediaKey: null, alt: "", isIllustration: false });
 const DAY = 86_400_000;

@@ -19,7 +19,7 @@ export type StoreSetSeed = {
   short: T3;
   description: T3;
   category: string;
-  platform: "nintendo" | "playstation" | "xbox" | "handheld";
+  platform: "nintendo" | "playstation" | "xbox" | "handheld" | "pc";
   /** The device model the set contains (its device hub lists the set). */
   deviceModel: string | null;
   components: ReadonlyArray<{ sku: string; qty: number }>;

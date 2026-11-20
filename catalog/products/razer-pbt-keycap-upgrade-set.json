@@ -2,7 +2,7 @@
   "slug": "razer-pbt-keycap-upgrade-set",
   "group": "pc-peripherals",
   "kind": "accessory",
-  "platform": "multi",
+  "platform": "pc",
   "brand": "Razer",
   "category": "keyboards",
   "status": "available",

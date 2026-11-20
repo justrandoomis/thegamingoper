@@ -314,7 +314,7 @@ type Engine = {
 const deviceName = (engine: Engine, model: DeviceTarget) => fsi(pick(model.name, engine.locale) || model.slug);
 
 /** The four storefront platforms use the design system's names ("Nintendo", "أجهزة محمولة" — ui:platform.*), others their own. */
-const UI_PLATFORMS: ReadonlySet<string> = new Set(["nintendo", "playstation", "xbox", "handheld"]);
+const UI_PLATFORMS: ReadonlySet<string> = new Set(["nintendo", "playstation", "xbox", "handheld", "pc"]);
 const platformName = (engine: Engine, platform: { slug: string; name: string } | undefined, fallbackSlug: string) =>
   fsi(UI_PLATFORMS.has(platform?.slug ?? fallbackSlug) ? serverT(engine.locale, "ui")(`platform.${platform?.slug ?? fallbackSlug}`) : pick(parseJson<L10n>(platform?.name) ?? { ar: fallbackSlug }, engine.locale));
 

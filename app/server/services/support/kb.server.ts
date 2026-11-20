@@ -17,7 +17,7 @@
  *
  * Services take `db` first and never import "cloudflare:workers".
  */
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, ne, sql } from "drizzle-orm";
 import { LOCALE_CODES, pick, type L10n, type Locale } from "~/lib/locales";
 import type { Db } from "~/server/db/drizzle.server";
 import { deviceModels, knowledgeArticles, platforms, type LocalizedBlocks } from "~/server/db/schema";
@@ -29,8 +29,9 @@ import type { ArticleDetail, ArticleKind, ArticleSummary, HelpSearch, SupportDev
 // ───────────────────────────────────────────────────────────────── device directory
 
 /**
- * Published device models of the active platforms, grouped by platform in menu order. Inactive platforms (the
- * generic "pc" target of compatibility notes) and unpublished models are left out.
+ * Published device models of the active platforms, grouped by platform in menu order. Inactive platforms and
+ * unpublished models are left out, and so is the "pc" platform: its one model is the generic Windows PC target of
+ * compatibility notes (the PC platform sells gear, not a device the support centre services).
  */
 export async function getSupportDirectory(db: Db, locale: Locale): Promise<SupportPlatformGroup[]> {
   const rows = await db
@@ -47,7 +48,7 @@ export async function getSupportDirectory(db: Db, locale: Locale): Promise<Suppo
     })
     .from(deviceModels)
     .innerJoin(platforms, eq(deviceModels.platformId, platforms.id))
-    .where(and(eq(platforms.isActive, true), eq(deviceModels.status, "published")))
+    .where(and(eq(platforms.isActive, true), ne(platforms.slug, "pc"), eq(deviceModels.status, "published")))
     .orderBy(asc(platforms.sort), asc(platforms.slug), asc(deviceModels.sort), asc(deviceModels.slug));
 
   const groups: SupportPlatformGroup[] = [];

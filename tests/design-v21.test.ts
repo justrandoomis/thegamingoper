@@ -204,8 +204,8 @@ describe("G3 · surfaces, glass and the platform colours", () => {
 });
 
 describe("G4 · icons: device and kind glyphs through the Icon API", () => {
-  it("the four device silhouettes and the ten catalogue kinds exist by name", () => {
-    expect(GLYPH_GROUPS.devices).toEqual(["device-nintendo", "device-playstation", "device-xbox", "device-handheld"]);
+  it("the five device silhouettes (PC since 2026-11-20) and the ten catalogue kinds exist by name", () => {
+    expect(GLYPH_GROUPS.devices).toEqual(["device-nintendo", "device-playstation", "device-xbox", "device-handheld", "device-pc"]);
     expect(GLYPH_GROUPS.kinds).toHaveLength(10);
     for (const name of [...GLYPH_GROUPS.devices, ...GLYPH_GROUPS.kinds, ...GLYPH_GROUPS.media]) expect(GLYPH_NAMES).toContain(name);
     expect(isGlyph("kind-controller")).toBe(true);

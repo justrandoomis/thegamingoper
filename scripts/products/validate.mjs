@@ -12,7 +12,7 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace
 const DIR = path.join(ROOT, "catalog", "products");
 
 const KINDS = ["console", "handheld_pc", "game", "controller", "headset", "storage", "accessory", "vr", "digital"];
-const PLATFORMS = ["nintendo", "playstation", "xbox", "pc_handheld", "multi"];
+const PLATFORMS = ["nintendo", "playstation", "xbox", "pc_handheld", "pc", "multi"];
 const STATUSES = ["available", "preorder", "upcoming", "discontinued", "limited"];
 const COMPAT = ["verified", "partial", "incompatible", "unverified"];
 const RELATED = ["setup", "accessory", "upsell", "alternative"];

@@ -69,7 +69,7 @@ const SLUG = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/;
 /** At most this many cards per related shelf. */
 export const RELATED_PER_SHELF = 12;
 
-const GELS: readonly ProductGel[] = ["nintendo", "playstation", "xbox", "handheld"];
+const GELS: readonly ProductGel[] = ["nintendo", "playstation", "xbox", "handheld", "pc"];
 const gelOf = (accent: string | null | undefined): ProductGel | null =>
   accent && (GELS as readonly string[]).includes(accent) ? (accent as ProductGel) : null;
 

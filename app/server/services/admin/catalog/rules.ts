@@ -31,7 +31,7 @@ export const COMPAT_TARGET_LIST = ["device_model", "generation", "platform"] as 
 export const DEVICE_KIND_LIST = ["console", "handheld_pc", "controller", "headset", "other"] as const satisfies readonly DeviceKind[];
 export const DEVICE_MODEL_STATUS_LIST = ["draft", "published", "archived"] as const satisfies readonly DeviceModelStatus[];
 /** Platform accents (design-token gel names; "brand" = TamTam red). */
-export const PLATFORM_ACCENTS = ["brand", "nintendo", "playstation", "xbox", "handheld"] as const;
+export const PLATFORM_ACCENTS = ["brand", "nintendo", "playstation", "xbox", "handheld", "pc"] as const;
 
 /** Statuses as the admin shows and filters them: the stored ones plus "hidden" (taken off the storefront). */
 export const ADMIN_STATUSES = ["draft", "review", "scheduled", "published", "hidden", "archived"] as const;

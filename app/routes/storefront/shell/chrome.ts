@@ -371,9 +371,10 @@ export function megaWords(t: TFunction, slug: string, name: string): { allDevice
 
 /**
  * The departments the categories sheet shows (v2 §5.10), in this order: controllers, headsets, storage, VR, gift cards,
- * accessories, games. Consoles and handheld PCs live inside their platforms (the platform tiles above them).
+ * accessories, the owner's sheet departments (PC gear, gaming chairs, lighting, cables and power — 2026-11-18), games.
+ * Consoles and handheld PCs live inside their platforms (the platform tiles above them).
  */
-export const SHEET_CATEGORY_KINDS = ["controllers", "headsets", "storage", "vr", "digital", "accessories", "games"] as const;
+export const SHEET_CATEGORY_KINDS = ["controllers", "headsets", "storage", "vr", "digital", "accessories", "pc", "chairs", "lighting", "cables", "games"] as const;
 
 export function sheetCategories(categories: readonly NavCategory[]): NavCategory[] {
   const order: readonly string[] = SHEET_CATEGORY_KINDS;

@@ -2,7 +2,7 @@
   "slug": "redragon-p041-xeon-xl",
   "group": "pc-peripherals",
   "kind": "accessory",
-  "platform": "multi",
+  "platform": "pc",
   "brand": "Redragon",
   "category": "mouse-pads",
   "status": "available",

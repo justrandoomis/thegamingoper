@@ -141,11 +141,12 @@ describe("getHomeData — platforms and their heroes", () => {
   it("offers the bank's platforms that are active, in the store's menu order", async () => {
     const expected = await rows<{ slug: string }>(`SELECT slug FROM platforms WHERE is_active = 1 ORDER BY sort, id`);
     expect(home.platforms.map((platform) => platform.slug)).toEqual(expected.map((row) => row.slug).filter((slug) => (HOME_PLATFORMS as readonly string[]).includes(slug)));
-    expect(home.platforms.length).toBe(4);
+    expect(home.platforms.length).toBe(5);
   });
 
-  it("gives every platform a hero: a buyable console of that platform with a photo", () => {
-    for (const platform of home.platforms) {
+  it("gives every console platform a hero: a buyable console of that platform with a photo (PC sells gear, no console: none)", () => {
+    expect(home.platforms.find((platform) => platform.slug === "pc")?.hero).toBeNull();
+    for (const platform of home.platforms.filter((entry) => entry.slug !== "pc")) {
       expect(platform.hero, platform.slug).not.toBeNull();
       const card = home.cards[platform.hero!.productId];
       expect(card.kind).toBe("console");
@@ -171,6 +172,11 @@ describe("getHomeData — platforms and their heroes", () => {
         const days = daysSinceRelease(row.released, t.now);
         return days !== null && days >= 0 && days <= NEW_RELEASE_DAYS;
       });
+      // PC (2026-11-20) sells gear, no console: no hero unless staff pin one
+      if (base.length === 0) {
+        expect(platform.hero, platform.slug).toBeNull();
+        continue;
+      }
       expect(platform.hero?.mode, platform.slug).toBe(fresh.length > 0 ? "new" : "lead");
       if (fresh.length === 0) expect(platform.hero?.productId, platform.slug).toBe(base[0]?.id);
     }
@@ -193,7 +199,7 @@ describe("getHomeData — platforms and their heroes", () => {
   });
 
   it("speaks the request's language", async () => {
-    for (const platform of homeEn.platforms) {
+    for (const platform of homeEn.platforms.filter((entry) => entry.hero)) {
       const [row] = await rows<{ name: string }>("SELECT name FROM products WHERE id = ?", platform.hero!.productId);
       expect(homeEn.cards[platform.hero!.productId].name).toBe(l10n(row.name).en);
     }
@@ -383,7 +389,7 @@ describe("getHomeData — shelves", () => {
   it("sends each card once, and only the cards the page names", () => {
     const named = new Set<string>(home.deals);
     for (const platform of home.platforms) {
-      named.add(platform.hero!.productId);
+      if (platform.hero) named.add(platform.hero.productId);
       for (const id of [...platform.newArrivals, ...platform.games, ...platform.gear]) named.add(id);
     }
     expect(new Set(Object.keys(home.cards))).toEqual(named);
@@ -428,7 +434,7 @@ describe("getHomeData — coming soon", () => {
   it("keeps pre-orders off every shelf (they cannot be added to a cart)", () => {
     const preorderIds = new Set(home.comingSoon.filter((item) => item.variantCount === 0).map((item) => item.productId));
     for (const platform of home.platforms) {
-      for (const id of [platform.hero!.productId, ...platform.newArrivals, ...platform.games, ...platform.gear]) expect(preorderIds.has(id)).toBe(false);
+      for (const id of [...(platform.hero ? [platform.hero.productId] : []), ...platform.newArrivals, ...platform.games, ...platform.gear]) expect(preorderIds.has(id)).toBe(false);
     }
   });
 
@@ -481,7 +487,7 @@ describe("getHomeData — coming soon", () => {
 
 describe("recently viewed cards", () => {
   it("returns cards in the order asked, skipping what cannot be shown", async () => {
-    const [a, b] = home.platforms.map((platform) => platform.hero!.productId);
+    const [a, b] = home.platforms.flatMap((platform) => (platform.hero ? [platform.hero.productId] : []));
     const cards = await getRecentlyViewedCards(t.db, "en", [b, "prd_does-not-exist", a, b], t.now);
     expect(cards.map((card) => card.id)).toEqual([b, a]);
     expect(await getRecentlyViewedCards(t.db, "ar", [], t.now)).toEqual([]);
@@ -537,7 +543,7 @@ describe("onboarding answers", () => {
 // ───────────────────────────────────────────────────────────────── client rules
 
 describe("client rules", () => {
-  it("uses the design system's four platforms and one recently-viewed limit", () => {
+  it("uses the design system's five platforms and one recently-viewed limit", () => {
     expect([...HOME_PLATFORMS]).toEqual([...PLATFORMS]);
     expect(RECENT_MAX).toBe(SERVER_RECENT_MAX);
   });
@@ -635,7 +641,7 @@ describe("client rules", () => {
       expect(backs, platform.slug).not.toContain(picture);
       expect(picture, platform.slug).toBe(own === heroArt ? otherView(own, heroArt) : own);
       // the corner object of the intro is the platform's lead device; the tile does not step away from it
-      const lead = home.cards[platform.hero!.productId].image.artKey;
+      const lead = platform.hero ? home.cards[platform.hero.productId].image.artKey : null;
       if (own === lead && own !== heroArt) expect(picture, platform.slug).toBe(lead);
     }
     expect(FEATURED_PLATFORM).toBe("nintendo");
@@ -773,9 +779,9 @@ describe("client rules", () => {
     const lean = heroSlides(bank, artOf, { usedArt: [], fallbackArt: "playstation-5-pro--1" });
     expect(lean.at(-1)).toEqual({ kind: "tradeIn", key: "trade-in", art: "playstation-5-pro--1" });
     expect(heroSlides([], artOf, { usedArt: [] })).toEqual([{ kind: "tradeIn", key: "trade-in", art: null }]);
-    // the demo catalogue: four platform banners, Nintendo first, then trade-in and used
-    const demo = heroSlides(home.platforms, (entry) => home.cards[entry.hero!.productId]?.image.artKey, { usedArt: home.used.map((unit) => unit.image.artKey) });
-    expect(demo.map((slide) => slide.key)).toEqual([FEATURED_PLATFORM, ...home.platforms.map((entry) => entry.slug).filter((slug) => slug !== FEATURED_PLATFORM), "trade-in", ...(home.used.length > 0 ? ["used"] : [])]);
+    // the demo catalogue: a banner for each platform with a hero (four: PC has no console), Nintendo first, then trade-in and used
+    const demo = heroSlides(home.platforms, (entry) => (entry.hero ? home.cards[entry.hero.productId]?.image.artKey : null), { usedArt: home.used.map((unit) => unit.image.artKey) });
+    expect(demo.map((slide) => slide.key)).toEqual([FEATURED_PLATFORM, ...home.platforms.filter((entry) => entry.hero).map((entry) => entry.slug).filter((slug) => slug !== FEATURED_PLATFORM), "trade-in", ...(home.used.length > 0 ? ["used"] : [])]);
     expect(HERO_AUTOPLAY_MS).toBe(6500);
   });
 
@@ -884,7 +890,9 @@ describe("client rules", () => {
     expect(releasePlatformOf({ platformSlug: null, forPlatforms: ["playstation"], kindLabel: "سماعة · PS5" })).toEqual({ platform: "playstation", platforms: null, label: "سماعة · PS5" });
     // a game for PS5 and Xbox: both dots and both names (the band names them; «لعبة متعددة المنصات» names neither)
     expect(releasePlatformOf({ platformSlug: null, forPlatforms: ["playstation", "xbox"], kindLabel: "لعبة متعددة المنصات" })).toEqual({ platform: "playstation", platforms: ["playstation", "xbox"], label: null });
-    expect(releasePlatformOf({ platformSlug: "pc" })).toEqual({ platform: null, platforms: null, label: null });
+    expect(releasePlatformOf({ platformSlug: "zz-no-colour" })).toEqual({ platform: null, platforms: null, label: null });
+    // PC is a platform of the bank since 2026-11-20
+    expect(releasePlatformOf({ platformSlug: "pc", kindLabel: "لوحة مفاتيح · PC" })).toEqual({ platform: "pc", platforms: null, label: "لوحة مفاتيح · PC" });
   });
 
   it("gives every release on the band its platform line — a dated later version is that version's platform's (QA 2026-11-12)", () => {
@@ -981,7 +989,7 @@ describe("the hero carousel in the server's markup (client note 1; brief §5: CL
 
   it("renders every banner with its words, a group «n من N» each — swiping works before and without JavaScript", async () => {
     const { html, slides } = await render(home, "ar");
-    expect(slides.length).toBe(home.platforms.length + 1 + (home.used.length > 0 ? 1 : 0));
+    expect(slides.length).toBe(home.platforms.filter((platform) => platform.hero).length + 1 + (home.used.length > 0 ? 1 : 0));
     expect(html).toContain('aria-roledescription="عرض شرائح"');
     expect(html).toContain('aria-label="أبرز ما في المتجر"');
     expect(html.match(/data-carousel-slide="\d+"/g)).toHaveLength(slides.length);

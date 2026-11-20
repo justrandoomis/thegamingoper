@@ -159,10 +159,19 @@
     gap: var(--s-3);
     text-align: start;
   }
+  .cnf__tiles > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
   @media (min-width: 48rem) {
+    /* one row: as many columns as platforms (five since PC, 2026-11-20) */
     .cnf__tiles {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
       gap: var(--s-4);
+    }
+    .cnf__tiles > :last-child:nth-child(odd) {
+      grid-column: auto;
     }
   }
   /* a device glyph standing in for the hardware photo (the root boundary has no catalogue to read) */

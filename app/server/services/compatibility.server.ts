@@ -49,7 +49,7 @@ export type ProductCompatibility = {
   status: CompatibilityStatus;
   /** The rule's condition or reason in the page's language ("Needs the add-on Disc Drive."), or null. */
   note: string | null;
-  /** Platform of the device ("playstation", …; "pc" for the generic Windows PC target). */
+  /** Platform of the device ("playstation", …; "pc" for the generic Windows PC target, which has a hub since 2026-11-20). */
   platformSlug: string;
   /** A /device/<slug> hub exists (published model on an active platform). */
   hasHub: boolean;

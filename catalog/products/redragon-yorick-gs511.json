@@ -2,7 +2,7 @@
   "slug": "redragon-yorick-gs511",
   "group": "pc-peripherals",
   "kind": "accessory",
-  "platform": "multi",
+  "platform": "pc",
   "brand": "Redragon",
   "category": "speakers",
   "status": "available",

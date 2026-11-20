@@ -291,10 +291,12 @@ describe("getDeviceHub — which devices have a hub", { timeout: 120_000 }, () =
     }
   });
 
-  it("has no hub for inactive platforms (the generic Windows PC), drafts, unknown or malformed slugs", async () => {
+  it("has no hub for inactive platforms, drafts, unknown or malformed slugs", async () => {
     const inactive = await rows<{ slug: string }>("SELECT dm.slug FROM device_models dm JOIN platforms p ON p.id = dm.platform_id WHERE p.is_active = 0");
     expect(inactive.map((row) => row.slug)).toContain("zz-off-model");
-    expect(inactive.length).toBeGreaterThanOrEqual(2); // the demo's windows-pc too
+    // the generic Windows PC is on the PC platform, a storefront section since 2026-11-20: it has a hub now
+    expect(inactive.map((row) => row.slug)).not.toContain("windows-pc");
+    expect((await getDeviceHub(t.db, "ar", "windows-pc"))?.model.slug).toBe("windows-pc");
     for (const { slug } of inactive) expect(await getDeviceHub(t.db, "ar", slug)).toBeNull();
     expect(await getDeviceHub(t.db, "ar", "zz-draft")).toBeNull();
     expect(await getDeviceHub(t.db, "ar", "no-such-device")).toBeNull();

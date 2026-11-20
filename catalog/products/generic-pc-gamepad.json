@@ -2,7 +2,7 @@
   "slug": "generic-pc-gamepad",
   "group": "controllers-audio",
   "kind": "controller",
-  "platform": "multi",
+  "platform": "pc",
   "brand": "Generic",
   "status": "available",
   "name": { "ar": "يد تحكم اقتصادية للكمبيوتر وAndroid", "en": "Budget Gamepad for PC and Android", "ckb": "کۆنتڕۆڵەری هەرزان بۆ PC و Android" },

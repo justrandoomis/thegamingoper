@@ -758,8 +758,8 @@ describe("the 404 (v2.1, client note 11: the before's page with v2's mascot and 
       expect(html).toContain(`<main class="cnf-root" lang="${LOCALES[locale].bcp47}" dir="${LOCALES[locale].dir}">`);
       expect(html).toContain(`action="${localePath("/search", locale)}"`);
       expect(html).toContain(`href="${localePath("/", locale)}"`);
-      expect(html.match(/ptile ptile--compact/g)).toHaveLength(4);
-      for (const slug of ["nintendo", "playstation", "xbox", "handheld"]) expect(html).toContain(`href="${localePath(`/platform/${slug}`, locale)}"`);
+      expect(html.match(/ptile ptile--compact/g)).toHaveLength(5);
+      for (const slug of ["nintendo", "playstation", "xbox", "handheld", "pc"]) expect(html).toContain(`href="${localePath(`/platform/${slug}`, locale)}"`);
       // nothing invented: no product counts without the catalogue
       expect(html).not.toContain("ptile__count");
       expect(html).not.toContain("root-error");

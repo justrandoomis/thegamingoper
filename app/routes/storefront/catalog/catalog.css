@@ -837,16 +837,24 @@
     grid-template-columns: minmax(0, 1fr);
     gap: var(--s-10);
   }
-  /* the four platforms as compact tiles: 2 × 2, four in a row from 768 */
+  /* the platforms as compact tiles: two to a row (an odd last one takes the row), all in one row from 768 */
   .catalog-ptiles {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--s-3);
   }
+  .catalog-ptiles > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
   @media (min-width: 48rem) {
     .catalog-ptiles {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
       gap: var(--s-4);
+    }
+    .catalog-ptiles > :last-child:nth-child(odd) {
+      grid-column: auto;
     }
   }
   /* «اذهب مباشرة إلى»: small clay keys with the hub's icon (a platform's glyph in its colour) and an arrow */

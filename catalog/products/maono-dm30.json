@@ -2,7 +2,7 @@
   "slug": "maono-dm30",
   "group": "pc-peripherals",
   "kind": "accessory",
-  "platform": "multi",
+  "platform": "pc",
   "brand": "Maono",
   "category": "microphones",
   "status": "available",

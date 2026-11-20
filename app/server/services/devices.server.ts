@@ -6,7 +6,8 @@
  *
  * WHAT A HUB SHOWS — every value is a stored fact; nothing is estimated or invented:
  *   model      name, summary, platform, generation, release date and photos of a published `device_models` row on an
- *              ACTIVE platform. The generic "windows-pc" target (inactive "pc" platform) and drafts have no hub (null).
+ *              ACTIVE platform; drafts have no hub (null). The generic "windows-pc" target (the "pc" platform, active since
+ *              2026-11-20) has one: no specs or photos, the accessories and games whose rules name a PC.
  *   editions   the catalogue products that ARE this device (`products.device_model_id`), and the product whose photo
  *              the model uses (`device_models.art_key` = "<product-slug>--<n>"; this is how the 2020 PS5 Digital
  *              Edition, a variant of the "playstation-5" product, finds its product). When one product covers two

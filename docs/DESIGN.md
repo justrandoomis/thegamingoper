@@ -187,6 +187,7 @@ Unchanged between themes: `--red`, `--hero`, `--on-band-key`, the platform surfa
 | PlayStation | `#0070D1` | `#00508F` | `#0070D1` | `#3D86FF` | `90 140 255` |
 | Xbox | `#107C10` | `#0A560A` | `#107C10` | `#34C25D` | `53 196 106` |
 | Handheld PCs (violet) | `#5B3FD9` | `#3F2AA3` | `#5B3FD9` | `#9077FF` | `154 125 255` |
+| PC (teal, 2026-11-20; `--plat-pc-hi` `#1593A8`, light `--gel-pc` `21 170 191`) | `#0B7285` | `#08525F` | `#0B7285` | `#3BC9DB` | `59 201 219` |
 | Brand (campaigns, hero cabinet) | — | — | — | — | `255 70 88` (`--gel-brand`) |
 
 A subtree names its platform with `data-gel="xbox"`; that sets `--plat`, `--plat-deep`, `--dot` and `--gel` for it. Platform colour is a **surface in four places only**: the platform tiles, the platform hub band, the device-hub head, and the hero band during a platform campaign. Everywhere else it is the **8px dot** beside the platform name in text (nav, chips, cards, mega menu, filters, compare, admin columns), or the 3px nav underline. No drawn platform logos until the owner confirms the rights (§14).
@@ -205,7 +206,7 @@ The script reads `tokens.css`, resolves each theme, composites translucent colou
 | Light | warn on warn-tint · info on info-tint · demo-ink on demo-bg | 5.77 · 5.56 · 6.87 | 4.5 |
 | Light | white on the red key / red-hover · white on crimson | 4.71 / 5.73 · 6.39 | 4.5 |
 | Light | the on-band label on the white key | 6.39 | 4.5 |
-| Light | white on Nintendo / PlayStation / Xbox / handheld (flat) | 4.80 / 4.95 / 5.37 / 6.65 | 4.5 |
+| Light | white on Nintendo / PlayStation / Xbox / handheld / PC (flat) | 4.80 / 4.95 / 5.37 / 6.65 / 5.59 | 4.5 |
 | Light | white on PlayStation under an 8% sheen | **4.35 — demonstration: no sheen behind tile text** | 4.5 |
 | Light | white / on-band-2 on the graphite band | 17.74 / 9.16 | 4.5 |
 | Light | ink / ink-2 on 90% header glass over black (worst case) | 14.63 / 5.79 | 4.5 |
@@ -868,7 +869,7 @@ The admin density also pins the 1.0 type roles (`type-title`, `type-section`, `t
 | used section | المستعمل والمفحوص (titles) · المستعمل (navigation) | Used & inspected · Used | |
 | sold out / coming soon | نفد حالياً / قريباً · يصدر {date} | Sold out / Coming soon · Out {date} | «غير متوفر» for an unreleased item; «طلب مسبق» |
 | demo | متجر تجريبي · سعر تجريبي · سعر ومخزون تجريبيان · طلب تجريبي | Demo store · Demo price · Demo price and stock · Demo order | «الموقع قيد الإنشاء» |
-| platform names | Nintendo · PlayStation · Xbox · الأجهزة المحمولة | Nintendo · PlayStation · Xbox · Handheld PCs | «XBOX» |
+| platform names | Nintendo · PlayStation · Xbox · الأجهزة المحمولة · الكمبيوتر (ckb کۆمپیوتەر; the card line's short «PC») | Nintendo · PlayStation · Xbox · Handheld PCs · PC | «XBOX»; «الحاسوب الشخصي» as the section's name |
 | brand | طمطم (ar and ckb) | TamTam | mixed spellings in ckb |
 | delivery fact | التوصيل 5,000 د.ع لكل المحافظات | Delivery: 5,000 IQD to every governorate | any time promise |
 

@@ -289,7 +289,7 @@ const PLATFORM_KEYWORDS: Record<PlatformSlug, T3> = {
   playstation: t3("بلايستيشن بلي ستيشن بلاي ستيشن سوني بي اس", "playstation ps sony", "پلەیستەیشن سۆنی پی ئێس"),
   xbox: t3("اكس بوكس إكس بوكس اكسبوكس مايكروسوفت", "xbox microsoft", "ئێکس بۆکس ئێکسبۆکس مایکرۆسۆفت"),
   handheld: t3("محمول هاندهيلد حاسوب العاب محمول", "handheld portable pc", "دەستی هاندهێڵد کۆمپیوتەری دەستی"),
-  pc: t3("حاسوب كمبيوتر ويندوز", "pc computer windows", "کۆمپیوتەر ویندۆز"),
+  pc: t3("حاسوب كمبيوتر ويندوز بي سي", "pc computer windows", "کۆمپیوتەر ویندۆز پی سی"),
 };
 
 const KIND_KEYWORDS: Record<ProductKind, T3> = {

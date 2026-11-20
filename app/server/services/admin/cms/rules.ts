@@ -227,7 +227,7 @@ export function redirectConflict(rows: readonly RedirectRuleRow[], candidate: { 
 export const BANNER_PLACEMENTS = ["home_strip", "category_top", "cart"] as const;
 export type BannerPlacementKey = (typeof BANNER_PLACEMENTS)[number];
 export const CATEGORY_PLACEMENT_PREFIX = "category:";
-export const BANNER_ACCENTS = ["brand", "nintendo", "playstation", "xbox", "handheld"] as const;
+export const BANNER_ACCENTS = ["brand", "nintendo", "playstation", "xbox", "handheld", "pc"] as const;
 export type BannerAccent = (typeof BANNER_ACCENTS)[number];
 export const BANNER_STATUSES = ["draft", "scheduled", "published", "archived"] as const;
 export type BannerStatus = (typeof BANNER_STATUSES)[number];
@@ -260,8 +260,8 @@ export function liveStateOf(row: { status: string; startsAt: number | null; ends
 
 // ───────────────────────────────────────────────────────────────── the home page
 
-/** The four platform stages of the home page (= home.server's HOME_PLATFORMS; a test keeps them equal). */
-export const HERO_PLATFORMS = ["nintendo", "playstation", "xbox", "handheld"] as const;
+/** The five platform stages of the home page (= home.server's HOME_PLATFORMS; a test keeps them equal). */
+export const HERO_PLATFORMS = ["nintendo", "playstation", "xbox", "handheld", "pc"] as const;
 export type HeroPlatform = (typeof HERO_PLATFORMS)[number];
 export const isHeroPlatform = (value: unknown): value is HeroPlatform => typeof value === "string" && (HERO_PLATFORMS as readonly string[]).includes(value);
 

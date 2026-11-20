@@ -15,7 +15,7 @@ export type SupportPlatform = {
   slug: string;
   /** Catalogue name; the UI shows the design system's name for the four known platforms (ui:platform.*). */
   name: string;
-  /** Design-token name of the platform light ("nintendo", "playstation", "xbox", "handheld"). */
+  /** Design-token name of the platform light ("nintendo", "playstation", "xbox", "handheld", "pc"). */
   accent: string;
 };
 

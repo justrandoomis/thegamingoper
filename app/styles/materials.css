@@ -674,6 +674,13 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   --plat-hi: var(--plat-handheld-hi);
   --dot: var(--dot-handheld);
 }
+[data-gel="pc"] {
+  --gel: var(--gel-pc);
+  --plat: var(--plat-pc);
+  --plat-deep: var(--plat-pc-deep);
+  --plat-hi: var(--plat-pc-hi);
+  --dot: var(--dot-pc);
+}
 [data-gel="brand"] {
   --gel: var(--gel-brand);
   --plat: var(--hero-face);
@@ -860,6 +867,10 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   gap: 28px 12px; /* room above the second row for the hardware that breaks out */
   padding-block-start: 18px;
 }
+/* an odd last tile (five platforms since PC, 2026-11-20) takes the whole row on phones */
+.ptiles > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
 .ptile {
   --wall: 2px;
   position: relative;
@@ -949,10 +960,16 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   display: none;
 }
 @media (min-width: 48rem) {
+  /* one row: as many columns as platforms */
   .ptiles {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
     gap: 16px;
     padding-block-start: 24px;
+  }
+  .ptiles > :last-child:nth-child(odd) {
+    grid-column: auto;
   }
   .ptile {
     min-block-size: 168px;

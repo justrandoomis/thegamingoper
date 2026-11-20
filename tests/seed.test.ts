@@ -580,9 +580,9 @@ describe("imported catalogue", () => {
     for (const table of ["platforms", "device_models", "categories"]) {
       for (const row of await rows<{ slug: string; art_key: string | null }>(`SELECT slug, art_key FROM ${table}`)) {
         if (row.art_key !== null) expect(catalog.photoKeys.has(row.art_key), `${table}: ${row.art_key}`).toBe(true);
-        // no picture: the PC targets, the empty parts category, the PS4 family (no product of its own), and the owner's-sheet
+        // no picture: the Windows PC target, the empty parts category, the PS4 family (no product of its own), and the owner's-sheet
         // categories whose items have no clean official picture yet
-        else expect(["pc", "windows-pc", "parts", "ps4", "gaming-glasses", "cables-power", "cables", "ups-power", "lighting"], `${table} ${row.slug} has no picture`).toContain(row.slug);
+        else expect(["windows-pc", "parts", "ps4", "gaming-glasses", "cables-power", "cables", "ups-power", "lighting"], `${table} ${row.slug} has no picture`).toContain(row.slug);
       }
     }
   });
@@ -639,7 +639,8 @@ describe("imported catalogue", () => {
     // 12 handheld PC products, 11 devices: the ROG Xbox Ally X20 is an edition of the ROG Xbox Ally X.
     expect(models.filter((model) => model.device_kind === "handheld_pc").length).toBe(11);
     const pc = models.find((model) => model.slug === "windows-pc")!;
-    expect([pc.platform, pc.platform_active, pc.generation, pc.device_kind]).toEqual(["pc", 0, "windows-pc", "other"]);
+    // the PC platform is a storefront section since 2026-11-20; the generic Windows PC target still anchors it
+    expect([pc.platform, pc.platform_active, pc.generation, pc.device_kind]).toEqual(["pc", 1, "windows-pc", "other"]);
     // The two MSI Claw models share the catalogue's "msi-claw" line: each family is a model, the line their generation.
     expect(models.filter((model) => model.generation === "msi-claw").map((model) => model.slug).sort()).toEqual(["msi-claw-8-ex-ai-plus", "msi-claw-a8"]);
     const switch2 = parse<Record<string, L10nValue & { label: L10nValue }>>(models.find((model) => model.slug === "switch-2")!.specs);

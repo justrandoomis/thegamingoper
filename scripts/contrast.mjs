@@ -121,7 +121,7 @@ const white = "#ffffff";
 const black = "#000000";
 const glassOverBlack = { over: "--glass", on: black };
 const glassOverWhite = { over: "--glass", on: white };
-const PLATFORMS = ["nintendo", "playstation", "xbox", "handheld"];
+const PLATFORMS = ["nintendo", "playstation", "xbox", "handheld", "pc"];
 const pairs = [
   // ── light: text ──
   ...["--ground", "--paper", "--niche"].map((bg) => ["light", "--ink", bg, TEXT]),

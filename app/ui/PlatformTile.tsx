@@ -133,7 +133,8 @@ export function PlatformTile<C extends ElementType = typeof LocaleLink>({ platfo
   );
 }
 
-/** The grid: 2×2 on phones (room above the second row for the hardware), four in a row from 768. `reveal`: the tiles
+/** The grid: two to a row on phones (room above the next row for the hardware; an odd last tile takes the whole row),
+ *  all in one row from 768 (five platforms since PC, 2026-11-20). `reveal`: the tiles
  *  fade up one after another as the grid first enters the view (G6; off by default). */
 export function PlatformTiles({ children, className, label, reveal = false }: { children: ReactNode; className?: string; label?: string; reveal?: boolean }) {
   return (

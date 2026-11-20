@@ -333,7 +333,8 @@ describe("device hub links and the checkout's address prefill", () => {
     expect(link).toMatchObject({ slug: "ps5-slim", platformSlug: "playstation" });
     expect(link?.name).toMatch(/PlayStation 5/);
     expect(link?.id).toMatch(/^[A-Za-z0-9]/);
-    expect(await getDeviceLink(t.db, "en", "windows-pc")).toBeNull(); // inactive "pc" platform
+    // the "pc" platform is active since 2026-11-20: the generic Windows PC has a hub
+    expect(await getDeviceLink(t.db, "en", "windows-pc")).toMatchObject({ slug: "windows-pc", platformSlug: "pc" });
     expect(await getDeviceLink(t.db, "en", "no-such-device")).toBeNull();
     expect(await getDeviceLink(t.db, "en", "Bad Slug!")).toBeNull();
     expect(await getDeviceLink(t.db, "en", null)).toBeNull();

@@ -2,7 +2,7 @@
   "slug": "redragon-gm306",
   "group": "pc-peripherals",
   "kind": "accessory",
-  "platform": "multi",
+  "platform": "pc",
   "brand": "Redragon",
   "category": "microphones",
   "status": "available",

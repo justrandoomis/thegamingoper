@@ -383,15 +383,19 @@
   --plat-xbox-deep: #0a560a;
   --plat-handheld: #5b3fd9;
   --plat-handheld-deep: #3f2aa3;
+  --plat-pc: #0b7285; /* PC gear: deep teal — apart from the PlayStation blue and the Xbox green */
+  --plat-pc-deep: #08525f;
   --dot-nintendo: #e60012;
   --dot-playstation: #0070d1;
   --dot-xbox: #107c10;
   --dot-handheld: #5b3fd9;
+  --dot-pc: #0b7285;
   /* platform light (RGB triplets): read only by the dark cabinets' light layers (and the admin's 1.0 charts) */
   --gel-nintendo: 255 81 64;
   --gel-playstation: 47 107 242;
   --gel-xbox: 31 166 80;
   --gel-handheld: 123 91 239;
+  --gel-pc: 21 170 191;
   --gel-brand: 224 20 43; /* store-wide campaigns only */
 
   /* showcases (§6.4): light theme = colour surfaces with one light; dark theme = lit cabinets */
@@ -507,6 +511,7 @@
   --plat-playstation-hi: #1f8bea;
   --plat-xbox-hi: #2a9a2a;
   --plat-handheld-hi: #7a62ee;
+  --plat-pc-hi: #1593a8;
   --tile-mix: 100%; /* how much of the platform colour the face keeps (dark: the same — never a grey cabinet) */
   --tile-rim: inset 0 1px 0 rgb(255 255 255 / 0.42), inset 0 0 0 1px rgb(255 255 255 / 0.1), inset 0 -14px 24px -16px rgb(0 0 0 / 0.3);
   --tile-specular: linear-gradient(180deg, rgb(255 255 255 / 0.3) 0%, rgb(255 255 255 / 0.07) 7%, rgb(255 255 255 / 0) 11%);
@@ -627,14 +632,18 @@
   --plat-xbox-deep: #0a560a;
   --plat-handheld: #5b3fd9;
   --plat-handheld-deep: #3f2aa3;
+  --plat-pc: #0b7285;
+  --plat-pc-deep: #08525f;
   --dot-nintendo: #ff5247;
   --dot-playstation: #3d86ff;
   --dot-xbox: #34c25d;
   --dot-handheld: #9077ff;
+  --dot-pc: #3bc9db;
   --gel-nintendo: 255 106 90;
   --gel-playstation: 90 140 255;
   --gel-xbox: 53 196 106;
   --gel-handheld: 154 125 255;
+  --gel-pc: 59 201 219;
   --gel-brand: 255 70 88;
 
   --lit: 1;
@@ -747,6 +756,7 @@
   --plat-playstation-hi: #1f8bea;
   --plat-xbox-hi: #2a9a2a;
   --plat-handheld-hi: #7a62ee;
+  --plat-pc-hi: #1593a8;
   --tile-mix: 100%;
   --tile-rim: inset 0 1px 0 rgb(255 255 255 / 0.36), inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 -14px 24px -16px rgb(0 0 0 / 0.4);
   --tile-specular: linear-gradient(180deg, rgb(255 255 255 / 0.26) 0%, rgb(255 255 255 / 0.06) 7%, rgb(255 255 255 / 0) 11%);

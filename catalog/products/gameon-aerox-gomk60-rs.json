@@ -2,7 +2,7 @@
   "slug": "gameon-aerox-gomk60-rs",
   "group": "pc-peripherals",
   "kind": "accessory",
-  "platform": "multi",
+  "platform": "pc",
   "brand": "GameOn",
   "category": "keyboards",
   "status": "available",

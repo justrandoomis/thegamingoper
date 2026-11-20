@@ -6,7 +6,7 @@ import { isolate } from "./BidiText";
 import { cx } from "./cx";
 import { iqdText, isIqd } from "./PriceTag";
 import { TextLink } from "./TextLink";
-import { TrustMotion, type TrustMotionKey } from "./TrustMotion";
+import { TrustMotion, TrustMotionDefs, type TrustMotionKey } from "./TrustMotion";
 
 /**
  * The trust strip — Design System v2 §4.20: four HONEST facts in one paper card divided by hairlines (one row of four
@@ -143,17 +143,20 @@ export function TrustStrip({ deliveryIqd = null, cod = false, transfer = false, 
   if (facts.length === 0) return null;
   if (variant === "motion") {
     return (
-      <ul ref={wordsRef} className={cx("trust trust--motion", className)}>
-        {facts.map((fact) => (
-          <li key={fact.key} className="trust__cell">
-            <span className="trust__words">
-              <span className="trust__title">{fact.title}</span>
-              <span className="trust__text">{fact.text}</span>
-            </span>
-            <TrustMotion name={fact.key} />
-          </li>
-        ))}
-      </ul>
+      <>
+        <TrustMotionDefs />
+        <ul ref={wordsRef} className={cx("trust trust--motion", className)}>
+          {facts.map((fact) => (
+            <li key={fact.key} className="trust__cell">
+              <span className="trust__words">
+                <span className="trust__title">{fact.title}</span>
+                <span className="trust__text">{fact.text}</span>
+              </span>
+              <TrustMotion name={fact.key} />
+            </li>
+          ))}
+        </ul>
+      </>
     );
   }
   return (

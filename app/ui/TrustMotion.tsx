@@ -19,7 +19,7 @@ import type { ReactElement, ReactNode } from "react";
 export type TrustMotionKey = "delivery" | "cod" | "transfer" | "guest" | "warranty";
 
 const S = { fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" } as const;
-const W = "var(--ground, #fff)";
+const W = "url(#tmo-clay)";
 const VIEW = "-300 0 1200 96";
 
 function Scene({ name, children }: { name: TrustMotionKey; children: ReactNode }) {
@@ -76,6 +76,7 @@ function dashes(y: number, step: number, len: number): string {
 function Pin({ x, base, delay }: { x: number; base: number; delay: string }) {
   return (
     <g className="tmo-pin-pop" style={{ animationDelay: delay }}>
+      <Shade cx={x} cy={base + 2} rx={6} />
       <path {...S} d={`M${x} ${base}s10-10 10-18a10 10 0 1 0-20 0c0 8 10 18 10 18z`} className="tmo-tint" />
       <circle cx={x} cy={base - 18} r={3.5} className="tmo-solid" />
     </g>
@@ -115,6 +116,7 @@ function Delivery() {
       <Pin x={560} base={88} delay="1.2s" />
       <Pin x={790} base={88} delay="1.8s" />
       {/* the customer's house, where the truck stops */}
+      <Shade cx={420} cy={91} rx={42} />
       <g {...S}>
         <path d="M384 90V58l36-26 36 26v32" fill={W} />
         <rect x="410" y="66" width="20" height="24" rx="2" className="tmo-tint" />
@@ -129,6 +131,7 @@ function Delivery() {
         <Tick cx={420} cy={20} r={9} />
       </g>
       <g className="tmo-drive">
+        <Shade cx={292} cy={91} rx={46} />
         <g className="tmo-wind" {...S} strokeWidth={1.8}>
           <path d="M226 56h16" />
           <path d="M218 66h22" />
@@ -183,6 +186,8 @@ function Cash() {
         <path d={dashes(94, 24, 8)} />
       </g>
       {/* the van */}
+      <Shade cx={60} cy={91} rx={48} />
+      <Shade cx={646} cy={91} rx={52} />
       <g className="tmo-idle">
         <rect x="18" y="42" width="54" height="38" rx="3" className="tmo-tint" {...S} />
         <path {...S} d="M72 52h16l12 12v16H72z" fill={W} />
@@ -256,6 +261,9 @@ function Transfer() {
         <Float x={840} y={26} delay={2.8} />
       </g>
       <path {...S} strokeWidth={1.6} d="M-300 90h1200" opacity={0.25} />
+      <Shade cx={43} cy={92} rx={26} />
+      <Shade cx={300} cy={90} rx={36} />
+      <Shade cx={552} cy={84} rx={42} />
       <g>
         <rect x="22" y="8" width="42" height="80" rx="7" {...S} fill={W} />
         <path {...S} d="M38 80h10" />
@@ -313,6 +321,7 @@ function Guest() {
         <circle cx="-120" cy="40" r="6" className="tmo-tint" {...S} strokeWidth={1.4} />
         <circle cx="780" cy="30" r="6" className="tmo-tint" {...S} strokeWidth={1.4} />
       </g>
+      <Shade cx={38} cy={92} rx={24} />
       <g>
         <rect x="18" y="10" width="40" height="78" rx="7" {...S} fill={W} />
         <path {...S} d="M33 80h10" />
@@ -364,6 +373,7 @@ function Ok({ state }: { state: "none" | "all" | "a" | "b" }) {
 function Controller({ x, ok }: { x: number; ok: "none" | "all" | "a" | "b" }) {
   return (
     <g transform={`translate(${x} 0)`} className="tmo-static">
+      <Shade cx={0} cy={82} rx={24} />
       <path {...S} className="tmo-tint" d="M-24 52h48c10 0 15 8 16 17l1 4c1 6-6 9-10 5l-8-8h-46l-8 8c-4 4-11 1-10-5l1-4c1-9 6-17 16-17z" />
       <path {...S} d="M-20 58v10M-25 63h10" strokeWidth={1.8} />
       <circle cx="16" cy="59" r="2.5" className="tmo-solid" />
@@ -375,6 +385,7 @@ function Controller({ x, ok }: { x: number; ok: "none" | "all" | "a" | "b" }) {
 function Console({ x, ok }: { x: number; ok: "none" | "all" | "a" | "b" }) {
   return (
     <g transform={`translate(${x} 0)`} className="tmo-static">
+      <Shade cx={0} cy={82} rx={24} />
       <rect x="-17" y="42" width="34" height="38" rx="4" {...S} className="tmo-tint" />
       <path {...S} d="M-10 50h20M-10 56h12" strokeWidth={1.5} />
       <circle cx="10" cy="70" r="2.5" className="tmo-solid" />
@@ -385,6 +396,7 @@ function Console({ x, ok }: { x: number; ok: "none" | "all" | "a" | "b" }) {
 function Headset({ x, ok }: { x: number; ok: "none" | "all" | "a" | "b" }) {
   return (
     <g transform={`translate(${x} 0)`} className="tmo-static">
+      <Shade cx={0} cy={82} rx={24} />
       <path {...S} d="M-17 70V60a17 17 0 0 1 34 0v10" strokeWidth={2.4} />
       <rect x="-26" y="60" width="12" height="20" rx="4" {...S} className="tmo-tint" />
       <rect x="14" y="60" width="12" height="20" rx="4" {...S} className="tmo-tint" />
@@ -433,6 +445,35 @@ function Warranty() {
 }
 
 const SCENES: Record<TrustMotionKey, () => ReactElement> = { delivery: Delivery, cod: Cash, transfer: Transfer, guest: Guest, warranty: Warranty };
+
+/**
+ * The gradients every scene paints with, drawn once next to the strip (ids are document-wide): `tmo-clay` = the site's
+ * clay key face (--clay-hi → --clay-lo), `tmo-red` = the glossy primary red (--red-gloss-top → --red-gloss-low). The
+ * stop colours come from the theme tokens (`.tmo-defs` in components.css), so light and dark follow the site.
+ */
+export function TrustMotionDefs() {
+  return (
+    <svg className="tmo-defs" aria-hidden="true" focusable="false" width="0" height="0">
+      <defs>
+        <linearGradient id="tmo-clay" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" className="tmo-defs__clay-hi" />
+          <stop offset="0.46" className="tmo-defs__clay-mid" />
+          <stop offset="1" className="tmo-defs__clay-lo" />
+        </linearGradient>
+        <linearGradient id="tmo-red" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" className="tmo-defs__red-hi" />
+          <stop offset="0.3" className="tmo-defs__red-mid" />
+          <stop offset="1" className="tmo-defs__red-lo" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+/** A soft contact shadow under an object standing on the ground. */
+function Shade({ cx, cy, rx }: { cx: number; cy: number; rx: number }) {
+  return <ellipse className="tmo-shade" cx={cx} cy={cy} rx={rx} ry={rx > 30 ? 3.5 : 2.5} />;
+}
 
 export function TrustMotion({ name }: { name: TrustMotionKey }) {
   const Art = SCENES[name];

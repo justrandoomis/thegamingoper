@@ -2006,11 +2006,44 @@ select.field__input {
   transform-box: view-box;
   transform-origin: 0 0;
 }
+/* the site's materials: clay faces (the white keys) and the glossy primary red, with soft contact shadows */
+.tmo-defs {
+  position: absolute;
+  inline-size: 0;
+  block-size: 0;
+  overflow: hidden;
+}
+.tmo-defs__clay-hi {
+  stop-color: var(--clay-hi);
+}
+.tmo-defs__clay-mid {
+  stop-color: var(--clay-mid);
+}
+.tmo-defs__clay-lo {
+  stop-color: var(--clay-lo);
+}
+.tmo-defs__red-hi {
+  stop-color: var(--red-gloss-top);
+}
+.tmo-defs__red-mid {
+  stop-color: var(--red-gloss-mid);
+}
+.tmo-defs__red-lo {
+  stop-color: var(--red-gloss-low);
+}
+.tmo {
+  --tmo-line: color-mix(in oklab, var(--ink) 78%, transparent);
+  color: var(--tmo-line);
+}
 .tmo .tmo-tint {
-  fill: var(--red-tint);
+  fill: url(#tmo-clay);
 }
 .tmo .tmo-solid {
-  fill: var(--red-ink);
+  fill: url(#tmo-red);
+}
+.tmo .tmo-shade {
+  fill: var(--ink);
+  opacity: 0.1;
 }
 .tmo .tmo-ink-red {
   stroke: var(--red-ink);
@@ -2701,14 +2734,14 @@ select.field__input {
   .tmo * {
     animation: none !important;
   }
-  .tmo .tmo-spark-dot {
+  .tmo :is(.tmo-spark-dot, .tmo-ping, .tmo-send, .tmo-receive, .tmo-land, .tmo-stop-ring, .tmo-scan, .tmo-puff, .tmo-trail) {
     display: none;
   }
 }
 [data-motion="reduced"] :is(.tmo, .tmo *) {
   animation: none !important;
 }
-[data-motion="reduced"] .tmo .tmo-spark-dot {
+[data-motion="reduced"] .tmo :is(.tmo-spark-dot, .tmo-ping, .tmo-send, .tmo-receive, .tmo-land, .tmo-stop-ring, .tmo-scan, .tmo-puff, .tmo-trail) {
   display: none;
 }
 /* fact rows: a 20px icon, a title, a line and an optional 44px link, between hairlines */

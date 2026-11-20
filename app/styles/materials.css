@@ -933,7 +933,7 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   font: var(--type-xs-strong);
   color: var(--on-color);
 }
-/* the hardware: never clipped; it stands above the tile's top edge and stays inside the sides */
+/* the hardware: never clipped, so a device that stands past the tile's top or side edge is shown whole */
 .ptile__hw {
   position: absolute;
   inset: 0;
@@ -982,7 +982,7 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   }
   .ptile__img {
     inset-block: auto 14px;
-    inset-inline: auto 10px;
+    inset-inline: auto -8%;
     inline-size: 58%;
     block-size: calc(100% + 22px);
     object-position: 100% 100%;

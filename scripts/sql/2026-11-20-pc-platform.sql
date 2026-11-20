@@ -45,7 +45,7 @@ WHERE platform_id IS NULL
     'redragon-stentor-gs500', 'redragon-yorick-gs511',
     'dxracer-craft-starswar-edition', 'dxracer-drifting-series', 'dxracer-formula-series', 'dxracer-master-series', 'dxracer-prince-series',
     'gunnar-gaming-glasses',
-    'twisted-minds-rgb-led-strip', 'twisted-minds-wifi-tv-led-strip',
+    'twisted-minds-rgb-led-strip',
     'generic-pc-gamepad'
   );
 

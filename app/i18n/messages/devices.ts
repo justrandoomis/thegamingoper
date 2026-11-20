@@ -47,6 +47,8 @@ export default defineMessages({
       from: "من {price}",
       shop: "تسوّق إصدارات الجهاز",
       notSold: "لا نبيع هذا الجهاز جديداً الآن.",
+      anyPc: "ما يعمل مع أي كمبيوتر Windows: إكسسوارات وألعاب.",
+      anyPcShop: "تسوّق الإكسسوارات",
     },
     nav: {
       label: "أقسام صفحة {device}",
@@ -295,6 +297,8 @@ export default defineMessages({
       from: "From {price}",
       shop: "Shop the editions",
       notSold: "We do not sell this device new right now.",
+      anyPc: "What works with any Windows PC: accessories and games.",
+      anyPcShop: "Shop accessories",
     },
     nav: {
       label: "Sections of the {device} page",
@@ -526,6 +530,8 @@ export default defineMessages({
       from: "لە {price} بەرەوژوور",
       shop: "سەیری وەشانەکان بکە",
       notSold: "ئێستا ئەم ئامێرە بە نوێیی نافرۆشین.",
+      anyPc: "ئەوەی لەگەڵ هەر کۆمپیوتەرێکی Windows کار دەکات: پاشکۆ و یاری.",
+      anyPcShop: "پاشکۆکان بکڕە",
     },
     nav: {
       label: "بەشەکانی پەڕەی {device}",

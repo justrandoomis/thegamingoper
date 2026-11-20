@@ -137,6 +137,14 @@ export function HubHead({ hub, gel, platformName, from }: { hub: DeviceHub; gel:
                 {t("hero.shop")}
               </Key>
             </>
+          ) : hub.model.platform.slug === "pc" ? (
+            // the generic Windows PC target is not a device the store sells: point at what works with it instead
+            <>
+              <p className="type-sm-strong">{t("hero.anyPc")}</p>
+              <Key variant="onBand" size="sm" as="a" href="#accessories" icon="shopping-bag">
+                {t("hero.anyPcShop")}
+              </Key>
+            </>
           ) : (
             <p className="type-sm-strong">{t("hero.notSold")}</p>
           )}

@@ -2,7 +2,7 @@
   "slug": "twisted-minds-wifi-tv-led-strip",
   "group": "power-cables-storage-misc",
   "kind": "accessory",
-  "platform": "pc",
+  "platform": "multi",
   "category": "lighting",
   "brand": "Twisted Minds",
   "status": "available",

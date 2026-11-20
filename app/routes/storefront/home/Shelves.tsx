@@ -87,7 +87,7 @@ export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
         {items.map((item) => (
           <li key={item.key} className="grid">
             <LocaleLink to={item.href} className="home-door" data-press="soft">
-              <img src={stripIcon(item.key, locale)} alt={t(`strip.${item.key}`)} width={640} height={640} decoding="async" className="home-door__icon" />
+              <img src={stripIcon(item.key, locale)} alt={t(`strip.${item.key}`)} width={800} height={600} decoding="async" className="home-door__icon" />
             </LocaleLink>
           </li>
         ))}

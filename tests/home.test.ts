@@ -1059,12 +1059,12 @@ describe("the home page's stylesheet: laptops' first screen, dark glass, the pho
   // owner 2026-11-20: only the three.js object — a transparent render, no tile, ground or border behind it
   it("the department doors are bare three.js renders: no tile behind the object, the whole picture shown", () => {
     const door = block("", ".home-door");
-    expect(door).toMatch(/aspect-ratio:\s*1/);
+    expect(door).toMatch(/aspect-ratio:\s*4 \/ 3/);
     expect(door).not.toMatch(/background|box-shadow|overflow/);
     expect(block("", ".home-door__icon")).toMatch(/object-fit:\s*contain/);
     expect(css).not.toMatch(/home-door__label/);
-    // phones scroll one row of 148px doors; from 1024 they share the row; the platform tiles still follow closely
-    expect(block("", ".home-strip__list")).toMatch(/grid-auto-columns:\s*148px/);
+    // phones scroll one row of 172px doors; from 1024 they share the row; the platform tiles still follow closely
+    expect(block("", ".home-strip__list")).toMatch(/grid-auto-columns:\s*172px/);
     expect(block("@media (min-width: 64rem)", ".home-strip__list")).toMatch(/grid-auto-columns:\s*minmax\(0, 1fr\)/);
     expect(block("@media (min-width: 64rem)", ".home-top + .home-platforms")).toMatch(/margin-block-start:\s*calc\(var\(--s-8\) - var\(--gap-section\)\)/);
     expect(css).not.toMatch(/home-hero__(light|spill|ambient)/);

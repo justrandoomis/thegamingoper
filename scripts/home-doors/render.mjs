@@ -30,7 +30,7 @@ try {
   const page = await browser.newPage();
   page.on("pageerror", (e) => console.error("pageerror", e.message));
   page.on("console", (m) => m.type() === "error" && console.error("console", m.text()));
-  await page.setViewport({ width: 1024, height: 1024 });
+  await page.setViewport({ width: 1200, height: 900 });
   await page.goto("http://127.0.0.1:8793/", { waitUntil: "load" });
   await page.waitForFunction("window.studioReady", { timeout: 30000 });
   await page.evaluate("window.studioReady");
@@ -40,18 +40,18 @@ try {
       const dataUrl = await page.evaluate((k, l) => window.renderDoor(k, l), key, lang);
       const png = Buffer.from(dataUrl.split(",")[1], "base64");
       const file = path.join(out, `${key}.${lang}.webp`);
-      await sharp(png).resize(640, 640).webp({ quality: 90, alphaQuality: 95 }).toFile(file);
+      await sharp(png).resize(800, 600).webp({ quality: 90, alphaQuality: 95 }).toFile(file);
       console.log(file);
     }
   }
   // contact sheets per language, on the page's light and dark floors
   for (const lang of langs) {
-    const tiles = await Promise.all(keys.map((key) => sharp(path.join(out, `${key}.${lang}.webp`)).resize(320, 320).png().toBuffer()));
+    const tiles = await Promise.all(keys.map((key) => sharp(path.join(out, `${key}.${lang}.webp`)).resize(320, 240).png().toBuffer()));
     const cols = 4;
     const rows = Math.ceil(tiles.length / cols);
     for (const [name, background] of [["light", "#fdfcfa"], ["dark", "#101116"]]) {
-      await sharp({ create: { width: cols * 328 + 8, height: rows * 328 + 8, channels: 3, background } })
-        .composite(tiles.map((input, i) => ({ input, left: 8 + (i % cols) * 328, top: 8 + Math.floor(i / cols) * 328 })))
+      await sharp({ create: { width: cols * 328 + 8, height: rows * 248 + 8, channels: 3, background } })
+        .composite(tiles.map((input, i) => ({ input, left: 8 + (i % cols) * 328, top: 8 + Math.floor(i / cols) * 248 })))
         .png()
         .toFile(path.join(out, `sheet.${lang}.${name}.png`));
     }

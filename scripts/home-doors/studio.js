@@ -7,7 +7,9 @@ import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.j
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 
-const SIZE = 1024;
+const W = 1200;
+const H = 900;
+const ASPECT = W / H;
 const LABELS = {
   ar: { devices: "أجهزة الألعاب", games: "الألعاب", controllers: "أيدي التحكم", headsets: "سماعات الرأس", accessories: "الإكسسوارات", topup: "بطاقات الشحن", used: "المستعمل", repair: "الصيانة" },
   en: { devices: "Consoles", games: "Games", controllers: "Controllers", headsets: "Headsets", accessories: "Accessories", topup: "Gift cards", used: "Used", repair: "Repair" },
@@ -18,7 +20,7 @@ const FONT = '"KufamLatin", "KufamArabic", "KufamArabicExt", sans-serif';
 // ───────────────────────────── renderer, camera
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
 renderer.setPixelRatio(2);
-renderer.setSize(SIZE, SIZE);
+renderer.setSize(W, H);
 renderer.setClearColor(0x000000, 0);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
@@ -28,11 +30,11 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 RectAreaLightUniformsLib.init();
 
-// a long lens, a little above the object: the frame is 2 × 2 world units at the origin
+// a long lens, a little above the object: the frame is 2.67 × 2 world units at the origin
 const FOV = 16;
 const ELEVATION = THREE.MathUtils.degToRad(11);
 const DIST = 1 / Math.tan(THREE.MathUtils.degToRad(FOV / 2));
-const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 50);
+const camera = new THREE.PerspectiveCamera(FOV, ASPECT, 0.1, 50);
 camera.position.set(0, DIST * Math.sin(ELEVATION), DIST * Math.cos(ELEVATION));
 camera.lookAt(0, 0, 0);
 camera.updateMatrixWorld();
@@ -135,6 +137,17 @@ function slab(w, h, d, r, mat, bevel = 0.022) {
   geo.translate(0, 0, -(d - 2 * b) / 2);
   return solid(new THREE.Mesh(geo, mat));
 }
+/** A body extruded from a symmetric outline: `half` draws the right half from the top centre to the bottom centre. */
+function sculpt(half, depth, bevel, mat) {
+  const right = new THREE.Shape();
+  half(right);
+  const pts = right.getPoints(48);
+  const all = [...pts, ...pts.slice(1, -1).reverse().map((q) => new THREE.Vector2(-q.x, q.y))];
+  const geo = new THREE.ExtrudeGeometry(new THREE.Shape(all), { depth, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel * 0.8, bevelSegments: 14, curveSegments: 48 });
+  geo.translate(0, 0, -depth / 2);
+  geo.computeVertexNormals();
+  return solid(new THREE.Mesh(geo, mat));
+}
 /** A disc facing the camera (axis z). */
 function disc(r, h, mat, seg = 64) {
   const m = solid(new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, seg), mat));
@@ -178,12 +191,12 @@ function labelPlane(text, lang, width, height, opts = {}) {
   g.direction = lang === "en" ? "ltr" : "rtl";
   g.textAlign = "center";
   g.textBaseline = "alphabetic";
-  const maxW = W * (opts.fitW ?? 0.82);
-  const maxH = H * (opts.fitH ?? 0.52);
+  const maxW = W * (opts.fitW ?? 0.86);
+  const maxH = H * (opts.fitH ?? 0.6);
   let size = maxH;
   let box;
   for (;;) {
-    g.font = `700 ${size}px ${FONT}`;
+    g.font = `800 ${size}px ${FONT}`;
     const m = g.measureText(text);
     box = { w: m.width, up: m.actualBoundingBoxAscent, down: m.actualBoundingBoxDescent };
     if ((box.w <= maxW && box.up + box.down <= maxH * 1.25) || size < 40) break;
@@ -213,47 +226,46 @@ function titledPanel(text, lang, w, h, d, r, mat, labelOpts) {
 
 // ───────────────────────────── the eight objects (each returns a whole object, built around the origin)
 const BUILD = {
-  /** A gamepad: white grips with sticks, d-pad and buttons; the touch panel carries the name. */
+  /** A gamepad: one sculpted white body with grips, sticks on a black bridge, d-pad and buttons; the touch panel carries the name. */
   controllers(text, lang) {
     const o = new THREE.Group();
-    // the dark middle of the pad, behind the panel
-    o.add(at(slab(1.66, 1.0, 0.3, 0.34, M.matte("#15161b")), 0, -0.1, -0.08));
+    const body = sculpt((sh) => {
+      sh.moveTo(0, 0.5);
+      sh.bezierCurveTo(0.5, 0.52, 0.86, 0.58, 1.06, 0.4);
+      sh.bezierCurveTo(1.24, 0.24, 1.22, -0.2, 1.16, -0.52);
+      sh.bezierCurveTo(1.1, -0.86, 0.84, -0.92, 0.74, -0.7);
+      sh.bezierCurveTo(0.66, -0.5, 0.56, -0.3, 0.34, -0.28);
+      sh.lineTo(0, -0.28);
+    }, 0.16, 0.1, M.white());
+    o.add(at(body, 0, 0, -0.08));
+    // the black bridge with the two sticks
+    o.add(at(slab(1.02, 0.36, 0.1, 0.17, M.gloss()), 0, -0.16, 0.08));
     for (const s of [-1, 1]) {
-      const shell = ball(0.46, M.white());
-      shell.scale.set(0.92, 1.0, 0.5);
-      o.add(at(shell, s * 0.9, 0.04, -0.1));
-      const horn = solid(new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.46, 16, 32), M.white()));
-      horn.rotation.z = s * 0.3;
-      horn.scale.z = 0.78;
-      o.add(at(horn, s * 0.98, -0.46, -0.13));
-      o.add(at(stick(0.86), s * 0.5, -0.38, 0.07));
-      // shoulder buttons
-      o.add(at(rbox(0.3, 0.09, 0.16, 0.04, M.gloss()), s * 0.82, 0.46, -0.14));
+      o.add(at(stick(0.78), s * 0.31, -0.16, 0.13));
+      o.add(at(rbox(0.34, 0.08, 0.14, 0.035, M.gloss()), s * 0.78, 0.55, -0.12));
     }
-    for (const [dx, dy] of [[0, 0.07], [0, -0.07], [0.07, 0], [-0.07, 0]]) {
-      o.add(at(rbox(0.058, 0.058, 0.03, 0.012, M.gloss()), -1.0 + dx, 0.12 + dy, 0.12));
-      o.add(at(disc(0.03, 0.03, M.gloss()), 1.0 + dx, 0.12 + dy, 0.12));
+    for (const [dx, dy] of [[0, 0.075], [0, -0.075], [0.075, 0], [-0.075, 0]]) {
+      o.add(at(rbox(0.062, 0.062, 0.04, 0.014, M.gloss()), -0.93 + dx, 0.2 + dy, 0.11));
+      o.add(at(disc(0.034, 0.04, M.gloss()), 0.93 + dx, 0.2 + dy, 0.11));
     }
-    o.add(at(slab(1.545, 0.6, 0.16, 0.21, M.glow("#1f55ff", 1.5)), 0, 0.08, 0.0));
-    o.add(at(titledPanel(text, lang, 1.5, 0.555, 0.2, 0.2, M.panel()), 0, 0.08, 0.03));
+    o.add(at(slab(1.47, 0.5, 0.1, 0.17, M.glow("#1f55ff", 1.6)), 0, 0.24, 0.07));
+    o.add(at(titledPanel(text, lang, 1.43, 0.46, 0.14, 0.16, M.panel()), 0, 0.24, 0.09));
     return o;
   },
 
-  /** A home console lying flat: white shells, blue light strips, a glossy black body. */
+  /** A home console lying flat: two white plates flare over a glossy black core that carries the name, a blue light line between. */
   devices(text, lang) {
     const o = new THREE.Group();
     for (const s of [-1, 1]) {
-      const shell = slab(0.42, 0.96, 0.62, 0.2, M.white(), 0.05);
-      shell.rotation.z = s * -0.04;
-      o.add(at(shell, s * 0.97, 0, -0.06));
-      o.add(at(rbox(0.035, 0.6, 0.34, 0.015, M.glow("#1f6bff", 1.8)), s * 0.805, 0, 0.03));
+      const plate = slab(2.02, 0.15, 0.62, 0.075, M.white(), 0.045);
+      o.add(at(plate, 0, s * 0.435, -0.04));
+      o.add(at(rbox(1.72, 0.018, 0.5, 0.008, M.glow("#1f6bff", 2.0)), 0, s * 0.345, -0.02));
     }
-    o.add(at(slab(1.78, 0.8, 0.44, 0.3, M.matte("#191a20")), 0, 0, -0.08));
-    // disc slot and two small ports
-    o.add(at(rbox(0.36, 0.014, 0.02, 0.006, M.matte("#30323a")), -0.44, 0.365, 0.14));
-    o.add(at(rbox(0.05, 0.02, 0.02, 0.006, M.steel()), 0.5, 0.365, 0.14));
-    o.add(at(rbox(0.05, 0.02, 0.02, 0.006, M.steel()), 0.6, 0.365, 0.14));
-    o.add(at(titledPanel(text, lang, 1.56, 0.62, 0.3, 0.26, M.gloss()), 0, -0.02, 0.08));
+    o.add(at(slab(1.86, 0.7, 0.5, 0.12, M.matte("#15161b")), 0, 0, -0.06));
+    o.add(at(rbox(0.3, 0.012, 0.02, 0.005, M.matte("#3a3c44")), -0.62, 0.305, 0.2));
+    o.add(at(rbox(0.045, 0.018, 0.02, 0.006, M.steel()), 0.6, 0.305, 0.2));
+    o.add(at(rbox(0.045, 0.018, 0.02, 0.006, M.steel()), 0.69, 0.305, 0.2));
+    o.add(at(titledPanel(text, lang, 1.8, 0.56, 0.3, 0.1, M.gloss(), { fitW: 0.84, fitH: 0.62 }), 0, -0.02, 0.07));
     return o;
   },
 
@@ -278,7 +290,7 @@ const BUILD = {
       o.add(at(disc(0.12, 0.014, M.steel()), s * 0.6, 0, -0.016));
       o.add(at(disc(0.042, 0.02, M.gloss()), s * 0.6, 0, -0.012));
     }
-    o.add(at(titledPanel(text, lang, 1.34, 0.84, 0.09, 0.03, M.matte("#191a20"), { fitW: 0.74, fitH: 0.4 }), 0, 0, 0.05));
+    o.add(at(titledPanel(text, lang, 1.34, 0.84, 0.09, 0.03, M.matte("#191a20"), { fitW: 0.8, fitH: 0.46 }), 0, 0, 0.05));
     o.add(at(rbox(0.012, 0.8, 0.095, 0.004, M.matte("#2f313a")), -0.63, 0, 0.055));
     return o;
   },
@@ -305,7 +317,7 @@ const BUILD = {
       ring.scale.set(1, 1.15, 1);
       o.add(at(ring, s * 1.07, -0.2, -0.06));
     }
-    o.add(at(titledPanel(text, lang, 1.6, 0.54, 0.22, 0.2, M.panel()), 0, -0.2, 0.08));
+    o.add(at(titledPanel(text, lang, 1.66, 0.6, 0.22, 0.22, M.panel()), 0, -0.2, 0.08));
     return o;
   },
 
@@ -319,7 +331,7 @@ const BUILD = {
     const grip = arch(0.34, 0.068, 0.8, Math.PI - 0.8, M.red());
     grip.scale.y = 0.72;
     o.add(at(grip, 0, 0.46, -0.1));
-    o.add(at(titledPanel(text, lang, 1.8, 0.88, 0.36, 0.29, M.fabric(), { fitW: 0.78, fitH: 0.3 }), 0, 0.02, 0));
+    o.add(at(titledPanel(text, lang, 1.8, 0.88, 0.36, 0.29, M.fabric(), { fitW: 0.82, fitH: 0.36 }), 0, 0.02, 0));
     // the cable, its strap and its plug
     for (const y of [-0.26, -0.31]) {
       const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.66, y, 0.2), new THREE.Vector3(-0.2, y - 0.012, 0.205), new THREE.Vector3(0.25, y - 0.004, 0.205), new THREE.Vector3(0.6, y, 0.2)]);
@@ -343,7 +355,7 @@ const BUILD = {
       back.rotation.z = s * -0.13;
       o.add(at(back, s * 0.3, 0.07, -0.12 - (s > 0 ? 0.05 : 0)));
     }
-    o.add(at(titledPanel(text, lang, 1.42, 0.9, 0.05, 0.09, M.panel(), { fitW: 0.8, fitH: 0.34 }), 0, -0.06, 0.02));
+    o.add(at(titledPanel(text, lang, 1.42, 0.9, 0.05, 0.09, M.panel(), { fitW: 0.86, fitH: 0.42 }), 0, -0.06, 0.02));
     return o;
   },
 
@@ -358,7 +370,7 @@ const BUILD = {
       for (const [dx, dy] of [[0, 0.06], [0, -0.06], [0.06, 0], [-0.06, 0]]) o.add(at(disc(0.026, 0.03, M.gloss()), s * 0.93 + dx, cy + dy, 0.06));
       o.add(at(rbox(0.26, 0.05, 0.12, 0.02, M.gloss()), s * 0.9, 0.46, -0.05));
     }
-    o.add(at(titledPanel(text, lang, 1.4, 0.76, 0.1, 0.04, M.gloss(), { fitW: 0.74, fitH: 0.36 }), 0, 0, 0.02));
+    o.add(at(titledPanel(text, lang, 1.4, 0.76, 0.1, 0.04, M.gloss(), { fitW: 0.8, fitH: 0.44 }), 0, 0, 0.02));
     // the inspection tick: a green enamel seal on the corner of the screen (no words)
     const c = document.createElement("canvas");
     c.width = c.height = 256;
@@ -413,14 +425,14 @@ const BUILD = {
     const bar = rbox(0.07, 0.44, 0.03, 0.012, M.steel());
     bar.rotation.z = -0.2;
     o.add(at(bar, 0.69, 0.45, -0.32));
-    o.add(at(titledPanel(text, lang, 1.4, 0.54, 0.12, 0.2, M.panel()), 0, -0.12, 0.06));
+    o.add(at(titledPanel(text, lang, 1.5, 0.6, 0.12, 0.2, M.panel()), 0, -0.12, 0.06));
     return o;
   },
 };
 
 // ───────────────────────────── framing: the whole object inside the picture, nothing cut
-const TURN = -0.2; // a slight three-quarter turn, so the depth reads
-const MARGIN = 0.9; // the object fills 90% of the frame's width or height
+const TURN = -0.16; // a slight three-quarter turn, so the depth reads
+const MARGIN = 0.93; // the object fills 90% of the frame's width or height
 
 function ndcBounds(object) {
   object.updateMatrixWorld(true);
@@ -445,7 +457,7 @@ function fit(object) {
     const half = Math.max((b.max.x - b.min.x) / 2, (b.max.y - b.min.y) / 2);
     object.scale.multiplyScalar(MARGIN / half);
     const b2 = ndcBounds(object);
-    object.position.addScaledVector(RIGHT, -(b2.max.x + b2.min.x) / 2);
+    object.position.addScaledVector(RIGHT, (-(b2.max.x + b2.min.x) / 2) * ASPECT);
     object.position.addScaledVector(UP, -(b2.max.y + b2.min.y) / 2);
   }
 }

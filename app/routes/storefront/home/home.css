@@ -569,13 +569,13 @@
   /* ───────────────────────────── the department doors under the hero ─────────────────────────────
    * Owner 2026-11-20: only the three.js object — no tile, no ground, no border. Each door is a transparent render of
    * a whole product (nothing cut at the edges) whose own dark panel carries the department's name, standing on the
-   * page's floor in both themes with its own soft contact shadow. Below 1024: one scrolling row (148px doors, the
-   * third peeks on a 390px phone; 164px from 768). From 1024 every door shares the row. */
+   * page's floor in both themes with its own soft contact shadow. Below 1024: one scrolling row of 4:3 doors (172px wide, the
+   * third peeks on a 390px phone; 196px from 768). From 1024 every door shares the row. */
   .home-strip__list {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 148px;
-    gap: 6px;
+    grid-auto-columns: 172px;
+    gap: 4px;
     margin-inline: calc(-1 * var(--gutter));
     padding: 4px var(--gutter) 12px;
     overflow-x: auto;
@@ -592,7 +592,7 @@
   }
   @media (min-width: 48rem) {
     .home-strip__list {
-      grid-auto-columns: 164px;
+      grid-auto-columns: 196px;
       gap: var(--s-2);
     }
   }
@@ -606,7 +606,7 @@
   }
   .home-door {
     display: block;
-    aspect-ratio: 1;
+    aspect-ratio: 4 / 3;
     border-radius: var(--r-lg);
   }
   .home-door:focus-visible {

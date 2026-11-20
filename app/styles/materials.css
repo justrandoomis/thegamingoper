@@ -991,9 +991,27 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   .ptile[data-gel="playstation"] .ptile__img {
     inset-inline-end: -8%;
   }
-  /* the Switch's raised game card stays clear of the «Nintendo» name */
+  /* the wide hardware (everything but the upright PS5) stands a little above the tile's top edge, like the PS5: anchored
+     at its top, as large as the room beside each platform's name allows, never past the tile's side */
+  .ptile:not([data-gel="playstation"]) .ptile__img {
+    inset-block: -16px auto;
+    block-size: calc(100% + 16px);
+    object-position: 100% 0%;
+  }
+  [dir="rtl"] .ptile:not([data-gel="playstation"]) .ptile__img {
+    object-position: 0% 0%;
+  }
+  .ptile[data-gel="xbox"] .ptile__img {
+    inline-size: 66%;
+  }
   .ptile[data-gel="nintendo"] .ptile__img {
-    inset-inline-end: -5%;
+    inline-size: 46%;
+  }
+  .ptile[data-gel="handheld"] .ptile__img {
+    inline-size: 54%;
+  }
+  .ptile[data-gel="pc"] .ptile__img {
+    inline-size: 42%;
   }
   [dir="rtl"] .ptile__img {
     object-position: 0% 100%;

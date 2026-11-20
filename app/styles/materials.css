@@ -933,12 +933,11 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   font: var(--type-xs-strong);
   color: var(--on-color);
 }
-/* the hardware: clipped at the sides and the bottom only, so it stands above the tile's top edge */
+/* the hardware: never clipped; it stands above the tile's top edge and stays inside the sides */
 .ptile__hw {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  clip-path: inset(-56px 0 0 0 round 0 0 var(--r-lg) var(--r-lg));
 }
 .ptile__img {
   position: absolute;
@@ -983,36 +982,13 @@ html:not([data-motion-ready]) .key:active > .key__cap {
   }
   .ptile__img {
     inset-block: auto 14px;
-    inset-inline: auto -8%;
+    inset-inline: auto 10px;
     inline-size: 58%;
     block-size: calc(100% + 22px);
     object-position: 100% 100%;
   }
   [dir="rtl"] .ptile__img {
     object-position: 0% 100%;
-  }
-  /* wide hardware (everything but the upright PS5) is width-bound, so bottom-anchored it sat inside the tile; anchored
-     at the top instead it breaks out of the tile's top edge like the PS5 does */
-  .ptile:not([data-gel="playstation"]) .ptile__img {
-    inset-block: -38px auto;
-    inline-size: 46%;
-    block-size: calc(100% + 38px);
-    object-position: 100% 0%;
-  }
-  [dir="rtl"] .ptile:not([data-gel="playstation"]) .ptile__img {
-    object-position: 0% 0%;
-  }
-  /* the Switch photo is the bulkiest at this width: a little narrower so it clears the name */
-  .ptile[data-gel="nintendo"] .ptile__img {
-    inline-size: 44%;
-  }
-  /* flat, wide hardware (a handheld, a monitor) is short: tilted toward the tile's corner so it fills the
-     height instead of floating above an empty bottom */
-  .ptile:is([data-gel="handheld"], [data-gel="pc"]) .ptile__img {
-    inset-block-start: -30px;
-    inline-size: 50%;
-    rotate: calc(-8deg * var(--dir));
-    transform-origin: 50% 0%;
   }
 }
 @media (min-width: 64rem) {

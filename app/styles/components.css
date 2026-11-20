@@ -1926,7 +1926,7 @@ select.field__input {
 .trust--motion {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--s-20);
+  gap: calc(var(--s-20) * 1.5);
   border-radius: 0;
   background: none;
   box-shadow: none;
@@ -1965,7 +1965,7 @@ select.field__input {
 }
 @media (max-width: 47.99rem) {
   .trust--motion {
-    gap: var(--s-12);
+    gap: var(--s-16);
   }
 }
 /* the words arrive once the strip is in view (TrustStrip arms it only with JavaScript and motion allowed) */

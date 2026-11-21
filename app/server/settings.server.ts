@@ -31,10 +31,13 @@
  * `promotions.referral`, `promotions.gift_card` (admin 08's DISCOUNT_LIMITS, LOYALTY, REFERRAL, GIFT_CARD), with
  * the groups "customers" and "promotions". Defaults = the constants; the modules read them through
  * services/admin/customers/rules.server.ts and services/admin/promotions/program.server.ts.
+ * Switch bundle builder 2026-11-21 (additive): `builder.switch.capacity`, the planner's storage figures (default
+ * DEFAULT_CAPACITY), read through sanitizeCapacity by services/switch-library.server.ts.
  */
 import { eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import { normalizeIraqPhone } from "~/lib/phone";
+import { DEFAULT_CAPACITY } from "~/lib/switch-builder/storage";
 import { assertCan, can, type Actor } from "./actor";
 import { auditStatement } from "./audit.server";
 import type { BatchStatement, Db } from "./db/drizzle.server";
@@ -428,6 +431,44 @@ export const SETTINGS = {
     public: false,
     group: "promotions",
     label: { ar: "حدود بطاقات الهدايا", en: "Gift-card limits" },
+  }),
+
+  // ── Switch bundle builder (2026-11-21, additive; docs/switch-builder.md §3–§4.2)
+
+  /**
+   * The planner's storage figures: the space each Switch 1 model shows as usable in system memory, what is kept free
+   * there for saves, screenshots and system updates (GB as the console shows them = GiB), the share of a memory card's
+   * label that is usable, and what is kept free on the card for updates. Default = DEFAULT_CAPACITY (the research
+   * figures in ~/lib/switch-builder/storage); staff replace them with readings from a real console. The bounds are those
+   * of sanitizeCapacity, and the builder reads the value through it (services/switch-library.server.ts), so a stored
+   * value that no longer fits never breaks the page — each field outside its bounds falls back to its default. Not
+   * public: GET /api/switch-library serves the sanitised figures to the builder (not getPublicSettings, which every
+   * page loads); no seeded row — the default applies until somebody changes it.
+   */
+  "builder.switch.capacity": define({
+    schema: z.strictObject({
+      internalUsableGiB: z.strictObject({
+        "switch-oled": z.number().min(1, "too_small").max(64, "too_big"),
+        switch: z.number().min(1, "too_small").max(32, "too_big"),
+        "switch-lite": z.number().min(1, "too_small").max(32, "too_big"),
+      }),
+      internalReserveGiB: z.number().min(0, "too_small").max(16, "too_big"),
+      cardMargin: z.number().min(0.9, "too_small").max(1, "too_big"),
+      cardHeadroom: z
+        .strictObject({
+          fraction: z.number().min(0, "too_small").max(0.5, "too_big"),
+          minGiB: z.number().min(0, "too_small").max(100, "too_big"),
+          maxGiB: z.number().min(0, "too_small").max(200, "too_big"),
+        })
+        .superRefine((value, ctx) => {
+          if (value.maxGiB < value.minGiB) ctx.addIssue({ code: "custom", path: ["maxGiB"], message: "below_paired" });
+        }),
+    }),
+    default: DEFAULT_CAPACITY,
+    permission: "settings.manage",
+    public: false,
+    group: "store",
+    label: { ar: "أرقام المساحة في مخطِّط حزمة Nintendo Switch", en: "Storage figures of the Nintendo Switch bundle builder" },
   }),
 } satisfies Record<SeededSettingKey, SettingDef> & Record<string, SettingDef>;
 

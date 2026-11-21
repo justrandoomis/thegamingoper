@@ -30,6 +30,7 @@ import { DEFAULT_LOCALE, LOCALE_CODES, LOCALES, localePath, pick, type L10n, typ
 import { formatMoney } from "~/lib/money";
 import { formatIraqPhone, normalizeIraqPhone } from "~/lib/phone";
 import { PREFS_COOKIE } from "~/lib/prefs";
+import { SWITCH_BUILDER_PATH, SWITCH_BUILDER_PUBLIC } from "~/routes/storefront/builder/flags";
 import { POLICY_ICONS, POLICY_SLUGS, isPolicySlug, type ContactChannel, type ContactView, type CmsText, type PaymentMethodKey, type PolicyFact, type PolicySlug, type PolicySummary, type PolicyView, type StoreFactsView } from "~/routes/storefront/content/content-model";
 import { CUSTOMER_COOKIE, CUSTOMER_SESSION_DAYS } from "~/server/auth/customer.server";
 import type { Db } from "~/server/db/drizzle.server";
@@ -59,7 +60,7 @@ const PREFS_COOKIE_DAYS = 365;
  * When the drafts' wording (`drafts.*` in app/i18n/messages/content.ts) or a constant they quote (cookies, retention
  * windows) last changed: a draft's «آخر تحديث» is never earlier. Move it forward whenever a draft's text changes.
  */
-export const POLICY_DRAFTS_REVISED_AT = Date.UTC(2026, 10, 12);
+export const POLICY_DRAFTS_REVISED_AT = Date.UTC(2026, 10, 21);
 
 /** The settings each draft quotes: a change to one of them is a change to that policy's text. */
 const DRAFT_SETTINGS: Record<PolicySlug, readonly SettingKey[]> = {
@@ -496,8 +497,12 @@ export function buildPolicyDraft(slug: PolicySlug, env: DraftEnv): Block[] {
           k("storageCompare"),
           k("storageRecent", { days: days(PRIVACY_STORAGE_DAYS.recentlyViewed) }),
           k("storageSearch", { days: days(PRIVACY_STORAGE_DAYS.recentSearches) }),
+          k("storageBuilderPlan", { key: ltr(PRIVACY_BUILDER_KEYS.plan) }),
+          k("storageBuilderTour", { key: ltr(PRIVACY_BUILDER_KEYS.tour) }),
         ]),
         p(k("hostText")),
+        // the one third party a page can load, and only on the shopper's tap: a trailer in the Switch builder (CSP frame-src)
+        p(k("youtubeText")),
       );
       out.push(h2(k("trackingTitle")), p(k("trackingText", { days: days(PRIVACY_STORAGE_DAYS.recommendationSignals) })));
       out.push(h2(k("shareTitle")), p(k("shareText")));
@@ -567,6 +572,13 @@ export const PRIVACY_STORAGE_DAYS = {
    */
   recommendationSignals: 90,
 } as const;
+
+/**
+ * The Switch builder's localStorage keys (docs/switch-builder.md §6.1, §6.7), named in the privacy draft: the plan on
+ * this device, and whether the guide was seen or skipped. Mirrored from the builder's own code like the cookies above;
+ * tests/switch-builder-integration.test.ts checks that every `tt.sb.*` key the builder's files use is named here.
+ */
+export const PRIVACY_BUILDER_KEYS = { plan: "tt.sb.plan.v1", tour: "tt.sb.tour.v1" } as const;
 
 function cookieLifetime(t: TFunction, cookie: PrivacyCookie): string {
   const span = cookie.days % 365 === 0 ? t("units.years", { count: cookie.days / 365 }) : t("units.days", { count: cookie.days });
@@ -654,6 +666,14 @@ export type SitemapEntry = {
 /** Public pages that exist whatever the catalogue holds. */
 const STATIC_PATHS = ["/", "/used", "/trade-in", "/support", "/policies", "/about", "/contact", "/accessibility"] as const;
 
+/**
+ * The static pages the sitemap lists: STATIC_PATHS, and the Switch builder once the store links to it
+ * (SWITCH_BUILDER_PUBLIC in routes/storefront/builder/flags.ts — until then the page asks not to be indexed).
+ */
+export function staticSitemapPaths(builderPublic: boolean = SWITCH_BUILDER_PUBLIC): string[] {
+  return builderPublic ? [...STATIC_PATHS, SWITCH_BUILDER_PATH] : [...STATIC_PATHS];
+}
+
 /** sitemaps.org: at most 50,000 URLs per file. Every entry is three URLs (ar, en, ckb). */
 export const SITEMAP_MAX_URLS = 50_000;
 
@@ -676,7 +696,8 @@ const noindexOf = (seo: string | null) => parseJson<{ noindex?: unknown }>(seo)?
  *   policies   approved CMS policies only — drafts are noindex
  *   landing    CMS landing pages (/pages/:slug) exactly as the page serves them (getLandingPage's rules: published or
  *              due, inside their window, not demo, with Arabic text and a title) — not the ones marked noindex
- *   static     home, used, trade-in, support, the policy index, about, contact, accessibility
+ *   static     home, used, trade-in, support, the policy index, about, contact, accessibility (+ the Switch builder
+ *              once it is public: staticSitemapPaths)
  */
 export async function getSitemapEntries(db: Db, now: number): Promise<SitemapEntry[]> {
   const [products, categories, platforms, devices, used, articles, pages, landing] = await runBatch(db, [
@@ -699,7 +720,7 @@ export async function getSitemapEntries(db: Db, now: number): Promise<SitemapEnt
   const platformRows = rowsOf<PlatformRow>(platforms);
   const deviceRows = rowsOf<DeviceRow>(devices);
 
-  const entries: SitemapEntry[] = STATIC_PATHS.map((path) => ({ path, lastmod: null }));
+  const entries: SitemapEntry[] = staticSitemapPaths().map((path) => ({ path, lastmod: null }));
   const add = (path: string, lastmod: number | null) => entries.push({ path, lastmod: lastmod && lastmod > 0 ? lastmod : null });
 
   // categories: active chain + a listed product somewhere below

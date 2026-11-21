@@ -69,6 +69,8 @@ const toggle: ObjectField = { name: "enabled", field: { kind: "bool" } };
 
 /** Every setting key and how it is edited. A key missing here is shown read-only. */
 export const SETTING_EDITORS: Record<string, SettingEditor> = {
+  // the planner's storage figures are edited beside the game library they size (docs/switch-builder.md §3)
+  "builder.switch.capacity": { kind: "linked", href: "/admin/catalog/switch-library", module: "catalog" },
   "shipping.flat_fee_iqd": { kind: "linked", href: "/admin/shipping/zones", module: "shipping" },
   "shipping.overrides_enabled": { kind: "linked", href: "/admin/shipping/zones", module: "shipping" },
   "payments.cod": { kind: "object", fields: [toggle] },

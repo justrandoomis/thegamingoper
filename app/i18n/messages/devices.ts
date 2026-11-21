@@ -154,6 +154,11 @@ export default defineMessages({
       variantsWork: "يعمل منه: {variants}",
       variantsFail: "لا يعمل منه: {variants}",
     },
+    // the Switch builder's door on the Switch 1 hubs, once it is public (builder/flags.ts)
+    builder: {
+      title: "جهّز جهاز Switch",
+      text: "اختر بطاقة الذاكرة والألعاب التي تتسع لها، وشاهد كم يبقى من المساحة.",
+    },
     help: {
       title: "الإعداد والصيانة",
       reason: "أدلة آمنة، ومساعد يسألك خطوة بخطوة، وطلب صيانة.",
@@ -400,6 +405,10 @@ export default defineMessages({
       variantsWork: "Works: {variants}",
       variantsFail: "Does not work: {variants}",
     },
+    builder: {
+      title: "Build your Switch",
+      text: "Pick a memory card and the games that fit, and see how much space is left.",
+    },
     help: {
       title: "Setup and repair",
       reason: "Safe guides, an assistant that asks step by step, and repair requests.",
@@ -632,6 +641,10 @@ export default defineMessages({
       },
       variantsWork: "ئەمانەی کار دەکەن: {variants}",
       variantsFail: "ئەمانەی کار ناکەن: {variants}",
+    },
+    builder: {
+      title: "ئامێری Switch ئامادە بکە",
+      text: "کارتی بیرگە و ئەو یاریانەی جێیان دەبێتەوە هەڵبژێرە، و ببینە چەند شوێن دەمێنێتەوە.",
     },
     help: {
       title: "ڕێکخستن و چاککردنەوە",

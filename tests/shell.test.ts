@@ -244,6 +244,9 @@ describe("tabOf — the tab a page belongs to", () => {
     expect(tabOf("/account/orders")).toBe("account");
     expect(tabOf("/about")).toBeNull();
     expect(tabOf("/cartography")).toBeNull();
+    // the Switch builder sells consoles, memory cards and games: a catalogue page (2026-11-21)
+    expect(tabOf("/build/switch")).toBe("categories");
+    expect(tabOf("/builder")).toBeNull();
   });
 });
 
@@ -524,6 +527,8 @@ describe("searchMode — the header's search field, or only the round search key
       "/accessibility",
       "/design-system",
       "/motion",
+      // the Switch builder searches its own game library: one field per page (2026-11-21)
+      "/build/switch",
     ]) {
       expect(searchMode(path), path).toBe("key");
     }
@@ -532,6 +537,7 @@ describe("searchMode — the header's search field, or only the round search key
   it("matches whole path segments only", () => {
     expect(searchMode("/cartography")).toBe("field");
     expect(searchMode("/supporters")).toBe("field");
+    expect(searchMode("/builder")).toBe("field");
   });
 
   // changed on purpose 2026-11-13 (QA): every error page used to keep the header's FIELD — the 404 then had two fields

@@ -14,6 +14,7 @@ import type { Route } from "./+types/platform";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { useFormat, useT } from "~/i18n/react";
 import type { MotionHandle } from "~/motion";
+import { switchBuilderHref } from "~/routes/storefront/builder/flags";
 import { RecommendationShelves } from "~/routes/storefront/devices/components/RecommendationShelves";
 import { shellMeta } from "~/routes/storefront/shell/meta";
 import { getCustomer } from "~/server/auth/customer.server";
@@ -22,6 +23,7 @@ import { getDb } from "~/server/db.server";
 import { getUsedSpotlight } from "~/server/services/catalog/cards.server";
 import { listProducts, scopePicks } from "~/server/services/catalog/listing.server";
 import { recommendationsFor } from "~/server/services/recommendations.server";
+import { EntryCard } from "~/ui/EntryCard";
 import { ErrorState } from "~/ui/ErrorState";
 import { isPlatform, PLATFORMS } from "~/ui/PlatformLed";
 import { ChipRow, DeviceRow, HubBand, TitleRow, UsedShelf, useDevicesTitle, useHubLead, useKindIcon } from "./components/Hub";
@@ -101,6 +103,7 @@ export default function PlatformPage({ loaderData }: Route.ComponentProps) {
   const name = known ? ui(`platform.${known}`) : platform.name;
   const count = t("hub.products", { count: list.scopeTotal, n: f.number(list.scopeTotal) });
   const crumbs = [{ label: t("hub.home"), href: "/" }, { label: name }];
+  const build = switchBuilderHref({ platform: platform.slug });
 
   return (
     <div className="page catalog-page" onClickCapture={hold}>
@@ -131,6 +134,9 @@ export default function PlatformPage({ loaderData }: Route.ComponentProps) {
         wished={wished}
         filterOrder={filterOrder}
       />
+      {/* «جهّز جهاز Switch» on the Nintendo hub once the builder is public (builder/flags.ts), after the list: the first
+          phone screen stays the products' */}
+      {build ? <EntryCard to={build} icon="device-nintendo" headingLevel={2} title={t("hub.buildSwitch")} text={t("hub.buildSwitchText")} className="catalog-after max-w-[40rem]" /> : null}
       {used ? (
         used.length >= 3 ? (
           <UsedShelf units={used} title={t("hub.used")} reason={t("hub.usedReason")} href={`/used?platform=${platform.slug}`} viewAll={t("hub.usedAll")} className="catalog-after" />

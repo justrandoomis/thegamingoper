@@ -104,19 +104,20 @@ export function capacityOf(model: SwitchModel, sizeGB: CardSize, cfg: CapacityCo
   };
 }
 
+/** A measured cartridge figure: 0 is a real measurement ("needs no extra space"), only a missing value is unmeasured. */
+const measuredCartridge = (extras: LibraryExtras | undefined): number | null =>
+  typeof extras?.cartridgeBytes === "number" && Number.isFinite(extras.cartridgeBytes) && extras.cartridgeBytes >= 0 ? extras.cartridgeBytes : null;
+
 /** Space a game needs on the console in this format, in bytes; null = not measured yet (it cannot be planned). */
 export function spaceNeeded(extras: LibraryExtras | undefined, format: GameFormat): number | null {
   const digital = extras?.sizeBytes && extras.sizeBytes > 0 ? extras.sizeBytes : null;
-  if (format === "cartridge") {
-    const cartridge = extras?.cartridgeBytes && extras.cartridgeBytes > 0 ? extras.cartridgeBytes : null;
-    return cartridge ?? digital;
-  }
+  if (format === "cartridge") return measuredCartridge(extras) ?? digital;
   return digital;
 }
 
 /** True when the cartridge figure is the full digital size standing in for an unmeasured cartridge (say so in the UI). */
 export function cartridgeUsesFullSize(extras: LibraryExtras | undefined): boolean {
-  return !(extras?.cartridgeBytes && extras.cartridgeBytes > 0) && Boolean(extras?.sizeBytes && extras.sizeBytes > 0);
+  return measuredCartridge(extras) === null && Boolean(extras?.sizeBytes && extras.sizeBytes > 0);
 }
 
 export interface Usage {
@@ -135,9 +136,9 @@ export function usageOf(needs: ReadonlyArray<number | null>, capacity: CapacityP
   return { usedBytes: used, plannableBytes: capacity.plannableBytes, remainingBytes: Math.max(0, left), overBytes: Math.max(0, -left) };
 }
 
-/** Can a game that needs `need` bytes join a plan with `remainingBytes` left? Unknown sizes never fit. */
+/** Can a game that needs `need` bytes join a plan with `remainingBytes` left? Unknown sizes never fit; 0 always does. */
 export function fits(need: number | null, remainingBytes: number): boolean {
-  return need !== null && need > 0 && need <= remainingBytes;
+  return need !== null && need >= 0 && (need === 0 || need <= remainingBytes);
 }
 
 /** GiB with `digits` decimals, rounded half up — what the console would show. */

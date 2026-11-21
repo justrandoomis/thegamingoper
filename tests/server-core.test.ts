@@ -1835,6 +1835,8 @@ describe("settings", () => {
       "promotions.loyalty",
       "promotions.referral",
       "promotions.gift_card",
+      // 2026-11-21: the Switch bundle builder's planner constants (docs/switch-builder.md §3)
+      "builder.switch.capacity",
     ]);
     expect([...PUBLIC_SETTING_KEYS].sort()).toEqual([...seeded].sort());
     for (const key of SETTING_KEYS) {

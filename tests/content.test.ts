@@ -186,7 +186,8 @@ describe("policy drafts (no approved CMS page)", () => {
   it("date a draft by its last revision, or by the last change to a setting it quotes", async () => {
     // the warranty draft quotes no setting: its date is the drafts' revision
     expect((await policy("warranty", "en"))!.updatedAt).toBe(POLICY_DRAFTS_REVISED_AT);
-    const later = NOW + 5 * 86_400_000;
+    // after both the test clock and the drafts' last revision (moved to 2026-11-21 for the Switch builder's lines)
+    const later = Math.max(NOW, POLICY_DRAFTS_REVISED_AT) + 5 * 86_400_000;
     await t.db.insert(settings).values({ key: "returns.window_days", value: 10, updatedAt: later }).onConflictDoUpdate({ target: settings.key, set: { value: 10, updatedAt: later } });
     expect((await policy("returns", "en"))!.updatedAt).toBe(later);
     // a setting the privacy draft does not quote leaves it alone

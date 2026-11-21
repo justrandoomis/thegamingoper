@@ -1,0 +1,391 @@
+/*
+ * The Switch builder's game details sheet (sbs-) and spotlight guide (sbt-) — docs/switch-builder.md §6.5–6.7.
+ * Imported by components/GameSheet.tsx, TrailerEmbed.tsx and SpotlightTour.tsx. Components layer (utilities still win),
+ * tokens only, logical properties only. Motion only on transform and opacity: the guide's dim cross-fades and its note
+ * drops in from JS (~/ui/Dialog fadeElement, ~/motion materialize — both turn into 120ms fades under reduced motion);
+ * the cut-out is a clip-path set per part and never animated; no box-shadow spread anywhere.
+ */
+@layer components {
+  /* ───────────────────────────── the details sheet ───────────────────────────── */
+  .sbs {
+    display: grid;
+    gap: var(--s-6);
+    padding-block-end: var(--s-2);
+  }
+  .sbs-section {
+    display: grid;
+    gap: var(--s-3);
+    min-inline-size: 0;
+  }
+  .sbs-section__title {
+    font: var(--type-card);
+    color: var(--ink);
+  }
+  /* reading text: notes, explanations, the description (v2.1 G7: 16px on every width) */
+  .sbs-read,
+  .sbs-note {
+    font: var(--type-read);
+  }
+  .sbs-read {
+    color: var(--ink);
+    white-space: pre-line;
+  }
+  .sbs-note {
+    color: var(--ink-2);
+  }
+  .sbs-attribution {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  /* the kit's inline link keeps its "opens in a new tab" glyph on the line (the base sheet makes every svg a block) */
+  .sbs-attribution .link > svg {
+    display: inline;
+    vertical-align: -0.2em;
+    margin-inline-start: var(--s-1);
+  }
+  /* the space the description takes while the details chunk loads (no skeleton) */
+  .sbs-reserve {
+    min-block-size: 160px;
+  }
+
+  /* the picture TamTam uploaded, on the product ground, contained */
+  .sbs-media {
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    background: var(--niche);
+  }
+  div.sbs-media {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 9;
+  }
+  div.sbs-media img {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
+  }
+
+  /* year · publisher · developer, then the genre and play-mode words */
+  .sbs-identity {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .sbs-meta {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .sbs-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  .sbs-tag {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 32px;
+    padding-inline: var(--s-3);
+    border-radius: var(--r-full);
+    background: var(--niche);
+    color: var(--ink);
+    font: var(--type-xs-strong);
+  }
+
+  /* the size rows: a name with its one-line explanation, the figure at the end */
+  .sbs-sizes {
+    display: grid;
+    border-block-start: 1px solid var(--line);
+  }
+  .sbs-sizes__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding-block: var(--s-3);
+    border-block-end: 1px solid var(--line);
+  }
+  .sbs-sizes__row > dt {
+    display: grid;
+    gap: var(--s-1);
+    min-inline-size: 0;
+  }
+  .sbs-sizes__name {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .sbs-sizes__hint {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sbs-sizes__row > dd {
+    flex: none;
+    font: var(--type-sm-strong);
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .sbs-why {
+    display: grid;
+    gap: var(--s-2);
+    padding-inline-start: var(--s-5);
+    list-style: disc;
+    font: var(--type-read);
+    color: var(--ink-2);
+  }
+
+  /* whether it fits — always words; the colour only backs them up */
+  .sbs-fit {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+    min-inline-size: 0;
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .sbs-fit > svg {
+    flex: none;
+    margin-block-start: 1px;
+  }
+  .sbs-fit[data-tone="ok"] > svg {
+    color: var(--ok);
+  }
+  .sbs-fit[data-tone="warn"] > svg {
+    color: var(--warn);
+  }
+  .sbs-fit[data-tone="danger"] {
+    color: var(--danger);
+  }
+
+  /* how it is bought: the kit's option cards; a US eShop price is shown as words, never as payable money */
+  .sbs-buying {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .sbs-usd {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .sbs-reason {
+    font: var(--type-xs-strong);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  /* a licensed Metacritic score: a neutral pill with its source in words — no stars, no verdict colours */
+  .sbs-score {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .sbs-score__value {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 32px;
+    padding-inline: var(--s-3);
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-full);
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+
+  .sbs-links {
+    display: grid;
+  }
+  .sbs-links > li {
+    display: flex;
+    align-items: center;
+    min-block-size: 44px;
+  }
+
+  /* the pinned foot: the fit in words, the one key */
+  .sbs-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-4);
+    inline-size: 100%;
+  }
+  .sbs-foot > .sbs-fit {
+    flex: 1 1 12rem;
+  }
+  .sbs-foot__key {
+    flex: 0 0 auto;
+  }
+
+  /* ───────────────────────────── the trailer ───────────────────────────── */
+  .sbs-trailer {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .sbs-trailer__box {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--r-lg);
+    background: var(--niche);
+  }
+  .sbs-trailer__frame {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    border: 0;
+  }
+  /* TamTam's own poster: the product ground and a clay play disc — never a picture from YouTube */
+  .sbs-trailer__poster {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: var(--s-3);
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: var(--r-lg);
+  }
+  .sbs-trailer__poster:focus-visible {
+    outline: var(--focus-w) solid var(--focus);
+    outline-offset: calc(-1 * var(--focus-w) - 4px);
+  }
+  .sbs-trailer__disc {
+    display: grid;
+    place-items: center;
+    inline-size: 64px;
+    block-size: 64px;
+    border-radius: var(--r-full);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: var(--e-float);
+    transition: scale var(--t-micro) var(--ease-settle);
+  }
+  /* the triangle's eye centre sits left of its box: nudge it (a play glyph points right in every language) */
+  .sbs-trailer__disc > svg {
+    translate: 2px 0;
+  }
+  .sbs-trailer__label {
+    font: var(--type-sm-strong);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .sbs-trailer__poster:not(:disabled):hover .sbs-trailer__disc {
+      scale: 1.06;
+    }
+  }
+  .sbs-trailer__poster:disabled {
+    cursor: default;
+    color: var(--ink-3);
+  }
+  .sbs-trailer__poster:disabled .sbs-trailer__disc {
+    background: var(--niche-2);
+    color: var(--ink-3);
+    box-shadow: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sbs-trailer__disc {
+      transition: none;
+    }
+  }
+  [data-motion="reduced"] .sbs-trailer__disc {
+    transition: none;
+  }
+
+  /* ───────────────────────────── the spotlight guide ───────────────────────────── */
+  .sbt {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-dialog);
+  }
+  /* one layer = the dim with its cut-out + the ring; two layers take turns and cross-fade between parts */
+  .sbt-layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .sbt-scrim {
+    position: absolute;
+    inset: 0;
+    background: var(--scrim);
+  }
+  .sbt-ring {
+    position: absolute;
+    box-sizing: border-box;
+    border: var(--focus-w) solid var(--focus);
+    border-radius: var(--sbt-radius, var(--r-lg));
+  }
+  /* the note: opaque paper (text never sits on the dim), beside the part or docked at the screen edge */
+  .sbt-note {
+    position: absolute;
+    display: grid;
+    gap: var(--s-3);
+    inline-size: min(360px, calc(100% - 2 * var(--s-4)));
+    max-block-size: calc(100% - 2 * var(--s-4));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-block: var(--s-3) var(--s-4);
+    padding-inline: var(--s-5);
+    border-radius: var(--r-lg);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: var(--e-overlay);
+  }
+  /* programmatic focus on the note (it is read as a dialog) draws no ring; its keys keep theirs */
+  .sbt-note:focus {
+    outline: none;
+  }
+  .sbt-note[data-dock] {
+    inset-inline: 0;
+    margin-inline: auto;
+  }
+  .sbt-note[data-dock="end"] {
+    inset-block-end: calc(var(--s-4) + var(--safe-bottom));
+  }
+  .sbt-note[data-dock="start"] {
+    inset-block-start: calc(var(--s-4) + var(--safe-top));
+  }
+  .sbt-note__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-inline-end: calc(-1 * var(--s-3));
+  }
+  .sbt-note__count {
+    font: var(--type-xs-strong);
+    color: var(--ink-2);
+  }
+  .sbt-note__title {
+    font: var(--type-h3);
+    color: var(--ink);
+  }
+  .sbt-note__text {
+    font: var(--type-read);
+    color: var(--ink);
+  }
+  .sbt-note__keys {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--s-2);
+    margin-block-start: var(--s-1);
+  }
+
+  @media (forced-colors: active) {
+    .sbt-scrim {
+      forced-color-adjust: none;
+    }
+    .sbt-ring {
+      border-color: Highlight;
+    }
+    .sbt-note {
+      border: 1px solid CanvasText;
+    }
+  }
+  @media print {
+    .sbt {
+      display: none;
+    }
+  }
+}

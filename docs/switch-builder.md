@@ -52,15 +52,16 @@ Research behind every decision: `D:/tt-tmp/switch-lib/reports/` — `ui-kit.md`,
 - Bytes everywhere; shown as «GB» = bytes / 1024³ with one decimal (what the console and the eShop show).
 - Card label sizes are decimal. Usable = label × 10⁹ × 0.985. Headroom kept free on the card for updates =
   clamp(5 % × usable, 2 GB, 8 GB). Plannable on the card = usable − headroom
-  (64→55.8, 128→111.5, 256→223.1, 512→446.1, 1TB→871.4 GB).
+  (64→55.8, 128→111.6, 256→226.8, 512→461.7, 1TB→909.4 GB — the 8 GB cap applies from 256GB up).
 - System memory usable: OLED 54.0, Switch 25.9, Lite 25.9 GB; 2.0 GB reserved for saves/screenshots/system updates.
 - Total plannable = (internal − reserve) + (card − headroom). The console fills the card, then system memory.
 - Game need: digital = `sizeBytes` (base + latest update, no DLC); cartridge = `cartridgeBytes` ?? `sizeBytes` (say
   "counted at full size until we measure it" when the fallback is used). Saves never count on the card.
 - Fit check on exact bytes; refusal text shows both figures with `digitsToTell`.
 - Constants come from the setting `builder.switch.capacity` (sanitizeCapacity) so staff can enter real readings.
-- The owner's example: five games of 250 GB "on a 256 GB card" would NOT fit (223.1 GB plannable) — the guide says
-  why the plannable number is smaller than the label.
+- The owner's example (games of 250 GB "on a 256 GB card"): the card gives 226.8 GB to games, plus the console's own
+  free memory (52.0 GB on an OLED, 23.9 GB on a Switch or Lite) — never the 256 printed on the card; the guide says why.
+- A cartridge measured at 0 bytes needs no extra space (0 is a measurement; only a missing figure is "not measured").
 
 ## 4. Data
 

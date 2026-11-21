@@ -22,6 +22,10 @@ import { index, route, type RouteConfigEntry } from "@react-router/dev/routes";
  *   /admin/catalog/import                       CSV import (preview → apply → rollback) and export (02.06)
  *   /admin/catalog/import/:jobId                one import: its dry run, apply, rollback
  *   /admin/catalog/export                       CSV download (resource route)
+ *   /admin/catalog/switch-library               the Switch builder's game library: open list + TamTam's data (docs/switch-builder.md §7)
+ *   /admin/catalog/switch-library/import        its CSV import (preview → apply)
+ *   /admin/catalog/switch-library/export        its CSV download (resource route)
+ *   /admin/catalog/switch-library/:gameId       one game's sizes, eShop price, trailer, picture, descriptions, licensed score
  *
  * (File names differ from the paths on purpose: a route file referenced before it exists stays broken in the dev
  * server's module cache, so the module's files were created under these names.)
@@ -47,5 +51,9 @@ export const catalogAdminRoutes: RouteConfigEntry[] = [
     route("import", "routes/admin/catalog/csv-import.tsx"),
     route("import/:jobId", "routes/admin/catalog/csv-import-job.tsx"),
     route("export", "routes/admin/catalog/csv-export.ts"),
+    route("switch-library", "routes/admin/catalog/switch-library.tsx"),
+    route("switch-library/import", "routes/admin/catalog/switch-library-import.tsx"),
+    route("switch-library/export", "routes/admin/catalog/switch-library-export.ts"),
+    route("switch-library/:gameId", "routes/admin/catalog/switch-library-edit.tsx"),
   ]),
 ];

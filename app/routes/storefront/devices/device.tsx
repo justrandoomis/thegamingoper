@@ -30,7 +30,9 @@ import { getDb } from "~/server/db.server";
 import { getDeviceHub } from "~/server/services/devices.server";
 import { getRecommendations } from "~/server/services/recommendations.server";
 import { Breadcrumbs } from "~/ui/Breadcrumbs";
+import { EntryCard } from "~/ui/EntryCard";
 import { isPlatform } from "~/ui/PlatformLed";
+import { switchBuilderHref } from "../builder/flags";
 import { CompareSection } from "./components/CompareSection";
 import { CompatSection } from "./components/CompatSection";
 import { FaqSection } from "./components/FaqSection";
@@ -102,6 +104,7 @@ export default function DeviceHubPage({ loaderData }: Route.ComponentProps) {
   // the four platforms carry the design system's names (Latin brand names stay Latin), others their own
   const platformName = isPlatform(hub.model.platform.slug) ? ui(`platform.${hub.model.platform.slug}`) : hub.model.platform.name;
   const sections: SectionLink[] = hubSections(hub).map((id) => ({ id, label: t(`nav.${id}`) }));
+  const build = switchBuilderHref({ deviceModel: hub.model.slug });
 
   return (
     // one track that never grows past the page column: wide content (the chips, the comparison table) scrolls inside
@@ -130,6 +133,8 @@ export default function DeviceHubPage({ loaderData }: Route.ComponentProps) {
         deviceName={name}
       />
       <CompatSection id="games" title={t("compat.gamesTitle", { device })} reason={t("compat.gamesReason", { device })} allLabel={(n) => t("compat.allGames", { n })} groups={hub.games} deviceName={name} />
+      {/* «جهّز جهاز Switch» on the Switch 1 hubs once the builder is public (builder/flags.ts): which games fit the card */}
+      {build ? <EntryCard to={build} icon="device-nintendo" headingLevel={2} title={t("builder.title")} text={t("builder.text")} className="max-w-[40rem]" /> : null}
       <HelpSection hub={hub} platformName={platformName} />
       <FaqSection hub={hub} />
       <UsedSection hub={hub} />

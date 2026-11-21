@@ -26,6 +26,8 @@ export default defineMessages({
     links: {
       tradeIn: "استبدل جهازك",
       track: "تتبّع طلبك",
+      // the Switch builder (/build/switch): the Nintendo mega menu and the footer, once it is public (builder/flags.ts)
+      buildSwitch: "جهّز جهاز Switch",
     },
     currency: {
       label: "عملة العرض",
@@ -257,6 +259,7 @@ export default defineMessages({
     links: {
       tradeIn: "Trade in your device",
       track: "Track your order",
+      buildSwitch: "Build your Switch",
     },
     currency: {
       label: "Display currency",
@@ -467,6 +470,7 @@ export default defineMessages({
     links: {
       tradeIn: "ئامێرەکەت بگۆڕەوە",
       track: "بەدواداچوونی داواکاری",
+      buildSwitch: "ئامێری Switch ئامادە بکە",
     },
     currency: {
       label: "دراوی پیشاندان",

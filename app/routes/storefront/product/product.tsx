@@ -54,6 +54,7 @@ import { getDeviceLink } from "~/server/services/devices.server";
 import { recommendationsFor } from "~/server/services/recommendations.server";
 import { getReviewSummary, listVerifiedReviews } from "~/server/services/reviews.server";
 import { wishedAmong, wishlistWho } from "~/server/services/wishlist.server";
+import { switchBuilderHref } from "~/routes/storefront/builder/flags";
 import { redirectIfMoved } from "~/routes/storefront/content/redirect.server";
 import { sendRecommendationEvent } from "~/routes/storefront/devices/components/signals";
 import { readConsent, recordProductView } from "~/routes/storefront/home/personal";
@@ -64,6 +65,7 @@ import { BuyControls } from "~/ui/AddToCartKey";
 import { BidiLabel, BidiText } from "~/ui/BidiText";
 import { Breadcrumbs } from "~/ui/Breadcrumbs";
 import { cx } from "~/ui/cx";
+import { EntryCard } from "~/ui/EntryCard";
 import { useOnline } from "~/ui/OfflineBanner";
 import { PlatformLabel, PlatformLed } from "~/ui/PlatformLed";
 import { Reveal } from "~/ui/reveal";
@@ -238,6 +240,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const alternatives = alternativesPath(product);
   const methods = paymentMethods(layout?.shell?.payments, signedIn);
   const share = productShareImage(product.slug);
+  const build = switchBuilderHref({ deviceModel: product.deviceModel?.slug });
   // No connection: the add keys go flat and say why (spec §6.17); the server render always says online. Phones and
   // tablets: the sentence under the price says it (the bar's own line is short); from 1024 the kit says it under the
   // column's key and the sentence under the price gives way (product.css) — one sentence, not two.
@@ -386,6 +389,8 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           </div>
         </Reveal>
         <DeviceHubSlot device={device} className="max-w-[40rem]" />
+        {/* «جهّز جهاز Switch» on a Switch 1 console's page once the builder is public (builder/flags.ts) */}
+        {build ? <EntryCard to={build} icon="device-nintendo" headingLevel={2} title={t("builder.title")} text={t("builder.text")} className="max-w-[40rem]" /> : null}
         <Reviews summary={reviews} items={reviewList} />
         <RecommendationsSlot key={product.id} result={recommendations} />
       </div>

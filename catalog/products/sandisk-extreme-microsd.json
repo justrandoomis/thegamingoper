@@ -11,29 +11,28 @@
     "ckb": "کارتی بیرگەی SanDisk Extreme microSDXC"
   },
   "short": {
-    "ar": "256GB · قراءة حتى 190MB/s · كتابة حتى 130MB/s",
-    "en": "256GB · up to 190MB/s read · up to 130MB/s write",
-    "ckb": "256GB · خوێندنەوە تا 190MB/s · نووسین تا 130MB/s"
+    "ar": "من 64GB إلى 1TB · قراءة حتى 190MB/s · كتابة حتى 130MB/s",
+    "en": "64GB to 1TB · up to 190MB/s read · up to 130MB/s write",
+    "ckb": "لە 64GB تا 1TB · خوێندنەوە تا 190MB/s · نووسین تا 130MB/s"
   },
   "description": {
-    "ar": "بطاقة microSDXC سريعة من فئة Extreme لدى SanDisk، بسعة 256GB. تصلح لجهاز Nintendo Switch وSwitch OLED وSwitch Lite ولأجهزة Steam Deck والهواتف والكاميرات. تقرأ بسرعة تصل إلى 190 ميغابايت في الثانية وتكتب حتى 130، وتحمل تصنيفات A2 وU3 وV30. لا تعمل لحفظ ألعاب Nintendo Switch 2، فهو يحتاج بطاقة microSD Express.",
-    "en": "SanDisk's fast Extreme-series microSDXC card, in 256GB. It suits the Nintendo Switch, Switch OLED and Switch Lite, Steam Deck, phones and cameras. It reads at up to 190MB/s and writes at up to 130MB/s, with A2, U3 and V30 ratings. It cannot hold Nintendo Switch 2 games: Switch 2 needs a microSD Express card.",
-    "ckb": "کارتی microSDXCی خێرای زنجیرەی Extremeی SanDisk بە قەبارەی 256GB. بۆ Nintendo Switch و Switch OLED و Switch Lite و Steam Deck و مۆبایل و کامێرا گونجاوە. خێرایی خوێندنەوەی تا 190 مێگابایت لە چرکەیەکدا و نووسینی تا 130یە، و پلەکانی A2 و U3 و V30ی هەیە. ناتوانێت یارییەکانی Nintendo Switch 2 هەڵبگرێت، چونکە Switch 2 پێویستی بە کارتی microSD Express هەیە."
+    "ar": "بطاقة microSDXC سريعة من فئة Extreme لدى SanDisk، بسعات من 64GB إلى 1TB. تصلح لجهاز Nintendo Switch وSwitch OLED وSwitch Lite ولأجهزة Steam Deck والهواتف والكاميرات. تقرأ بسرعة تصل إلى 190 ميغابايت في الثانية (170 في سعة 64GB) وتكتب حتى 130 في سعات 256GB فما فوق، وتحمل تصنيفات A2 وU3 وV30. لا تعمل لحفظ ألعاب Nintendo Switch 2، فهو يحتاج بطاقة microSD Express.",
+    "en": "SanDisk's fast Extreme-series microSDXC card, from 64GB to 1TB. It suits the Nintendo Switch, Switch OLED and Switch Lite, Steam Deck, phones and cameras. It reads at up to 190MB/s (170MB/s on the 64GB) and writes at up to 130MB/s on 256GB and up, with A2, U3 and V30 ratings. It cannot hold Nintendo Switch 2 games: Switch 2 needs a microSD Express card.",
+    "ckb": "کارتی microSDXCی خێرای زنجیرەی Extremeی SanDisk بە قەبارەی 64GB تا 1TB. بۆ Nintendo Switch و Switch OLED و Switch Lite و Steam Deck و مۆبایل و کامێرا گونجاوە. خێرایی خوێندنەوەی تا 190 مێگابایت لە چرکەیەکدا (لە 64GBدا 170) و نووسینی تا 130یە لە 256GB و سەرووتر، و پلەکانی A2 و U3 و V30ی هەیە. ناتوانێت یارییەکانی Nintendo Switch 2 هەڵبگرێت، چونکە Switch 2 پێویستی بە کارتی microSD Express هەیە."
   },
   "highlights": [
-    { "ar": "سعة 256GB", "en": "256GB capacity", "ckb": "قەبارەی 256GB" },
-    { "ar": "قراءة حتى 190MB/s وكتابة حتى 130MB/s", "en": "Reads up to 190MB/s, writes up to 130MB/s", "ckb": "خوێندنەوە تا 190MB/s و نووسین تا 130MB/s" },
+    { "ar": "سعات 64GB و128GB و256GB و512GB و1TB", "en": "64GB, 128GB, 256GB, 512GB and 1TB", "ckb": "قەبارەکانی 64GB و 128GB و 256GB و 512GB و 1TB" },
+    { "ar": "قراءة حتى 190MB/s وكتابة حتى 130MB/s (أبطأ في سعتي 64GB و128GB)", "en": "Reads up to 190MB/s, writes up to 130MB/s (slower on the 64GB and 128GB)", "ckb": "خوێندنەوە تا 190MB/s و نووسین تا 130MB/s (لە 64GB و 128GBدا هێواشترە)" },
     { "ar": "تصنيف A2 للتطبيقات وU3 وV30 لتصوير فيديو 4K", "en": "A2 app rating, U3 and V30 for 4K video", "ckb": "پلەی A2 بۆ ئەپەکان، U3 و V30 بۆ ڤیدیۆی 4K" },
     { "ar": "تعمل مع Switch الأول وSteam Deck، ولا تعمل لألعاب Switch 2", "en": "Works with the original Switch and Steam Deck; not for Switch 2 games", "ckb": "لەگەڵ Switchی یەکەم و Steam Deck کار دەکات؛ بۆ یارییەکانی Switch 2 نا" },
     { "ar": "ضمان محدود مدى الحياة من SanDisk", "en": "Lifetime limited warranty from SanDisk", "ckb": "گەرەنتیی سنووردار بۆ هەموو تەمەن لە SanDisk" }
   ],
   "specs": [
-    { "key": "capacity", "label": { "ar": "السعة", "en": "Capacity", "ckb": "قەبارە" }, "value": { "ar": "256GB", "en": "256GB", "ckb": "256GB" } },
+    { "key": "capacity", "label": { "ar": "السعة", "en": "Capacity", "ckb": "قەبارە" }, "value": { "ar": "64GB / 128GB / 256GB / 512GB / 1TB", "en": "64GB / 128GB / 256GB / 512GB / 1TB", "ckb": "64GB / 128GB / 256GB / 512GB / 1TB" } },
     { "key": "card_type", "label": { "ar": "نوع البطاقة", "en": "Card type", "ckb": "جۆری کارت" }, "value": { "ar": "microSDXC بواجهة UHS-I", "en": "microSDXC, UHS-I", "ckb": "microSDXC، UHS-I" } },
-    { "key": "read_speed", "label": { "ar": "سرعة القراءة", "en": "Read speed", "ckb": "خێرایی خوێندنەوە" }, "value": { "ar": "حتى 190 ميغابايت/ثانية (أعلى من 104 تحتاج قارئاً متوافقاً)", "en": "Up to 190 MB/s (above 104 MB/s needs a compatible reader)", "ckb": "تا 190 مێگابایت/چرکە (سەرووی 104 پێویستی بە خوێنەرێکی گونجاو هەیە)" } },
-    { "key": "write_speed", "label": { "ar": "سرعة الكتابة", "en": "Write speed", "ckb": "خێرایی نووسین" }, "value": { "ar": "حتى 130 ميغابايت/ثانية", "en": "Up to 130 MB/s", "ckb": "تا 130 مێگابایت/چرکە" } },
+    { "key": "read_speed", "label": { "ar": "سرعة القراءة", "en": "Read speed", "ckb": "خێرایی خوێندنەوە" }, "value": { "ar": "حتى 190 ميغابايت/ثانية (170 في سعة 64GB)؛ أعلى من 104 تحتاج قارئاً متوافقاً", "en": "Up to 190 MB/s (170 MB/s on the 64GB); above 104 MB/s needs a compatible reader", "ckb": "تا 190 مێگابایت/چرکە (لە 64GBدا 170)؛ سەرووی 104 پێویستی بە خوێنەرێکی گونجاو هەیە" } },
+    { "key": "write_speed", "label": { "ar": "سرعة الكتابة", "en": "Write speed", "ckb": "خێرایی نووسین" }, "value": { "ar": "حتى 130 ميغابايت/ثانية (256GB و512GB و1TB)، وحتى 90 في 128GB، وحتى 80 في 64GB", "en": "Up to 130 MB/s (256GB, 512GB, 1TB); up to 90 MB/s (128GB); up to 80 MB/s (64GB)", "ckb": "تا 130 مێگابایت/چرکە (256GB و 512GB و 1TB)؛ تا 90 (128GB)؛ تا 80 (64GB)" } },
     { "key": "ratings", "label": { "ar": "التصنيفات", "en": "Ratings", "ckb": "پلەکان" }, "value": { "ar": "A2، U3، V30، Class 10", "en": "A2, U3, V30, Class 10", "ckb": "A2، U3، V30، Class 10" } },
-    { "key": "model", "label": { "ar": "رقم الطراز", "en": "Model number", "ckb": "ژمارەی مۆدێل" }, "value": { "ar": "SDSQXAV-256G-GN6MA", "en": "SDSQXAV-256G-GN6MA", "ckb": "SDSQXAV-256G-GN6MA" } },
     { "key": "dimensions", "label": { "ar": "الأبعاد", "en": "Dimensions", "ckb": "قەبارەی دەرەکی" }, "value": { "ar": "15 × 11 × 1 ملم (حجم microSD القياسي)", "en": "15 × 11 × 1 mm (standard microSD size)", "ckb": "15 × 11 × 1 ملم (قەبارەی ستانداردی microSD)" } },
     { "key": "warranty", "label": { "ar": "الضمان", "en": "Warranty", "ckb": "گەرەنتی" }, "value": { "ar": "ضمان محدود مدى الحياة من SanDisk", "en": "Lifetime limited warranty (SanDisk)", "ckb": "گەرەنتیی سنووردار بۆ هەموو تەمەن (SanDisk)" } }
   ],
@@ -47,6 +46,58 @@
       "barcodes": ["619659188504"],
       "isDefault": true,
       "images": ["sandisk-extreme-microsd--1"],
+      "notes": {
+        "ar": "رقم الموديل والباركود (UPC) من متجر SanDisk الأمريكي، وقد يختلفان في مناطق أخرى.",
+        "en": "Model number and UPC from SanDisk's US store; other regions may use other codes.",
+        "ckb": "ژمارەی مۆدێل و بارکۆد (UPC) لە فرۆشگای SanDiskی ئەمریکاوەیە؛ لە ناوچەکانی تر لەوانەیە جیاواز بن."
+      }
+    },
+    {
+      "sku": "SANDISK-EXTREME-64",
+      "title": { "ar": "64GB", "en": "64GB", "ckb": "64GB" },
+      "options": { "storage": "64GB" },
+      "modelNumber": "SDSQXAH-064G-GN6MA",
+      "barcodes": ["619659193409"],
+      "isDefault": false,
+      "notes": {
+        "ar": "قراءة حتى 170MB/s وكتابة حتى 80MB/s. رقم الموديل والباركود (UPC) من متجر SanDisk الأمريكي، وقد يختلفان في مناطق أخرى.",
+        "en": "Reads up to 170MB/s, writes up to 80MB/s. Model number and UPC from SanDisk's US store; other regions may use other codes.",
+        "ckb": "خوێندنەوە تا 170MB/s و نووسین تا 80MB/s. ژمارەی مۆدێل و بارکۆد (UPC) لە فرۆشگای SanDiskی ئەمریکاوەیە؛ لە ناوچەکانی تر لەوانەیە جیاواز بن."
+      }
+    },
+    {
+      "sku": "SANDISK-EXTREME-128",
+      "title": { "ar": "128GB", "en": "128GB", "ckb": "128GB" },
+      "options": { "storage": "128GB" },
+      "modelNumber": "SDSQXAA-128G-GN6MA",
+      "barcodes": ["619659188450"],
+      "isDefault": false,
+      "notes": {
+        "ar": "قراءة حتى 190MB/s وكتابة حتى 90MB/s. رقم الموديل والباركود (UPC) من متجر SanDisk الأمريكي، وقد يختلفان في مناطق أخرى.",
+        "en": "Reads up to 190MB/s, writes up to 90MB/s. Model number and UPC from SanDisk's US store; other regions may use other codes.",
+        "ckb": "خوێندنەوە تا 190MB/s و نووسین تا 90MB/s. ژمارەی مۆدێل و بارکۆد (UPC) لە فرۆشگای SanDiskی ئەمریکاوەیە؛ لە ناوچەکانی تر لەوانەیە جیاواز بن."
+      }
+    },
+    {
+      "sku": "SANDISK-EXTREME-512",
+      "title": { "ar": "512GB", "en": "512GB", "ckb": "512GB" },
+      "options": { "storage": "512GB" },
+      "modelNumber": "SDSQXAV-512G-GN6MA",
+      "barcodes": ["619659189648"],
+      "isDefault": false,
+      "notes": {
+        "ar": "رقم الموديل والباركود (UPC) من متجر SanDisk الأمريكي، وقد يختلفان في مناطق أخرى.",
+        "en": "Model number and UPC from SanDisk's US store; other regions may use other codes.",
+        "ckb": "ژمارەی مۆدێل و بارکۆد (UPC) لە فرۆشگای SanDiskی ئەمریکاوەیە؛ لە ناوچەکانی تر لەوانەیە جیاواز بن."
+      }
+    },
+    {
+      "sku": "SANDISK-EXTREME-1TB",
+      "title": { "ar": "1TB", "en": "1TB", "ckb": "1TB" },
+      "options": { "storage": "1TB" },
+      "modelNumber": "SDSQXAV-1T00-GN6MA",
+      "barcodes": ["619659188474"],
+      "isDefault": false,
       "notes": {
         "ar": "رقم الموديل والباركود (UPC) من متجر SanDisk الأمريكي، وقد يختلفان في مناطق أخرى.",
         "en": "Model number and UPC from SanDisk's US store; other regions may use other codes.",
@@ -100,6 +151,13 @@
       "publisher": "Nintendo Support",
       "retrieved": "2026-11-18",
       "supports": "original Switch family takes microSDHC/microSDXC cards; Switch 2 only takes microSD Express for games"
+    },
+    {
+      "url": "https://www.sandisk.com/products/memory-cards/microsd-cards/sandisk-extreme-uhs-i-microsd?sku=SDSQXAV-512G-GN6MA",
+      "title": "SanDisk Extreme microSD UHS-I Card (every capacity)",
+      "publisher": "Sandisk",
+      "retrieved": "2026-11-21",
+      "supports": "the capacities and their model numbers and UPCs: 64GB SDSQXAH-064G-GN6MA (619659193409, up to 170MB/s read, 80MB/s write), 128GB SDSQXAA-128G-GN6MA (619659188450, up to 190/90MB/s), 256GB SDSQXAV-256G-GN6MA (619659188504, up to 190/130MB/s), 512GB SDSQXAV-512G-GN6MA (619659189648) and 1TB SDSQXAV-1T00-GN6MA (619659188474), the same 190/130MB/s as the 256GB"
     }
   ],
   "notes": {
@@ -113,7 +171,9 @@
     "unverified": [
       "Owner sheet says only \"SANDISK EXTREME 256GB\": assumed the microSD card (the common Extreme item in gaming shops), not an SD card or portable SSD",
       "Whether the card in stock comes with an SD adapter",
-      "Release date of this 190MB/s generation"
+      "Release date of this 190MB/s generation",
+      "The 64GB, 128GB, 512GB and 1TB sizes (added 2026-11-21 for the Switch bundle builder) are not on the owner's sheet: they stay switched off at price 0 with no stock until the owner prices and stocks them",
+      "No photo of the 64GB, 128GB, 512GB and 1TB cards yet: the gallery shows the 256GB card"
     ]
   }
 }

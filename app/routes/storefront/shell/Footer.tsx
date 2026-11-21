@@ -5,7 +5,8 @@
  *   1. the store's contact channels in one row, only those the owner configured (otherwise nothing);
  *   2. the lockup and one factual line (the delivery fee from settings);
  *   3. four columns, each a <nav> named by its heading: تسوّق (the four platforms, الألعاب, الإكسسوارات, المستعمل
- *      والمفحوص, استبدل جهازك — id="shell-categories", where the tab bar's «التصنيفات» leads without script) · مركز الدعم
+ *      والمفحوص, استبدل جهازك, and «جهّز جهاز Switch» once the builder is public — id="shell-categories", where the tab
+ *      bar's «التصنيفات» leads without script) · مركز الدعم
  *      (تتبّع طلبك, the shipping / returns / warranty policies, الصيانة, تحدّث مع موظف) · عن طمطم (من نحن, privacy, terms,
  *      إمكانية الوصول, and تواصل معنا once channels exist) · طرق الدفع (the methods the store switched on, as text pills,
  *      the manual-check sentence and the payment policy). Below 768 the columns are accordions of 56px rows, closed
@@ -28,6 +29,7 @@ import { formatMoney } from "~/lib/money";
 import { ContactCard } from "~/ui/ContactCard";
 import { DemoNote } from "~/ui/DemoNote";
 import { PlatformLed, isPlatform } from "~/ui/PlatformLed";
+import { switchBuilderHref } from "~/routes/storefront/builder/flags";
 import { DEMO_NOTE_ID } from "./Banners";
 import { FOOTER_POLICIES, TASK_FOOTER_LABELS, TASK_FOOTER_LINKS } from "./chrome";
 import { Lockup } from "./Header";
@@ -65,6 +67,8 @@ export function Footer({ shell, demo }: { shell: ShellData | null; demo: boolean
   const hasContact = !!contact && (contact.links.length > 0 || !!contact.address || !!contact.hours);
   const games = nav?.categories.find((category) => category.slug === "games");
   const accessories = nav?.categories.find((category) => category.slug === "accessories");
+  // «جهّز جهاز Switch» once the builder is public (builder/flags.ts): null until then, and nothing is drawn
+  const build = switchBuilderHref("footer");
 
   return (
     <footer className="shell-footer">
@@ -107,6 +111,7 @@ export function Footer({ shell, demo }: { shell: ShellData | null; demo: boolean
               {accessories ? <FooterLink to={accessories.href}>{accessories.label}</FooterLink> : null}
               <FooterLink to="/used">{t("footer.used")}</FooterLink>
               <FooterLink to="/trade-in">{t("links.tradeIn")}</FooterLink>
+              {build ? <FooterLink to={build}>{t("links.buildSwitch")}</FooterLink> : null}
             </Column>
 
             <Column title={t("footer.support")}>

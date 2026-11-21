@@ -11,6 +11,9 @@
 # Product photos: file names carry a content hash (scripts/products/images.mjs).
 /products/*
   Cache-Control: public, max-age=31536000, immutable
+# The Switch game library: file names carry a content hash (scripts/switch-library/build.mjs).
+/library/*
+  Cache-Control: public, max-age=31536000, immutable
 
 # Brand files keep their names when regenerated: cache for a day, refresh in the background.
 /logo/*

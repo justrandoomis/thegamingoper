@@ -51,7 +51,8 @@ import { Key } from "~/ui/Key";
 import { isPlatform, type Platform } from "~/ui/PlatformLed";
 import { SafePrice } from "~/ui/PriceTag";
 import { VisuallyHidden } from "~/ui/VisuallyHidden";
-import { megaFeature, megaPlan, megaWords, type MegaFeature, type MegaLink } from "./chrome";
+import { switchBuilderHref } from "~/routes/storefront/builder/flags";
+import { megaDevices, megaFeature, megaPlan, megaWords, type MegaFeature, type MegaLink } from "./chrome";
 import { useShellT } from "./i18n";
 import type { NavPlatform } from "./types";
 
@@ -437,15 +438,18 @@ const firstPhoto = (slug: string): string | null => productPhotos(slug)[0]?.key 
 /** Each column (and the featured card) arrives 40ms after the one before it (CSS reads --i). */
 const order = (index: number) => ({ "--i": index }) as CSSProperties;
 
-function MegaContent({ platform, name }: { platform: NavPlatform; name: string }) {
+/** One platform's menu (exported for tests). */
+export function MegaContent({ platform, name }: { platform: NavPlatform; name: string }) {
   const t = useShellT();
   const plan = megaPlan(platform);
   const feature = megaFeature(platform, firstPhoto);
   const words = megaWords(t, platform.slug, name);
   const accent = isPlatform(platform.accent) ? platform.accent : null;
+  // «جهّز جهاز Switch» last in Nintendo's devices column once the builder is public (builder/flags.ts; null until then)
+  const build = switchBuilderHref({ platform: platform.slug });
   const columns: Column[] = (
     [
-      { id: "devices", title: t("nav.devices"), links: plan.devices, all: plan.allDevices ? { label: words.allDevices, href: plan.allDevices } : null },
+      { id: "devices", title: t("nav.devices"), links: megaDevices(plan, build ? { label: t("links.buildSwitch"), href: build, count: null } : null), all: plan.allDevices ? { label: words.allDevices, href: plan.allDevices } : null },
       { id: "games", title: t("nav.gamesColumn"), links: plan.games, all: plan.allGames ? { label: t("nav.allGames", { name }), href: plan.allGames } : null },
       { id: "accessories", title: t("nav.accessoriesColumn"), links: plan.accessories, all: null },
       { id: "cards", title: t("nav.cards"), links: plan.used ? [...plan.cards, { label: words.usedOf, href: plan.used.href, count: plan.used.count }] : plan.cards, all: null },

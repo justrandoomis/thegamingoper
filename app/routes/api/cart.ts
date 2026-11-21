@@ -4,6 +4,14 @@
  *   GET  /api/cart[?locale=en&governorateId=gov_basra]        → 200 { ok: true, cart: CartView }
  *   POST /api/cart                                            → 200 { ok: true, cart: CartView }
  *        intent=add     variantId=… | usedUnitId=…  [qty=1]     (+ "added": units that went in)
+ *        intent=add_many  items=[{"variantId":"var_…","qty":1},…]  (+ "added": units that went in)
+ *                       several variants in ONE change (the Switch bundle builder, docs/switch-builder.md §5): `items`
+ *                       is a JSON array — a JSON string in form data, the array itself in a JSON body — of 1–50 items,
+ *                       qty 1–10 each (the same variant twice is added up). Every item goes in whole or none does: 409
+ *                       `bundle_refused` with `problems: [{ variantId, code }]` (code: not_found · unavailable ·
+ *                       out_of_stock · insufficient_stock · max_qty_reached · cart_full) and nothing changes. One change
+ *                       against CART_CHANGES, like add; the cookie is set the same way. 50 items fit the 8 KB body
+ *                       (form-encoded, about 100 bytes an item with the catalogue's ids)
  *        intent=set     lineId=…  qty=0–10                       (0 removes the line)
  *        intent=remove  lineId=…
  *        intent=coupon  code=DEMO10                              (empty code removes the coupon)
@@ -32,8 +40,8 @@
  *
  * Failures are `{ ok: false, code, fields? }` (ActionFail): 400 `invalid` with field error keys,
  * 404 `not_found` (a line or item that does not exist), 409 with a business code (`out_of_stock`,
- * `insufficient_stock`, `unavailable`, `max_qty_reached`, `cart_full`, `coupon_<reason>`), 429
- * `rate_limited` with Retry-After. Codes are error KEYS (`errors.<code>`), translated by the client.
+ * `insufficient_stock`, `unavailable`, `max_qty_reached`, `cart_full`, `coupon_<reason>`, `bundle_refused` with its
+ * `problems`), 429 `rate_limited` with Retry-After. Codes are error KEYS (`errors.<code>`), translated by the client.
  * A code below its minimum (409 `coupon_min_subtotal`, client round 1 wave C) also carries `minimumIqd` and `moreIqd`
  * — the minimum and how much more the cart needs, whole dinars, as the core counts them — so the page can say
  * «أضف منتجات بقيمة …» without asking again; a stored code below its minimum says the same in `cart.couponIssue`.
@@ -55,7 +63,23 @@ import { getDb, type Db } from "~/server/db.server";
 import { actionError } from "~/server/errors";
 import { enforceRateLimit, limitKey, rateLimit, type RateLimitRule } from "~/server/ratelimit.server";
 import { CART_COOKIE } from "~/server/shell.server";
-import { CART_COOKIE_MAX_AGE_SEC, MAX_LINE_QTY, PHONE_PRICING_PER_IP, addToCart, changeCoupon, changeLineQty, couponMinimumGapOf, deleteLine, getCartView, isCartToken, type CartChangeResult, type CartRequest } from "~/server/services/cart.server";
+import {
+  CART_COOKIE_MAX_AGE_SEC,
+  MAX_ADD_MANY_ITEMS,
+  MAX_LINE_QTY,
+  PHONE_PRICING_PER_IP,
+  addManyProblemsOf,
+  addManyToCart,
+  addToCart,
+  changeCoupon,
+  changeLineQty,
+  couponMinimumGapOf,
+  deleteLine,
+  getCartView,
+  isCartToken,
+  type CartChangeResult,
+  type CartRequest,
+} from "~/server/services/cart.server";
 
 /** Cart changes allowed per IP, and per cart, per minute. Generous for people, tight for scripts. */
 const CART_CHANGES: RateLimitRule = { limit: 60, windowSec: 60 };
@@ -86,8 +110,32 @@ const REFERRAL_CHECKS: RateLimitRule = { limit: 20, windowSec: 60 };
 /** `points=` as a whole number, or none. */
 const pointsParam = (value: string | null): number | null => (value && /^\d{1,8}$/.test(value) ? Number(value) : null);
 
+/**
+ * A JSON field: form data carries it as text (parsed here); a JSON body may carry the value itself. Text that is not
+ * JSON stays text, so validation answers `invalid`; an empty field is "not given".
+ */
+const jsonField = (value: unknown): unknown => {
+  if (typeof value !== "string") return blank(value);
+  const text = value.trim();
+  if (text === "") return undefined;
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return value;
+  }
+};
+/** add_many's items: 1–50 of { variantId, qty 1–10 } (addManyToCart checks them again and merges duplicates). */
+const bundleItems = z.preprocess(
+  jsonField,
+  z
+    .array(z.object({ variantId: id, qty: integer(1, MAX_LINE_QTY) }))
+    .min(1, "required")
+    .max(MAX_ADD_MANY_ITEMS, "too_big"),
+);
+
 const CartIntent = z.discriminatedUnion("intent", [
   z.object({ intent: z.literal("add"), variantId: optionalId, usedUnitId: optionalId, qty: z.preprocess(blank, integer(1, MAX_LINE_QTY).optional()), ...common }),
+  z.object({ intent: z.literal("add_many"), items: bundleItems, ...common }),
   z.object({ intent: z.literal("set"), lineId: z.preprocess(blank, id), qty: integer(0, MAX_LINE_QTY), ...common }),
   z.object({ intent: z.literal("remove"), lineId: z.preprocess(blank, id), ...common }),
   z.object({ intent: z.literal("coupon"), code: z.preprocess(blank, z.string().trim().max(64, "too_long").optional()), ...common }),
@@ -192,6 +240,13 @@ export async function action({ request, context }: Route.ActionArgs) {
         added = outcome.added;
         break;
       }
+      case "add_many": {
+        // one change for the whole bundle: one rate-limit tick above, one batch, one cookie below
+        const outcome = await addManyToCart(db, cartRequest, { items: body.items }, ctx.now);
+        result = outcome;
+        added = outcome.added;
+        break;
+      }
       case "set":
         result = await changeLineQty(db, cartRequest, body.lineId, body.qty, ctx.now, { rekey: true });
         break;
@@ -211,6 +266,8 @@ export async function action({ request, context }: Route.ActionArgs) {
     if (retryAfterSec !== undefined) headers.set("Retry-After", String(retryAfterSec));
     // a code below its minimum: the minimum and how much more the cart needs, beside the code (no second request)
     const gap = couponMinimumGapOf(error);
-    return data({ ...failure, ...(gap ?? {}), ...(retryAfterSec === undefined ? {} : { retryAfterSec }) }, { status, headers });
+    // a refused bundle (add_many): why each item could not go in
+    const problems = addManyProblemsOf(error);
+    return data({ ...failure, ...(gap ?? {}), ...(problems ? { problems } : {}), ...(retryAfterSec === undefined ? {} : { retryAfterSec }) }, { status, headers });
   }
 }

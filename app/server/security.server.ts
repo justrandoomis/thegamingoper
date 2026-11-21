@@ -21,6 +21,12 @@ export function isSameOriginMutation(request: Request, url: URL): boolean {
   return site === "same-origin";
 }
 
+/**
+ * YouTube's privacy-enhanced embed host (docs/switch-builder.md §6.6, §8): the only `frame-src` source. Exactly this
+ * host — `https://youtube-nocookie.com` (no www) or `https://www.youtube.com` would be blocked.
+ */
+export const YOUTUBE_EMBED_ORIGIN = "https://www.youtube-nocookie.com";
+
 export function buildCsp(ctx: RequestCtx): string {
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
@@ -35,7 +41,10 @@ export function buildCsp(ctx: RequestCtx): string {
     "connect-src": ["'self'"],
     "worker-src": ["'self'", "blob:"],
     "manifest-src": ["'self'"],
-    "frame-src": ["'none'"],
+    // The one site our pages may frame: YouTube's privacy-enhanced player, for a game's official trailer in the Switch
+    // builder's details sheet. The sheet builds the frame only after the shopper taps play (no request to YouTube
+    // before that). Our own pages may never be framed (frame-ancestors, X-Frame-Options).
+    "frame-src": [YOUTUBE_EMBED_ORIGIN],
     "frame-ancestors": ["'none'"],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],

@@ -226,6 +226,7 @@ export const CART_ERROR_CODES = [
   "not_found",
   "invalid",
   "endpoint_missing",
+  "bundle_refused",
 ] as const;
 
 /** ui-shop key of the sentence that explains a failure code. */
@@ -446,14 +447,47 @@ export type AddManyOutcome =
   | { ok: true; cart: CartView; added: number }
   | { ok: false; code: string; problems: AddManyProblem[]; status: number };
 
+/** The per-item problems of a refused bundle (409 `bundle_refused`), read defensively; [] when there are none. */
+function problemsOf(json: unknown): AddManyProblem[] {
+  const list = json && typeof json === "object" ? (json as { problems?: unknown }).problems : undefined;
+  if (!Array.isArray(list)) return [];
+  const problems: AddManyProblem[] = [];
+  for (const entry of list) {
+    const variantId = entry && typeof entry === "object" ? (entry as { variantId?: unknown }).variantId : undefined;
+    const code = entry && typeof entry === "object" ? (entry as { code?: unknown }).code : undefined;
+    if (typeof variantId === "string" && variantId && typeof code === "string" && code) problems.push({ variantId, code });
+  }
+  return problems;
+}
+
 /**
  * Put several variants in the cart in ONE request (/api/cart intent=add_many): all of them go in, or — when any one
- * cannot — none does and `problems` says which and why. The header count follows the answer.
- * STUB written by the lead (docs/switch-builder.md §5); the commerce owner replaces the body, keeping this signature.
+ * cannot — none does and `problems` says which and why (`cartErrorKey(problem.code)` words each one). The header count
+ * follows: it rises by the units asked for the moment this is called and settles on the server's `cart.count`; the new
+ * CartView reaches useCartView / onCartChange like any other change. Never throws; shows no toast (the caller shows
+ * one, after flyToCart). Send it alone: the first change of a guest without a cart creates the cart.
+ *   const outcome = await addManyToCart({ items: quote.lines.filter((l) => l.orderable).map((l) => ({ variantId: l.variantId, qty: l.qty })), locale });
  */
 export async function addManyToCart(request: { items: AddManyItem[]; locale?: Locale }): Promise<AddManyOutcome> {
-  void request;
-  return { ok: false, code: "unavailable", problems: [], status: 0 };
+  const items = (Array.isArray(request?.items) ? request.items : []).map((item) => ({ variantId: String(item?.variantId ?? ""), qty: Math.trunc(Number(item?.qty)) }));
+  if (items.length === 0) return { ok: false, code: "invalid", problems: [], status: 0 };
+  // the units the badge shows at once (the server refuses what is not a whole quantity 1–10)
+  const units = items.reduce((sum, item) => sum + (Number.isSafeInteger(item.qty) && item.qty > 0 ? item.qty : 0), 0);
+  dispatch({ type: "optimistic", delta: units });
+  const posted = await postForm("/api/cart", { intent: "add_many", items: JSON.stringify(items), locale: request?.locale });
+  const answer: CartAnswer =
+    posted.kind === "network" ? { ok: false, code: "network", status: 0 } : posted.kind === "timeout" ? { ok: false, code: "timeout", status: 0 } : readCartAnswer(posted.status, posted.json);
+  if (answer.ok) {
+    dispatch({ type: "settled", delta: units, count: answer.cart.count });
+    try {
+      publishCart(answer.cart);
+    } catch {
+      // a listener's failure is not the add's: the cart changed and the count has settled
+    }
+    return { ok: true, cart: answer.cart, added: answer.added ?? units };
+  }
+  dispatch({ type: "failed", delta: units });
+  return { ok: false, code: answer.code, problems: posted.kind === "answer" ? problemsOf(posted.json) : [], status: answer.status };
 }
 
 /* ── editing (the cart page) ── */

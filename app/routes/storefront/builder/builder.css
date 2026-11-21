@@ -1,0 +1,825 @@
+/*
+ * The Switch bundle builder (app/routes/storefront/builder; docs/switch-builder.md §6). Components layer (utilities still
+ * win), tokens only, logical properties only, motion only on transform and opacity. The kit draws the pieces (keys,
+ * chips, option cards, sheets, the rail, notes, prices); this file places them and draws the builder's own: the space
+ * bar, the game cards, the model cards, the review lines, the aside. The details sheet and the guide have their own
+ * stylesheet (builder-sheet.css).
+ */
+@layer components {
+  /* ───────────────────────────── layout ─────────────────────────────
+     One column (720px on the console, memory and review steps; the whole width for the games); from 1024 a 320px
+     sticky aside at the inline end with the plan, the space bar, the chosen games and the keys. Below 1024 the keys
+     are in the shell's task bar — never two sticky bars at one edge. */
+  .sb-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-8);
+  }
+  .sb-main {
+    display: grid;
+    align-content: start;
+    gap: var(--s-6);
+    min-inline-size: 0;
+  }
+  .sb-layout:not([data-step="games"]) .sb-main {
+    inline-size: 100%;
+    max-inline-size: 45rem;
+    margin-inline: auto;
+  }
+  @media (min-width: 64rem) {
+    .sb-layout {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+    }
+    .sb-layout:not([data-step="games"]) {
+      grid-template-columns: minmax(0, 45rem) 20rem;
+      justify-content: center;
+    }
+    .sb-layout:not([data-step="games"]) .sb-main {
+      margin-inline: 0;
+    }
+  }
+
+  .sb-aside {
+    display: none;
+  }
+  @media (min-width: 64rem) {
+    .sb-aside {
+      position: sticky;
+      inset-block-start: calc(var(--shell-header-h) + var(--safe-top) + var(--s-4));
+      display: block;
+      align-self: start;
+      max-block-size: calc(100dvh - var(--shell-header-h) - var(--safe-top) - var(--s-8));
+      /* room for the card's shadow and the keys' focus rings inside the scroller */
+      margin: calc(-1 * var(--s-2));
+      padding: var(--s-2);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+  }
+  .sb-aside__card {
+    display: grid;
+    gap: var(--s-4);
+    padding: var(--s-5);
+    border-radius: var(--r-lg);
+  }
+  .sb-aside__title {
+    font: var(--type-h3);
+    color: var(--ink);
+  }
+  .sb-aside__subtitle {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .sb-aside__chosen {
+    display: grid;
+    gap: var(--s-2);
+    padding-block-start: var(--s-3);
+    border-block-start: 1px solid var(--line);
+  }
+
+  /* ───────────────────────────── the head ───────────────────────────── */
+  .sb-head {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .sb-head__title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding-block-start: var(--s-2);
+  }
+  /* the reading measure in em (62ch of Plex): a ch measure moves when the web font arrives */
+  .sb-lead {
+    max-inline-size: 37.2em;
+    font: var(--type-lead);
+    line-height: var(--lh-read);
+    color: var(--ink-2);
+  }
+  .sb-step {
+    display: grid;
+    align-content: start;
+    gap: var(--s-6);
+    min-inline-size: 0;
+  }
+  .sb-h2 {
+    font: var(--type-h3);
+    color: var(--ink);
+  }
+  .sb-h3 {
+    font: 600 var(--fs-read) / 1.5 var(--font-text);
+    color: var(--ink);
+  }
+  .sb-restart {
+    font: var(--type-sm);
+  }
+
+  /* ───────────────────────────── 1. the console ───────────────────────────── */
+  .sb-models {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .sb-models__list {
+    display: grid;
+    gap: var(--s-3);
+  }
+  /* a native radio in a picture card: the photo on the product ground, the name, its facts; chosen = an ink ring
+     (2px, 2px apart) and the ink check disc at the inline end; keyboard focus = the focus ring round the card */
+  .sb-model {
+    position: relative;
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s-4);
+    padding: var(--s-3);
+    padding-inline-end: var(--s-10);
+    border-radius: var(--r-lg);
+    cursor: pointer;
+  }
+  .sb-model__input {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .sb-model--checked {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  .sb-model:has(.sb-model__input:focus-visible) {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .sb-model__art {
+    inline-size: 5.5rem;
+  }
+  .sb-model__text {
+    display: grid;
+    gap: var(--s-1);
+    min-inline-size: 0;
+  }
+  .sb-model__name {
+    font: var(--type-card);
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .sb-model__fact,
+  .sb-model__note {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sb-model__buy {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-3);
+    padding-block-start: var(--s-1);
+  }
+  .sb-model__mark {
+    position: absolute;
+    inset-block-start: var(--s-3);
+    inset-inline-end: var(--s-3);
+    display: grid;
+    place-items: center;
+    inline-size: 24px;
+    block-size: 24px;
+    border: 2px solid var(--line-strong);
+    border-radius: var(--r-full);
+    color: var(--paper);
+  }
+  .sb-model--checked .sb-model__mark {
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+  .sb-model__colours {
+    padding-block-start: var(--s-3);
+    padding-inline: var(--s-3);
+  }
+
+  /* ───────────────────────────── 2. the memory card ───────────────────────────── */
+  .sb-card__note {
+    display: block;
+    font: var(--type-xs-strong);
+    color: var(--ink-2);
+  }
+  .sb-total {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+
+  /* ───────────────────────────── the space bar ─────────────────────────────
+     The fill is the bar's whole width scaled from the reading start (transform only; the settle spring); the part kept
+     free for saves and updates is hatched at the inline end. The fill's colour changes at once: ink → --warn (90 %
+     used) → --danger (over the space). Never brand red; always with words. */
+  .sb-meter {
+    --sb-meter-ink: var(--ink);
+    display: grid;
+    gap: var(--s-2);
+    min-inline-size: 0;
+  }
+  .sb-meter[data-tone="warn"] {
+    --sb-meter-ink: var(--warn);
+  }
+  .sb-meter[data-tone="over"] {
+    --sb-meter-ink: var(--danger);
+  }
+  .sb-meter__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-3);
+  }
+  .sb-meter__label,
+  .sb-meter__left {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .sb-meter__bar {
+    position: relative;
+    block-size: 12px;
+    border-radius: var(--r-full);
+    background: var(--niche-2);
+    overflow: hidden;
+  }
+  .sb-meter__kept {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    inline-size: calc(var(--sb-kept, 0) * 100%);
+    background: repeating-linear-gradient(135deg, var(--line-strong) 0 2px, transparent 2px 6px);
+  }
+  .sb-meter__fill {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--sb-meter-ink);
+    transform-origin: calc(50% - 50% * var(--dir)) 50%;
+    scale: var(--sb-used, 0) 1;
+    transition: scale var(--spring-settle-t) var(--spring-settle);
+  }
+  .sb-meter__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-4);
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sb-meter__key {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sb-meter__swatch {
+    flex: none;
+    inline-size: 10px;
+    block-size: 10px;
+    border-radius: var(--r-full);
+    background: var(--sb-meter-ink);
+  }
+  .sb-meter__swatch--kept {
+    background: repeating-linear-gradient(135deg, var(--line-strong) 0 2px, var(--niche-2) 2px 4px);
+  }
+  .sb-meter__over {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    background: var(--danger-tint);
+    font: var(--type-sm);
+    color: var(--ink);
+  }
+  .sb-meter__full {
+    font: var(--type-xs-strong);
+    color: var(--ink);
+  }
+  .sb-meter--compact {
+    gap: var(--s-1);
+  }
+  .sb-meter--compact .sb-meter__bar {
+    block-size: 8px;
+  }
+  .sb-meter--compact .sb-meter__left {
+    font: var(--type-xs-strong);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ───────────────────────────── 3. the games ───────────────────────────── */
+  .sb-toolbar {
+    display: grid;
+    gap: var(--s-3);
+  }
+  @media (min-width: 48rem) {
+    .sb-toolbar {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+    }
+  }
+  .sb-toolbar__keys {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  .sb-active {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+  }
+  .sb-count {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .sb-loading {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .sb-loading__text {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+
+  .sb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    gap: var(--s-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* a game: its picture at the start, the words beside it. The title's toggle stretches over the whole card (its
+     ::after); the info key sits above it at the inline end. A card below the first screen skips its rendering work
+     until it scrolls near (content-visibility). No callout or text selection under a held finger (long press). */
+  .sb-game {
+    position: relative;
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr);
+    align-items: start;
+    gap: var(--s-3);
+    min-block-size: 6.5rem;
+    padding: var(--s-3);
+    padding-inline-end: var(--s-10);
+    border-radius: var(--r-lg);
+    content-visibility: auto;
+    contain-intrinsic-size: auto 7rem;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .sb-game[data-chosen] {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  .sb-game:has(.sb-game__toggle:focus-visible) {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .sb-game--placeholder {
+    content-visibility: visible;
+  }
+  .sb-game__art {
+    position: relative;
+    display: block;
+    inline-size: 4rem;
+  }
+  .sb-game__check {
+    position: absolute;
+    inset-block-start: calc(-1 * var(--s-1));
+    inset-inline-start: calc(-1 * var(--s-1));
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    inline-size: 24px;
+    block-size: 24px;
+    border-radius: var(--r-full);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  /* TamTam's own picture: a framed cover (box art never blends), contained in the well */
+  .sb-cover {
+    inline-size: auto;
+    block-size: auto;
+    max-inline-size: 100%;
+    max-block-size: 100%;
+    border-radius: var(--r-xs);
+    box-shadow: var(--e-art);
+  }
+  /* no picture: a typographic tile in the well's place — the title's two initials on the quiet ground */
+  .sb-tile {
+    display: grid;
+    place-items: center;
+    inline-size: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--r-sm);
+    background: var(--niche-2);
+  }
+  .sb-tile[data-state="out"] .sb-tile__mark {
+    opacity: 0.5;
+  }
+  .sb-tile__mark {
+    font: 700 var(--fs-h3) / 1 var(--font-display);
+    color: var(--ink-2);
+  }
+  .sb-game__body {
+    display: grid;
+    gap: 2px;
+    min-inline-size: 0;
+  }
+  .sb-game__title {
+    margin: 0;
+    font: var(--type-card);
+    color: var(--ink);
+  }
+  .sb-game__toggle {
+    display: block;
+    inline-size: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: start;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sb-game__toggle::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: var(--r-lg);
+  }
+  .sb-game__toggle:focus-visible {
+    outline: none;
+  }
+  .sb-game__toggle[aria-disabled="true"] {
+    cursor: default;
+  }
+  /* two lines at most, never one: a long name keeps its start */
+  .sb-game__name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .sb-game__meta {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sb-game__facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-1) var(--s-2);
+    margin: 0;
+    padding-block-start: var(--s-1);
+  }
+  /* the card's one badge: the space it needs */
+  .sb-game__size {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 24px;
+    padding-inline: var(--s-2);
+    border-radius: var(--r-full);
+    background: var(--niche-2);
+    font: var(--type-tag);
+    color: var(--ink);
+  }
+  .sb-game__size--none {
+    padding-inline: 0;
+    background: none;
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sb-game__price {
+    font: var(--type-xs-strong);
+    color: var(--ink);
+  }
+  .sb-game__tag {
+    font: var(--type-xs-strong);
+    color: var(--ink-2);
+  }
+  .sb-game__why {
+    flex-basis: 100%;
+    font: var(--type-xs-strong);
+    color: var(--danger);
+  }
+  .sb-game__info {
+    position: absolute;
+    inset-block-start: var(--s-1);
+    inset-inline-end: var(--s-1);
+    z-index: 2;
+  }
+
+  .sb-credits {
+    display: grid;
+    gap: var(--s-2);
+    padding-block-start: var(--s-4);
+    border-block-start: 1px solid var(--line);
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  /* «Wikipedia (CC BY-SA 4.0)» never breaks inside: a left-to-right run split over two right-to-left lines reads
+     backwards */
+  .sb-credits__source {
+    white-space: nowrap;
+  }
+  .sb-credits__link {
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  /* the filters sheet */
+  .sb-filters {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .sb-filters__group {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .sb-filters__legend {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .sb-filters__switches {
+    display: grid;
+    gap: var(--s-3);
+  }
+
+  /* the chosen games (the aside, the phone's sheet) */
+  .sb-chosen {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sb-chosen__row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    padding-block: var(--s-2);
+    border-block-end: 1px solid var(--line);
+  }
+  .sb-chosen__row:last-child {
+    border-block-end: 0;
+  }
+  .sb-chosen__text {
+    display: grid;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+  .sb-chosen__title {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: var(--type-sm-strong);
+    color: var(--ink);
+    text-align: start;
+    overflow-wrap: anywhere;
+  }
+  button.sb-chosen__title {
+    min-block-size: 44px;
+    cursor: pointer;
+  }
+  .sb-chosen__meta {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sb-chosen__empty {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+
+  /* ───────────────────────────── 4. the review ───────────────────────────── */
+  .sb-review {
+    display: grid;
+    gap: var(--s-4);
+    padding: var(--s-5);
+    border-radius: var(--r-lg);
+  }
+  .sb-review--pending {
+    min-block-size: 16rem;
+    align-content: center;
+    justify-items: center;
+  }
+  .sb-lines {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sb-line {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--s-3);
+    padding-block: var(--s-3);
+    border-block-end: 1px solid var(--line);
+  }
+  .sb-line:last-child {
+    border-block-end: 0;
+  }
+  .sb-line__art {
+    inline-size: 3.5rem;
+  }
+  .sb-line__glyph {
+    display: grid;
+    place-items: center;
+    inline-size: 3.5rem;
+    aspect-ratio: 1;
+    border-radius: var(--r-sm);
+    background: var(--niche);
+    color: var(--ink-2);
+  }
+  .sb-line__text {
+    display: grid;
+    gap: 2px;
+    min-inline-size: 0;
+  }
+  .sb-line__name {
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .sb-line--muted .sb-line__name {
+    font: var(--type-sm);
+  }
+  .sb-line__detail,
+  .sb-line__state {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sb-line__problem {
+    font: var(--type-xs-strong);
+    color: var(--danger);
+  }
+  .sb-line__price {
+    display: grid;
+    justify-items: end;
+    gap: 2px;
+  }
+  .sb-line__qty {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  /* a narrow phone: the price under the words, so a long name keeps its lines */
+  @media (max-width: 26.24rem) {
+    .sb-line {
+      grid-template-columns: 3.5rem minmax(0, 1fr);
+      align-items: start;
+    }
+    .sb-line__price {
+      grid-column: 2;
+      justify-items: start;
+    }
+  }
+  .sb-review__cover {
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sb-review__total {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-3);
+    padding-block-start: var(--s-3);
+    border-block-start: 1px solid var(--line-2);
+  }
+  .sb-review__total-label {
+    font: var(--type-h3);
+    color: var(--ink);
+  }
+  .sb-review__refused {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+    font: var(--type-sm);
+    color: var(--danger);
+  }
+  .sb-review__nothing {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .sb-notes {
+    display: grid;
+    gap: var(--s-3);
+  }
+
+  /* ───────────────────────────── the keys ───────────────────────────── */
+  /* the column is the bar's width, never the keys' (an auto track grew to the keys and pushed the primary off a 320
+     screen in Sorani — the trade-in's lesson) */
+  .sb-keys {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-2);
+  }
+  .sb-keys__offline {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sb-keys__row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  @media (min-width: 22.5rem) {
+    .sb-keys__row {
+      gap: var(--s-3);
+    }
+  }
+  .sb-addall {
+    display: flex;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+  /* the 320px aside: the step's primary on its own line with its full name («تابع إلى المراجعة»), «رجوع» under it */
+  .sb-aside .sb-keys__row {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .sb-taskbar {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .sb-taskbar__summary {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+  }
+
+  /* the plan so far (the aside) */
+  .sb-plan {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+  }
+  .sb-plan__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0 var(--s-2);
+  }
+  .sb-plan__label {
+    grid-column: 1 / -1;
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sb-plan__value {
+    margin: 0;
+    min-inline-size: 0;
+    font: var(--type-sm-strong);
+    color: var(--ink);
+  }
+  .sb-plan__detail {
+    display: block;
+    font: var(--type-xs);
+    color: var(--ink-2);
+  }
+  .sb-plan__edit {
+    margin: 0;
+    font: var(--type-xs);
+  }
+
+  /* ───────────────────────────── preferences ───────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .sb-meter__fill {
+      transition: none;
+    }
+  }
+  [data-motion="reduced"] .sb-meter__fill {
+    transition: none;
+  }
+  @media (prefers-contrast: more) {
+    .sb-meter__bar {
+      outline: 1px solid var(--line-strong);
+    }
+    .sb-chosen__row,
+    .sb-line {
+      border-color: var(--line-strong);
+    }
+  }
+  @media (forced-colors: active) {
+    .sb-meter__bar {
+      outline: 1px solid CanvasText;
+    }
+    .sb-meter__fill {
+      background: Highlight;
+    }
+    .sb-model--checked,
+    .sb-game[data-chosen] {
+      outline-color: Highlight;
+    }
+  }
+}

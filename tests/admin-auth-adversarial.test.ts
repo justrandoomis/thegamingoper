@@ -1140,7 +1140,8 @@ describe("9 headers", () => {
         const req = new Request(`${origin}/admin/login`);
         const response = (await throughRoot(req, async () => new Response("<html></html>", { headers: { "Content-Type": "text/html; charset=utf-8" } }))) as Response;
         const csp = response.headers.get("Content-Security-Policy") ?? "";
-        for (const directive of ["default-src 'self'", "style-src 'self' 'unsafe-inline'", "img-src 'self' data: blob:", "connect-src 'self'", "frame-src 'none'", "frame-ancestors 'none'", "object-src 'none'", "base-uri 'self'", "form-action 'self'"]) {
+        // frame-src: YouTube's privacy-enhanced player only (the Switch builder's trailers, loaded after a tap — 2026-11-21)
+        for (const directive of ["default-src 'self'", "style-src 'self' 'unsafe-inline'", "img-src 'self' data: blob:", "connect-src 'self'", "frame-src https://www.youtube-nocookie.com;", "frame-ancestors 'none'", "object-src 'none'", "base-uri 'self'", "form-action 'self'"]) {
           expect(csp, `${origin}: ${directive}`).toContain(directive);
         }
         expect(csp).toMatch(/script-src 'self' 'nonce-[A-Za-z0-9+/=]{16,}'/);

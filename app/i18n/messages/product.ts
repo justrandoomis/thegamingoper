@@ -187,6 +187,11 @@ export default defineMessages({
       title: "كل شيء عن {device}",
       text: "النسخ والمواصفات والأدلة وما يتوافق معه",
     },
+    // the Switch builder's door on a Switch 1 console's page, once it is public (builder/flags.ts)
+    builder: {
+      title: "جهّز جهاز Switch",
+      text: "اختر بطاقة الذاكرة والألعاب التي تتسع لها، ثم أضف ما نبيعه منها إلى السلة دفعة واحدة.",
+    },
     preview: {
       title: "عرض سريع",
       open: "عرض سريع: {name}",
@@ -366,6 +371,10 @@ export default defineMessages({
       title: "Everything about {device}",
       text: "Versions, specifications, guides and what works with it",
     },
+    builder: {
+      title: "Build your Switch",
+      text: "Pick a memory card and the games that fit, then add what we sell to your cart in one go.",
+    },
     preview: {
       title: "Quick look",
       open: "Quick look: {name}",
@@ -535,6 +544,10 @@ export default defineMessages({
     hub: {
       title: "هەموو شتێک دەربارەی {device}",
       text: "وەشانەکان و تایبەتمەندییەکان و ڕێنماییەکان و ئەوەی لەگەڵیدا دەگونجێت",
+    },
+    builder: {
+      title: "ئامێری Switch ئامادە بکە",
+      text: "کارتی بیرگە و ئەو یاریانەی جێیان دەبێتەوە هەڵبژێرە، پاشان ئەوەی دەیفرۆشین بەیەکجار بیخە ناو سەبەتە.",
     },
     preview: {
       title: "سەیرێکی خێرا",

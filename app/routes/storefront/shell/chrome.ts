@@ -11,6 +11,7 @@
  *   checkoutRail(search)                      the checkout bar's step rail from `?step=`
  *   searchMode(path, { notFound })            the header's search FIELD, or only the round search KEY (v2.1 §2.7)
  *   megaPlan(platform) / megaFeature(platform)  what a platform's mega menu lists, and the product it features
+ *   megaDevices(plan, tool)                   the devices column, with a tool's link last («جهّز جهاز Switch»)
  *   megaWords(t, slug, name)                  the menu's «كل أجهزة …» / «… المستعملة» words, one string per platform
  *   suggestionKind(href)                      what a search suggestion points at (its row's icon and words)
  *   suggestionMeta(item)                      a product suggestion's meta line: its qualifier, then its kind
@@ -170,9 +171,10 @@ export type SearchMode = "field" | "key";
 /**
  * Pages whose job is not finding products (Design v2.1 §2.7, client note 9): the cart and checkout, an order and its
  * tracking, support (all of /support), trade-in and its status, the account and its favourites, the store's own
- * pages (about, contact, policies, accessibility) and the internal ones (design system, motion lab).
+ * pages (about, contact, policies, accessibility) and the internal ones (design system, motion lab) — and the
+ * builders (/build/switch), which search their own game library in a field of their own: one field per page.
  */
-const SEARCH_KEY_PATH = /^\/(cart|checkout|order|track|support|trade-in|account|wishlist|about|contact|policies|accessibility|design-system|motion)(\/|$)/;
+const SEARCH_KEY_PATH = /^\/(cart|checkout|order|track|support|trade-in|account|wishlist|about|contact|policies|accessibility|design-system|motion|build)(\/|$)/;
 
 /**
  * Which search the header shows on a page (locale-less path), decided here for every width: the FIELD on pages for
@@ -189,7 +191,8 @@ export function searchMode(path: string, options: { errored?: boolean; notFound?
 
 export type TabId = "home" | "categories" | "cart" | "wishlist" | "account";
 
-const CATALOGUE = /^\/(c|platform|device|used|support|search|compare|trade-in|p)(\/|$)/;
+/** Catalogue pages: the «التصنيفات» tab is current on them (the Switch builder sells consoles, cards and games too). */
+const CATALOGUE = /^\/(c|platform|device|used|support|search|compare|trade-in|p|build)(\/|$)/;
 
 /** Which tab the current page belongs to (locale-less path), or null (content pages). */
 export function tabOf(path: string): TabId | null {
@@ -291,6 +294,15 @@ export function megaPlan(platform: NavPlatform): MegaPlan {
     cards: platform.accessories.filter((link) => DIGITAL_CATEGORY.test(link.href)).slice(0, MEGA_LINKS - 1).map(megaLink),
     used: platform.used ? { href: platform.used.href, count: countOf(platform.used) } : null,
   };
+}
+
+/**
+ * A platform's devices column: its device models, then a tool's link when the platform has one — «جهّز جهاز Switch»
+ * on Nintendo once the builder is public (builder/flags.ts `switchBuilderHref`). The tool takes the column's last
+ * place, so the column keeps its five links at most (§5.4), as the used units do in the cards column.
+ */
+export function megaDevices(plan: Pick<MegaPlan, "devices">, tool: MegaLink | null): MegaLink[] {
+  return tool ? [...plan.devices.slice(0, MEGA_LINKS - 1), tool] : plan.devices;
 }
 
 /** The mega menu's featured tile (§5.4): a 1:1 well with the product's photo, its name and its price. */

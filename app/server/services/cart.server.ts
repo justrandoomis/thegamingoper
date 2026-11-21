@@ -4,6 +4,9 @@
  *   const { cartToken, view } = await addToCart(db, { cartToken, customerId, locale }, { variantId, qty: 1 }, now);
  *   ctx.setCookie(serializeCookie(ctx, CART_COOKIE, cartToken, { maxAge: CART_COOKIE_MAX_AGE_SEC }));
  *   const view = await getCartView(db, { cartToken, customerId, locale, governorateId }, now);
+ *   // several variants at once — all of them or none (the Switch bundle builder, docs/switch-builder.md §5):
+ *   const { cartToken, view, added } = await addManyToCart(db, request, { items: [{ variantId, qty: 1 }, …] }, now);
+ *   //   refused → AddManyRefusal (409 "bundle_refused", nothing written) with `problems: [{ variantId, code }]`
  *
  * IDENTITY
  *   · A cart is created lazily, on the first add. Its secret is a randomToken() kept in the httpOnly
@@ -98,8 +101,11 @@ export const CART_COOKIE_MAX_AGE_SEC = 60 * 24 * 60 * 60;
  */
 export const PHONE_PRICING_PER_IP: RateLimitRule = { limit: 20, windowSec: 10 * 60 };
 
-/** Error keys the cart can answer with (besides the coupon_* keys and the generic invalid / not_found / rate_limited). */
-export const CART_ERROR_KEYS = ["unavailable", "out_of_stock", "insufficient_stock", "max_qty_reached", "cart_full", ...COUPON_ERROR_KEYS] as const;
+/**
+ * Error keys the cart can answer with (besides the coupon_* keys and the generic invalid / not_found / rate_limited).
+ * `bundle_refused`: addManyToCart put nothing in because at least one item could not go in whole (AddManyRefusal).
+ */
+export const CART_ERROR_KEYS = ["unavailable", "out_of_stock", "insufficient_stock", "max_qty_reached", "cart_full", "bundle_refused", ...COUPON_ERROR_KEYS] as const;
 
 /** Same shape the shell accepts for the cookie: 16–128 URL-safe characters. */
 const CART_TOKEN_PATTERN = /^[A-Za-z0-9_-]{16,128}$/;
@@ -842,6 +848,149 @@ export async function addToCart(db: Db, request: CartRequest, raw: unknown, now:
   }
   const result = await finish(db, target, statements, request, now);
   return { cartToken: target.token, view: result.view, added: line.usedUnitId ? 1 : addQty };
+}
+
+// ───────────────────────────────────────────────────────────────── several variants at once
+
+/** At most this many items in one addManyToCart — as many lines as a cart can hold. */
+export const MAX_ADD_MANY_ITEMS = MAX_CART_LINES;
+
+export const AddManyToCartInput = z.object({
+  items: z
+    .array(z.object({ variantId: idSchema, qty: z.number().int("invalid").min(1, "too_small").max(MAX_LINE_QTY, "too_big") }))
+    .min(1, "required")
+    .max(MAX_ADD_MANY_ITEMS, "too_big"),
+});
+export type AddManyToCartInput = z.input<typeof AddManyToCartInput>;
+
+/** Why one item of a refused bundle cannot go in (an error key, `errors.<code>`). */
+export const ADD_MANY_PROBLEM_CODES = ["not_found", "unavailable", "out_of_stock", "insufficient_stock", "max_qty_reached", "cart_full"] as const;
+export type AddManyProblemCode = (typeof ADD_MANY_PROBLEM_CODES)[number];
+export type AddManyProblem = { variantId: string; code: AddManyProblemCode };
+
+/**
+ * addManyToCart's refusal: AppError("bundle_refused", 409) — nothing was written — with one problem per item that cannot
+ * go in whole, in the order the items were asked. POST /api/cart adds `problems` to its 409 answer (addManyProblemsOf).
+ */
+export class AddManyRefusal extends AppError {
+  readonly problems: AddManyProblem[];
+
+  constructor(problems: AddManyProblem[]) {
+    super("bundle_refused", 409, { detail: problems.map((problem) => `${problem.variantId}:${problem.code}`).join(" ").slice(0, 500) });
+    this.problems = problems;
+  }
+}
+
+/** The per-item problems of a refused addManyToCart (an AddManyRefusal), else null. */
+export function addManyProblemsOf(error: unknown): AddManyProblem[] | null {
+  return error instanceof AddManyRefusal ? error.problems.map((problem) => ({ ...problem })) : null;
+}
+
+/**
+ * Adds several variants in ONE change — the Switch bundle builder's «أضف الكل إلى السلة» (docs/switch-builder.md §5).
+ * All of them go in, each with its whole quantity, or none does:
+ *   1. items for the same variant are merged (quantities added up, in the order first asked);
+ *   2. every item is checked against ONE read of the variants and their products and ONE availability call, with what
+ *      the cart already holds: the product sellable (published, or scheduled and live) and the variant active, units
+ *      free, the cart's quantity plus the new one within MAX_LINE_QTY and within the free units, and the new lines
+ *      within MAX_CART_LINES;
+ *   3. any problem → AddManyRefusal with every problem (variantId + code: not_found · unavailable · out_of_stock ·
+ *      max_qty_reached · insufficient_stock · cart_full) and NOTHING is written — no cart is created, no token re-keyed;
+ *   4. otherwise ONE db.batch: the cart (created once for a guest without one, claimed, or re-keyed like addToCart) and
+ *      every line, each upsert guarded like addToCart's (never above what was free when it was checked); lines keep the
+ *      order of the items; each remembers the price it is sold at now (a running flash sale's), so it does not say
+ *      "price changed";
+ *   5. the cart is priced once (finish: prices, promotions, the stored coupon, delivery — all server-side) and returned
+ *      with the token for `tt_cart` and `added`, the units that went in.
+ * Errors: AddManyRefusal (409 bundle_refused) · invalid (400, malformed input: 1–50 items, qty 1–10).
+ */
+export async function addManyToCart(db: Db, request: CartRequest, raw: unknown, now: number): Promise<{ cartToken: string; view: CartViewData; added: number }> {
+  const input = AddManyToCartInput.parse(raw);
+  const locale = localeOf(request);
+  const wanted = new Map<string, number>();
+  for (const item of input.items) wanted.set(item.variantId, (wanted.get(item.variantId) ?? 0) + item.qty);
+  const ids = [...wanted.keys()];
+
+  // One read of the variants (with their products), one availability call, and the cart the change applies to (its
+  // statements are only run in the final batch). Adding always leaves this device holding the cart's token.
+  const [rows, availability, found] = await Promise.all([
+    db
+      .select({ id: variants.id, priceIqd: variants.priceIqd, isActive: variants.isActive, status: products.status, publishAt: products.publishAt, productIsDemo: products.isDemo })
+      .from(variants)
+      .innerJoin(products, eq(products.id, variants.productId))
+      .where(sql`${variants.id} IN (SELECT value FROM json_each(${JSON.stringify(ids)}))`),
+    getAvailability(db, ids),
+    cartForChange(db, request, locale, now, { rekey: true, create: true }),
+  ]);
+  const target = found as ChangeTarget & { token: string };
+  const byId = new Map(rows.map((row) => [row.id, row]));
+  const sellable = rows.filter((row) => row.isActive && isSellableProduct(row.status, row.publishAt, now));
+
+  // What the cart already holds, and the price each line is sold at now (as addToCart remembers it).
+  const [held, flashPrices] = await Promise.all([
+    db.select({ variantId: cartItems.variantId, usedUnitId: cartItems.usedUnitId, qty: cartItems.qty }).from(cartItems).where(eq(cartItems.cartId, target.cartId)),
+    Promise.all(sellable.map(async (row) => [row.id, await runningFlashPrice(db, row, now)] as const)),
+  ]);
+  const flash = new Map(flashPrices);
+  const inCart = new Map<string, number>();
+  for (const line of held) if (line.usedUnitId === null) inCart.set(line.variantId, line.qty);
+
+  const problems: AddManyProblem[] = [];
+  const accepted: Array<{ variantId: string; qty: number; cap: number; priceIqd: number; isNewLine: boolean }> = [];
+  for (const [variantId, qty] of wanted) {
+    const row = byId.get(variantId);
+    if (!row) {
+      problems.push({ variantId, code: "not_found" });
+      continue;
+    }
+    if (!row.isActive || !isSellableProduct(row.status, row.publishAt, now)) {
+      problems.push({ variantId, code: "unavailable" });
+      continue;
+    }
+    const available = availability.get(variantId)?.available ?? 0;
+    if (available <= 0) {
+      problems.push({ variantId, code: "out_of_stock" });
+      continue;
+    }
+    const have = inCart.get(variantId) ?? 0;
+    if (have + qty > MAX_LINE_QTY) {
+      problems.push({ variantId, code: "max_qty_reached" });
+      continue;
+    }
+    if (have + qty > available) {
+      problems.push({ variantId, code: "insufficient_stock" });
+      continue;
+    }
+    accepted.push({ variantId, qty, cap: Math.min(MAX_LINE_QTY, available), priceIqd: flash.get(variantId) ?? row.priceIqd, isNewLine: !inCart.has(variantId) });
+  }
+  // New lines must fit beside the cart's lines; counted among the items that could otherwise go in, so a retry
+  // without the other refused items gives the same answer.
+  if (held.length + accepted.filter((entry) => entry.isNewLine).length > MAX_CART_LINES) {
+    for (const entry of accepted) if (entry.isNewLine) problems.push({ variantId: entry.variantId, code: "cart_full" });
+  }
+  if (problems.length > 0) {
+    const order = new Map(ids.map((id, index) => [id, index]));
+    throw new AddManyRefusal(problems.sort((a, b) => (order.get(a.variantId) ?? 0) - (order.get(b.variantId) ?? 0)));
+  }
+
+  // One batch. Line ids are time-sortable and the cart lists lines by (added_at, id): sorted ids keep the items' order.
+  const lineIds = accepted.map(() => newId("cit")).sort();
+  const statements: BatchStatement[] = [...target.statements];
+  accepted.forEach((entry, index) => {
+    statements.push(
+      db
+        .insert(cartItems)
+        .values({ id: lineIds[index], cartId: target.cartId, variantId: entry.variantId, usedUnitId: null, qty: entry.qty, addedAt: now, priceSnapshotIqd: entry.priceIqd })
+        .onConflictDoUpdate({
+          target: [cartItems.cartId, cartItems.variantId],
+          targetWhere: sql`${cartItems.usedUnitId} IS NULL`,
+          // A concurrent add cannot push the line past what was available when this one was checked.
+          set: { qty: sql`min(${cartItems.qty} + excluded.qty, ${entry.cap})`, priceSnapshotIqd: entry.priceIqd },
+        }),
+    );
+  });
+  const result = await finish(db, target, statements, request, now);
+  return { cartToken: target.token, view: result.view, added: accepted.reduce((sum, entry) => sum + entry.qty, 0) };
 }
 
 /**

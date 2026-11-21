@@ -381,17 +381,30 @@ export type StripKey = "devices" | "games" | "controllers" | "headsets" | "acces
 export type StripItem = { key: StripKey; href: string; icon: IconName };
 
 /**
- * Each door's icon (owner reference 2026-11-20, C:/tamref; owner: no generated pictures): a transparent three.js
- * render of the whole product, no tile behind it — the product is modelled from primitives and its own dark panel carries the department's
- * name in Kufam, so the name is part of the object, not a label over it. One picture per door and language
- * (`./doors/<door>.<locale>.webp`), drawn by scripts/home-doors (studio.js models and lights them, render.mjs
- * writes the files).
+ * Each door's icon (owner reference 2026-11-20, C:/tamref; owner: no generated pictures): a path-traced three.js
+ * render of the whole product on a transparent background — modelled from three.js geometry, with the department's
+ * name printed into one of the product's own surfaces (Kufam), so the name is part of the object, not a label over
+ * it. One picture per door, language and width (`./doors/<door>.<locale>.<width>.webp`, 4:3), drawn by
+ * scripts/home-doors (README there: objects/<door>.js models each one, core.js is the studio, render.mjs writes them).
  */
 const DOOR_FILES = import.meta.glob<string>("./doors/*.webp", { eager: true, import: "default" });
+/** The widths each icon is shipped at: 400 for 1× laptops and tablets, 600 and 800 for 2–3× phones. */
+export const DOOR_WIDTHS = [400, 600, 800] as const;
 
-/** The icon of a door in a language (Arabic when that language has none). */
-export function stripIcon(key: StripKey, locale: string): string | undefined {
-  return DOOR_FILES[`./doors/${key}.${locale}.webp`] ?? DOOR_FILES[`./doors/${key}.ar.webp`];
+export type DoorIcon = { src: string; srcSet: string };
+
+function doorFiles(key: StripKey, locale: string): [number, string][] {
+  return DOOR_WIDTHS.flatMap((w): [number, string][] => {
+    const file = DOOR_FILES[`./doors/${key}.${locale}.${w}.webp`];
+    return file ? [[w, file]] : [];
+  });
+}
+
+/** The icon of a door in a language (Arabic when that language has none): the largest file, and every width. */
+export function stripIcon(key: StripKey, locale: string): DoorIcon | undefined {
+  const files = doorFiles(key, locale).length > 0 ? doorFiles(key, locale) : doorFiles(key, "ar");
+  if (files.length === 0) return undefined;
+  return { src: files[files.length - 1][1], srcSet: files.map(([w, file]) => `${file} ${w}w`).join(", ") };
 }
 
 /** The strip's doors in order (the client's reference: glass icon tiles), with the catalogue kind each one opens. */

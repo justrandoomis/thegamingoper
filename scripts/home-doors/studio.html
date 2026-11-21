@@ -3,14 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <style>
-      html, body { margin: 0; background: #111; }
+      html, body { margin: 0; background: transparent; }
       canvas { display: block; }
     </style>
     <script type="importmap">
-      { "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }
+      {
+        "imports": {
+          "three": "/node_modules/three/build/three.module.js",
+          "three/webgpu": "/node_modules/three/build/three.webgpu.js",
+          "three/tsl": "/node_modules/three/build/three.tsl.js",
+          "three/addons/": "/node_modules/three/examples/jsm/",
+          "three/examples/jsm/": "/node_modules/three/examples/jsm/",
+          "three-mesh-bvh": "/node_modules/three-mesh-bvh/src/index.js",
+          "three-gpu-pathtracer": "/node_modules/three-gpu-pathtracer/src/index.js"
+        }
+      }
     </script>
   </head>
   <body>
-    <script type="module" src="/studio.js"></script>
+    <script type="module" src="/core.js"></script>
   </body>
 </html>

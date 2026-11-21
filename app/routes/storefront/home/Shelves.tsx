@@ -70,10 +70,11 @@ export function ViewAll({ to, children }: { to: string; children?: ReactNode }) 
 // ───────────────────────────────────────────────────────────────── the icon strip
 
 /**
- * The departments as the owner's reference draws them (2026-11-20, C:/tamref): one square three.js render per door,
- * the product and its name one object (./view stripIcon), in the page's language. The picture is the whole door; the
- * name is also the picture's alternative text. One scrolling row below 1024 (the third door peeks on phones); from
- * 1024 every door shares one row.
+ * The departments as the owner's reference draws them (2026-11-20, C:/tamref): one path-traced three.js render per
+ * door, the product and its name one object (./view stripIcon), in the page's language. The picture is the whole
+ * door; the name is also the picture's alternative text. One scrolling row below 1024 (the third door peeks on
+ * phones); from 1024 every door shares one row. Each picture comes in three widths and the browser takes the one
+ * its door needs (DOOR_SIZES), so a 1× laptop loads a third of the bytes a 3× phone does.
  */
 export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
   const t = useT("home");
@@ -84,17 +85,23 @@ export function CategoryStrip({ items }: { items: readonly StripItem[] }) {
       {/* a tile that takes the keyboard focus scrolls fully into the row (the row only, never the page): the browser's
           own scroll left the fourth tile half out of a 390px row */}
       <ul className="home-strip__list" onFocus={revealFocusedItem}>
-        {items.map((item) => (
-          <li key={item.key} className="grid">
-            <LocaleLink to={item.href} className="home-door" data-press="soft">
-              <img src={stripIcon(item.key, locale)} alt={t(`strip.${item.key}`)} width={800} height={600} decoding="async" className="home-door__icon" />
-            </LocaleLink>
-          </li>
-        ))}
+        {items.map((item) => {
+          const icon = stripIcon(item.key, locale);
+          return (
+            <li key={item.key} className="grid">
+              <LocaleLink to={item.href} className="home-door" data-press="soft">
+                <img src={icon?.src} srcSet={icon?.srcSet} sizes={DOOR_SIZES} alt={t(`strip.${item.key}`)} width={800} height={600} decoding="async" className="home-door__icon" />
+              </LocaleLink>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );
 }
+
+/** How wide a door is drawn (home.css): 172px on phones, 196px from 768, a sixth of the row (≈200px) from 1024. */
+const DOOR_SIZES = "(min-width: 1024px) 200px, (min-width: 768px) 196px, 172px";
 
 // ───────────────────────────────────────────────────────────────── platform tiles
 

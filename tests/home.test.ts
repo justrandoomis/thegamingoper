@@ -61,6 +61,7 @@ import {
   releasePlatformOf,
   resolveFocus,
   splitHeadline,
+  DOOR_WIDTHS,
   stripIcon,
   stripItems,
   tileArt,
@@ -1071,14 +1072,21 @@ describe("the home page's stylesheet: laptops' first screen, dark glass, the pho
     expect(block("", ".home-strip")).toMatch(/position:\s*relative/);
   });
 
-  it("every strip door has its icon in every language", () => {
+  it("every strip door has its icon in every language, at every width", () => {
     for (const key of ["devices", "games", "controllers", "headsets", "accessories", "topup", "used", "repair"] as const) {
       for (const locale of ["ar", "en", "ckb"]) {
-        expect(existsSync(new URL(`../app/routes/storefront/home/doors/${key}.${locale}.webp`, import.meta.url)), `${key}.${locale}`).toBe(true);
-        expect(stripIcon(key, locale), `${key}.${locale}`).toBeTruthy();
+        for (const w of DOOR_WIDTHS) {
+          expect(existsSync(new URL(`../app/routes/storefront/home/doors/${key}.${locale}.${w}.webp`, import.meta.url)), `${key}.${locale}.${w}`).toBe(true);
+        }
+        const icon = stripIcon(key, locale);
+        expect(icon, `${key}.${locale}`).toBeTruthy();
+        // the browser picks from every width; the plain src is the largest
+        expect(icon!.srcSet.split(", ")).toHaveLength(DOOR_WIDTHS.length);
+        expect(icon!.srcSet).toMatch(/ 400w, .* 600w, .* 800w$/);
+        expect(icon!.src).toBe(icon!.srcSet.split(", ").at(-1)!.split(" ")[0]);
       }
       // a language without its own picture shows the Arabic one
-      expect(stripIcon(key, "xx")).toBe(stripIcon(key, "ar"));
+      expect(stripIcon(key, "xx")).toEqual(stripIcon(key, "ar"));
     }
   });
 

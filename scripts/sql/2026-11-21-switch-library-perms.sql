@@ -8,11 +8,17 @@
 -- and needs nothing. Custom roles are not touched: the owner ticks the permission in Security → Roles if wanted.
 --
 -- Each grant is written to the audit log first (security.role.update, the shape the role editor writes, actor
--- "system"), for the roles that do not hold the permission yet; then the grant itself.
+-- "system"), for the roles that do not hold the permission yet and have never had it from this file; then the grant
+-- itself, ONLY for the roles step 1 has just audited: their audit event is less than five minutes old and nothing has
+-- been audited after it (D1 runs a file as one unit, so nothing comes between the two steps).
 --
--- Idempotent: the audit insert only sees roles still missing the permission and the grant is INSERT OR IGNORE on the
--- (role_id, permission) key, so a second run changes nothing. No BEGIN/COMMIT (D1 runs a file as one unit). Deploy the
--- code that knows the permission FIRST (an unknown permission string is ignored by expandPermissions), then:
+-- So the file gives each role the permission at most once. A second run changes nothing, and neither does a run after
+-- the owner has taken the permission away again: through Security → Roles (which writes its own audit event), or by
+-- hand once five minutes have passed since the file first ran. (A hand edit within those minutes, with nothing audited
+-- in between, leaves the tables exactly as they are between this file's two steps: no SQL can tell the two apart.)
+--
+-- No BEGIN/COMMIT (D1 runs a file as one unit). Deploy the code that knows the permission FIRST (an unknown permission
+-- string is ignored by expandPermissions), then:
 --   npx wrangler d1 execute DB --remote --file scripts/sql/2026-11-21-switch-library-perms.sql
 -- Check afterwards:
 --   SELECT r.key FROM role_permissions p JOIN roles r ON r.id = p.role_id WHERE p.permission = 'catalog.switch_library.manage';
@@ -46,10 +52,17 @@ WHERE r.key IN ('manager', 'content')
   AND NOT EXISTS (SELECT 1 FROM role_permissions p WHERE p.role_id = r.id AND p.permission = 'catalog.switch_library.manage')
   AND NOT EXISTS (SELECT 1 FROM audit_events a WHERE a.id = 'aud_20261121_switch_library_perm_' || r.key);
 
--- 2. the grants ─────────────────────────────────────────────────────────────────────────────────────────────────────
+-- 2. the grants: only the roles step 1 has just audited ─────────────────────────────────────────────────────────────
 
 INSERT OR IGNORE INTO role_permissions (role_id, permission)
 SELECT r.id, 'catalog.switch_library.manage'
 FROM roles r
+JOIN audit_events a ON a.id = 'aud_20261121_switch_library_perm_' || r.key
 WHERE r.key IN ('manager', 'content')
-  AND EXISTS (SELECT 1 FROM role_permissions p WHERE p.role_id = r.id AND p.permission = 'catalog.product.update');
+  AND EXISTS (SELECT 1 FROM role_permissions p WHERE p.role_id = r.id AND p.permission = 'catalog.product.update')
+  AND a.at >= (unixepoch() - 300) * 1000
+  AND NOT EXISTS (
+    SELECT 1 FROM audit_events later
+    WHERE later.seq > a.seq
+      AND later.id NOT IN ('aud_20261121_switch_library_perm_manager', 'aud_20261121_switch_library_perm_content')
+  );

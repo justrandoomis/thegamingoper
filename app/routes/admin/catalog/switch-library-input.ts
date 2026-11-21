@@ -299,6 +299,13 @@ export const LIBRARY_CSV_CLEAR = "-";
 /** The whole open list (about 4,900 games) fits in one file… */
 export const LIBRARY_CSV_MAX_ROWS = 5000;
 export const LIBRARY_CSV_MAX_BYTES = 2 * 1024 * 1024;
+/** The import's request body: the file and its few form fields (multipart framing). Read no further than this. */
+export const LIBRARY_CSV_MAX_BODY_BYTES = LIBRARY_CSV_MAX_BYTES + 64 * 1024;
+/**
+ * Cells a header line may have (the import knows 18 columns; a sheet may carry a few notes beside them). The parser
+ * builds every row against the whole header, so the header's width multiplies its work.
+ */
+export const LIBRARY_CSV_MAX_COLUMNS = 64;
 /** …but one import writes at most this many games (D1: every written game is two statements in one request). */
 export const LIBRARY_CSV_MAX_CHANGES = 400;
 

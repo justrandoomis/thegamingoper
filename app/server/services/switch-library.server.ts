@@ -1,7 +1,8 @@
 /**
  * Switch library — TamTam's own per-game data for the bundle builder (docs/switch-builder.md §4.2).
  *
- *   const { rev, extras, capacity } = await getLibraryExtras(db);        // GET /api/switch-library, the quote action
+ *   const { rev, extras, capacity } = await getLibraryExtras(db);        // GET /api/switch-library
+ *   const extras = await getLibraryPrices(db, plan.games.map((game) => game.id));   // the quote action
  *
  * The open game LIST ships as static files (public/library/switch/, built by scripts/switch-library/); this service
  * reads what staff add per game in /admin/catalog/switch-library (table switch_library_entries) and the planner's
@@ -12,9 +13,14 @@
  * 11-character YouTube id, the picture as the storage key /media/<key> serves (with its width and height) — only for a
  * file that is public and not deleted, so a private file's key never leaves the server — TamTam's descriptions per
  * language, a Metacritic score only with its review count and date (it exists only under TamTam's Metacritic
- * licence; a score without them is not shown rather than shown with invented figures), and `hidden: true` for a
- * hidden game (the builder hides it; a plan that already holds it can still be quoted). Fields not set are left
- * out; a row with nothing left is left out.
+ * licence; a score without them is not shown rather than shown with invented figures). Fields not set are left out;
+ * a row with nothing left is left out. A hidden game is `{ hidden: true }` and nothing else (qa-security 2026-11-21):
+ * staff may hide a game because its picture, trailer or text must come down, and the builder needs only the flag —
+ * it leaves the game out of the list and out of a restored plan, and the quote counts it as unpriced.
+ *
+ * getLibraryPrices is the quote's read: the price and the hidden flag of the plan's games only (at most
+ * PLAN_LIMITS.maxGames, one bound value), never the whole table — mapped exactly as getLibraryExtras maps them, so the
+ * quote prices a game exactly when the page shows its price.
  *
  * `rev` = "<latest updated_at>-<row count>": the latest change of any row or of the capacity setting, and the number
  * of rows — any save, a new row and a deleted row all change it. `capacity` = sanitizeCapacity(the stored setting):
@@ -22,7 +28,7 @@
  */
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { sanitizeCapacity } from "~/lib/switch-builder/storage";
-import type { LibraryExtras, LibraryExtrasPayload } from "~/lib/switch-builder/types";
+import { PLAN_LIMITS, type LibraryExtras, type LibraryExtrasPayload, type LibraryGameId } from "~/lib/switch-builder/types";
 import type { Db } from "~/server/db.server";
 import { files, settings, switchLibraryEntries } from "~/server/db/schema";
 import type { SettingKey } from "~/server/settings.server";
@@ -71,16 +77,24 @@ function entriesQuery(db: Db) {
 
 type EntryRow = Awaited<ReturnType<typeof entriesQuery>>[number];
 
-/** One row as the builder sees it; empty when nothing usable is set. */
+/** The eShop price and its date, as both reads map them (a price of 0 cents is a real price). */
+function priceOf(row: { priceUsdCents: number | null; priceAsOf: string | null }): Pick<LibraryExtras, "priceUsdCents" | "priceAsOf"> {
+  const price: Pick<LibraryExtras, "priceUsdCents" | "priceAsOf"> = {};
+  if (wholeAtLeast(row.priceUsdCents, 0)) price.priceUsdCents = row.priceUsdCents;
+  const priceAsOf = isoDate(row.priceAsOf);
+  if (priceAsOf) price.priceAsOf = priceAsOf;
+  return price;
+}
+
+/** One row as the builder sees it; empty when nothing usable is set; a hidden game's is the flag alone. */
 export function toLibraryExtras(row: EntryRow): LibraryExtras {
+  if (row.isHidden) return { hidden: true };
   const extras: LibraryExtras = {};
   if (wholeAtLeast(row.sizeBytes, 1)) extras.sizeBytes = row.sizeBytes;
   if (wholeAtLeast(row.cartridgeBytes, 0)) extras.cartridgeBytes = row.cartridgeBytes;
   const sizeAsOf = isoDate(row.sizeAsOf);
   if (sizeAsOf) extras.sizeAsOf = sizeAsOf;
-  if (wholeAtLeast(row.priceUsdCents, 0)) extras.priceUsdCents = row.priceUsdCents;
-  const priceAsOf = isoDate(row.priceAsOf);
-  if (priceAsOf) extras.priceAsOf = priceAsOf;
+  Object.assign(extras, priceOf(row));
   const trailer = row.trailerYoutubeId?.trim();
   if (trailer && YOUTUBE_ID.test(trailer)) extras.trailerYouTubeId = trailer;
   if (isPublicStorageKey(row.imageKey)) {
@@ -98,7 +112,6 @@ export function toLibraryExtras(row: EntryRow): LibraryExtras {
   if (wholeAtLeast(row.metacriticScore, 0) && row.metacriticScore <= 100 && wholeAtLeast(row.metacriticReviews, 0) && metacriticAsOf) {
     extras.metacritic = { score: row.metacriticScore, reviews: row.metacriticReviews, asOf: metacriticAsOf };
   }
-  if (row.isHidden) extras.hidden = true;
   return extras;
 }
 
@@ -129,4 +142,26 @@ export async function getLibraryExtras(db: Db): Promise<LibraryExtrasPayload> {
   const stored = capacityRows[0];
   if (stored && stored.updatedAt > latest) latest = stored.updatedAt;
   return { rev: `${latest}-${rows.length}`, extras, capacity: sanitizeCapacity(parseStored(stored?.value)) };
+}
+
+/**
+ * The quote's read (builder.server.ts quoteBuilderPlan takes it as `extras`): for the games asked for, the eShop
+ * price and its date, or `{ hidden: true }` for a hidden game; a game with neither is left out. The price, date and
+ * flag columns of the plan's rows only (by primary key, the ids as ONE bound JSON value: D1 binds at most 100 per
+ * statement; at most PLAN_LIMITS.maxGames ids, as a parsed plan holds) — not the whole table that
+ * GET /api/switch-library reads.
+ */
+export async function getLibraryPrices(db: Db, ids: readonly LibraryGameId[]): Promise<Record<LibraryGameId, LibraryExtras>> {
+  const wanted = [...new Set(ids.filter((id) => typeof id === "string" && id !== ""))].slice(0, PLAN_LIMITS.maxGames);
+  if (wanted.length === 0) return {};
+  const rows = await db
+    .select({ gameId: switchLibraryEntries.gameId, priceUsdCents: switchLibraryEntries.priceUsdCents, priceAsOf: switchLibraryEntries.priceAsOf, isHidden: switchLibraryEntries.isHidden })
+    .from(switchLibraryEntries)
+    .where(sql`${switchLibraryEntries.gameId} IN (SELECT value FROM json_each(${JSON.stringify(wanted)}))`);
+  const prices: Record<LibraryGameId, LibraryExtras> = {};
+  for (const row of rows) {
+    const entry: LibraryExtras = row.isHidden ? { hidden: true } : priceOf(row);
+    if (Object.keys(entry).length > 0) prices[row.gameId] = entry;
+  }
+  return prices;
 }

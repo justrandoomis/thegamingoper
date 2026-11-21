@@ -23,6 +23,10 @@ the admin shell (docs/areas/admin-shell.md). Services: `app/server/services/admi
 | `/admin/catalog/compatibility` | All rules by device and status (URL filters, paged) | `.read` |
 | `/admin/catalog/import`, `/import/:jobId` | CSV preview (dry run) → apply → rollback; recent jobs; exports | `.read` / `catalog.product.import` |
 | `/admin/catalog/export?level=products\|variants` | CSV download (audited; cost columns only with `cost.read`/`profit.read`) | `catalog.product.export` |
+| `/admin/catalog/switch-library` | The Switch bundle builder's game library (tab «مكتبة Switch» / "Switch library", 2026-11-21 — section below): every game of the open list (fetched in the browser from the static list file) merged with TamTam's rows, plus rows for games the list does not have; search (title, Arabic and Sorani titles, aliases, publishers, id words, an exact id; Arabic folding), filters size added / missing · priced / unpriced · shown / hidden, sort (best known, title, last changed, newest), pages of 50 — all kept in the address (`?q=&size=&price=&hidden=&sort=&page=`) without a request; open a game by its id; states loading, list not built, list failed + retry, empty search. Managers also get Export CSV, Import CSV and a sheet of the games shown (built in the browser: titles, year, sizes, prices, ready to fill and import). At its foot (`#storage`; the header's «أرقام المساحة» / "Storage figures" key jumps there, and Settings links here for the key): the planner's storage figures with a live preview per card size | `catalog.product.read` (export, import and the sheet: `catalog.switch_library.manage`; saving the storage figures, action `intent=capacity`: `settings.manage`) |
+| `/admin/catalog/switch-library/:gameId` | One game: digital size and cartridge space in GB as the console shows them, with a live preview of what the builder will show, and the measured-on day; the US eShop price and its day; the trailer (YouTube link or id, preview + "open on YouTube"); a picture (upload, replace, remove); descriptions ar / en / ckb; a Metacritic score, review count and day under "only while TamTam holds the Metacritic licence"; hidden; "last saved … by …". Any lower-case slug ending `-switch` opens (a game the list does not have with a warning); anything else is a 404. Read-only (disabled fields + notice) without the permission | `.read` / `catalog.switch_library.manage` (intents `save`, `upload`, `remove_image`) |
+| `/admin/catalog/switch-library/import` | CSV preview (writes nothing: new · update · unchanged · errors, each changing field old → new, file errors, unknown columns) → apply, confirmed (the file is sent again with the preview's fingerprint; refused when the file or the library changed in between — "preview again"); rules card + export key | `catalog.switch_library.manage` |
+| `/admin/catalog/switch-library/export` | Resource route: CSV of every game TamTam has data for, in the import's columns + read-only `picture`, `updated_at` (`no-store`, `nosniff`, audited; export → import changes nothing) | `catalog.switch_library.manage` |
 
 ## Functions → status (`app/routes/admin/blueprint-status.ts`)
 
@@ -122,6 +126,99 @@ and the attribute-setting ref become redundant, harmlessly). The same dropped `d
 of other modules (channels' branch and sales-channel names, devices' templates and used-unit notes, promotions' flash, rule
 and VIP names, the CMS's per-language fields): they now pass the kit's `ltr` flag (and `lang="en"`). Still waiting on the kit:
 Arabic and Sorani one-line fields of the CMS in the English admin, and automation's `dir="auto"` rule name.
+
+## Switch game library (2026-11-21, the Switch bundle builder)
+
+Contract: `docs/switch-builder.md` §1 and §7 (the builder's admin owner; not a blueprint function, so no `blueprint-status.ts`
+entry). TamTam's OWN data per Switch 1 game of the open list (ids = nintendo.com US store slugs ending `-switch`, from Wikidata):
+sizes measured on TamTam consoles, eShop prices checked by staff, official trailers, pictures, descriptions, licensed Metacritic
+scores, hidden — in D1 `switch_library_entries`, served to `/build/switch` by `GET /api/switch-library` (60 s at the edge and in the
+browser, so a change shows on the builder within a few minutes) — and the planner's storage figures (the setting
+`builder.switch.capacity`). Files: routes `app/routes/admin/catalog/switch-library*.ts(x)` (`-input.ts` the client-safe input rules
+shared with the service, `-list.ts` the list logic, `-ui.tsx` strings, the open-list hook and `GameName`, `-capacity.ts` and
+`-capacity-form.tsx` the storage figures), service `app/server/services/admin/switch-library.server.ts` (functions and error keys:
+`docs/CONTRACTS.md` §4 02 catalog), strings `app/i18n/messages/admin-switch-library.ts` (ar source, en, ckb), the tab in `module.tsx`.
+
+- **Permission `catalog.switch_library.manage`** (catalog group: «إدارة مكتبة ألعاب Switch: الأحجام والأسعار والمقاطع والصور والأوصاف،
+  والاستيراد والتصدير بملف CSV» / "Manage the Switch game library: sizes, prices, trailers, pictures and descriptions, with CSV import and
+  export") for every save, picture, import and export; reading the list and a game needs `catalog.product.read`. **Who holds it:** owner
+  (`*`), manager (everything but its excluded list), content (granted by name). Not finance, inventory, fulfillment, support or cashier —
+  of those, inventory, support and cashier still read the library (they hold `catalog.product.read`). The routes gate on the permission
+  (`catalogRequest`) and every service function checks it again first (`assertCan`), before the input is read: a role without it gets
+  403 and nothing is written. The storage figures are the exception: they are a setting, so changing them needs that setting's own
+  `settings.manage` (owner and manager), not this permission (below).
+- **Production grant: `scripts/sql/2026-11-21-switch-library-perms.sql`.** Production roles are rows and `seedRoles` never adds a new
+  permission to a role that exists, so this file gives it to the built-in `manager` and `content` roles — only while that role still holds
+  `catalog.product.update` (a role the owner took the catalogue away from is left alone; custom roles are never touched: the owner ticks
+  the permission in Security → Roles). Each grant is audited first (`security.role.update`, actor `system`
+  `deploy:2026-11-21-switch-library-perms`, before/after permission lists), and the file is idempotent (`INSERT OR IGNORE`; a second run
+  changes nothing). Deploy the code that knows the permission FIRST (an unknown permission string is ignored), then
+  `npx wrangler d1 execute DB --remote --file scripts/sql/2026-11-21-switch-library-perms.sql` and the check query in its header. Until it
+  runs, only the owner can change the library in production.
+- **What staff enter.** Sizes in GB as the console shows them (System Settings → Data Management → Manage Software, after the latest
+  update; binary GB with two decimals, MB for small games, Arabic digits and the decimal comma accepted) → bytes: the digital size is the
+  full installed size (above 0), the cartridge space what a cartridge copy needs on the console (0 = nothing; empty = counted at full size
+  until measured); at most 200 GB. The US eShop price in dollars (at most $1,000; 0 for a free game) → cents. The trailer: a YouTube link or
+  id → the 11-character id. Descriptions ar / en / ckb, at most 1,200 characters each. A Metacritic score 0–100 with its review count (at
+  least 4) and day — both or neither, and only while TamTam holds the Metacritic licence. Days between 2017-03-03 and today (Baghdad); a
+  value that changes under its untouched old day gets today (the form shows it, the server applies it). Nothing comes from Nintendo's or
+  Metacritic's sites: the hints say to measure on a TamTam console and never to copy figures or pictures from those sites; the only links
+  out are Wikidata, the entered YouTube trailer and a plain Metacritic page link.
+- **Saving.** One batch per save, guarded on the row's `updated_at`: a form opened before a colleague's save, another tab's or an
+  import's answers `entry_changed` (409) with a reload key instead of overwriting. An unchanged form writes nothing; a size stored with
+  more precision than the two decimals shown is kept when its text comes back unchanged. The form is keyed by the stored values, so a
+  picture change keeps what staff typed but did not save.
+- **Pictures** go through the upload pipeline (`processImageUpload`: JPEG, PNG or WebP by content, at most 8 MB, metadata removed) and are
+  stored PUBLIC as `files.kind` `switch_library_image` (owner `switch_library_entry:<id>`, so Settings → Files does not count them as
+  unreferenced product pictures); the builder shows them from `/media/<key>`. The same picture again changes nothing; a replaced or removed
+  picture's file is deleted once no game shows it. Uploads count against the employee's upload limit (`RATE_LIMITS.upload`, shared with
+  the gallery and every CSV preview and apply).
+- **CSV.** Columns `game_id`, `size_gb`, `cartridge_gb`, `size_as_of`, `price_usd`, `price_as_of`, `trailer`, `description_ar`,
+  `description_en`, `description_ckb`, `metacritic_score`, `metacritic_reviews`, `metacritic_as_of`, `hidden` (`title`, `year`, `picture`,
+  `updated_at` are read-only and ignored); empty cell or missing column = keep, `-` = clear. At most 5,000 rows and 2 MB, UTF-8 only
+  (`csv_encoding`: Excel's plain "CSV" is saved in the computer's code page); an Arabic or Sorani description cell without an Arabic-script
+  letter fails its row (`description_script`, Excel's "????") unless that text is already saved; a spreadsheet's day/month date is taken
+  when it is unambiguous or one of its readings is the saved day. Preview → apply is stateless (no table): the preview's fingerprint
+  covers the day, the file and every row it read; the apply re-reads the same file and refuses `import_stale` when anything differs; it
+  writes in chunks of 40 games, each batch opening with a guard that its rows are still as previewed — a colleague's change mid-import
+  stops it cleanly ("interrupted": the earlier chunks stay saved and audited). One import writes at most 400 games (`import_too_many`).
+  A sheet never moves a day back for a value it does not change, so importing the same file again, or an old export, changes nothing.
+  The export has no title column (the server does not read the static list); the list page's sheet of the games shown has one.
+- **Audit**, with the changed fields before and after: `catalog.switch_library.save`, `.image_upload`, `.image_remove`, `.import` (one
+  per game), `.import_apply` (the summary), `.export`; the storage figures write the settings service's own `settings.setting.update`.
+- **Storage figures** (fix round 2026-11-21): the setting `builder.switch.capacity` (`docs/switch-builder.md` §3), the figures the
+  builder plans with — usable console memory per model (OLED 1–64 GB, Switch and Lite 1–32), what is kept free there (0–16), the
+  usable share of a card (90–100 %), and what is kept free on the card for updates (a share 0–50 %, between a smallest 0–100 GB and a
+  largest 0–200 GB, largest ≥ smallest). GB typed with one decimal as Data Management shows them, shares as percentages; Arabic digits
+  and a decimal comma read; the hints say where each reading comes from. Every reader of the library sees them (read-only, with a
+  notice, without the permission); changing them needs the key's own permission **`settings.manage`** (owner and manager — not
+  content), checked first, so a role without it gets 403 and never field errors. A live preview (`capacityOf`) shows per card size what
+  the empty card shows free, what is kept free on it, the space for games on it and the total with each model; with the research
+  defaults it gives the contract's 55.8 / 111.6 / 226.8 / 461.7 / 909.4 GB on the card and 52.0 / 23.9 / 23.9 GB without one. The save
+  goes through `setSetting` with a reason of 3–300 characters (the audit's) and `expected` = the value in force when the page loaded: a
+  colleague's change in between answers `setting_changed` (409), writes nothing and offers to load the saved figures; the same figures
+  again write nothing; every field error comes back at once under the settings paths (`value.cardMargin: too_small`,
+  `value.cardHeadroom.maxGiB: below_paired`, `reason: reason_required`). A stored value that no longer fits is reported (the builder
+  keeps each figure it can through `sanitizeCapacity`), and only a form that saw it broken replaces it. Status line: last changed by
+  whom, "the research defaults are in use" while they are, and the key's change history in Settings for `settings.read`.
+  `GET /api/switch-library` serves the new figures (its `rev` follows the setting). Rules: `switch-library-capacity.ts` (pure, a test
+  keeps its bounds equal to the setting's schema); form: `switch-library-capacity-form.tsx`; service: `getCapacityFigures`,
+  `saveCapacityFigures`.
+- **Not here:** the open list itself (Wikidata and Wikipedia, built by `scripts/switch-library/`; the games it leaves out on purpose —
+  non-games and adult-tagged items, `catalog/switch-library/exclusions.json` — are not listed here either, and bringing one back is a
+  data change: delete its line, rebuild, deploy), and the consoles, memory cards, cartridges and eShop cards the builder sells —
+  ordinary products on this module's pages, priced in module 03 (the builder reads them through `loadBuilderCatalog`,
+  `docs/CONTRACTS.md` §3).
+- **Open:** the Sorani strings need a native reader (the admin shows only ar and en today); an import writes at most 400 games until
+  D1's per-request statement count is checked; the list loader returns every row at once (fine for a few thousand rows); on phones the
+  storage preview table scrolls sideways inside its region. Settings still shows raw message keys for `builder.switch.capacity`
+  (`help.builder_switch_capacity`, `home.editIn.catalog`, `key.linked.catalog`) and links to the page without `#storage` — asked of
+  the settings owner (`admin-settings.ts`, `services/admin/settings/catalog.ts`).
+
+Verify: `npx vitest run tests/admin-switch-library.test.ts` (45 tests: input rules, list logic, error sentences in three languages,
+role grants, the production SQL against a throwaway D1, refusals that write nothing, save, picture, CSV preview / apply / stale /
+chunks / export round trip, the storage figures — bounds equal to the setting's schema, who sees and who changes them, stale and
+broken values —, the routes with real sessions).
 
 ## Boundaries
 

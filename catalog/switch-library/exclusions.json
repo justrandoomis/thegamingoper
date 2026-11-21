@@ -1,0 +1,36 @@
+{
+  "about": "Reviewed by hand (docs/switch-builder.md §4.1). scripts/switch-library/build.mjs applies it through lib/select.mjs and logs every slug it leaves out in selection-log.json. items: Wikidata items listed under none of their store slugs although Wikidata types them as video games; kind not-a-game = apps, services and subscription launchers, kind adult = tagged eroge or erotic video game (P136) in Wikidata, kept out of a family store by default (to list one again, delete its entry and run build.mjs). slugs: store slugs left out for every item that holds them, so the item keeps another of its slugs. id = the library id (Nintendo US store slug) the entry was reviewed on, qid = the Wikidata item; tests/switch-library-data.test.ts checks both against the snapshot.",
+  "reviewed": "2026-11-21",
+  "items": [
+    {"id": "aaa-clock-switch", "qid": "Q111200989", "title": "AAA Clock", "kind": "not-a-game", "reason": "clock app: it turns the console into a desk clock (a small retro game comes with it); its namesake AAA Pro Clock 2023 is typed application software in Wikidata"},
+    {"id": "calculator-switch", "qid": "Q116452836", "title": "Calculator", "kind": "not-a-game", "reason": "calculator app; Wikidata also types it as a software calculator"},
+    {"id": "nintendo-64-nintendo-switch-online-switch", "qid": "Q109594929", "title": "Nintendo 64 – Nintendo Classics", "kind": "not-a-game", "reason": "subscription app: the classic games come with a Nintendo Switch Online + Expansion Pack membership and are not sold one by one; Wikidata also types it as a subscription"},
+    {"id": "nintendo-entertainment-system-nintendo-switch-online-switch", "qid": "Q60986256", "title": "Nintendo Entertainment System – Nintendo Classics", "kind": "not-a-game", "reason": "subscription app: the classic games come with a Nintendo Switch Online membership and are not sold one by one; Wikidata also types it as a subscription"},
+    {"id": "pokemon-home-switch", "qid": "Q93807404", "title": "Pokémon Home", "kind": "not-a-game", "reason": "storage service: keeps Pokémon caught in other games (free and paid plans); Wikidata also types it as a mobile app and an online service"},
+    {"id": "sega-genesis-nintendo-switch-online-switch", "qid": "Q109605181", "title": "Sega Genesis – Nintendo Classics", "kind": "not-a-game", "reason": "subscription app: the classic games come with a Nintendo Switch Online + Expansion Pack membership and are not sold one by one; Wikidata also types it as a subscription"},
+    {"id": "super-nintendo-entertainment-system-nintendo-switch-online-switch", "qid": "Q85871945", "title": "Super Nintendo Entertainment System – Nintendo Classics", "kind": "not-a-game", "reason": "subscription app: the classic games come with a Nintendo Switch Online membership and are not sold one by one; Wikidata also types it as a subscription"},
+    {"id": "anime-sexy-girl-puzzle-hentai-game-history-adventure-switch", "qid": "Q125950282", "title": "Anime Sexy Girl Puzzle - Hentai Game History Adventure", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "aokana-four-rhythms-across-the-blue-switch", "qid": "Q18536873", "title": "Aokana - Four Rhythms Across the Blue", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "cosplay-love-enchanted-princess-switch", "qid": "Q111444189", "title": "COSPLAY LOVE! : Enchanted princess", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "crush-crush-switch", "qid": "Q24079980", "title": "Crush Crush", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "dokyusei-bangin-summer-home-edition-switch", "qid": "Q111187427", "title": "Dōkyūsei: Bangin' Summer", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "hentai-anime-girls-succubus-extended-edition-switch", "qid": "Q131405327", "title": "Hentai Anime Girls Succubus - Extended Edition", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "hentai-anime-girls-succubus-switch", "qid": "Q125950934", "title": "Hentai Anime Girls Succubus", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "idoldays-switch", "qid": "Q117221106", "title": "IdolDays", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "if-my-heart-had-wings-switch", "qid": "Q10928187", "title": "If My Heart Had Wings", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "just-ignore-them-switch", "qid": "Q113634277", "title": "Just Ignore Them", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "kukkorodays-switch", "qid": "Q117209676", "title": "KukkoroDays", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "nekomiko-switch", "qid": "Q117087149", "title": "NekoMiko", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "nekopara-vol-1-switch", "qid": "Q66501608", "title": "Nekopara Vol. 1", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "nekopara-vol-2-switch", "qid": "Q66536925", "title": "NEKOPARA Vol. 2", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "nekopara-vol-3-switch", "qid": "Q66540506", "title": "NEKOPARA Vol. 3", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "nekopara-vol4-switch", "qid": "Q66606278", "title": "NEKOPARA Vol. 4", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "ninnindays-switch", "qid": "Q124299881", "title": "NinNinDays", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "ninnindays2-switch", "qid": "Q124300242", "title": "NinNinDays2", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "troubledays-switch", "qid": "Q97299896", "title": "TroubleDays", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"},
+    {"id": "waifu-uncovered-switch", "qid": "Q131151951", "title": "Waifu Uncovered", "kind": "adult", "reason": "adult (eroge) — owner may re-enable"}
+  ],
+  "slugs": [
+    {"id": "minecraft-nintendo-switch-edition-switch", "qid": "Q138152807", "title": "Minecraft: Nintendo Switch Edition", "reason": "no longer sold: the 2017 Nintendo Switch Edition left the eShop in June 2018, replaced by Minecraft (Bedrock), store slug minecraft-switch, which Wikidata gives to the same item, so the item is listed as minecraft-switch (the Legacy Console Edition item Q105729657 holds this slug too)"}
+  ]
+}

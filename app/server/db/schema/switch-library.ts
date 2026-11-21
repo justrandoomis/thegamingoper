@@ -46,6 +46,8 @@ export const switchLibraryEntries = sqliteTable(
   },
   (t) => [
     index("switch_library_entries_updated_idx").on(t.updatedAt),
+    // every foreign key column leads an index (tests/db-invariants.test.ts): a picture's deletion checks this table
+    index("switch_library_entries_image_idx").on(t.imageFileId),
     check("switch_library_entries_size_ck", sql`${t.sizeBytes} IS NULL OR ${t.sizeBytes} > 0`),
     check("switch_library_entries_cartridge_ck", sql`${t.cartridgeBytes} IS NULL OR ${t.cartridgeBytes} >= 0`),
     check("switch_library_entries_price_ck", sql`${t.priceUsdCents} IS NULL OR ${t.priceUsdCents} >= 0`),

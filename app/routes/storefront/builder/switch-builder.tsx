@@ -10,9 +10,12 @@
  *
  * The loader reads only what the store sells for the builder (builder.server.ts loadBuilderCatalog: consoles, cards,
  * cartridges, eShop cards — no stock counts) and never a cookie: the page is edge-cached for anonymous visitors. The
- * meta asks search engines not to index the page until the builder is public (./flags), and never a `?step=` page.
- * The action (intent=quote, plan = JSON) prices a plan for the review step (quoteBuilderPlan with TamTam's library data);
- * a quote request that never reaches the store comes back as a value (clientAction), never as the error page.
+ * meta asks search engines not to index the page until the builder is public (./flags), and never a `?step=` page; each
+ * step has its own document title («اختر ألعابك · جهّز جهاز Switch — طمطم»), read from the address, since a step
+ * change runs no loader.
+ * The action (intent=quote, plan = JSON) prices a plan for the review step (quoteBuilderPlan with TamTam's library data),
+ * at most QUOTES_PER_IP a minute per address (429 rate_limited with Retry-After — each quote reads the library and the
+ * catalogue); a quote request that never reaches the store comes back as a value (clientAction), never as the error page.
  *
  * The page itself: ./components/BuilderPage.tsx.
  */
@@ -26,12 +29,19 @@ import type { ShellHandle } from "~/routes/storefront/shell/types";
 import { readFormData } from "~/server/body.server";
 import { getCtx } from "~/server/context.server";
 import { getDb } from "~/server/db.server";
-import { getLibraryExtras } from "~/server/services/switch-library.server";
+import { limitKey, rateLimit, type RateLimitRule } from "~/server/ratelimit.server";
+import { getLibraryPrices } from "~/server/services/switch-library.server";
 import { loadBuilderCatalog, parsePlan, quoteBuilderPlan } from "./builder.server";
 import { BuilderPage } from "./components/BuilderPage";
 import { SWITCH_BUILDER_PUBLIC } from "./flags";
-import { stepOrder } from "./lib/steps";
+import { stepOrder, stepTitle } from "./lib/steps";
 import "./builder.css";
+
+/**
+ * Quotes one address may ask for in a minute (QA security 2026-11-21: none was counted, and each one reads the library
+ * and the catalogue). The review asks once per plan, so a shopper never meets it; the cart's own changes count 60 too.
+ */
+const QUOTES_PER_IP: RateLimitRule = { limit: 60, windowSec: 60 };
 
 export const handle = {
   shell: { chrome: ({ search }) => (new URLSearchParams(search).has("step") ? "task" : "store"), offline: "form" },
@@ -46,13 +56,29 @@ export async function loader({ context }: Route.LoaderArgs) {
   const t = serverT(ctx.locale, "switch-builder");
   return {
     catalog,
-    meta: { title: t("title"), description: t("metaDescription") },
+    meta: { title: t("title"), description: t("metaDescription"), steps: { memory: t("memory.title"), games: t("games.title"), review: t("review.title") } },
     i18n: messagesFor(ctx.locale, "switch-builder", "switch-builder-sheet", "errors"),
   };
 }
 
 export const meta: Route.MetaFunction = (args) =>
-  shellMeta(args, { title: args.loaderData?.meta.title, description: args.loaderData?.meta.description, noindex: !SWITCH_BUILDER_PUBLIC || args.location.search !== "" });
+  shellMeta(args, {
+    title: stepTitle(args.loaderData?.meta.title, args.loaderData?.meta.steps, args.location.search),
+    description: args.loaderData?.meta.description,
+    noindex: !SWITCH_BUILDER_PUBLIC || args.location.search !== "",
+  });
+
+/**
+ * The parent routes' headers as they are (the edge cache's rules live there), plus the wait a refused quote names: an
+ * action's headers are sent only through this export.
+ */
+export function headers({ actionHeaders, parentHeaders }: Route.HeadersArgs) {
+  const wait = actionHeaders.get("Retry-After");
+  if (!wait) return parentHeaders;
+  const out = new Headers(parentHeaders);
+  out.set("Retry-After", wait);
+  return out;
+}
 
 /** Nothing the loader read changes with the step or with a quote: only a new address (another language) reloads it. */
 export function shouldRevalidate({ currentUrl, nextUrl, formMethod, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
@@ -82,8 +108,11 @@ export async function action({ request, context }: Route.ActionArgs) {
   if (!plan) return data({ ok: false as const, code: "invalid_plan" }, { status: 400 });
   try {
     const db = getDb();
-    const library = await getLibraryExtras(db);
-    const quote = await quoteBuilderPlan(db, ctx.locale, plan, library.extras, ctx.now);
+    const verdict = await rateLimit(db, await limitKey("sb-quote", "ip", ctx.ip), QUOTES_PER_IP, ctx.now);
+    if (!verdict.ok) return data({ ok: false as const, code: "rate_limited" }, { status: 429, headers: { "Retry-After": String(verdict.retryAfterSec) } });
+    // only the plan's own games: their eShop price, its date and the hidden flag — never the whole table
+    const extras = await getLibraryPrices(db, plan.games.map((game) => game.id));
+    const quote = await quoteBuilderPlan(db, ctx.locale, plan, extras, ctx.now);
     return { ok: true as const, quote };
   } catch (error) {
     // the review says the prices could not be worked out and offers a retry; the page stays as it is

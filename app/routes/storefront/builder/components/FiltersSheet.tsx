@@ -8,8 +8,13 @@
  *   eShop price          one band, priced games only (shown when TamTam has entered a price for some game)
  *   switches             «تتّسع في المساحة المتبقية» (with what is left now), «يبيعها طمطم شريطاً» (when TamTam
  *                        sells any cartridge), «أضفنا حجمها»
+ *
+ * The new count is said inside the sheet (WCAG 4.1.3): the page's own count is under the inert page while the sheet is
+ * open, and the sheet's description is not a live region. A polite region, there from the moment the sheet opens, says
+ * «1,384 لعبة» once a run of taps has settled (SAY_AFTER_MS) — again when a change leaves the count as it was. Clearing
+ * everything moves focus to «اعرض N لعبة» (the «امسح الكل» key goes away with the filters).
  */
-import { useId } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { useFormat } from "~/i18n/react";
 import { GENRE_KEYS, PLAY_MODES, type GenreKey, type PlayMode } from "~/lib/switch-builder/types";
@@ -18,8 +23,12 @@ import { FieldGroup, Switch } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Sheet } from "~/ui/Sheet";
 import { isolate } from "~/ui/BidiText";
+import { VisuallyHidden } from "~/ui/VisuallyHidden";
 import { gbText, useBuilderT } from "../lib/format";
 import { activeFilterGroups, NO_FILTERS, PRICE_BANDS, SIZE_BANDS, type LibraryFilters, type PriceBand, type SizeBand } from "../lib/library";
+
+/** The count is said this long after the last change in the sheet: a run of taps is said once. */
+export const SAY_AFTER_MS = 600;
 
 export type FiltersSheetProps = {
   open: boolean;
@@ -76,26 +85,56 @@ export function FiltersSheet({ open, onClose, filters, onChange, counts, total, 
   const active = activeFilterGroups(filters).length;
   const genres = GENRE_KEYS.filter((genre) => (counts.genres.get(genre) ?? 0) > 0 || filters.genres.includes(genre));
   const modes = FILTER_MODES.filter((mode) => (counts.modes.get(mode) ?? 0) > 0 || filters.modes.includes(mode));
+  const show = useRef<HTMLButtonElement>(null);
+
+  // what the live region says: empty when the sheet opens (its description has the count then), the count after a change
+  const [said, setSaid] = useState("");
+  const openedWith = useRef<LibraryFilters | null>(null);
+  const found = t("games.found", { count: total, n: f.number(total) });
+  useEffect(() => {
+    if (!open) {
+      openedWith.current = null;
+      setSaid("");
+      return;
+    }
+    if (openedWith.current === null) {
+      openedWith.current = filters;
+      return;
+    }
+    if (filters === openedWith.current) return;
+    // the same words again would not be said: a no-break space at the end changes them
+    const timer = setTimeout(() => setSaid((previous) => (previous === found ? `${found} ` : found)), SAY_AFTER_MS);
+    return () => clearTimeout(timer);
+  }, [open, filters, found]);
+
+  const clearAll = () => {
+    onChange(NO_FILTERS);
+    show.current?.focus();
+  };
+
   return (
     <Sheet
       open={open}
       onClose={onClose}
       title={t("filters.title")}
-      description={<span className="nums">{t("games.found", { count: total, n: f.number(total) })}</span>}
+      description={<span className="nums">{found}</span>}
       presentation="side"
       footer={
         <>
           {active > 0 ? (
-            <Key variant="ghost" onClick={() => onChange(NO_FILTERS)} className="flex-none!">
+            <Key variant="ghost" onClick={clearAll} className="flex-none!">
               {t("filters.clearAll")}
             </Key>
           ) : null}
-          <Key variant="primary" onClick={onClose}>
+          <Key ref={show} variant="primary" onClick={onClose}>
             {t("filters.show", { count: total, n: f.number(total) })}
           </Key>
         </>
       }
     >
+      <VisuallyHidden role="status" aria-atomic="true">
+        {said}
+      </VisuallyHidden>
       <div className="sb-filters">
         {genres.length > 0 ? (
           <FieldGroup legend={t("filters.genre")} layout="row">

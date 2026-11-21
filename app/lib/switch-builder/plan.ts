@@ -160,15 +160,23 @@ export type FitResult = { ok: true; plan: BuilderPlan } | FitRefusal;
 
 type Extras = Readonly<Record<LibraryGameId, LibraryExtras>>;
 
-/** Choose a game in this format (or move a chosen game to this format), when it has a size and fits. */
+/**
+ * Choose a game in this format (or move a chosen game to this format), when it has a size and fits. A chosen game
+ * moving to a format that needs no more space than it takes now is always accepted: it never makes the plan worse —
+ * over its space (after a smaller card), a digital game may still go to TamTam's smaller cartridge (QA 2026-11-21: it
+ * was refused, «تحتاج 0.3 GB، والمتبقي 0.0 GB»).
+ */
 export function addGame(plan: BuilderPlan, id: LibraryGameId, format: GameFormat, extras: Extras, cfg: CapacityConfig = DEFAULT_CAPACITY): FitResult {
   const current = chosenGame(plan, id);
   if (current?.format === format) return { ok: true, plan };
   const need = spaceNeeded(extras[id], format);
   if (need === null) return { ok: false, reason: "no_size" };
   if (!current && plan.games.length >= PLAN_LIMITS.maxGames) return { ok: false, reason: "limit" };
-  const left = remainingWithout(plan, id, extras, cfg);
-  if (!fits(need, left)) return { ok: false, reason: "no_room", needBytes: need, leftBytes: left };
+  const takes = current ? spaceNeeded(extras[id], current.format) : null;
+  if (takes === null || need > takes) {
+    const left = remainingWithout(plan, id, extras, cfg);
+    if (!fits(need, left)) return { ok: false, reason: "no_room", needBytes: need, leftBytes: left };
+  }
   const games = current ? plan.games.map((game) => (game.id === id ? { id, format } : game)) : [...plan.games, { id, format }];
   return { ok: true, plan: { ...plan, games } };
 }

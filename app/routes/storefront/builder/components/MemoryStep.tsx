@@ -5,20 +5,22 @@
  * في طمطم حالياً» — a size TamTam does not sell can still be chosen to plan with; nothing goes in the cart for it.
  * «عندي بطاقة بهذا الحجم» plans with the shopper's own card (no card line in the cart).
  *
- * A smaller card never removes chosen games: when they no longer fit, a note says by how much (and the games step's
- * meter says it again) and the shopper decides.
+ * A smaller card never removes chosen games: when they no longer fit, a note right under the card list says by how much
+ * (and the games step's meter says it again) and the shopper decides. Below 1024 the task bar's space bar turns red at
+ * once, where the finger is; screen readers hear the change once, from the page's live region (BuilderPage) — the note
+ * is inserted with its words, which a live region would not read.
  */
 import { useId } from "react";
 
 import { useFormat } from "~/i18n/react";
 import { planUsage } from "~/lib/switch-builder/plan";
-import { capacityOf, cardHeadroomBytes, cardUsableBytes } from "~/lib/switch-builder/storage";
+import { capacityOf, cardHeadroomBytes, cardUsableBytes, digitsToTell } from "~/lib/switch-builder/storage";
 import type { BuilderCatalog, BuilderPlan, CapacityConfig, CardSize, LibraryExtras } from "~/lib/switch-builder/types";
 import { CARD_SIZES } from "~/lib/switch-builder/types";
 import { FieldGroup, OptionCard, Switch } from "~/ui/Field";
 import { Note } from "~/ui/Note";
 import { Price } from "~/ui/Price";
-import { approxGbText, cardLabel, gbText, useBuilderT } from "../lib/format";
+import { approxGbText, cardLabel, gbText, shortfallText, useBuilderT } from "../lib/format";
 
 export type MemoryStepProps = {
   catalog: BuilderCatalog;
@@ -40,6 +42,8 @@ export function MemoryStep({ catalog, plan, extras, capacity, onCard }: MemorySt
   const { card } = plan;
   const internal = capacityOf(plan.device.model, 0, capacity).plannableBytes;
   const { capacity: now, usage } = planUsage(plan, extras, capacity);
+  // over by a little: the two sizes with the decimals that tell them apart (never «تحتاج 107.8 GB، وتتسع لـ 107.8 GB»)
+  const overDigits = digitsToTell(usage.usedBytes, usage.plannableBytes);
   // the note's example: the chosen card (a decimal label shown in the console's binary GB), else a 256GB one
   const example: CardSize = card.sizeGB === 0 ? 256 : card.sizeGB;
 
@@ -101,6 +105,12 @@ export function MemoryStep({ catalog, plan, extras, capacity, onCard }: MemorySt
         </FieldGroup>
       </div>
 
+      {usage.overBytes > 0 ? (
+        <Note tone="warning" title={t("meter.over", { over: shortfallText(f, usage.usedBytes, usage.plannableBytes) })}>
+          {t("memory.over", { need: gbText(f, usage.usedBytes, overDigits), plannable: gbText(f, usage.plannableBytes, overDigits) })}
+        </Note>
+      ) : null}
+
       <div data-tour="card-owned">
         <Switch
           label={t("memory.owned")}
@@ -112,12 +122,6 @@ export function MemoryStep({ catalog, plan, extras, capacity, onCard }: MemorySt
       </div>
 
       <p className="sb-total nums">{t("memory.totalLine", { total: approxGbText(f, now.plannableBytes) })}</p>
-
-      {usage.overBytes > 0 ? (
-        <Note tone="warning" aria-live="polite" title={t("meter.over", { over: gbText(f, usage.overBytes) })}>
-          {t("memory.over", { need: gbText(f, usage.usedBytes), plannable: gbText(f, usage.plannableBytes) })}
-        </Note>
-      ) : null}
 
       <Note icon="question" title={t("memory.why.title")}>
         {t("memory.why.text", { label: cardLabel(example), shown: gbText(f, example * 1e9) })}

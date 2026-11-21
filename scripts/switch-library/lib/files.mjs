@@ -12,6 +12,8 @@ export const SNAPSHOT_DIR = path.join(ROOT, "catalog", "switch-library");
 export const WIKIDATA_SNAPSHOT = path.join(SNAPSHOT_DIR, "wikidata.json");
 export const WIKIPEDIA_SNAPSHOT = path.join(SNAPSHOT_DIR, "wikipedia.json");
 export const SELECTION_LOG = path.join(SNAPSHOT_DIR, "selection-log.json");
+/** Reviewed by hand, never written by a script: items and store slugs the build leaves out (lib/select.mjs). */
+export const EXCLUSIONS = path.join(SNAPSHOT_DIR, "exclusions.json");
 export const PUBLIC_DIR = path.join(ROOT, "public", "library", "switch");
 export const CHUNK_DIR = path.join(PUBLIC_DIR, "d");
 export const MANIFEST = path.join(ROOT, "app", "routes", "storefront", "builder", "library.manifest.ts");

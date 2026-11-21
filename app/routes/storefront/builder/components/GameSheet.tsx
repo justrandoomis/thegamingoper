@@ -13,23 +13,30 @@
  *
  * What it shows, top to bottom (every part only when its data exists — nothing is invented):
  *   · the picture TamTam uploaded (/media/<key>), else the cartridge's catalogue photo; nothing otherwise;
- *   · year · publisher · developer, then the genre and play-mode words (`switch-builder` genre.<key> / mode.<key>);
+ *   · year · publisher · developer (two of each at most — Wikidata lists regional distributors too —, all of them on
+ *     screen: no line limit cuts a name off unseen, and a wrapped line never starts with the «·»), then the genre and
+ *     play-mode words (`switch-builder` genre.<key> / mode.<key>);
  *   · the space: does it fit (both figures, with two decimals when one would look equal: storage.ts digitsToTell), the
  *     digital size (base + latest update), the cartridge's space on the console (or "counted at full size until we
  *     measure it"), when it was measured, why it is bigger than the download, and that saves stay in system memory;
  *   · how it is bought — TamTam cartridge or eShop digital copy — when TamTam sells the cartridge, each with its space
- *     and price; the eShop price is labelled as the US eShop's with its date;
+ *     and price; the eShop price is labelled as the US eShop's with its date. A chosen game can always move to a
+ *     format that needs no more space than the one it has (even when the plan is over-full: it only helps);
  *   · a Metacritic score ONLY when TamTam entered a licensed one (with its source, review count and date, never stars
  *     or verdict colours), with a plain link to the game's Metacritic page;
  *   · the description: TamTam's own in the page's language, else the Wikipedia lead in the page's language, else the
- *     English one (marked lang="en" and said so) — a Wikipedia text always carries its attribution line (article link
- *     + CC BY-SA 4.0 link); while the details chunk loads, the space is reserved; a failure offers a retry;
+ *     English one (marked lang="en", said so ABOVE it) — a Wikipedia text always carries its attribution line (article
+ *     link + CC BY-SA 4.0 link), and is shown only with a real article link (https://<lang>.wikipedia.org/wiki/…: the
+ *     licence needs the link, and nothing else may pass for it); while the details chunk loads, the space is reserved;
+ *     a failure offers a retry;
  *   · the trailer (click to load, ./TrailerEmbed) and plain links out: the US eShop page, Metacritic, Wikipedia;
- *   · the pinned foot: «أضف إلى جهازي» (the one primary) or «أزلها من جهازي», with the reason in words when it cannot
- *     be added (it does not fit, or it has no size yet). The change is announced inside the sheet (the page is inert)
- *     once the plan has taken it — a refused add is never announced as done.
+ *   · the pinned foot: «اختر هذه اللعبة» (the one primary; the grid's own verb — a game is chosen for the plan, never
+ *     "put on" the console, contract §1) or «أزلها من ألعابك», with the reason in words when it cannot be chosen (it
+ *     does not fit, or it has no size yet): the key then stays focusable (aria-disabled, like the grid's cards), so Tab
+ *     reaches it and its reason. The change is announced inside the sheet (the page is inert) once the plan has taken
+ *     it — a refused choice is never announced as done.
  */
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { useLocation } from "react-router";
 
 import { Icon, type IconName } from "~/art/Icon";
@@ -40,7 +47,6 @@ import { cartridgeUsesFullSize, digitsToTell, fits, spaceNeeded, toGiB } from "~
 import type { CatalogOption, GameDetails, GameFormat, LibraryExtras, LibraryGame, WikipediaExtract } from "~/lib/switch-builder/types";
 import { BidiText, isolate } from "~/ui/BidiText";
 import { ErrorState } from "~/ui/ErrorState";
-import { FactLine } from "~/ui/FactLine";
 import { FieldGroup, OptionCard } from "~/ui/Field";
 import { Key, type KeyVariant } from "~/ui/Key";
 import { Niche } from "~/ui/Niche";
@@ -98,7 +104,10 @@ export type FormatOption = {
   format: GameFormat;
   /** Space it needs on the console (null = not measured). */
   need: number | null;
-  /** It may be picked now: not chosen yet (the foot says whether it fits), or chosen and it fits in this format. */
+  /**
+   * It may be picked now: not chosen yet (the foot says whether it fits); or chosen, and it fits in this format or needs
+   * no more than the chosen format (a smaller format only frees space, even in a plan that is over-full).
+   */
   selectable: boolean;
   /** The cartridge is counted at the digital size until TamTam measures it. */
   fullSize: boolean;
@@ -125,6 +134,30 @@ export type GameSheetInput = Pick<GameSheetProps, "extras" | "details" | "cartri
 };
 
 export const WIKIPEDIA_LICENCE_URL = "https://creativecommons.org/licenses/by-sa/4.0/";
+
+/**
+ * Is this a link to an article of that language's Wikipedia — https, `<lang>.wikipedia.org`, a `/wiki/…` page, no
+ * credentials or port? The details chunk is a static file built from a snapshot; whatever it holds, the sheet links only
+ * to a real article under the label "Wikipedia" (and drops an extract without one: CC BY-SA needs the link). Pure.
+ */
+export function isWikipediaArticle(url: string | undefined, lang: SheetLocale): boolean {
+  if (typeof url !== "string" || url === "") return false;
+  let address: URL;
+  try {
+    address = new URL(url);
+  } catch {
+    return false;
+  }
+  return (
+    address.protocol === "https:" &&
+    address.hostname === `${lang}.wikipedia.org` &&
+    address.port === "" &&
+    address.username === "" &&
+    address.password === "" &&
+    address.pathname.startsWith("/wiki/") &&
+    address.pathname.length > "/wiki/".length
+  );
+}
 
 /** A game TamTam sells as an orderable cartridge starts as a cartridge, every other one as a digital copy. Pure. */
 export function defaultFormat(cartridge: CatalogOption | null | undefined, selected: { format: GameFormat } | null): GameFormat {
@@ -156,7 +189,7 @@ export function aboutFor(extras: LibraryExtras | undefined, details: GameSheetPr
   const wiki = (lang: SheetLocale): WikipediaExtract | null => {
     if (!details || typeof details !== "object") return null;
     const extract = details.wikipedia?.[lang];
-    return extract && textOf(extract.text) && extract.url ? extract : null;
+    return extract && textOf(extract.text) && isWikipediaArticle(extract.url, lang) ? extract : null;
   };
   const mine = own(locale);
   if (mine) return { kind: "tamtam", text: mine, lang: locale };
@@ -178,19 +211,26 @@ export function gameSheetModel(input: GameSheetInput): GameSheetModel {
   const format = selected?.format ?? input.format ?? defaultFormat(cartridge, null);
   const need = spaceNeeded(extras, format);
   const withChoice = Boolean(cartridge) || selected?.format === "cartridge";
+  // what the chosen format takes now: moving to a format that needs no more never makes the plan worse
+  const chosenNeed = selected ? spaceNeeded(extras, selected.format) : null;
   const options: FormatOption[] | null = withChoice
     ? (["cartridge", "digital"] as const).map((option) => {
         const optionNeed = spaceNeeded(extras, option);
+        const smaller = optionNeed !== null && chosenNeed !== null && optionNeed <= chosenNeed;
         return {
           format: option,
           need: optionNeed,
-          selectable: !selected || option === selected.format || fits(optionNeed, remainingBytes),
+          selectable: !selected || option === selected.format || smaller || fits(optionNeed, remainingBytes),
           fullSize: option === "cartridge" && cartridgeUsesFullSize(extras),
         };
       })
     : null;
   const wikipedia = details && typeof details === "object" ? details.wikipedia : undefined;
-  const article = wikipedia?.[locale as SheetLocale]?.url ?? wikipedia?.en?.url ?? null;
+  const articleIn = (lang: SheetLocale): string | null => {
+    const url = wikipedia?.[lang]?.url;
+    return url !== undefined && isWikipediaArticle(url, lang) ? url : null;
+  };
+  const article = articleIn(locale as SheetLocale) ?? articleIn("en");
   return {
     format,
     options,
@@ -383,6 +423,30 @@ function Picture({ view }: { view: GameSheetView }) {
 /** Publishers, and developers, named in the sheet's meta line. */
 const MAX_NAMES = 2;
 
+const NBSP = " ";
+
+/**
+ * «2021 · Nintendo · The Pokémon Company · Bandai Namco Studios», every fact it is given on screen (no line limit: a
+ * name is never cut off unseen). Each fact is one piece with its « ·» (an inline box: a name moves to the next line
+ * whole, and wraps inside only when it alone is wider than the line), so a wrapped line never starts with the separator
+ * — in Arabic and Sorani neither (the dot would stand at the right edge of the next line). Each name is its own isolate.
+ */
+function MetaLine({ facts }: { facts: readonly string[] }) {
+  return (
+    <p className="sbs-meta">
+      {facts.map((fact, index) => (
+        <Fragment key={index}>
+          {index > 0 ? " " : null}
+          <span className="sbs-meta__fact">
+            <bdi>{fact}</bdi>
+            {index < facts.length - 1 ? `${NBSP}·` : null}
+          </span>
+        </Fragment>
+      ))}
+    </p>
+  );
+}
+
 function Identity({ view }: { view: GameSheetView }) {
   const t = useT("switch-builder-sheet");
   const f = useFormat();
@@ -390,14 +454,14 @@ function Identity({ view }: { view: GameSheetView }) {
   const { game, model } = view;
   // Wikidata lists regional distributors as publishers too («Softclub», «1C Company»): two of each is the useful part
   const people = [...new Set([...game.publishers.slice(0, MAX_NAMES), ...model.developers.slice(0, MAX_NAMES)].map((name) => name.trim()).filter(Boolean))];
-  const facts = [game.year ? f.number(game.year, { useGrouping: false }) : null, ...people];
+  const facts = [game.year ? f.number(game.year, { useGrouping: false }) : null, ...people].filter((fact): fact is string => typeof fact === "string" && fact !== "");
   const tags = [...game.genres.filter((genre) => genre !== "other").map((genre) => label(`genre.${genre}`)), ...game.modes.map((mode) => label(`mode.${mode}`))].filter(
     (tag): tag is string => tag !== null,
   );
-  if (facts.every((fact) => !fact) && tags.length === 0) return null;
+  if (facts.length === 0 && tags.length === 0) return null;
   return (
     <div className="sbs-identity">
-      <FactLine facts={facts} lines={2} as="p" className="sbs-meta" />
+      {facts.length > 0 ? <MetaLine facts={facts} /> : null}
       {tags.length > 0 ? (
         <ul className="sbs-tags" aria-label={t("sheet.tags")}>
           {tags.map((tag) => (
@@ -591,10 +655,11 @@ function About({ view }: { view: GameSheetView }) {
         <ErrorState alert title={t("sheet.detailsError")} text={t("sheet.detailsErrorText")} onRetry={view.onRetryDetails} />
       ) : (
         <>
+          {/* the reader learns why the text is in English before meeting it */}
+          {about.lang !== locale ? <p className="sbs-note">{t("about.english")}</p> : null}
           <p className="sbs-read" lang={about.lang} dir={about.lang === "en" && locale !== "en" ? "ltr" : undefined}>
             {about.kind === "tamtam" ? about.text : about.extract.text}
           </p>
-          {about.lang !== locale ? <p className="sbs-note">{t("about.english")}</p> : null}
           {about.kind === "wikipedia" ? (
             <p className="sbs-attribution">
               {fillNodes(t("about.wikipedia"), {
@@ -604,7 +669,8 @@ function About({ view }: { view: GameSheetView }) {
                   </TextLink>
                 ),
                 licence: (
-                  <TextLink href={WIKIPEDIA_LICENCE_URL} external inline>
+                  // the licence's name is one piece: never «CC» on one line and «BY-SA 4.0 ↗» on the next
+                  <TextLink href={WIKIPEDIA_LICENCE_URL} external inline className="sbs-nowrap">
                     <bdi dir="ltr">CC BY-SA 4.0</bdi>
                   </TextLink>
                 ),
@@ -659,15 +725,18 @@ function Links({ view }: { view: GameSheetView }) {
 }
 
 /**
- * The pinned foot: the fit in words at the start, the one key at the end — «أضف إلى جهازي» (the sheet's one primary),
- * flat with its reason when the game does not fit or has no size; «أزلها من جهازي» once chosen (the same button, so
- * the focus stays on it). `said` is announced from inside the sheet (the page behind is inert).
+ * The pinned foot: the fit in words at the start, the one key at the end — «اختر هذه اللعبة» (the sheet's one primary),
+ * flat with its reason when the game does not fit or has no size; «أزلها من ألعابك» once chosen (the same button, so
+ * the focus stays on it). A key that cannot act is `aria-disabled`, not `disabled`: it stays in the Tab order with the
+ * fit line as its description (the grid's cards do the same), and a press does nothing. `said` is announced from
+ * inside the sheet (the page behind is inert).
  */
 export function GameSheetFoot({ view, said = "", onAdd, onRemove }: { view: GameSheetView; said?: string; onAdd: () => void; onRemove: () => void }) {
   const t = useT("switch-builder-sheet");
   const reasonId = useId();
   const fit = view.model.fit;
   const chosen = fit.kind === "chosen";
+  const blocked = !chosen && fit.kind !== "fits";
   const variant: KeyVariant = chosen ? "secondary" : "primary";
   return (
     <div className="sbs-foot">
@@ -675,9 +744,9 @@ export function GameSheetFoot({ view, said = "", onAdd, onRemove }: { view: Game
       <Key
         variant={variant}
         icon={chosen ? "minus" : "plus"}
-        disabled={!chosen && fit.kind !== "fits"}
+        aria-disabled={blocked || undefined}
         aria-describedby={reasonId}
-        onClick={chosen ? onRemove : onAdd}
+        onClick={blocked ? undefined : chosen ? onRemove : onAdd}
         className="sbs-foot__key"
       >
         {chosen ? t("foot.remove") : t("foot.add")}

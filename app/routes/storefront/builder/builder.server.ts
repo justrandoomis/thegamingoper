@@ -5,7 +5,7 @@
  *
  *   const catalog = await loadBuilderCatalog(db, ctx.locale, ctx.now);                  // loader data — no stock counts
  *   const plan = parsePlan(form.get("plan"));                                           // null: not a valid plan
- *   const quote = await quoteBuilderPlan(db, ctx.locale, plan, (await getLibraryExtras(db)).extras, ctx.now);
+ *   const quote = await quoteBuilderPlan(db, ctx.locale, plan, await getLibraryPrices(db, plan.games.map((game) => game.id)), ctx.now);
  *
  * SOLD MEANS WHAT THE CART SELLS (cart.server.ts isSellableProduct, inventory getAvailability): a product `published`,
  * or `scheduled` once its publish time has passed; an active variant with a price above 0; free units > 0 →

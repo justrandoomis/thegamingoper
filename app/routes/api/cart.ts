@@ -8,10 +8,11 @@
  *                       several variants in ONE change (the Switch bundle builder, docs/switch-builder.md §5): `items`
  *                       is a JSON array — a JSON string in form data, the array itself in a JSON body — of 1–50 items,
  *                       qty 1–10 each (the same variant twice is added up). Every item goes in whole or none does: 409
- *                       `bundle_refused` with `problems: [{ variantId, code }]` (code: not_found · unavailable ·
- *                       out_of_stock · insufficient_stock · max_qty_reached · cart_full) and nothing changes. One change
- *                       against CART_CHANGES, like add; the cookie is set the same way. 50 items fit the 8 KB body
- *                       (form-encoded, about 100 bytes an item with the catalogue's ids)
+ *                       `bundle_refused` with `problems: [{ variantId, code }]` (code: unavailable — also for an id that
+ *                       does not exist, so the answer never tells which ids exist · out_of_stock · insufficient_stock ·
+ *                       max_qty_reached · cart_full) and nothing changes. One change against CART_CHANGES, like add; the
+ *                       cookie is set the same way. 50 items fit the 8 KB body (form-encoded, about 100 bytes an item
+ *                       with the catalogue's ids)
  *        intent=set     lineId=…  qty=0–10                       (0 removes the line)
  *        intent=remove  lineId=…
  *        intent=coupon  code=DEMO10                              (empty code removes the coupon)
@@ -46,11 +47,12 @@
  * — the minimum and how much more the cart needs, whole dinars, as the core counts them — so the page can say
  * «أضف منتجات بقيمة …» without asking again; a stored code below its minimum says the same in `cart.couponIssue`.
  *
- * The body may be form data (what fetchers send) or JSON. Nothing the client sends is trusted for
- * money: prices, totals and the discount are computed on the server on every request. The cart
- * token lives only in the httpOnly `tt_cart` cookie, which every successful change (re)sets for 60
- * days. POSTs must carry a same-origin `Origin` header (CSRF check in the root middleware) and are
- * rate-limited per IP and per cart.
+ * The body may be form data (what fetchers send) or JSON, at most 8 KB: it is read with a running count, so a body sent
+ * without Content-Length (chunked) is cut off there too and counts as empty (400 `invalid`, as a longer declared body
+ * does). Nothing the client sends is trusted for money: prices, totals and the discount are computed on the server on
+ * every request. The cart token lives only in the httpOnly `tt_cart` cookie, which every successful change (re)sets for
+ * 60 days. POSTs must carry a same-origin `Origin` header (CSRF check in the root middleware) and are rate-limited per
+ * IP and per cart.
  */
 import { data } from "react-router";
 import { z } from "zod";
@@ -58,6 +60,7 @@ import type { Route } from "./+types/cart";
 import { LOCALE_CODES, isLocale, type Locale } from "~/lib/locales";
 import { normalizeIraqPhone } from "~/lib/phone";
 import { getCustomer } from "~/server/auth/customer.server";
+import { readBodyBytes } from "~/server/body.server";
 import { getCtx, serializeCookie, type RequestCtx } from "~/server/context.server";
 import { getDb, type Db } from "~/server/db.server";
 import { actionError } from "~/server/errors";
@@ -159,21 +162,24 @@ async function pricedPhone(db: Db, ctx: RequestCtx, typed: string | undefined): 
   return verdict.ok ? phone : null;
 }
 
+/**
+ * The body's fields. Read with a running count (QA security 2026-11-21): past MAX_BODY_BYTES — a declared length or a
+ * chunked body without one — reading stops and the body counts as empty, like one that cannot be read.
+ */
 async function readBody(request: Request): Promise<Record<string, unknown>> {
-  const length = Number(request.headers.get("Content-Length") ?? "0");
-  if (Number.isFinite(length) && length > MAX_BODY_BYTES) return {};
   const type = request.headers.get("Content-Type") ?? "";
   try {
+    const bytes = await readBodyBytes(request, MAX_BODY_BYTES);
     if (type.includes("application/json")) {
-      const body: unknown = await request.json();
+      const body: unknown = JSON.parse(new TextDecoder().decode(bytes));
       return body && typeof body === "object" && !Array.isArray(body) ? (body as Record<string, unknown>) : {};
     }
-    const form = await request.formData();
+    const form = await new Response(bytes, { headers: { "Content-Type": type } }).formData();
     const out: Record<string, unknown> = {};
     for (const [key, value] of form) if (typeof value === "string" && !(key in out)) out[key] = value;
     return out;
   } catch {
-    // An unreadable body is treated as an empty one: validation then says what is missing.
+    // An unreadable or too long body is treated as an empty one: validation then says what is missing (400 invalid).
     return {};
   }
 }

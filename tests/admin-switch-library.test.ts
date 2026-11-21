@@ -11,7 +11,15 @@
  *   · the picture: public upload path, a replaced or removed picture's file deleted
  *   · CSV: preview writes nothing and reports each row (new, update, unchanged, errors); apply writes the changed rows
  *     once, in chunks, with an audit event per game; a stale preview is refused; > 100 ids and > 1 chunk work;
- *     export → import changes nothing
+ *     export → import changes nothing; a file far past the limits (header cells, rows) is refused from one cheap count
+ *     before it is parsed; the file's name reaches the audit trail cleaned, the import's id is generated
+ *   · request bodies: read only up to their form's limit (chunked too), the upload limit counted before the body
+ *   · the production grant script: once per role, never again after the owner took the permission away
+ *   · the planner's storage figures (setting builder.switch.capacity, the form at the page's foot): what staff type
+ *     (GB with one decimal, shares as percentages, Arabic digits), the bounds equal to the setting's schema, the preview
+ *     per card size (the contract's figures), the setting's own permission (settings.manage), the save through
+ *     setSetting (value, audit with the reason, the builder's payload follows), the stale-form guard (`expected`),
+ *     every field error at once under the settings service's paths, and a stored value that no longer fits
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -19,17 +27,34 @@ import { crc32 } from "node:zlib";
 import { eq } from "drizzle-orm";
 import { RouterContextProvider } from "react-router";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { formObject } from "~/routes/admin/catalog/catalog.server";
 import { loader as moduleLoader } from "~/routes/admin/catalog/module";
 import { action as editAction, loader as editLoader } from "~/routes/admin/catalog/switch-library-edit";
 import { loader as exportLoader } from "~/routes/admin/catalog/switch-library-export";
 import { action as importAction, loader as importLoader } from "~/routes/admin/catalog/switch-library-import";
-import { loader as listLoader } from "~/routes/admin/catalog/switch-library";
+import { action as listAction, loader as listLoader } from "~/routes/admin/catalog/switch-library";
 import { signInEmployee } from "~/server/auth/admin.server";
+import { MAX_UPLOAD_BODY_BYTES } from "~/server/body.server";
 import { requestContextMiddleware, type RequestCtx } from "~/server/context.server";
 import { hashPassword } from "~/server/crypto.server";
 import libraryMessages from "~/i18n/messages/admin-switch-library";
-import { bytesFromGiB } from "~/lib/switch-builder/storage";
-import type { LibraryGame } from "~/lib/switch-builder/types";
+import { translate, type MessageTree } from "~/i18n/translate";
+import { bytesFromGiB, capacityOf, DEFAULT_CAPACITY, GIB, sanitizeCapacity, toGiB } from "~/lib/switch-builder/storage";
+import { SWITCH_MODELS, type CapacityConfig, type LibraryGame } from "~/lib/switch-builder/types";
+import {
+  CAPACITY_ERROR_KEYS,
+  CAPACITY_FIELDS,
+  CAPACITY_SETTING_KEY,
+  capacityDraft,
+  capacityPreview,
+  capacityText,
+  parseCapacityFigure,
+  readCapacityDraft,
+  sameCapacity,
+  type CapacityDraft,
+  type CapacityField,
+  type CapacityFigures,
+} from "~/routes/admin/catalog/switch-library-capacity";
 import { filterLibrary, filtersQuery, libraryItems, readFilters, type LibraryFilters } from "~/routes/admin/catalog/switch-library-list";
 import {
   baghdadDay,
@@ -39,7 +64,11 @@ import {
   isLibraryGameId,
   latinNumber,
   LIBRARY_CSV_COLUMNS,
+  LIBRARY_CSV_MAX_BODY_BYTES,
+  LIBRARY_CSV_MAX_BYTES,
   LIBRARY_CSV_MAX_CHANGES,
+  LIBRARY_CSV_MAX_COLUMNS,
+  LIBRARY_CSV_MAX_ROWS,
   libraryListUrl,
   parseAsOfDate,
   parseSizeInput,
@@ -54,17 +83,24 @@ import { employeeRoles, switchLibraryEntries } from "~/server/db/schema";
 import { runBatch } from "~/server/db/tx.server";
 import { isAppError, toAppError } from "~/server/errors";
 import { DEFAULT_ROLES, defaultRolePermissions, roleId, type DefaultRoleKey } from "~/server/permissions";
+import { enforceRateLimit, limitKey, RATE_LIMITS } from "~/server/ratelimit.server";
+import { fingerprintOf, saveRolePermissions } from "~/server/services/admin/security/roles.server";
 import { parseCsv, toCsv } from "~/server/services/admin/catalog/csv";
+import { CAPACITY_SETTING, getLibraryExtras } from "~/server/services/switch-library.server";
+import { parseSettingValue } from "~/server/settings.server";
 import {
   applyLibraryCsv,
   exportLibraryCsv,
+  getCapacityFigures,
   getLibraryEntry,
   LIBRARY_CSV_CHUNK,
   LIBRARY_ERROR_KEYS,
   libraryChunkGuard,
+  libraryCsvShape,
   listLibraryRows,
   previewLibraryCsv,
   removeLibraryImage,
+  saveCapacityFigures,
   saveLibraryEntry,
   SWITCH_LIBRARY_MANAGE,
   uploadLibraryImage,
@@ -294,12 +330,146 @@ describe("error sentences", () => {
       for (const key of keys) expect(typeof errors[key], `${locale} errors.${key}`).toBe("string");
     }
   });
+
+  test("a count of games takes its number's plural form, with the number as the page formats it", () => {
+    const say = (locale: "ar" | "en" | "ckb", key: string, count: number) =>
+      translate(libraryMessages[locale] as unknown as MessageTree, locale, key, { count, n: new Intl.NumberFormat("en-US").format(count), max: "400" });
+    expect([1, 2, 3, 11, 100, 4805].map((count) => say("ar", "importer.applyQ", count))).toEqual([
+      "تطبيق تغييرات لعبة واحدة؟",
+      "تطبيق تغييرات لعبتين؟",
+      "تطبيق تغييرات 3 ألعاب؟",
+      "تطبيق تغييرات 11 لعبة؟",
+      "تطبيق تغييرات 100 لعبة؟",
+      "تطبيق تغييرات 4,805 ألعاب؟",
+    ]);
+    expect([1, 3].map((count) => say("en", "importer.applyQ", count))).toEqual(["Apply the changes to 1 game?", "Apply the changes to 3 games?"]);
+    expect([1, 2, 7].map((count) => say("ar", "importer.applied", count))).toEqual(["حُفظت تغييرات لعبة واحدة.", "حُفظت تغييرات لعبتين.", "حُفظت تغييرات 7 ألعاب."]);
+    expect([1, 7].map((count) => say("en", "importer.applied", count))).toEqual(["Changes to 1 game saved.", "Changes to 7 games saved."]);
+    expect(say("ckb", "importer.applied", 7)).toBe("گۆڕانکاریی 7 یاری پاشەکەوت کرا.");
+    // the list's heading and its summary line say the same count the same way
+    expect([say("ar", "list.games", 4805), say("en", "list.games", 4805), say("ar", "list.games", 0)]).toEqual(["4,805 ألعاب", "4,805 games", "لا ألعاب"]);
+    expect(say("ar", "importer.tooMany", 403)).toMatch(/^الملف يغيّر 403 ألعاب، /);
+    expect(say("ar", "importer.tooMany", 450)).toMatch(/^الملف يغيّر 450 لعبة، /);
+    expect([1, 2].map((count) => say("en", "importer.moreRows", count))).toEqual(["1 more row is not shown here.", "2 more rows are not shown here."]);
+  });
 });
 
 describe("who may change the library", () => {
   test("manager and content manage it (the owner through the wildcard); cashier, support and inventory do not", () => {
     for (const key of ["owner", "manager", "content"] as const) expect(defaultRolePermissions(key).has(SWITCH_LIBRARY_MANAGE), key).toBe(true);
     for (const key of ["cashier", "support", "inventory", "fulfillment", "finance"] as const) expect(defaultRolePermissions(key).has(SWITCH_LIBRARY_MANAGE), key).toBe(false);
+  });
+
+  test("the storage figures follow their setting's own permission (settings.manage): owner and manager, not content", () => {
+    for (const key of ["owner", "manager"] as const) expect(defaultRolePermissions(key).has("settings.manage"), key).toBe(true);
+    for (const key of ["content", "cashier", "support", "inventory", "fulfillment", "finance"] as const) expect(defaultRolePermissions(key).has("settings.manage"), key).toBe(false);
+  });
+});
+
+// ───────────────────────────────────────────────────────────────── storage figures: pure rules
+
+/** DEFAULT_CAPACITY with one figure set (by its input name), the headroom pair kept in order so only that figure is judged. */
+function capacityWith(field: CapacityField, value: number): CapacityConfig {
+  const config = structuredClone(DEFAULT_CAPACITY) as unknown as Record<string, Record<string, number> | number>;
+  const path = field.name.split(".").slice(1);
+  if (path.length === 1) config[path[0]] = value;
+  else (config[path[0]] as Record<string, number>)[path[1]] = value;
+  const headroom = config.cardHeadroom as Record<string, number>;
+  if (field.key === "minGiB") headroom.maxGiB = Math.max(headroom.maxGiB, Math.min(value, 200));
+  if (field.key === "maxGiB") headroom.minGiB = Math.min(headroom.minGiB, Math.max(value, 0));
+  return config as unknown as CapacityConfig;
+}
+
+/** The settings service's field errors for a value of builder.switch.capacity ({} when it fits). */
+function settingErrors(value: unknown): Record<string, string> {
+  try {
+    parseSettingValue(CAPACITY_SETTING, value);
+    return {};
+  } catch (error) {
+    if (isAppError(error)) return error.fields ?? {};
+    throw error;
+  }
+}
+
+describe("storage figures: what staff type, the bounds, the preview", () => {
+  test("the research defaults read back unchanged; Arabic digits, a decimal comma, units and % are read", () => {
+    expect(CAPACITY_SETTING_KEY).toBe(CAPACITY_SETTING);
+    const draft = capacityDraft(DEFAULT_CAPACITY);
+    expect(draft).toEqual({ oled: "54.0", switch: "25.9", lite: "25.9", reserve: "2.0", margin: "98.5", fraction: "5", minGiB: "2.0", maxGiB: "8.0" });
+    expect(readCapacityDraft(draft, DEFAULT_CAPACITY)).toEqual({ value: DEFAULT_CAPACITY, errors: {} });
+    const typed = readCapacityDraft({ ...draft, oled: "٥٥٫٢", switch: "25,8", lite: "25.8 GB", reserve: "3", margin: "٩٨٫٢٥٪", fraction: "4.5 %", maxGiB: "10" }, DEFAULT_CAPACITY);
+    expect(typed).toEqual({
+      value: { internalUsableGiB: { "switch-oled": 55.2, switch: 25.8, "switch-lite": 25.8 }, internalReserveGiB: 3, cardMargin: 0.9825, cardHeadroom: { fraction: 0.045, minGiB: 2, maxGiB: 10 } },
+      errors: {},
+    });
+    // the typed value is one the setting's schema takes as it is
+    expect(settingErrors(typed.value)).toEqual({});
+  });
+
+  test("each figure's own error: empty, more decimals than the console shows, outside its bounds, the headroom pair", () => {
+    const errors = (patch: Partial<CapacityDraft>) => readCapacityDraft({ ...capacityDraft(DEFAULT_CAPACITY), ...patch }, DEFAULT_CAPACITY).errors;
+    expect(errors({ oled: "" })).toEqual({ oled: "required" });
+    expect(errors({ oled: "54.25", reserve: "two" })).toEqual({ oled: "gb_format", reserve: "gb_format" });
+    expect(errors({ oled: "64.1", switch: "32.1", lite: "0.9" })).toEqual({ oled: "too_big", switch: "too_big", lite: "too_small" });
+    expect(errors({ reserve: "16.1" })).toEqual({ reserve: "too_big" });
+    expect(errors({ margin: "89.99", fraction: "50.5" })).toEqual({ margin: "too_small", fraction: "too_big" });
+    expect(errors({ margin: "100.01" })).toEqual({ margin: "too_big" });
+    expect(errors({ margin: "98.555", fraction: "0.985" })).toEqual({ margin: "percent_format", fraction: "percent_format" });
+    expect(errors({ minGiB: "9", maxGiB: "8.5" })).toEqual({ maxGiB: "below_paired" });
+    expect(errors({ minGiB: "100.5" })).toEqual({ minGiB: "too_big" });
+    // a figure that cannot be read counts at its saved value (what the preview shows)
+    expect(readCapacityDraft({ ...capacityDraft(DEFAULT_CAPACITY), margin: "lots", oled: "60" }, DEFAULT_CAPACITY).value).toEqual({ ...DEFAULT_CAPACITY, internalUsableGiB: { ...DEFAULT_CAPACITY.internalUsableGiB, "switch-oled": 60 } });
+  });
+
+  test("an untouched figure keeps its stored value, even one finer than the form's decimals", () => {
+    const stored: CapacityConfig = { ...DEFAULT_CAPACITY, internalUsableGiB: { ...DEFAULT_CAPACITY.internalUsableGiB, switch: 25.85 }, cardMargin: 0.98537 };
+    const draft = capacityDraft(stored);
+    expect(draft).toMatchObject({ switch: "25.85", margin: "98.54" });
+    const read = readCapacityDraft(draft, stored);
+    expect(read.errors).toEqual({});
+    expect(sameCapacity(read.value, stored)).toBe(true);
+    // …and a figure typed by staff follows the form's rule
+    expect(readCapacityDraft({ ...draft, switch: "25.85 " }, stored).errors).toEqual({});
+    expect(readCapacityDraft({ ...draft, switch: "25.84" }, stored).errors).toEqual({ switch: "gb_format" });
+  });
+
+  test("the bounds are the setting's own (settings.server.ts), and the builder's reader keeps them", () => {
+    for (const field of CAPACITY_FIELDS) {
+      const step = field.unit === "percent" ? 0.0001 : 0.1;
+      for (const bound of [field.min, field.max]) {
+        expect(settingErrors(capacityWith(field, bound)), `${field.key} ${bound}`).toEqual({});
+        expect(sanitizeCapacity(capacityWith(field, bound)), `${field.key} ${bound}`).toEqual(capacityWith(field, bound));
+        expect(parseCapacityFigure(field, capacityText(field, bound)), `${field.key} ${bound}`).toEqual({ ok: true, value: bound });
+      }
+      expect(settingErrors(capacityWith(field, field.min - step)), field.key).toEqual({ [field.name]: "too_small" });
+      expect(settingErrors(capacityWith(field, field.max + step)), field.key).toEqual({ [field.name]: "too_big" });
+    }
+    // the headroom pair, under the same path as the form's field
+    expect(settingErrors({ ...DEFAULT_CAPACITY, cardHeadroom: { fraction: 0.05, minGiB: 9, maxGiB: 8 } })).toEqual({ "value.cardHeadroom.maxGiB": "below_paired" });
+  });
+
+  test("the preview: the contract's space for games per card, the 8 GB cap from 256GB up, the totals per model", () => {
+    const rows = capacityPreview(DEFAULT_CAPACITY);
+    expect(rows.map((row) => row.sizeGB)).toEqual([0, 64, 128, 256, 512, 1000]);
+    expect(rows.map((row) => toGiB(row.gamesOnCardBytes))).toEqual([0, 55.8, 111.6, 226.8, 461.7, 909.4]);
+    expect(rows.map((row) => toGiB(row.cardBytes))).toEqual([0, 58.7, 117.4, 234.8, 469.7, 917.4]);
+    expect(rows.slice(3).every((row) => row.headroomBytes === 8 * GIB)).toBe(true);
+    expect(Object.fromEntries(SWITCH_MODELS.map((model) => [model, toGiB(rows[0].totals[model])]))).toEqual({ "switch-oled": 52, switch: 23.9, "switch-lite": 23.9 });
+    for (const row of rows) for (const model of SWITCH_MODELS) expect(row.totals[model]).toBe(capacityOf(model, row.sizeGB, DEFAULT_CAPACITY).plannableBytes);
+    // readings change what the page plans with: an OLED showing 55.2 GB, cards at 99 %
+    const read = capacityPreview(readCapacityDraft({ ...capacityDraft(DEFAULT_CAPACITY), oled: "55.2", margin: "99" }, DEFAULT_CAPACITY).value);
+    expect(toGiB(read[0].totals["switch-oled"])).toBe(53.2);
+    expect(toGiB(read[3].cardBytes)).toBe(236);
+  });
+
+  test("every error the figures can answer has a sentence in ar, en and ckb (bounds named)", () => {
+    for (const locale of ["ar", "en", "ckb"] as const) {
+      const messages = libraryMessages[locale] as unknown as { storage: { errors: Record<string, string> }; errors: Record<string, string> };
+      for (const key of CAPACITY_ERROR_KEYS) expect(typeof messages.storage.errors[key], `${locale} storage.errors.${key}`).toBe("string");
+      expect(messages.storage.errors.too_small).toContain("{min}");
+      expect(messages.storage.errors.too_big).toContain("{max}");
+      for (const key of ["setting_changed", "setting_needs_approval", "forbidden", "invalid"]) expect(typeof messages.errors[key], `${locale} errors.${key}`).toBe("string");
+    }
   });
 });
 
@@ -374,8 +544,10 @@ afterAll(async () => {
 });
 
 describe("the production grant (scripts/sql/2026-11-21-switch-library-perms.sql)", () => {
-  const runScript = async () => {
-    const text = readFileSync(fileURLToPath(new URL("../scripts/sql/2026-11-21-switch-library-perms.sql", import.meta.url)), "utf8");
+  /** Runs the file as D1 does (one unit); `laterSec` runs it that many seconds later (its clock, unixepoch(), shifted). */
+  const runScript = async ({ laterSec = 0 }: { laterSec?: number } = {}) => {
+    const file = readFileSync(fileURLToPath(new URL("../scripts/sql/2026-11-21-switch-library-perms.sql", import.meta.url)), "utf8");
+    const text = laterSec === 0 ? file : file.replaceAll("unixepoch()", `(unixepoch() + ${laterSec})`);
     const statements = text
       .split(/\r?\n/)
       .filter((line) => !line.trim().startsWith("--"))
@@ -411,8 +583,34 @@ describe("the production grant (scripts/sql/2026-11-21-switch-library-perms.sql)
     await t.d1.prepare("DELETE FROM role_permissions WHERE role_id = 'role_content' AND permission IN (?, 'catalog.product.update')").bind(SWITCH_LIBRARY_MANAGE).run();
     await runScript();
     expect(await holders()).toEqual(["manager"]);
-    // Back to the defaults for the route tests below.
+    // Back to the defaults for the test below.
     await t.d1.prepare("INSERT OR IGNORE INTO role_permissions (role_id, permission) VALUES ('role_content', 'catalog.product.update'), ('role_content', ?)").bind(SWITCH_LIBRARY_MANAGE).run();
+  });
+
+  test("taken away again, it stays away: a later run grants only what that run has just audited", async () => {
+    const scriptEvents = () => count("SELECT count(*) AS n FROM audit_events WHERE id LIKE 'aud_20261121_switch_library_perm_%'");
+    expect(await holders()).toEqual(["content", "manager"]);
+    expect(await scriptEvents()).toBe(2);
+
+    // Removed by hand (no audit event), and the file runs again an hour later. Nothing has been audited since the
+    // file's own events, so only their age keeps the grant from coming back.
+    await t.d1.prepare("DELETE FROM role_permissions WHERE role_id = 'role_manager' AND permission = ?").bind(SWITCH_LIBRARY_MANAGE).run();
+    expect(await count("SELECT count(*) AS n FROM audit_events WHERE seq > (SELECT max(seq) FROM audit_events WHERE id LIKE 'aud_20261121_switch_library_perm_%')")).toBe(0);
+    await runScript({ laterSec: 3600 });
+    expect(await holders()).toEqual(["content"]);
+    expect(await scriptEvents()).toBe(2);
+
+    // Taken away in Security → Roles (which audits it), and the file runs again at once: its events are fresh, but the
+    // trail has moved on since them.
+    const owner = await staff("owner", "المالكة");
+    const current = (await rows<{ permission: string }>("SELECT permission FROM role_permissions WHERE role_id = 'role_content'")).map((row) => row.permission);
+    await saveRolePermissions(t.db, owner, { roleId: "role_content", permissions: current.filter((permission) => permission !== SWITCH_LIBRARY_MANAGE), fingerprint: fingerprintOf(current), reason: "ليس من عمل فريق المحتوى" }, tick());
+    await runScript();
+    expect(await holders()).toEqual([]);
+    expect(await scriptEvents()).toBe(2);
+
+    // Back to the defaults for the route tests below.
+    await t.d1.prepare("INSERT OR IGNORE INTO role_permissions (role_id, permission) VALUES ('role_manager', ?), ('role_content', ?)").bind(SWITCH_LIBRARY_MANAGE, SWITCH_LIBRARY_MANAGE).run();
   });
 });
 
@@ -572,29 +770,29 @@ describe("saving one game", () => {
   });
 });
 
-describe("the picture", () => {
-  /** A real PNG (width × 9) with a text chunk the upload pipeline must strip. */
-  const pngChunk = (type: string, data: number[]) => {
-    const body = Uint8Array.from([...new TextEncoder().encode(type), ...data]);
-    const crc = crc32(body) >>> 0;
-    const be = (value: number) => [value >>> 24, (value >>> 16) & 0xff, (value >>> 8) & 0xff, value & 0xff];
-    return [...be(data.length), ...body, ...be(crc)];
-  };
-  const png = (width: number) =>
-    new File(
-      [
-        Uint8Array.from([
-          0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
-          ...pngChunk("IHDR", [0, 0, 0, width, 0, 0, 0, 9, 8, 2, 0, 0, 0]),
-          ...pngChunk("tEXt", [...new TextEncoder().encode("Author"), 0, ...new TextEncoder().encode("Someone")]),
-          ...pngChunk("IDAT", [0x78, 0x9c, 0x63, 0x60, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01]),
-          ...pngChunk("IEND", []),
-        ]),
-      ],
-      "box.png",
-      { type: "image/png" },
-    );
+/** A real PNG (width × 9) with a text chunk the upload pipeline must strip. */
+const pngChunk = (type: string, data: number[]) => {
+  const body = Uint8Array.from([...new TextEncoder().encode(type), ...data]);
+  const crc = crc32(body) >>> 0;
+  const be = (value: number) => [value >>> 24, (value >>> 16) & 0xff, (value >>> 8) & 0xff, value & 0xff];
+  return [...be(data.length), ...body, ...be(crc)];
+};
+const png = (width: number) =>
+  new File(
+    [
+      Uint8Array.from([
+        0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+        ...pngChunk("IHDR", [0, 0, 0, width, 0, 0, 0, 9, 8, 2, 0, 0, 0]),
+        ...pngChunk("tEXt", [...new TextEncoder().encode("Author"), 0, ...new TextEncoder().encode("Someone")]),
+        ...pngChunk("IDAT", [0x78, 0x9c, 0x63, 0x60, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01]),
+        ...pngChunk("IEND", []),
+      ]),
+    ],
+    "box.png",
+    { type: "image/png" },
+  );
 
+describe("the picture", () => {
   test("an upload is stored public through the upload pipeline; a replaced or removed picture's file is deleted", async () => {
     const store = kvBlobStore(t.kv);
     expect(await uploadLibraryImage(t.db, store, content, { gameId: "picture-game-switch" }, png(12), tick())).toEqual({ replayed: false });
@@ -682,9 +880,11 @@ describe("CSV import and export", () => {
     expect((await one<{ trailer_youtube_id: string | null }>("SELECT trailer_youtube_id FROM switch_library_entries WHERE game_id = 'trailer-game-switch'")).trailer_youtube_id).toBeNull();
     expect(await count("SELECT count(*) AS n FROM switch_library_entries WHERE game_id IN ('ori-switch', 'not an id')")).toBe(0);
     expect(await count("SELECT count(*) AS n FROM audit_events WHERE action = 'catalog.switch_library.import'")).toBe(4);
-    const summary = await one<{ entity_id: string; after: string }>("SELECT entity_id, after FROM audit_events WHERE action = 'catalog.switch_library.import_apply' ORDER BY seq DESC LIMIT 1");
-    expect(summary.entity_id).toBe("library.csv");
-    expect(JSON.parse(summary.after)).toMatchObject({ rows: 8, created: 2, updated: 2, unchanged: 1, skipped: 3 });
+    const summary = await one<{ entity_id: string; summary: string; after: string }>("SELECT entity_id, summary, after FROM audit_events WHERE action = 'catalog.switch_library.import_apply' ORDER BY seq DESC LIMIT 1");
+    // The import's id is generated (the preview's fingerprint); the file's name is text in the summary.
+    expect(summary.entity_id).toBe(`csv_${plan.fingerprint.slice(0, 16)}`);
+    expect(summary.summary).toMatch(/^library\.csv: 4 games: /);
+    expect(JSON.parse(summary.after)).toMatchObject({ file: "library.csv", rows: 8, created: 2, updated: 2, unchanged: 1, skipped: 3 });
     const before = JSON.parse((await one<{ before: string }>("SELECT before FROM audit_events WHERE action = 'catalog.switch_library.import' AND entity_id = 'hollow-knight-switch'")).before);
     expect(before).toEqual({ priceUsdCents: 1499, priceAsOf: "2026-11-01" });
 
@@ -765,7 +965,53 @@ describe("CSV import and export", () => {
     expect((await previewLibraryCsv(t.db, content, csvFile("size_gb\n16.5\n"), tick())).fileErrors).toEqual([{ message: "csv_game_id_column" }]);
     expect((await previewLibraryCsv(t.db, content, csvFile('game_id,trailer\n"hades-switch,abc\n'), tick())).fileErrors[0]).toMatchObject({ message: "csv_unterminated_quote" });
     expect(await failure(() => previewLibraryCsv(t.db, content, new File([Uint8Array.from([0x50, 0x4b, 0x03, 0x04, 0x00, 0x00])], "book.xlsx"), tick()))).toMatchObject({ code: "invalid", fields: { file: "csv_not_text" } });
-    expect(await failure(() => previewLibraryCsv(t.db, content, null, tick()))).toMatchObject({ code: "invalid", fields: { file: "upload_missing" } });
+    // "No file" and "too large" carry no field key: the shared sentences for those keys speak of a picture, so the
+    // page words them with this namespace's errors.<code> (which name the CSV file).
+    for (const missing of [null, csvFile("")]) expect(await failure(() => previewLibraryCsv(t.db, content, missing, tick()))).toEqual({ code: "upload_missing", status: 400, fields: undefined });
+    const big = `game_id,description_en\n${"x".repeat(LIBRARY_CSV_MAX_BYTES)}`;
+    expect(await failure(() => previewLibraryCsv(t.db, content, csvFile(big), tick()))).toEqual({ code: "upload_too_large", status: 413, fields: undefined });
+  });
+
+  test("a file far past the limits is refused from one cheap count, before it is parsed", async () => {
+    // 65 header cells: refused, whatever the rows (the parser's work is rows × header cells); 64 are read.
+    const wide = (cells: number) => `game_id${",".repeat(cells - 1)}\nhades-switch\n`;
+    expect((await previewLibraryCsv(t.db, content, csvFile(wide(LIBRARY_CSV_MAX_COLUMNS + 1)), tick())).fileErrors).toEqual([{ message: "csv_columns_limit" }]);
+    expect((await previewLibraryCsv(t.db, content, csvFile(wide(LIBRARY_CSV_MAX_COLUMNS)), tick())).fileErrors).toEqual([]);
+    // The auditor's file: 100,000 empty header cells over short rows, 293 KB — answered at once, nothing parsed.
+    const attack = `${",".repeat(100_000)}game_id\n${"x\n".repeat(90_000)}`;
+    const started = performance.now();
+    expect((await previewLibraryCsv(t.db, content, csvFile(attack), tick())).fileErrors).toEqual([{ message: "csv_columns_limit" }]);
+    expect(performance.now() - started).toBeLessThan(1000);
+    // More rows than one file may hold: refused before parsing too.
+    const long = `game_id\n${"x-switch\n".repeat(LIBRARY_CSV_MAX_ROWS + 1)}`;
+    expect((await previewLibraryCsv(t.db, content, csvFile(long), tick())).fileErrors).toEqual([{ message: "csv_rows_limit" }]);
+    // …but line breaks inside quoted descriptions and blank lines are not rows: 5,000 games read.
+    const descriptions = Array.from({ length: LIBRARY_CSV_MAX_ROWS }, (_, index) => ({ game_id: `limit-${index}-switch`, description_en: index % 2 ? "One.\n\nTwo." : "" }));
+    const full = toCsv(["game_id", "description_en"], descriptions).replace(/\r\n$/, "\r\n\r\n\n");
+    expect(full.split("\n").length).toBeGreaterThan(LIBRARY_CSV_MAX_ROWS + 1 + 2 * (LIBRARY_CSV_MAX_ROWS / 2));
+    const plan = await previewLibraryCsv(t.db, content, csvFile(full), tick());
+    expect(plan.fileErrors).toEqual([]);
+    expect(plan.totals.rows).toBe(LIBRARY_CSV_MAX_ROWS);
+  });
+
+  test("the cheap count reads records exactly as the parser does", () => {
+    const samples = [
+      "game_id,size_gb\nhades-switch,16.5\n",
+      "\ufeffgame_id;size_gb\r\nhades-switch;16,5\r\n\r\n",
+      'game_id,description_en\n"a-switch","Line one.\n\nLine ""two""."\n\n\n"b-switch",\n',
+      'game_id,trailer\n""\n"c-switch",x\n""""\n',
+      "game_id\r\ra-switch\rb-switch",
+      'game_id,x,y\n x"y,"z\n"\nq-switch,"",\n,\n',
+      "game_id,,,\n,,,\nz-switch\n\n",
+      "game_id",
+      'game_id\n""',
+    ];
+    for (const sample of samples) {
+      const parsed = parseCsv(sample);
+      expect(libraryCsvShape(sample, 100), JSON.stringify(sample)).toEqual({ records: parsed.rows.length + 1, headerCells: sample.replace(/^\ufeff/, "").split(/\r\n|\r|\n/)[0].split(/[,;]/).length });
+    }
+    // Counting stops past the limit it is given.
+    expect(libraryCsvShape("game_id\na\nb\nc\nd\n", 2).records).toBe(3);
   });
 
   test("the export has the import's columns, and importing it back changes nothing", async () => {
@@ -829,6 +1075,138 @@ describe("CSV import and export", () => {
   });
 });
 
+// ───────────────────────────────────────────────────────────────── storage figures against D1
+
+/** The storage figures' form as the page posts it (its input names through the route's formObject). */
+function capacityForm(draft: CapacityDraft, expected: CapacityConfig | null, reason = "قراءة جهاز OLED في المعرض من Data Management") {
+  const body = new FormData();
+  body.set("intent", "capacity");
+  body.set("expected", JSON.stringify(expected));
+  body.set("reason", reason);
+  for (const field of CAPACITY_FIELDS) body.set(field.name, draft[field.key]);
+  return formObject(body);
+}
+
+describe("storage figures: the setting builder.switch.capacity through the settings service", () => {
+  let manager: EmployeeActor;
+  const SAVED: CapacityConfig = { internalUsableGiB: { "switch-oled": 55.2, switch: 25.8, "switch-lite": 25.9 }, internalReserveGiB: 2.5, cardMargin: 0.982, cardHeadroom: { fraction: 0.04, minGiB: 2, maxGiB: 10 } };
+  const settingRow = () => rows<{ value: string; updated_by: string | null; updated_at: number }>("SELECT value, updated_by, updated_at FROM settings WHERE key = ?", CAPACITY_SETTING);
+  const settingAudits = () => count("SELECT count(*) AS n FROM audit_events WHERE action = 'settings.setting.update' AND entity_id = ?", CAPACITY_SETTING);
+
+  beforeAll(async () => {
+    manager = await staff("manager", "مديرة المتجر");
+  });
+
+  test("every reader sees the figures in use; only the setting's own permission changes them, checked first, and a refusal writes nothing", async () => {
+    expect(await getCapacityFigures(t.db, cashier)).toEqual({
+      inUse: DEFAULT_CAPACITY,
+      expected: DEFAULT_CAPACITY,
+      defaults: DEFAULT_CAPACITY,
+      isStored: false,
+      isDefault: true,
+      broken: null,
+      updatedAt: null,
+      updatedByName: null,
+      canEdit: false,
+      canSeeHistory: false,
+    });
+    expect((await getCapacityFigures(t.db, content)).canEdit).toBe(false);
+    expect(await getCapacityFigures(t.db, manager)).toMatchObject({ canEdit: true, canSeeHistory: true });
+    expect(await failure(() => getCapacityFigures(t.db, fulfillment))).toMatchObject({ code: "forbidden", status: 403 });
+
+    const audits = await settingAudits();
+    const typed = { ...capacityDraft(DEFAULT_CAPACITY), oled: "55.0" };
+    for (const actor of [cashier, content]) expect(await failure(() => saveCapacityFigures(t.db, actor, capacityForm(typed, DEFAULT_CAPACITY), tick()))).toMatchObject({ code: "forbidden", status: 403 });
+    // the permission before the form: an unreadable form from a role that may not change the figures is a 403, not field errors
+    expect(await failure(() => saveCapacityFigures(t.db, content, { value: { cardMargin: "lots" } }, tick()))).toMatchObject({ code: "forbidden", status: 403 });
+    expect(await settingRow()).toEqual([]);
+    expect(await settingAudits()).toBe(audits);
+  });
+
+  test("a manager saves readings: the setting holds them, one audit event with the reason, the builder's payload follows", async () => {
+    const at = tick();
+    const draft = { ...capacityDraft(DEFAULT_CAPACITY), oled: "55.2", switch: "٢٥٫٨", reserve: "2.5", margin: "98.2", fraction: "4", maxGiB: "10" };
+    expect(await saveCapacityFigures(t.db, manager, capacityForm(draft, DEFAULT_CAPACITY), at)).toEqual({ changed: true });
+    const [row] = await settingRow();
+    expect(JSON.parse(row.value)).toEqual(SAVED);
+    expect(row).toMatchObject({ updated_by: manager.id, updated_at: at });
+    const audit = await one<{ actor_id: string; reason: string; before: string; after: string; at: number }>(
+      "SELECT actor_id, reason, before, after, at FROM audit_events WHERE action = 'settings.setting.update' AND entity_id = ? ORDER BY seq DESC LIMIT 1",
+      CAPACITY_SETTING,
+    );
+    expect(audit).toMatchObject({ actor_id: manager.id, reason: "قراءة جهاز OLED في المعرض من Data Management", at });
+    expect(JSON.parse(audit.before)).toEqual({ value: null });
+    expect(JSON.parse(audit.after)).toEqual({ value: SAVED });
+    // what GET /api/switch-library serves the builder
+    expect((await getLibraryExtras(t.db)).capacity).toEqual(SAVED);
+    expect(await getCapacityFigures(t.db, cashier)).toMatchObject({ inUse: SAVED, expected: SAVED, isStored: true, isDefault: false, broken: null, updatedAt: at, updatedByName: "مديرة المتجر" });
+
+    // the same figures again, as the page now shows them: nothing written, no reason needed
+    const audits = await settingAudits();
+    expect(await saveCapacityFigures(t.db, manager, capacityForm(capacityDraft(SAVED), SAVED, ""), tick())).toEqual({ changed: false });
+    expect(await settingAudits()).toBe(audits);
+    expect((await settingRow())[0].updated_at).toBe(at);
+  });
+
+  test("a form opened before a colleague's change is refused (setting_changed) and writes nothing; so is one without its `expected`", async () => {
+    const opened = (await getCapacityFigures(t.db, manager)).expected!;
+    expect(opened).toEqual(SAVED);
+    // a colleague, in another tab, re-reads the reserve
+    await saveCapacityFigures(t.db, manager, capacityForm({ ...capacityDraft(opened), reserve: "3.0" }, opened, "قراءة جديدة"), tick());
+    const audits = await settingAudits();
+    expect(await failure(() => saveCapacityFigures(t.db, manager, capacityForm({ ...capacityDraft(opened), oled: "56.0" }, opened), tick()))).toMatchObject({ code: "setting_changed", status: 409 });
+    const form = capacityForm({ ...capacityDraft(opened), oled: "56.0" }, opened);
+    delete form.expected;
+    expect(await failure(() => saveCapacityFigures(t.db, manager, form, tick()))).toMatchObject({ code: "setting_changed", status: 409 });
+    expect(JSON.parse((await settingRow())[0].value)).toEqual({ ...SAVED, internalReserveGiB: 3 });
+    expect(await settingAudits()).toBe(audits);
+    // the colleague's figures, loaded again: the change goes through
+    const now = (await getCapacityFigures(t.db, manager)).expected!;
+    expect(await saveCapacityFigures(t.db, manager, capacityForm({ ...capacityDraft(now), oled: "56.0" }, now), tick())).toEqual({ changed: true });
+    expect(JSON.parse((await settingRow())[0].value)).toMatchObject({ internalUsableGiB: { "switch-oled": 56 }, internalReserveGiB: 3 });
+  });
+
+  test("invalid figures answer every field error at once, under the settings service's paths, and write nothing", async () => {
+    const now = (await getCapacityFigures(t.db, manager)).expected!;
+    const before = (await settingRow())[0].value;
+    const bad = await failure(() =>
+      saveCapacityFigures(t.db, manager, capacityForm({ ...capacityDraft(now), oled: "64.5", switch: "0", lite: "25.95", margin: "89", fraction: "abc", minGiB: "9", maxGiB: "8" }, now, " a "), tick()),
+    );
+    expect(bad).toMatchObject({ code: "invalid", status: 400 });
+    expect(bad.fields).toEqual({
+      "value.internalUsableGiB.switch-oled": "too_big",
+      "value.internalUsableGiB.switch": "too_small",
+      "value.internalUsableGiB.switch-lite": "gb_format",
+      "value.cardMargin": "too_small",
+      "value.cardHeadroom.fraction": "percent_format",
+      "value.cardHeadroom.maxGiB": "below_paired",
+      reason: "reason_required",
+    });
+    expect((await settingRow())[0].value).toBe(before);
+  });
+
+  test("a stored value that no longer fits: reported, the builder keeps each figure it can, and only a form that saw it broken replaces it", async () => {
+    const good = JSON.parse((await settingRow())[0].value) as CapacityConfig;
+    await t.d1.prepare("UPDATE settings SET value = ? WHERE key = ?").bind(JSON.stringify({ ...good, cardMargin: 2 }), CAPACITY_SETTING).run();
+    const broken = await getCapacityFigures(t.db, manager);
+    expect(broken).toMatchObject({ broken: "too_big", expected: null, isStored: true });
+    expect(broken.inUse).toEqual({ ...good, cardMargin: DEFAULT_CAPACITY.cardMargin });
+    expect((await getLibraryExtras(t.db)).capacity).toEqual(broken.inUse);
+    // a form that showed a value, not the broken one, is refused
+    expect(await failure(() => saveCapacityFigures(t.db, manager, capacityForm(capacityDraft(broken.inUse), good), tick()))).toMatchObject({ code: "setting_changed", status: 409 });
+    // the form as the page shows it now (expected null) replaces it — the figures in use, unchanged, are a change here
+    expect(await saveCapacityFigures(t.db, manager, capacityForm(capacityDraft(broken.inUse), null), tick())).toEqual({ changed: true });
+    expect(JSON.parse((await settingRow())[0].value)).toEqual(broken.inUse);
+    expect((await getCapacityFigures(t.db, manager)).broken).toBeNull();
+
+    // not even JSON (a hand-edited row): the page still opens, with the defaults in use
+    const kept = (await settingRow())[0].value;
+    await t.d1.prepare("UPDATE settings SET value = 'not json' WHERE key = ?").bind(CAPACITY_SETTING).run();
+    expect(await getCapacityFigures(t.db, cashier)).toMatchObject({ inUse: DEFAULT_CAPACITY, expected: null, broken: "invalid" });
+    await t.d1.prepare("UPDATE settings SET value = ? WHERE key = ?").bind(kept, CAPACITY_SETTING).run();
+  });
+});
+
 // ───────────────────────────────────────────────────────────────── the route modules
 
 describe("routes: sessions, form names, answers", () => {
@@ -859,6 +1237,11 @@ describe("routes: sessions, form names, answers", () => {
 
   /** A signed-in employee of a built-in role (its permissions as the database holds them), as a Cookie header. */
   async function staffCookie(role: DefaultRoleKey): Promise<string> {
+    return (await staffSession(role)).cookie;
+  }
+
+  /** As staffCookie, with the employee's id. */
+  async function staffSession(role: DefaultRoleKey): Promise<{ cookie: string; id: string }> {
     const password = "switch-library-routes-1";
     const hashed = await hashPassword(password, 1000);
     const email = `${make.next(role)}@switch-library.test`;
@@ -869,16 +1252,24 @@ describe("routes: sessions, form names, answers", () => {
     if (result.status !== "signed_in") throw new Error("sign-in failed");
     const token = set.map((cookie) => cookie.split(";")[0]).find((pair) => pair.startsWith("tt_adm=") && pair.length > "tt_adm=".length);
     if (!token) throw new Error("no session cookie");
-    return token;
+    return { cookie: token, id };
   }
 
   type Args = { request: Request; context: RouterContextProvider; url: URL; pattern: string; params: Record<string, string> };
   const handler = (fn: unknown) => fn as (args: Args) => Promise<unknown>;
 
-  /** Runs a loader or action behind the root middleware (CSRF check, request context); its status and body. */
-  async function run(fn: (args: Args) => Promise<unknown>, path: string, cookie: string, init: { method?: string; body?: FormData; params?: Record<string, string> } = {}) {
-    const headers: Record<string, string> = { Cookie: cookie, ...(init.method && init.method !== "GET" ? { Origin: ORIGIN } : {}) };
-    const request = new Request(`${ORIGIN}${path}`, { method: init.method ?? "GET", body: init.body, headers });
+  /**
+   * Runs a loader or action behind the root middleware (CSRF check, request context); its status and body. `stream`
+   * sends a streamed body with its Content-Type and NO declared length (chunked).
+   */
+  async function run(
+    fn: (args: Args) => Promise<unknown>,
+    path: string,
+    cookie: string,
+    init: { method?: string; body?: FormData | URLSearchParams; stream?: { body: ReadableStream<Uint8Array>; type: string }; params?: Record<string, string> } = {},
+  ) {
+    const headers: Record<string, string> = { Cookie: cookie, ...(init.method && init.method !== "GET" ? { Origin: ORIGIN } : {}), ...(init.stream ? { "Content-Type": init.stream.type } : {}) };
+    const request = new Request(`${ORIGIN}${path}`, { method: init.method ?? "GET", body: init.stream?.body ?? init.body, headers, ...(init.stream ? { duplex: "half" } : {}) } as RequestInit);
     const context = new RouterContextProvider();
     const url = new URL(request.url);
     const args = { request, context, url, pattern: "admin/catalog/switch-library", params: init.params ?? {} };
@@ -902,6 +1293,42 @@ describe("routes: sessions, form names, answers", () => {
     for (const [key, value] of Object.entries(entries)) body.append(key, value);
     return body;
   };
+
+  /**
+   * A multipart body of an `intent` and a file of `size` bytes, streamed in 64 KB chunks with no declared length.
+   * `state.read` counts the bytes handed out and `state.pulls` the reads asked for; with `refuse`, any read throws (a
+   * body that must not be touched).
+   */
+  function streamedUpload(intent: string, fileName: string, size: number, options: { refuse?: boolean } = {}) {
+    const boundary = "switch-library-test-boundary";
+    const encoder = new TextEncoder();
+    const head = encoder.encode(`--${boundary}\r\nContent-Disposition: form-data; name="intent"\r\n\r\n${intent}\r\n--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${fileName}"\r\nContent-Type: application/octet-stream\r\n\r\n`);
+    const tail = encoder.encode(`\r\n--${boundary}--\r\n`);
+    const state = { read: 0, pulls: 0 };
+    /** File bytes handed out so far; -1 before the head. */
+    let sent = -1;
+    const body = new ReadableStream<Uint8Array>(
+      {
+        pull(controller) {
+          state.pulls++;
+          if (options.refuse) throw new Error("the body was read");
+          let chunk: Uint8Array;
+          if (sent < 0) {
+            chunk = head;
+            sent = 0;
+          } else if (sent < size) {
+            chunk = new Uint8Array(Math.min(64 * 1024, size - sent)).fill(0x61);
+            sent += chunk.byteLength;
+          } else chunk = tail;
+          controller.enqueue(chunk);
+          state.read += chunk.byteLength;
+          if (chunk === tail) controller.close();
+        },
+      },
+      { highWaterMark: 0 },
+    );
+    return { stream: { body, type: `multipart/form-data; boundary=${boundary}` }, state };
+  }
 
   test("a cashier lists the library; saving, importing and exporting answer 403; a malformed id is a 404", async () => {
     const cashierCookie = await staffCookie("cashier");
@@ -959,7 +1386,9 @@ describe("routes: sessions, form names, answers", () => {
 
   test("the import page previews and applies a file; the export is a CSV download; the catalogue's tab is named", async () => {
     const managerCookie = await staffCookie("manager");
-    const csv = csvFile("game_id,price_usd\nroute-import-switch,4.99\n", "route.csv");
+    // A file name that would display reversed in the audit views (a right-to-left override inside it).
+    const RLO = String.fromCharCode(0x202e);
+    const csv = csvFile("game_id,price_usd\nroute-import-switch,4.99\n", `route${RLO}vsc.csv`);
     const preview = await run(handler(importAction), "/admin/catalog/switch-library/import", managerCookie, { method: "POST", body: formData({ intent: "preview", file: csv }) });
     expect(preview.status).toBe(200);
     const plan = (preview.body as { plan: { fingerprint: string; totals: Record<string, number> } }).plan;
@@ -967,7 +1396,11 @@ describe("routes: sessions, form names, answers", () => {
     const applied = await run(handler(importAction), "/admin/catalog/switch-library/import", managerCookie, { method: "POST", body: formData({ intent: "apply", file: csv, fingerprint: plan.fingerprint }) });
     expect(applied.body).toMatchObject({ ok: true, intent: "apply", result: { created: 1, updated: 0 } });
     expect((await one<{ price_usd_cents: number }>("SELECT price_usd_cents FROM switch_library_entries WHERE game_id = 'route-import-switch'")).price_usd_cents).toBe(499);
-    expect((await one<{ entity_id: string }>("SELECT entity_id FROM audit_events WHERE action = 'catalog.switch_library.import_apply' ORDER BY seq DESC LIMIT 1")).entity_id).toBe("route.csv");
+    // The import's audit id is generated; the file's name is cleaned text, in the summaries only.
+    const audit = await one<{ entity_id: string; summary: string }>("SELECT entity_id, summary FROM audit_events WHERE action = 'catalog.switch_library.import_apply' ORDER BY seq DESC LIMIT 1");
+    expect(audit).toEqual({ entity_id: `csv_${plan.fingerprint.slice(0, 16)}`, summary: expect.stringMatching(/^routevsc\.csv: 1 game: /) });
+    expect((await one<{ summary: string }>("SELECT summary FROM audit_events WHERE action = 'catalog.switch_library.import' AND entity_id = 'route-import-switch'")).summary).toMatch(/^routevsc\.csv line 2: /);
+    expect(await count("SELECT count(*) AS n FROM audit_events WHERE instr(coalesce(summary, ''), ?) > 0 OR instr(coalesce(entity_id, ''), ?) > 0", RLO, RLO)).toBe(0);
 
     const sheet = await run(handler(exportLoader), "/admin/catalog/switch-library/export", managerCookie);
     expect(sheet.status).toBe(200);
@@ -978,5 +1411,76 @@ describe("routes: sessions, form names, answers", () => {
 
     const frame = await run(handler(moduleLoader), "/admin/catalog/switch-library", managerCookie);
     expect(frame.body).toMatchObject({ switchLibraryTab: "مكتبة Switch" });
+  });
+
+  test("a body past its form's limit is cut off while it is read, declared or not; the upload limit is counted first", async () => {
+    const { cookie, id } = await staffSession("manager");
+    const importPath = "/admin/catalog/switch-library/import";
+    const gameId = "body-limit-switch";
+    const editPath = `/admin/catalog/switch-library/${gameId}`;
+
+    // The import: a 3 MB file in a chunked body is cut just past the CSV limit and its fields, and answered without a
+    // field key (the shared sentence for it speaks of a picture; the page words the code with its own).
+    const csv = streamedUpload("preview", "big.csv", 3 * 1024 * 1024);
+    const refusedCsv = await run(handler(importAction), importPath, cookie, { method: "POST", stream: csv.stream });
+    expect(refusedCsv).toMatchObject({ status: 413, body: { ok: false, code: "upload_too_large" } });
+    expect((refusedCsv.body as { fields?: unknown }).fields).toBeUndefined();
+    expect(csv.state.read).toBeLessThanOrEqual(LIBRARY_CSV_MAX_BODY_BYTES + 64 * 1024);
+
+    // The picture: a 9 MB file is cut just past one picture and its fields; the answer sits under the file field.
+    const picture = streamedUpload("upload", "big.png", 9 * 1024 * 1024);
+    const refusedPicture = await run(handler(editAction), editPath, cookie, { method: "POST", stream: picture.stream, params: { gameId } });
+    expect(refusedPicture).toMatchObject({ status: 413, body: { ok: false, code: "upload_too_large", fields: { file: expect.any(String) } } });
+    expect(picture.state.read).toBeLessThanOrEqual(MAX_UPLOAD_BODY_BYTES + 64 * 1024);
+    // A real picture still goes through the bounded read, and its removal (a plain form) too.
+    expect(await run(handler(editAction), editPath, cookie, { method: "POST", body: formData({ intent: "upload", file: png(14) }), params: { gameId } })).toMatchObject({ status: 200, body: { ok: true, intent: "upload", replayed: false } });
+    expect(await count("SELECT count(*) AS n FROM switch_library_entries WHERE game_id = ? AND image_file_id IS NOT NULL", gameId)).toBe(1);
+    expect(await run(handler(editAction), editPath, cookie, { method: "POST", body: new URLSearchParams({ intent: "remove_image" }), params: { gameId } })).toMatchObject({ status: 200, body: { ok: true, removed: true } });
+
+    // With the upload budget spent, neither page reads a file's body at all…
+    const key = await limitKey("upload", "employee", id);
+    for (let index = 0; index < RATE_LIMITS.upload.limit; index++) await enforceRateLimit(t.db, key, RATE_LIMITS.upload, Date.now()).catch(() => undefined);
+    const untouched: Array<{ fn: unknown; path: string; body: ReturnType<typeof streamedUpload>; params: Record<string, string> }> = [
+      { fn: importAction, path: importPath, body: streamedUpload("preview", "any.csv", 1024, { refuse: true }), params: {} },
+      { fn: editAction, path: editPath, body: streamedUpload("upload", "any.png", 1024, { refuse: true }), params: { gameId } },
+    ];
+    for (const attempt of untouched) {
+      expect(await run(handler(attempt.fn), attempt.path, cookie, { method: "POST", stream: attempt.body.stream, params: attempt.params })).toMatchObject({ status: 429, body: { ok: false, code: "rate_limited" } });
+      expect(attempt.body.state.pulls).toBe(0);
+    }
+    // …while a save (a plain form, no file) is no upload and goes through.
+    const version = (await one<{ updated_at: number }>("SELECT updated_at FROM switch_library_entries WHERE game_id = ?", gameId)).updated_at;
+    const save = await run(handler(editAction), editPath, cookie, { method: "POST", body: new URLSearchParams({ intent: "save", updatedAt: String(version), size: "2" }), params: { gameId } });
+    expect(save).toMatchObject({ status: 200, body: { ok: true, intent: "save", changed: true, created: false } });
+    expect(await one("SELECT size_bytes, image_file_id FROM switch_library_entries WHERE game_id = ?", gameId)).toEqual({ size_bytes: bytesFromGiB(2), image_file_id: null });
+  });
+
+  test("the library page carries the storage figures; its action saves them for a manager, keeps field errors as keys, refuses a cashier", async () => {
+    const managerCookie = await staffCookie("manager");
+    const page = await run(handler(listLoader), "/admin/catalog/switch-library", managerCookie);
+    expect(page.status).toBe(200);
+    const capacity = (page.body as { capacity: CapacityFigures }).capacity;
+    expect(capacity).toMatchObject({ canEdit: true, broken: null });
+    const draft = capacityDraft(capacity.inUse);
+    const fields: Record<string, string> = { intent: "capacity", expected: JSON.stringify(capacity.expected), reason: "route check", ...Object.fromEntries(CAPACITY_FIELDS.map((field) => [field.name, draft[field.key]])) };
+
+    const bad = await run(handler(listAction), "/admin/catalog/switch-library", managerCookie, { method: "POST", body: formData({ ...fields, "value.cardMargin": "120", reason: "" }) });
+    expect(bad.status).toBe(400);
+    expect(bad.body).toEqual({ ok: false, intent: "capacity", code: "invalid", fields: { "value.cardMargin": "too_big", reason: "reason_required" } });
+
+    const saved = await run(handler(listAction), "/admin/catalog/switch-library", managerCookie, { method: "POST", body: formData({ ...fields, "value.internalReserveGiB": "1.5" }) });
+    expect(saved.status).toBe(200);
+    expect(saved.body).toEqual({ ok: true, intent: "capacity", changed: true });
+    expect((JSON.parse((await one<{ value: string }>("SELECT value FROM settings WHERE key = ?", CAPACITY_SETTING)).value) as CapacityConfig).internalReserveGiB).toBe(1.5);
+
+    // the page it loads next shows them, and the form it held is stale now
+    const again = await run(handler(listAction), "/admin/catalog/switch-library", managerCookie, { method: "POST", body: formData({ ...fields, "value.internalReserveGiB": "1.0" }) });
+    expect(again).toMatchObject({ status: 409, body: { ok: false, code: "setting_changed" } });
+
+    const cashierCookie = await staffCookie("cashier");
+    expect((await run(handler(listLoader), "/admin/catalog/switch-library", cashierCookie)).body).toMatchObject({ capacity: { canEdit: false } });
+    const refused = await run(handler(listAction), "/admin/catalog/switch-library", cashierCookie, { method: "POST", body: formData({ ...fields, "value.internalReserveGiB": "1.0" }) });
+    expect(refused).toMatchObject({ status: 403, body: { ok: false, code: "forbidden" } });
+    expect((await run(handler(listAction), "/admin/catalog/switch-library", managerCookie, { method: "POST", body: formData({ intent: "drop" }) })).status).toBe(400);
   });
 });

@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useSearchParams, type ShouldRevalidateFunctionArgs } from "react-router";
+import { data, Link, useNavigate, useSearchParams, type ShouldRevalidateFunctionArgs } from "react-router";
 
 import type { Route } from "./+types/switch-library";
 import { Icon } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { useFormat } from "~/i18n/react";
 import { can } from "~/server/actor";
+import { toAppError } from "~/server/errors";
 import { toCsv } from "~/server/services/admin/catalog/csv";
-import { listLibraryRows, SWITCH_LIBRARY_MANAGE, type LibraryListRow } from "~/server/services/admin/switch-library.server";
+import { getCapacityFigures, listLibraryRows, saveCapacityFigures, SWITCH_LIBRARY_MANAGE, type LibraryListRow } from "~/server/services/admin/switch-library.server";
 import { DataTable, type DataColumn } from "~/ui/DataTable";
 import { EmptyState } from "~/ui/EmptyState";
 import { Select, TextField } from "~/ui/Field";
@@ -15,8 +16,9 @@ import { Key } from "~/ui/Key";
 import { Pagination } from "~/ui/Pagination";
 import { Status } from "~/ui/Tag";
 import { adminMeta } from "../shell/meta";
-import { catalogRequest } from "./catalog.server";
+import { catalogRequest, formObject } from "./catalog.server";
 import { FilterFields, Thumb } from "./components/ui";
+import { StorageFigures, STORAGE_SECTION_ID } from "./switch-library-capacity-form";
 import { baghdadDay, formatSizeInput, formatUsdInput, isLibraryGameId, isoDayToEpoch, LIBRARY_CSV_MAX_ROWS, normalizeGameId, sizeLabel, usdLabel } from "./switch-library-input";
 import { filterLibrary, filtersQuery, HIDDEN_FILTERS, LIBRARY_PAGE_SIZE, LIBRARY_SORTS, libraryItems, oneOf, PRICE_FILTERS, readFilters, SIZE_FILTERS, type LibraryFilters, type LibraryItem } from "./switch-library-list";
 import { GameName, LIBRARY_PATH, libraryGamePath, useLibraryList, useLibraryT } from "./switch-library-ui";
@@ -28,17 +30,39 @@ import { GameName, LIBRARY_PATH, libraryGamePath, useLibraryList, useLibraryT } 
  * sorting; pages of 50. Filters live in the address (shareable, survive Back) without a request: they are applied in
  * the browser and written with history.replaceState. Reading needs catalog.product.read; the import, the export and
  * the sheet of the games shown need catalog.switch_library.manage.
+ *
+ * At its foot (#storage): the planner's STORAGE FIGURES (setting builder.switch.capacity — the settings page links
+ * here), with a live preview of the space they give per card size. Shown to every reader; changed by those who hold
+ * the setting's own permission (settings.manage), through the settings service (the action below).
  */
 export async function loader({ context }: Route.LoaderArgs) {
   const { db, actor, locale, now } = await catalogRequest(context, "catalog.product.read");
-  const rows = await listLibraryRows(db, actor);
+  const [rows, capacity] = await Promise.all([listLibraryRows(db, actor), getCapacityFigures(db, actor)]);
   return {
     rows,
+    capacity,
     today: baghdadDay(now),
     can: { manage: can(actor, SWITCH_LIBRARY_MANAGE) },
     title: serverT(locale, "admin-switch-library")("title"),
     i18n: messagesFor(locale, "admin-switch-library"),
   };
+}
+
+/**
+ * intent=capacity — the storage figures (saveCapacityFigures checks the setting's own permission first). Field errors
+ * stay KEYS here ("value.cardMargin": "too_small"): the form words each one for its own figure and bounds.
+ */
+export async function action({ request, context }: Route.ActionArgs) {
+  const req = await catalogRequest(context, "catalog.product.read");
+  const form = formObject(await request.formData());
+  if (form.intent !== "capacity") return data({ ok: false as const, intent: typeof form.intent === "string" ? form.intent : "", code: "invalid" }, { status: 400 });
+  try {
+    return { ok: true as const, intent: "capacity", ...(await saveCapacityFigures(req.db, req.actor, form, req.now)) };
+  } catch (error) {
+    const failure = toAppError(error);
+    if (!failure) throw error;
+    return data({ ok: false as const, intent: "capacity", code: failure.code, fields: failure.fields }, { status: failure.status });
+  }
 }
 
 /** Filters and pages change in the browser only: the rows are the same. */
@@ -54,7 +78,7 @@ export default function SwitchLibraryList({ loaderData }: Route.ComponentProps) 
   const f = useFormat();
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const { rows, can: allowed, today } = loaderData;
+  const { rows, can: allowed, today, capacity } = loaderData;
   const { status, list, retry } = useLibraryList();
 
   const [filters, setFilters] = useState<LibraryFilters>(() => readFilters(params));
@@ -68,6 +92,11 @@ export default function SwitchLibraryList({ loaderData }: Route.ComponentProps) 
     const next = `${window.location.pathname}${filtersQuery(filters)}`;
     if (next !== `${window.location.pathname}${window.location.search}`) window.history.replaceState(window.history.state, "", next);
   }, [filters]);
+  // A link to the storage figures (#storage) lands before the open list has filled the page above them: once the list
+  // is in (or has failed), go there again.
+  useEffect(() => {
+    if (status !== "loading" && window.location.hash === `#${STORAGE_SECTION_ID}`) document.getElementById(STORAGE_SECTION_ID)?.scrollIntoView({ block: "start" });
+  }, [status]);
   const change = (patch: Partial<LibraryFilters>) => setFilters((current) => ({ ...current, page: 1, ...patch }));
 
   const items = useMemo(() => libraryItems(list?.games ?? [], rows), [list, rows]);
@@ -159,21 +188,27 @@ export default function SwitchLibraryList({ loaderData }: Route.ComponentProps) 
       <header className="adm-page-head">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <h1 className="adm-title">{t("title")}</h1>
-          {allowed.manage ? (
-            <div className="flex flex-wrap gap-2">
-              <Key as="a" href={`${LIBRARY_PATH}/export`} icon="download-simple" variant="quiet">
-                {t("list.export")}
-              </Key>
-              <Key as={Link} to={`${LIBRARY_PATH}/import`} icon="upload-simple" variant="ink">
-                {t("list.import")}
-              </Key>
-            </div>
-          ) : null}
+          <div className="flex flex-wrap gap-2">
+            {/* the storage figures sit at the page's foot, under a list that can be long */}
+            <Key as="a" href={`#${STORAGE_SECTION_ID}`} icon="hard-drives" variant="quiet">
+              {t("storage.jump")}
+            </Key>
+            {allowed.manage ? (
+              <>
+                <Key as="a" href={`${LIBRARY_PATH}/export`} icon="download-simple" variant="quiet">
+                  {t("list.export")}
+                </Key>
+                <Key as={Link} to={`${LIBRARY_PATH}/import`} icon="upload-simple" variant="ink">
+                  {t("list.import")}
+                </Key>
+              </>
+            ) : null}
+          </div>
         </div>
         <p className="max-w-[75ch] type-body text-ink-2">{t("lead")}</p>
         <p className="flex flex-wrap gap-x-4 gap-y-1 type-caption text-ink-2">
           {status === "ready" ? (
-            <span className="nums">{t("list.summary", { games: f.number(counts.games), sized: f.number(counts.sized), priced: f.number(counts.priced), hidden: f.number(counts.hidden) })}</span>
+            <span className="nums">{t("list.summary", { games: t("list.games", { count: counts.games, n: f.number(counts.games) }), sized: f.number(counts.sized), priced: f.number(counts.priced), hidden: f.number(counts.hidden) })}</span>
           ) : null}
           {list?.asOf ? <span>{t("list.asOf", { date: f.date(isoDayToEpoch(list.asOf.slice(0, 10)), "medium") })}</span> : null}
         </p>
@@ -230,7 +265,7 @@ export default function SwitchLibraryList({ loaderData }: Route.ComponentProps) 
       <section className="adm-section" aria-labelledby="library-results">
         <div className="adm-section__head">
           <h2 id="library-results" className="adm-h2" aria-live="polite">
-            {waiting ? t("list.loading") : t("list.shown", { count: shown.length })}
+            {waiting ? t("list.loading") : t("list.games", { count: shown.length, n: f.number(shown.length) })}
           </h2>
           {allowed.manage && shown.length > 0 && !waiting ? (
             <div className="grid justify-items-start gap-1 md:justify-items-end">
@@ -305,6 +340,8 @@ export default function SwitchLibraryList({ loaderData }: Route.ComponentProps) 
       </section>
 
       <OpenById onOpen={(id) => navigate(libraryGamePath(id))} />
+
+      <StorageFigures figures={capacity} />
     </>
   );
 }

@@ -37,12 +37,14 @@ describe("edge cache: which requests may be answered from the colo's cache", () 
     }
   });
 
-  it("caches the Switch builder's public JSON at its own address only, without a query (2026-11-21)", () => {
+  it("caches the Switch builder's public JSON at its own address only, whatever query or cookie comes with it (2026-11-21)", () => {
     expect(edgeCacheable(req("/api/switch-library"))).toBe(true);
-    for (const path of ["/api/switch-library?rev=1", "/api/switch-library?_routes=x", "/api/switch-library/", "/en/api/switch-library", "/ckb/api/switch-library", "/api/switch-library.data", "/api/switch-libraryx", "/api/switch"]) {
+    // the route reads neither the query nor cookies: one copy per path, so neither can force a database read
+    for (const path of ["/api/switch-library?rev=1", "/api/switch-library?x=1&y=2"]) expect(edgeCacheable(req(path)), path).toBe(true);
+    for (const path of ["/api/switch-library/", "/en/api/switch-library", "/ckb/api/switch-library", "/api/switch-library.data", "/api/switch-libraryx", "/api/switch"]) {
       expect(edgeCacheable(req(path)), path).toBe(false);
     }
-    expect(edgeCacheable(req("/api/switch-library", { headers: { Cookie: "tt_cart=abc" } }))).toBe(false);
+    expect(edgeCacheable(req("/api/switch-library", { headers: { Cookie: "tt_cart=abc" } }))).toBe(true);
     expect(edgeCacheable(req("/api/switch-library", { headers: { Cookie: "__cf_bm=x" } }))).toBe(true);
     expect(edgeCacheable(req("/api/switch-library", { headers: { Authorization: "Bearer x" } }))).toBe(false);
     expect(edgeCacheable(req("/api/switch-library", { method: "POST" }))).toBe(false);

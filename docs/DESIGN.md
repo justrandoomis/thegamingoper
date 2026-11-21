@@ -871,6 +871,8 @@ The admin density also pins the 1.0 type roles (`type-title`, `type-section`, `t
 | demo | متجر تجريبي · سعر تجريبي · سعر ومخزون تجريبيان · طلب تجريبي | Demo store · Demo price · Demo price and stock · Demo order | «الموقع قيد الإنشاء» |
 | platform names | Nintendo · PlayStation · Xbox · الأجهزة المحمولة · الكمبيوتر (ckb کۆمپیوتەر; the card line's short «PC») | Nintendo · PlayStation · Xbox · Handheld PCs · PC | «XBOX»; «الحاسوب الشخصي» as the section's name |
 | brand | طمطم (ar and ckb) | TamTam | mixed spellings in ckb |
+| a game on a game card (Switch builder, 2026-11-21) | شريط (ckb کارتریج) — «شريط من طمطم» for TamTam's physical copy; the digital copy is «النسخة الرقمية» | cartridge · digital copy | ckb «کارتی یاری» (clashes with «کارتی بیرگە» = memory card and «کارتی eShop») |
+| memory card (Switch builder) | بطاقة الذاكرة (ckb کارتی بیرگە) | memory card | «كارت ميموري» in copy |
 | delivery fact | التوصيل 5,000 د.ع لكل المحافظات | Delivery: 5,000 IQD to every governorate | any time promise |
 
 Every Sorani string is reviewed by a native reader before launch.

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "35be7c5c-b3fa-41e8-8b84-3eec251411cd",
+  "id": "e4d6d405-edde-44b6-9e11-51666d9c0f86",
   "prevId": "b7fd0cb7-c0fa-468b-acd7-99d4be3065cf",
   "tables": {
     "accounts": {
@@ -25552,6 +25552,13 @@
           "name": "switch_library_entries_updated_idx",
           "columns": [
             "updated_at"
+          ],
+          "isUnique": false
+        },
+        "switch_library_entries_image_idx": {
+          "name": "switch_library_entries_image_idx",
+          "columns": [
+            "image_file_id"
           ],
           "isUnique": false
         }

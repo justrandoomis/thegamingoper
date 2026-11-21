@@ -461,6 +461,12 @@ html:not([data-motion-ready]) [data-density="admin"] :is(.key--quiet, .key--ghos
 .table tr[aria-selected="true"] td:first-child {
   border-inline-start: 3px solid var(--ink);
 }
+/* a row marked for attention without claiming ARIA selection (an import preview's rows with errors): the same niche
+   fill and ink bar, set on the row — the collapsed border lands on its first cell's start edge */
+.table tr[data-state="error"] {
+  background: var(--niche);
+  border-inline-start: 3px solid var(--ink);
+}
 
 /* ───────────────────────────── preference tiers for the admin's 1.0 materials ───────────────────────────── */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {

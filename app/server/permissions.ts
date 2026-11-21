@@ -83,7 +83,7 @@ export const PERMISSION_DEFS = {
   "catalog.compatibility.verify": p("catalog", "اعتماد قاعدة توافق كمتحقق منها", "Mark a compatibility rule as verified"),
   "catalog.bundle.manage": p("catalog", "إدارة الحزم ومكوناتها", "Manage bundles and their components"),
   "catalog.relation.manage": p("catalog", "إدارة المنتجات المكملة والبدائل والترقيات", "Manage related products: accessories, alternatives and upgrades"),
-  "catalog.switch_library.manage": p("catalog", "إدارة مكتبة ألعاب Switch: الأحجام والأسعار والمقاطع والصور والأوصاف، والاستيراد والتصدير بملف CSV", "Manage the Switch game library: sizes, prices, trailers, pictures and descriptions, with CSV import and export"),
+  "catalog.switch_library.manage": p("catalog", "إدارة مكتبة ألعاب Switch: الأحجام والأسعار والعروض الدعائية والصور والأوصاف، والاستيراد والتصدير بملف CSV", "Manage the Switch game library: sizes, prices, trailers, pictures and descriptions, with CSV import and export"),
 
   // ── 03 pricing
   "pricing.price.update": p("pricing", "طلب تغيير سعر البيع", "Request a selling-price change"),

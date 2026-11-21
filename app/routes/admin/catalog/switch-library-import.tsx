@@ -5,13 +5,15 @@ import type { Route } from "./+types/switch-library-import";
 import { Icon } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { useFormat } from "~/i18n/react";
+import { readFormData } from "~/server/body.server";
+import { AppError, toAppError } from "~/server/errors";
 import { applyLibraryCsv, previewLibraryCsv, SWITCH_LIBRARY_MANAGE, type ApplyCsvResult, type LibraryCsvPlan, type LibraryCsvRow } from "~/server/services/admin/switch-library.server";
 import { ConfirmDialog } from "~/ui/Dialog";
 import { Key } from "~/ui/Key";
 import { Status, type StatusTone } from "~/ui/Tag";
 import { adminMeta } from "../shell/meta";
-import { catalogRequest, enforceUploadLimit, runIntent } from "./catalog.server";
-import { LIBRARY_CSV_COLUMNS, LIBRARY_CSV_MAX_CHANGES, LIBRARY_CSV_MAX_ROWS, LIBRARY_CSV_READ_ONLY } from "./switch-library-input";
+import { catalogRequest, enforceUploadLimit, failed, runIntent } from "./catalog.server";
+import { LIBRARY_CSV_COLUMNS, LIBRARY_CSV_MAX_BODY_BYTES, LIBRARY_CSV_MAX_CHANGES, LIBRARY_CSV_MAX_ROWS, LIBRARY_CSV_READ_ONLY } from "./switch-library-input";
 import { GameName, LIBRARY_PATH, LibraryFailure, isLibraryFailure, libraryGamePath, useLibraryErrors, useLibraryFieldError, useLibraryList, useLibraryT, useLibraryToast } from "./switch-library-ui";
 
 /**
@@ -26,20 +28,27 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { title: serverT(locale, "admin-switch-library")("importer.title"), i18n: messagesFor(locale, "admin-switch-library") };
 }
 
+/**
+ * Both intents send the file: the upload limit is counted BEFORE the body is read, and the body is read only up to the
+ * CSV limit and its few fields — never to the end of an oversized or chunked body (body.server readFormData).
+ */
 export async function action({ request, context }: Route.ActionArgs) {
   const req = await catalogRequest(context, SWITCH_LIBRARY_MANAGE);
-  const form = await request.formData();
+  let form: FormData;
+  try {
+    await enforceUploadLimit(req);
+    form = await readFormData(request, LIBRARY_CSV_MAX_BODY_BYTES);
+  } catch (error) {
+    // "Too large" without its field key: the shared sentence for that key speaks of a picture; the page words it with
+    // this namespace's errors.upload_too_large, which names the CSV limit (as the service does for a file over 2 MB).
+    const failure = toAppError(error);
+    return failed(failure?.code === "upload_too_large" ? new AppError("upload_too_large", 413) : error, req.locale);
+  }
   const file = form.get("file");
-  const fileName = file instanceof File ? file.name.slice(0, 120) : undefined;
   return runIntent(req, form.get("intent"), {
-    preview: async () => {
-      await enforceUploadLimit(req);
-      return { plan: await previewLibraryCsv(req.db, req.actor, file, req.now) };
-    },
-    apply: async () => {
-      await enforceUploadLimit(req);
-      return { result: await applyLibraryCsv(req.db, req.actor, file, { fingerprint: form.get("fingerprint"), fileName }, req.now) };
-    },
+    preview: async () => ({ plan: await previewLibraryCsv(req.db, req.actor, file, req.now) }),
+    // the service cleans the file's name before it reaches the audit trail
+    apply: async () => ({ result: await applyLibraryCsv(req.db, req.actor, file, { fingerprint: form.get("fingerprint"), fileName: file instanceof File ? file.name : undefined }, req.now) }),
   });
 }
 
@@ -73,7 +82,8 @@ export default function SwitchLibraryImport() {
 
   useLibraryToast(apply, (data) => {
     const result = data.result as ApplyCsvResult | undefined;
-    return result ? t("importer.applied", { count: f.number(result.created + result.updated) }) : null;
+    const games = result ? result.created + result.updated : 0;
+    return result ? t("importer.applied", { count: games, n: f.number(games) }) : null;
   });
   useEffect(() => {
     if (apply.state === "idle" && apply.data) setConfirm(false);
@@ -244,7 +254,7 @@ export default function SwitchLibraryImport() {
           {plan.tooManyChanges ? (
             <p className="adm-notice adm-notice--warn" role="alert">
               <Icon name="warning" size={18} />
-              <span>{t("importer.tooMany", { count: f.number(changes), max: f.number(LIBRARY_CSV_MAX_CHANGES) })}</span>
+              <span>{t("importer.tooMany", { count: changes, n: f.number(changes), max: f.number(LIBRARY_CSV_MAX_CHANGES) })}</span>
             </p>
           ) : null}
           {plan.fileErrors.length === 0 && changes === 0 && plan.totals.error === 0 ? <p className="adm-notice">{t("importer.noChanges")}</p> : null}
@@ -262,14 +272,14 @@ export default function SwitchLibraryImport() {
             </div>
           ) : null}
           {plan.rows.length > 0 ? <PlanTable rows={plan.rows} /> : null}
-          {plan.moreRows > 0 ? <p className="type-caption text-ink-2">{t("importer.moreRows", { count: f.number(plan.moreRows) })}</p> : null}
+          {plan.moreRows > 0 ? <p className="type-caption text-ink-2">{t("importer.moreRows", { count: plan.moreRows, n: f.number(plan.moreRows) })}</p> : null}
         </section>
       ) : null}
 
       <ConfirmDialog
         open={confirm}
         onClose={() => setConfirm(false)}
-        title={t("importer.applyQ", { count: f.number(changes) })}
+        title={t("importer.applyQ", { count: changes, n: f.number(changes) })}
         consequence={t("importer.applyDo")}
         confirmLabel={t("importer.apply")}
         cancelLabel={t("common.cancel")}
@@ -332,7 +342,7 @@ function PlanTable({ rows }: { rows: LibraryCsvRow[] }) {
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.line} aria-selected={row.action === "error" || undefined}>
+            <tr key={row.line} data-state={row.action === "error" ? "error" : undefined}>
               <td className="nums align-top">{f.number(row.line)}</td>
               <td className="py-2 align-top">
                 {row.gameId && row.action !== "error" ? (

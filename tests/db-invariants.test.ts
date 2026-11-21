@@ -467,7 +467,7 @@ describe("resetting a database (scripts/db-reset.ts)", () => {
       const left = (await d1.prepare("SELECT name FROM sqlite_master WHERE name NOT LIKE 'sqlite\\_%' ESCAPE '\\' AND name NOT LIKE '\\_cf\\_%' ESCAPE '\\'").all<{ name: string }>()).results;
       expect(left).toEqual([]);
 
-      expect(await applyMigrations(d1)).toEqual(["0000_base.sql", "0001_invariants.sql", "0002_search.sql", "0003_append_only_no_replace.sql", "0004_accounts_access_ops.sql", "0005_cart_items_cart_idx.sql"]);
+      expect(await applyMigrations(d1)).toEqual(["0000_base.sql", "0001_invariants.sql", "0002_search.sql", "0003_append_only_no_replace.sql", "0004_accounts_access_ops.sql", "0005_cart_items_cart_idx.sql", "0006_switch_library_entries.sql"]);
       expect(await applyMigrations(d1)).toEqual([]);
       await seedReference(db, NOW);
       expect((await db.select().from(governorates)).length).toBe(19);

@@ -174,8 +174,8 @@ Research behind every decision: `D:/tt-tmp/switch-lib/reports/` — `ui-kit.md`,
   description (TamTam's in the page language; else the Wikipedia extract in the page language, else English with
   `lang="en"`, always with attribution), trailer (YouTube id → click-to-load `youtube-nocookie.com` embed; nothing
   loads before the tap), links (eShop page, Metacritic page, Wikipedia), format choice (cartridge/digital) when TamTam
-  sells the cartridge, and the foot key «أضف إلى جهازي» / «أزلها» (disabled with the reason when it does not fit or
-  has no size). Genre/mode labels: `useT("switch-builder")` keys `genre.<key>` / `mode.<key>` (storefront-ui owns them).
+  sells the cartridge, and the foot key «اختر هذه اللعبة» / «أزلها من ألعابك» — the grid's verb; the game joins the
+  shopper's plan, never "the console" (§1) — aria-disabled with the reason when it does not fit or has no size. Genre/mode labels: `useT("switch-builder")` keys `genre.<key>` / `mode.<key>` (storefront-ui owns them).
 
 ### 6.7 Guide (sheet-and-tour owner) — `useBuilderTour(step, {ready})`: per-step spotlight steps over `data-tour`
   targets (missing targets are skipped): a --scrim layer with a clip-path cut-out (no box-shadow spread), a focus

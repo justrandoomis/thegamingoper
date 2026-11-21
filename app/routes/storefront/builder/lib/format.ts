@@ -8,7 +8,7 @@
 import { useT, type Formatters } from "~/i18n/react";
 import type { TFunction } from "~/i18n/translate";
 import { formatMoney } from "~/lib/money";
-import { GIB, toGiB } from "~/lib/switch-builder/storage";
+import { digitsToTell, GIB, toGiB } from "~/lib/switch-builder/storage";
 import { isolate } from "~/ui/BidiText";
 
 const NBSP = " ";
@@ -20,11 +20,16 @@ export function gbText(f: Pick<Formatters, "number">, bytes: number, digits: 0 |
 }
 
 /**
- * A shortfall («تنقص 4.1 GB»): rounded UP, so it is never understated, with two decimals under 0.1 GB (a game 40 MB
- * too big says «0.04 GB», never «0.0 GB»); at least 0.01 GB.
+ * How much bigger one size is than another — a game's need than the space left («لا تتّسع · تنقص 0.04 GB»), the chosen
+ * games than the plan's space («ألعابك أكبر من المساحة بـ 0.03 GB»). Decimals as the details sheet chooses them for the
+ * two sizes behind it (storage.ts digitsToTell: two when one decimal would make them look alike), and two for any gap
+ * under 0.1 GB — one decimal would print «0.0 GB», or make 0.02 GB look like 0.1. Rounded UP, so it is never
+ * understated; at least 0.01 GB. Nothing (an empty string) when the first size is not the bigger one.
  */
-export function shortfallText(f: Pick<Formatters, "number">, bytes: number): string {
-  const digits = bytes < 0.1 * GIB ? 2 : 1;
+export function shortfallText(f: Pick<Formatters, "number">, needBytes: number, leftBytes: number): string {
+  const bytes = needBytes - leftBytes;
+  if (!(bytes > 0)) return "";
+  const digits = digitsToTell(needBytes, leftBytes) === 2 || bytes < 0.1 * GIB ? 2 : 1;
   const factor = 10 ** digits;
   // (a millionth of a step forgiven: a figure typed in GB, stored as whole bytes, lands a hair above itself)
   const value = Math.max(1, Math.ceil((bytes / GIB) * factor - 1e-6)) / factor;

@@ -6,7 +6,12 @@
  * models, to plan the space on the shopper's own console — no console line in the cart. Each model says how much of
  * its memory is left for games; the Lite says it is played in the hand only.
  *
- * The choices are native radios (arrow keys, the dot's drawn moment); the plan changes at once.
+ * A plan kept from an earlier visit may name a console TamTam no longer sells (the Lite, sold then, archived since): the
+ * buy list then has no model checked, so a note says why and what to do — it never sits in the plan unexplained (QA
+ * 2026-11-21).
+ *
+ * The choices are native radios (arrow keys, the dot's drawn moment) in a group named by the list's title (WCAG 1.3.1:
+ * entering the list says «أجهزة Switch في طمطم»); the plan changes at once.
  */
 import { useId, type ReactNode } from "react";
 
@@ -21,6 +26,7 @@ import { BidiText, isolate } from "~/ui/BidiText";
 import { cx } from "~/ui/cx";
 import { FieldGroup, OptionCard } from "~/ui/Field";
 import { Niche } from "~/ui/Niche";
+import { Note } from "~/ui/Note";
 import { Price } from "~/ui/Price";
 import { Render } from "~/ui/Stage";
 import { Swatches } from "~/ui/Swatch";
@@ -54,6 +60,8 @@ export function DeviceStep({ catalog, plan, capacity, onDevice }: DeviceStepProp
   const name = useId();
   const sold = soldModels(catalog);
   const mode = plan.device.owned ? "have" : "buy";
+  // a console to buy that TamTam no longer sells (a plan from an earlier visit)
+  const stale = !plan.device.owned && !sold.includes(plan.device.model);
 
   const choose = (next: "buy" | "have") => {
     if (next === mode) return;
@@ -85,12 +93,17 @@ export function DeviceStep({ catalog, plan, capacity, onDevice }: DeviceStepProp
         </FieldGroup>
       </div>
 
+      {stale ? (
+        <Note tone="warning" icon="storefront">
+          {t(sold.length > 0 ? "device.stale" : "device.staleNone", { name: t(`device.models.${plan.device.model}`) })}
+        </Note>
+      ) : null}
+
       {mode === "buy" ? (
         <BuyList catalog={catalog} plan={plan} capacity={capacity} sold={sold} onDevice={onDevice} />
       ) : (
         <OwnedList plan={plan} capacity={capacity} onDevice={onDevice} catalog={catalog} />
       )}
-
     </div>
   );
 }
@@ -114,7 +127,7 @@ function BuyList({ catalog, plan, capacity, sold, onDevice }: { catalog: Builder
   const fact = useInternalFact(capacity);
   if (sold.length === 0) return null;
   return (
-    <section className="sb-models" data-tour="device-list" aria-labelledby={`${name}-title`}>
+    <div className="sb-models" data-tour="device-list" role="group" aria-labelledby={`${name}-title`}>
       <h3 id={`${name}-title`} className="sb-h3">
         {t("device.soldTitle")}
       </h3>
@@ -160,7 +173,7 @@ function BuyList({ catalog, plan, capacity, sold, onDevice }: { catalog: Builder
           );
         })}
       </ul>
-    </section>
+    </div>
   );
 }
 
@@ -169,7 +182,7 @@ function OwnedList({ catalog, plan, capacity, onDevice }: { catalog: BuilderCata
   const name = useId();
   const fact = useInternalFact(capacity);
   return (
-    <section className="sb-models" data-tour="device-list" aria-labelledby={`${name}-title`}>
+    <div className="sb-models" data-tour="device-list" role="group" aria-labelledby={`${name}-title`}>
       <h3 id={`${name}-title`} className="sb-h3">
         {t("device.ownedTitle")}
       </h3>
@@ -189,7 +202,7 @@ function OwnedList({ catalog, plan, capacity, onDevice }: { catalog: BuilderCata
           </li>
         ))}
       </ul>
-    </section>
+    </div>
   );
 }
 

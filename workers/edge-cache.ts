@@ -68,7 +68,11 @@ export function edgeCacheable(request: Request): boolean {
   const url = new URL(request.url);
   const hit = cacheablePath(url.pathname);
   if (!hit) return false;
-  // HTML and JSON: no query at all. ".data": only React Router's own "_routes" parameter.
+  if (request.headers.get("Authorization")) return false;
+  // A public JSON route reads neither the query nor cookies: every such request gets the one copy kept for its path
+  // (cacheKey drops the query), so "?x=1" or a cookie cannot be used to reach the database on each request.
+  if (CACHEABLE_JSON.has(url.pathname)) return true;
+  // HTML: no query at all. ".data": only React Router's own "_routes" parameter.
   for (const key of url.searchParams.keys()) if (!(hit.data && key === "_routes")) return false;
   if (!onlyCloudflareCookies(request.headers.get("Cookie"))) return false;
   if (request.headers.get("Authorization")) return false;
@@ -77,6 +81,7 @@ export function edgeCacheable(request: Request): boolean {
 
 function cacheKey(request: Request, version: string): Request {
   const url = new URL(request.url);
+  if (CACHEABLE_JSON.has(url.pathname)) url.search = "";
   url.searchParams.set("__v", version);
   return new Request(url.toString(), { method: "GET" });
 }

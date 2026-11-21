@@ -38,3 +38,14 @@ export function previousStep(step: BuilderStep): BuilderStep | null {
   const index = stepIndex(step);
   return index > 0 ? BUILDER_STEPS[index - 1] : null;
 }
+
+/**
+ * A step's document title (the route's meta, read from the address — a step change runs no loader): the builder's own
+ * on the first step, «اختر ألعابك · جهّز جهاز Switch» on the others, so the tab, the history list and a screen reader's
+ * window title say which step it is (QA 2026-11-21: all four said the same). Pure.
+ */
+export function stepTitle(base: string | undefined, steps: Partial<Record<Exclude<BuilderStep, "device">, string>> | undefined, search: string): string | undefined {
+  const step = stepOf(search);
+  const own = step === "device" ? undefined : steps?.[step];
+  return own && base ? `${own} · ${base}` : base;
+}

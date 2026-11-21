@@ -32,12 +32,13 @@ import {
   GameSheetFoot,
   gameSheetModel,
   isoDay,
+  isWikipediaArticle,
   localTitle,
   WIKIPEDIA_LICENCE_URL,
   type GameSheetInput,
   type GameSheetView,
 } from "~/routes/storefront/builder/components/GameSheet";
-import { holeAround, spotlightClip } from "~/routes/storefront/builder/components/SpotlightTour";
+import { cleanCut, clipName, holeAround, holeInRoom, spotlightClip, type RowBox } from "~/routes/storefront/builder/components/SpotlightTour";
 import {
   CLOSED_TOUR,
   createTourMemory,
@@ -46,10 +47,12 @@ import {
   parseTourMemory,
   readTourMemory,
   shouldAutoStart,
+  TOUR_KEEP_END,
   TOUR_STEPS,
   TOUR_STORAGE_KEY,
   TOUR_TARGETS,
   TOUR_TEXT_KEY,
+  tourKeeps,
   tourReducer,
   tourTargets,
   withOff,
@@ -58,7 +61,7 @@ import {
   type TourState,
   type TourTarget,
 } from "~/routes/storefront/builder/components/tour-steps";
-import { trailerSrc } from "~/routes/storefront/builder/components/TrailerEmbed";
+import { TRAILER_SANDBOX, trailerSrc } from "~/routes/storefront/builder/components/TrailerEmbed";
 import { createLongPress, LONG_PRESS_CLICK_WINDOW_MS, LONG_PRESS_DELAY_MS, LONG_PRESS_SWALLOW_MAX_MS, type PressPoint } from "~/routes/storefront/builder/lib/use-long-press";
 
 /* ───────────────────────────── long press ───────────────────────────── */
@@ -248,7 +251,7 @@ describe("useLongPress — the hold that opens a game's details", () => {
     // a second finger of the same hand is not a new press
     win.dispatchEvent(Object.assign(new Event("pointerdown"), { isPrimary: false }));
     expect(press.swallowing).toBe(true);
-    win.dispatchEvent(Object.assign(new Event("pointerdown"), { isPrimary: true })); // 150 ms later: «أضف إلى جهازي»
+    win.dispatchEvent(Object.assign(new Event("pointerdown"), { isPrimary: true })); // 150 ms later: «اختر هذه اللعبة»
     expect(press.swallowing).toBe(false);
     const tap = new Event("click", { cancelable: true });
     win.dispatchEvent(tap);
@@ -458,6 +461,59 @@ describe("the spotlight guide's rules", () => {
     // a radius larger than half the hole is cut to fit
     expect(spotlightClip({ width: 100, height: 100 }, { left: 10, top: 10, right: 30, bottom: 20 }, 40)).toContain("A5 5 0 0 1");
   });
+
+  /** A row tree: [top, bottom] and the rows inside (none: one piece, never cut). */
+  const row = (top: number, bottom: number, rows: RowBox[] = []): RowBox => ({ top, bottom, rows: () => rows });
+
+  it("a tall list keeps its start, and the hole stops between two options — never across one (memory, 390)", () => {
+    // div > fieldset > [legend, options > six cards with 8px between them]; the note docked at the bottom leaves 60–526
+    const cards = [row(100, 168), row(176, 262), row(270, 357), row(365, 452), row(460, 547), row(555, 622)];
+    const cardList = row(68, 622, [row(68, 622, [row(68, 94), row(100, 622, cards)])]);
+    expect(cleanCut(cardList, 526, "start")).toEqual({ kept: 452, cut: 460 });
+    const hole = holeInRoom({ left: 6, top: 60, right: 384, bottom: 630 }, { top: 60, bottom: 526 }, 8, cardList);
+    // the 256GB card is the last one lit; the ring runs in the gap above the 512GB card (half the gap of air)
+    expect(hole).toEqual({ left: 6, top: 60, right: 384, bottom: 456 });
+    // without rows to cut between, it stops at the edge of the room, as before
+    expect(holeInRoom({ left: 6, top: 60, right: 384, bottom: 630 }, { top: 60, bottom: 526 }, 8, null).bottom).toBe(526);
+  });
+
+  it("the review's lines keep their END in view (the total), cut between two lines under the note (review, 390)", () => {
+    expect(tourKeeps("review-lines")).toBe("end");
+    expect(tourKeeps("card-list")).toBe("start");
+    for (const target of TOUR_KEEP_END) expect(TOUR_TARGETS).toContain(target);
+    // section > [title, list of five lines touching each other, the total]; the note docked at the top ends at 318
+    const lines = [row(103, 217), row(217, 331), row(331, 445), row(445, 559), row(559, 684)];
+    const review = row(41, 760, [row(61, 87), row(103, 684, lines), row(700, 740)]);
+    // the second line crosses the room's edge by a pixel: it is left out whole
+    expect(cleanCut(review, 330, "end")).toEqual({ kept: 331, cut: 331 });
+    const hole = holeInRoom({ left: 6, top: 33, right: 384, bottom: 768 }, { top: 330, bottom: 768 }, 8, review);
+    expect(hole).toEqual({ left: 6, top: 331, right: 384, bottom: 768 });
+    // the cut crosses the last line, and no line of the list is left after it: the cut moves out to the section's own
+    // rows (the total stays, the whole list is left out); a cut in the gap between two rows hugs the next one
+    expect(cleanCut(review, 600, "end")).toEqual({ kept: 700, cut: 684 });
+    expect(cleanCut(review, 690, "end")).toEqual({ kept: 700, cut: 684 });
+    expect(cleanCut(review, 95, "start")).toEqual({ kept: 87, cut: 103 });
+    // a part with no rows has no clean cut
+    expect(cleanCut(row(0, 100), 50, "start")).toBeNull();
+  });
+
+  it("the hole never reaches over a bar the part is not in, and keeps a minimum size", () => {
+    // the room between the header (56) and the task bar (772), 4px in from each
+    const underBar = holeInRoom({ left: 6, top: 328, right: 384, bottom: 816 }, { top: 60, bottom: 768 }, 8, null);
+    expect(underBar.bottom).toBe(768);
+    expect(underBar.top).toBe(328);
+    const tiny = holeInRoom({ left: 6, top: 100, right: 384, bottom: 400 }, { top: 390, bottom: 395 }, 8, null);
+    expect(tiny.bottom - tiny.top).toBeGreaterThanOrEqual(24);
+  });
+
+  it("names the lit part briefly: whole words, «…» at the end, spaces folded", () => {
+    expect(clipName("  مساحة   الألعاب ")).toBe("مساحة الألعاب");
+    const long = clipName("بدون بطاقة ذاكرة الجهاز فقط ≈ 52 GB للألعاب 64GB ≈ 55 GB للألعاب على البطاقة غير متوفر في طمطم حالياً 128GB ≈ 111 GB");
+    expect(long.endsWith("…")).toBe(true);
+    expect(long.length).toBeLessThanOrEqual(101);
+    expect(long).not.toMatch(/\s…$/);
+    expect("بدون بطاقة ذاكرة الجهاز فقط ≈ 52 GB للألعاب 64GB ≈ 55 GB للألعاب على البطاقة غير متوفر في طمطم حالياً 128GB ≈ 111 GB".startsWith(long.slice(0, -1))).toBe(true);
+  });
 });
 
 /* ───────────────────────────── the details sheet ───────────────────────────── */
@@ -542,6 +598,9 @@ function renderSheet(view: GameSheetView, locale: Locale = "ar", prefs: Prefs = 
 
 const NB = " ";
 
+/** The foot's «اختر هذه اللعبة» resting with its reason (aria-disabled: it stays in the Tab order). */
+const BLOCKED_CHOOSE = /<button[^>]*aria-disabled="true"[^>]*>(?:(?!<\/button>).)*اختر هذه اللعبة/;
+
 describe("the game details sheet — decisions", () => {
   it("a game TamTam sells as an orderable cartridge starts as a cartridge, any other as digital", () => {
     expect(defaultFormat(CARTRIDGE, null)).toBe("cartridge");
@@ -570,6 +629,39 @@ describe("the game details sheet — decisions", () => {
     expect(aboutFor(EXTRAS, "error", "ar")).toEqual({ kind: "error" });
     expect(aboutFor(own, "error", "ckb")).toMatchObject({ kind: "tamtam", lang: "en" });
     expect(aboutFor(EXTRAS, null, "en")).toEqual({ kind: "none" });
+  });
+
+  it("a Wikipedia text is shown and linked only with a real article link of its own language", () => {
+    expect(isWikipediaArticle("https://ar.wikipedia.org/wiki/x", "ar")).toBe(true);
+    expect(isWikipediaArticle("https://ckb.wikipedia.org/wiki/%D9%86%D8%A7%D9%88", "ckb")).toBe(true);
+    for (const [url, lang] of [
+      ["http://en.wikipedia.org/wiki/Hades", "en"], // not https
+      ["https://en.wikipedia.org/wiki/Hades", "ar"], // another language's host
+      ["https://en.wikipedia.org.example.com/wiki/Hades", "en"],
+      ["https://evil.example/wiki/Hades", "en"],
+      ["https://en.wikipedia.org/w/index.php?title=Hades", "en"], // not an article path
+      ["https://en.wikipedia.org/wiki/", "en"],
+      ["https://user:pass@en.wikipedia.org/wiki/Hades", "en"],
+      ["https://en.wikipedia.org:8443/wiki/Hades", "en"],
+      ["javascript:alert(1)", "en"],
+      ["data:text/html,<b>x</b>", "en"],
+      ["/wiki/Hades", "en"],
+      ["", "en"],
+    ] as const) {
+      expect(isWikipediaArticle(url, lang), url).toBe(false);
+    }
+    expect(isWikipediaArticle(undefined, "en")).toBe(false);
+
+    // an extract with another link is dropped (CC BY-SA needs the article link), and the next one is used
+    const hostile: GameDetails = { ...DETAILS, wikipedia: { ...DETAILS.wikipedia, ar: { ...DETAILS.wikipedia!.ar!, url: "https://evil.example/wiki/x" } } };
+    expect(aboutFor(EXTRAS, hostile, "ar")).toMatchObject({ kind: "wikipedia", lang: "en" });
+    expect(viewOf({ details: hostile }).model.wikipediaUrl).toBe(DETAILS.wikipedia?.en?.url);
+    const none: GameDetails = { ...DETAILS, wikipedia: { en: { ...DETAILS.wikipedia!.en!, url: "javascript:alert(1)" } } };
+    expect(aboutFor(EXTRAS, none, "en")).toEqual({ kind: "none" });
+    expect(viewOf({ details: none }, "en").model.wikipediaUrl).toBeNull();
+    const html = renderSheet(viewOf({ details: none }, "en"), "en");
+    expect(html).not.toContain("javascript:");
+    expect(html).not.toContain("Its Wikipedia article");
   });
 
   it("links out by plain URLs only (eShop page, Metacritic page, Wikipedia article)", () => {
@@ -606,8 +698,8 @@ describe("the game details sheet — server render of its states", () => {
     expect(html).toContain("ملفات الحفظ لا تُحسب");
     expect(html).toContain("قسنا الحجم على أجهزة طمطم بتاريخ 20/11/2026.");
     expect(html).toContain(`تتّسع: يبقى بعدها 83.5${NB}GB.`);
-    expect(html).toContain("أضف إلى جهازي");
-    expect(html).not.toMatch(/<button[^>]*disabled=""[^>]*>(?:(?!<\/button>).)*أضف إلى جهازي/);
+    expect(html).toContain("اختر هذه اللعبة");
+    expect(html).not.toMatch(BLOCKED_CHOOSE);
     // year · publisher · developer, the genre and play-mode words
     expect(html).toContain("2023");
     expect(html).toContain("Nintendo EPD");
@@ -622,23 +714,47 @@ describe("the game details sheet — server render of its states", () => {
     expect(html).toContain("لم يُضف بعد");
     expect(html).toContain("لم نضف حجم هذه اللعبة بعد، فلا يمكن أن تدخل في حساب المساحة.");
     expect(html).toContain("لم يُضف حجمها بعد، فلا يمكن اختيارها.");
-    expect(html).toMatch(/<button[^>]*disabled=""[^>]*>(?:(?!<\/button>).)*أضف إلى جهازي/);
+    expect(html).toMatch(BLOCKED_CHOOSE);
     expect(html).not.toContain("GB.");
   });
 
   it("does not fit: both figures, with two decimals where one decimal would print the same number", () => {
     const close = renderSheet(viewOf({ extras: { sizeBytes: bytesFromGiB(6.04) }, remainingBytes: bytesFromGiB(6.01) }));
     expect(close).toContain(`لا تتّسع: تحتاج 6.04${NB}GB، والمتبقي 6.01${NB}GB.`);
-    expect(close).toMatch(/<button[^>]*disabled=""[^>]*>(?:(?!<\/button>).)*أضف إلى جهازي/);
+    expect(close).toMatch(BLOCKED_CHOOSE);
     const far = renderSheet(viewOf({ extras: { sizeBytes: bytesFromGiB(20) }, remainingBytes: bytesFromGiB(6) }), "en");
     expect(far).toContain(`Does not fit: it needs 20.0${NB}GB and 6.0${NB}GB is left.`);
   });
 
+  it("a key that cannot act stays reachable: aria-disabled (never the native disabled), described by its reason", () => {
+    const html = renderSheet(viewOf({ extras: { sizeBytes: bytesFromGiB(20) }, remainingBytes: bytesFromGiB(6) }));
+    const key = /<button[^>]*class="key[^"]*sbs-foot__key"[^>]*>/.exec(html)?.[0] ?? "";
+    expect(key).toContain('aria-disabled="true"');
+    expect(key).not.toMatch(/\sdisabled=""/);
+    const reason = /aria-describedby="([^"]+)"/.exec(key)?.[1];
+    expect(reason).toBeTruthy();
+    expect(html).toMatch(new RegExp(`<p id="${reason}" class="sbs-fit" data-tone="danger">`));
+    // a key that can act carries no aria-disabled at all
+    expect(/<button[^>]*sbs-foot__key"[^>]*>/.exec(renderSheet(viewOf()))?.[0]).not.toContain("aria-disabled");
+  });
+
   it("chosen: the same key now removes it, and says what it takes", () => {
     const html = renderSheet(viewOf({ selected: { format: "digital" }, remainingBytes: bytesFromGiB(40) }));
-    expect(html).toContain("أزلها من جهازي");
-    expect(html).not.toContain("أضف إلى جهازي");
-    expect(html).toContain(`في جهازك: تأخذ 16.5${NB}GB، ويبقى 23.5${NB}GB.`);
+    expect(html).toContain("أزلها من ألعابك");
+    expect(html).not.toContain("اختر هذه اللعبة");
+    expect(html).toContain(`مختارة: تأخذ 16.5${NB}GB، ويبقى 23.5${NB}GB.`);
+  });
+
+  it("the key and its announcements choose a game for the plan, the grid's own verb — never put it on the console (§1)", () => {
+    for (const locale of LOCALE_CODES) {
+      const foot = (switchBuilderSheet[locale] as unknown as { foot: Record<string, string>; fit: Record<string, string> }).foot;
+      const fit = (switchBuilderSheet[locale] as unknown as { fit: Record<string, string> }).fit;
+      for (const words of [foot.add, foot.remove, foot.added, foot.removed, fit.chosen, fit.chosenLeft]) {
+        expect(words, `${locale}: ${words}`).not.toMatch(/جهاز|console|ئامێر/i);
+      }
+    }
+    expect(renderSheet(viewOf({}, "en"), "en")).toContain("Choose this game");
+    expect(renderSheet(viewOf({}, "ckb"), "ckb")).toContain("ئەم یارییە هەڵبژێرە");
   });
 
   it("cartridge vs digital: the choice only when TamTam sells the cartridge, each with its space and price", () => {
@@ -732,14 +848,67 @@ describe("the game details sheet — server render of its states", () => {
 
   it("the trailer is TamTam's own play key: nothing from YouTube is loaded before the tap", () => {
     const html = renderSheet(viewOf({ extras: { ...EXTRAS, trailerYouTubeId: "dQw4w9WgXcQ" } }));
-    expect(html).toContain("شغّل الإعلان");
+    expect(html).toContain("شغّل العرض الدعائي");
     expect(html).toContain("يُحمَّل الفيديو من YouTube فقط عندما تضغط تشغيل.");
     expect(html).not.toContain("<iframe");
     expect(html).not.toContain("youtube-nocookie.com");
     expect(html).not.toContain("ytimg");
     expect(html).not.toContain("dQw4w9WgXcQ");
     // an id that is not a video id shows no trailer at all
-    expect(renderSheet(viewOf({ extras: { ...EXTRAS, trailerYouTubeId: "<script>" } }))).not.toContain("شغّل الإعلان");
+    expect(renderSheet(viewOf({ extras: { ...EXTRAS, trailerYouTubeId: "<script>" } }))).not.toContain("شغّل العرض الدعائي");
+    // one word for the trailer, the privacy policy's: «العرض الدعائي» / «ڤیدیۆی ناساندن» — never «الإعلان» ("the ad")
+    expect(JSON.stringify(switchBuilderSheet.ar)).not.toContain("الإعلان");
+    expect(JSON.stringify(switchBuilderSheet.ckb)).not.toContain("ترەیلەر");
+  });
+
+  it("the player frame, once played, is sandboxed: its own origin's scripts, full screen and a new tab — nothing else", () => {
+    const allowed = TRAILER_SANDBOX.split(" ").sort();
+    expect(allowed).toEqual(["allow-popups", "allow-popups-to-escape-sandbox", "allow-presentation", "allow-same-origin", "allow-scripts"]);
+    for (const denied of ["allow-top-navigation", "allow-top-navigation-by-user-activation", "allow-forms", "allow-modals", "allow-downloads"]) {
+      expect(allowed).not.toContain(denied);
+    }
+  });
+
+  it("the meta line shows every fact, each « ·» kept with the fact before it (a wrapped line never starts with it)", () => {
+    const html = renderSheet(
+      viewOf({ game: { ...GAME, year: 2021, publishers: ["Nintendo", "The Pokémon Company", "Softclub"] }, details: { ...DETAILS, developers: ["Bandai Namco Studios", "Nintendo"] } }),
+      "en",
+    );
+    const meta = /<p class="sbs-meta">(.*?)<\/p>/.exec(html)?.[1] ?? "";
+    // year · two publishers · the developer not named already (Nintendo once); the regional distributor stays out
+    const fact = (name: string, sep = true) => `<span class="sbs-meta__fact"><bdi>${name}</bdi>${sep ? `${NB}·` : ""}</span>`;
+    expect(meta).toBe([fact("2021"), fact("Nintendo"), fact("The Pokémon Company"), fact("Bandai Namco Studios", false)].join(" "));
+    // a break can only follow a separator, never come before one: no "space ·" anywhere
+    expect(meta).not.toMatch(/ ·/);
+    expect(html).not.toContain("factline");
+  });
+
+  it("the English-only description says so BEFORE the English text, and the licence's name never breaks", () => {
+    const html = renderSheet(viewOf({}, "ckb"), "ckb");
+    const notice = html.indexOf("هێشتا وەسفی کوردی نییە");
+    const english = html.indexOf("Tears of the Kingdom is a 2023 action-adventure game.");
+    expect(notice).toBeGreaterThan(-1);
+    expect(english).toBeGreaterThan(notice);
+    expect(html).toMatch(/<a href="https:\/\/creativecommons\.org\/licenses\/by-sa\/4\.0\/"[^>]*class="[^"]*sbs-nowrap[^"]*"/);
+  });
+
+  it("over-full, a chosen game can still move to the format that needs less space (it only helps)", () => {
+    // chosen as a 16.5 GB digital copy in a plan that is over: nothing is left (0 bytes), the 1.2 GB cartridge still is
+    const over = viewOf({ cartridge: CARTRIDGE, selected: { format: "digital" }, remainingBytes: 0 });
+    const cartridge = over.model.options?.find((option) => option.format === "cartridge");
+    expect(cartridge).toMatchObject({ selectable: true, need: bytesFromGiB(1.2) });
+    const html = renderSheet(over);
+    expect(html).toContain(`يأخذ 1.2${NB}GB على الجهاز للتحديثات`);
+    expect(html).not.toContain(`تحتاج 1.2${NB}GB`);
+    // the other way round, a bigger format that does not fit stays refused, with both figures
+    const tight = viewOf({ cartridge: CARTRIDGE, selected: { format: "cartridge" }, remainingBytes: bytesFromGiB(5) });
+    expect(tight.model.options?.find((option) => option.format === "digital")?.selectable).toBe(false);
+    // a cartridge counted at the full size until it is measured needs no more than the digital copy: allowed
+    const unmeasured = viewOf({ cartridge: CARTRIDGE, extras: { sizeBytes: bytesFromGiB(16.5) }, selected: { format: "digital" }, remainingBytes: 0 });
+    expect(unmeasured.model.options?.find((option) => option.format === "cartridge")).toMatchObject({ fullSize: true, selectable: true });
+    // a format without any size is never "smaller"
+    const unsized = viewOf({ cartridge: CARTRIDGE, extras: {}, selected: { format: "digital" }, remainingBytes: 0 });
+    expect(unsized.model.options?.find((option) => option.format === "cartridge")?.selectable).toBe(false);
   });
 
   it("renders in every language", () => {

@@ -6,13 +6,14 @@ import { Icon } from "~/art/Icon";
 import { messagesFor, serverT } from "~/i18n/i18n.server";
 import { useFormat } from "~/i18n/react";
 import { can } from "~/server/actor";
+import { MAX_UPLOAD_BODY_BYTES, readFormData } from "~/server/body.server";
 import { getLibraryEntry, removeLibraryImage, saveLibraryEntry, SWITCH_LIBRARY_MANAGE, uploadLibraryImage } from "~/server/services/admin/switch-library.server";
 import { ConfirmDialog } from "~/ui/Dialog";
 import { Checkbox, TextArea, TextField } from "~/ui/Field";
 import { Key } from "~/ui/Key";
 import { Status } from "~/ui/Tag";
 import { adminMeta } from "../shell/meta";
-import { answered, blobStore, catalogRequest, enforceUploadLimit, formObject, runIntent } from "./catalog.server";
+import { answered, blobStore, catalogRequest, enforceUploadLimit, failed, formObject, runIntent } from "./catalog.server";
 import { Thumb } from "./components/ui";
 import {
   isoDayToEpoch,
@@ -50,17 +51,28 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   };
 }
 
+/**
+ * Only the picture form sends a file (multipart/form-data): its upload limit is counted BEFORE its body is read. Any
+ * body is read only up to one picture and its fields, never to the end of an oversized or chunked body
+ * (body.server readFormData). A save stays under that by far; a text pasted far over its own limit still reaches the
+ * service and is answered under its field.
+ */
 export async function action({ request, context, params }: Route.ActionArgs) {
   const req = await catalogRequest(context, SWITCH_LIBRARY_MANAGE);
-  const raw = await request.formData();
+  const multipart = /^multipart\/form-data/i.test(request.headers.get("Content-Type") ?? "");
+  let raw: FormData;
+  try {
+    if (multipart) await enforceUploadLimit(req);
+    raw = await readFormData(request, MAX_UPLOAD_BODY_BYTES);
+  } catch (error) {
+    return failed(error, req.locale);
+  }
   const form = formObject(raw);
   const base = { ...form, gameId: params.gameId };
   return runIntent(req, form.intent, {
     save: async () => saveLibraryEntry(req.db, req.actor, base, req.now),
-    upload: async () => {
-      await enforceUploadLimit(req);
-      return uploadLibraryImage(req.db, blobStore(), req.actor, base, raw.get("file"), req.now);
-    },
+    // counted above: a file only travels in a multipart body (anything else has no picture to store)
+    upload: async () => uploadLibraryImage(req.db, blobStore(), req.actor, base, raw.get("file"), req.now),
     remove_image: async () => removeLibraryImage(req.db, blobStore(), req.actor, base, req.now),
   });
 }

@@ -4,15 +4,25 @@
  * (./FiltersSheet) and sorted (a menu of radio rows). Games TamTam has a size for come first in every sort: only they
  * can join the space bar.
  *
- * At most 48 cards are added at a time («اعرض 48 لعبة أخرى»); each card below the first screen skips its rendering
- * work until it scrolls near (content-visibility in builder.css). Cards that stay slide to their new places when the
- * list changes (the catalogue's FLIP), new ones grow in; off under reduced motion.
+ * At most 48 cards are added at a time («اعرض 48 لعبة أخرى»), and every card is rendered — no content-visibility: it
+ * took the cards off screen out of the accessibility tree, so a screen reader moving by heading or list item found only
+ * the ones near the viewport (QA 2026-11-21). Cards that stay slide to their new places when the list changes (the
+ * catalogue's FLIP), new ones grow in; off under reduced motion.
+ *
+ * The keyboard: «تخطَّ قائمة الألعاب» (out of sight until Tab reaches it, after the sort key) goes to the step's
+ * «تابع» — the grid is two stops a card. «اعرض 48 لعبة أخرى» hands focus to the first new card (it stayed on the key,
+ * after them). Clearing a chip moves focus to the next chip, else to «الفلاتر»; so does «امسح الفلاتر» in the no-match
+ * state — never to <body> (WCAG 2.4.3). The live count says the number only; «الألعاب التي أضفنا حجمها تأتي أولاً» is
+ * beside it, said once with the page, not after every search.
  *
  * States: the list not built yet (LIBRARY_LIST_FILE is null) · loading (reserved geometry, no skeleton) · error with
- * retry · offline (it retries by itself when the connection comes back) · no game matches the search («امسح البحث»
- * gives the field its focus back) · no game matches the filters («امسح الفلاتر»).
+ * retry · offline (it retries by itself when the connection comes back, and says so in the builder's words) · the list
+ * was updated (a deploy deleted the files this page was loaded with: «حدّثنا قائمة الألعاب» and «حدّث الصفحة»,
+ * ./LibraryUpdated — also above the list when a game's details file is gone) · no game matches the search («امسح
+ * البحث» gives the field its focus back) · no game matches the filters («امسح الفلاتر»). The space bar draws no figure
+ * that depends on sizes not loaded yet.
  */
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { useFormat, useT } from "~/i18n/react";
 import type { PlanUsage } from "~/lib/switch-builder/plan";
@@ -35,7 +45,9 @@ import { activeFilterGroups, countsFor, NO_FILTERS, sortsFor, viewLibrary, type 
 import type { LibraryState } from "../lib/use-library";
 import { FiltersSheet, useBandLabel } from "./FiltersSheet";
 import { GameCard } from "./GameCard";
-import { SpaceMeter } from "./SpaceMeter";
+import { LibraryUpdated } from "./LibraryUpdated";
+import { SpaceMeter, type MeterFigures } from "./SpaceMeter";
+import { STEP_NEXT } from "./StepKeys";
 
 /** Cards added at a time. */
 export const GAMES_PAGE = 48;
@@ -64,6 +76,8 @@ export type GamesStepProps = {
   library: LibraryState;
   entries: readonly LibraryEntry[];
   usage: PlanUsage;
+  /** Whether the space bar's figures can be drawn yet (the chosen games' sizes have loaded). */
+  figures?: MeterFigures;
   chosen: ReadonlyMap<LibraryGameId, GameFormat>;
   view: GamesView;
   onView: (view: GamesView) => void;
@@ -73,16 +87,30 @@ export type GamesStepProps = {
   meterTour: boolean;
   /** Under an over-full meter: the way to a bigger card. */
   meterAction?: ReactNode;
+  /** A game's details file was gone (a newer list was published): the notice above the list. */
+  detailsUpdated?: boolean;
   /** ISO date of the list's Wikidata snapshot. */
   asOf: string | null;
+  /** The filters sheet's open state, when the page keeps it (it hides the task bar's keys under open sheets). */
+  filtersOpen?: boolean;
+  onFiltersOpen?: (open: boolean) => void;
 };
 
-export function GamesStep({ library, entries, usage, chosen, view, onView, onToggle, onOpen, meterTour, meterAction, asOf }: GamesStepProps) {
+/** The step's primary on screen (the task bar's below 1024, the aside's from 1024): where the skip key sends focus. */
+function focusStepPrimary(): void {
+  const keys = [...document.querySelectorAll<HTMLElement>(`[${STEP_NEXT}]`)];
+  keys.find((key) => key.getClientRects().length > 0)?.focus();
+}
+
+export function GamesStep({ library, entries, usage, figures = "known", chosen, view, onView, onToggle, onOpen, meterTour, meterAction, detailsUpdated = false, asOf, filtersOpen, onFiltersOpen }: GamesStepProps) {
   const t = useBuilderT();
   const f = useFormat();
   const field = useRef<HTMLInputElement>(null);
   const grid = useRef<HTMLUListElement>(null);
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const filtersKey = useRef<HTMLButtonElement>(null);
+  const [ownSheetOpen, setOwnSheetOpen] = useState(false);
+  const sheetOpen = filtersOpen ?? ownSheetOpen;
+  const setSheetOpen = onFiltersOpen ?? setOwnSheetOpen;
   const query = useDebounced(view.query, SEARCH_DEBOUNCE_MS);
   const remainingBytes = usage.usage.remainingBytes;
   const sorts = useMemo(() => sortsFor(entries), [entries]);
@@ -91,6 +119,20 @@ export function GamesStep({ library, entries, usage, chosen, view, onView, onTog
   const results = useMemo(() => viewLibrary(entries, listView), [entries, listView]);
   const visible = results.slice(0, view.shown);
   useFlip(grid, visible.map((entry) => entry.game.id).join("|"));
+  // «اعرض 48 لعبة أخرى» pressed with focus on it: the first new card takes focus once it is there (the key stays after
+  // the new cards — or goes, after the last page)
+  const firstNew = useRef<number | null>(null);
+  useLayoutEffect(() => {
+    const index = firstNew.current;
+    if (index === null || visible.length <= index) return;
+    firstNew.current = null;
+    grid.current?.querySelectorAll<HTMLElement>(".sb-game__toggle")[index]?.focus();
+  }, [visible.length]);
+  const more = () => {
+    const active = typeof document === "undefined" ? null : document.activeElement;
+    firstNew.current = active instanceof HTMLElement && active.closest(".showmore") ? visible.length : null;
+    onView({ ...view, shown: view.shown + GAMES_PAGE });
+  };
   const counts = useMemo(
     () => (sheetOpen ? { genres: countsFor(entries, listView, "genres"), modes: countsFor(entries, listView, "modes") } : { genres: new Map<string, number>(), modes: new Map<string, number>() }),
     [sheetOpen, entries, listView],
@@ -109,14 +151,30 @@ export function GamesStep({ library, entries, usage, chosen, view, onView, onTog
     set({ query: "" });
     field.current?.focus();
   };
+  // «امسح الفلاتر» goes away with the empty state: focus goes to «الفلاتر», which is always there
+  const clearFilters = () => {
+    set({ filters: NO_FILTERS });
+    filtersKey.current?.focus();
+  };
+  const sortName = `${t("games.sort.trigger")} ${t(`games.sort.${sort}`)}`;
 
-  const meter = <SpaceMeter usage={usage} tour={meterTour ? "meter" : undefined} action={meterAction} className="lg:hidden" />;
+  const meter = <SpaceMeter usage={usage} figures={figures} tour={meterTour ? "meter" : undefined} action={meterAction} className="lg:hidden" />;
 
   let body: ReactNode;
   if (library.status === "unbuilt" || (library.status === "ready" && entries.length === 0)) {
     body = <EmptyState layout="stack" icon="game-controller" headingLevel={2} title={t("games.unbuiltTitle")} text={t("games.unbuiltText")} />;
+  } else if (library.status === "stale") {
+    // the list this page was loaded with is gone (a deploy): a reload reads the new one — announced like the failure
+    // state it replaces, never the generic error with a retry that would ask for the same missing file again
+    body = (
+      <div role="alert">
+        <LibraryUpdated />
+      </div>
+    );
   } else if (library.status === "error") {
-    body = <ErrorState title={t("games.errorTitle")} text={library.offline ? t("games.offlineText") : t("games.errorText")} onRetry={library.retry} offline={library.offline} alert />;
+    // the builder's own words when the connection is gone: the list loads by itself when it is back (the kit's offline
+    // sentence would ask the shopper to retry). `offline={false}` keeps the kit from replacing them.
+    body = <ErrorState title={t("games.errorTitle")} text={library.offline ? t("games.offlineText") : t("games.errorText")} onRetry={library.retry} offline={false} alert />;
   } else if (library.status !== "ready") {
     body = (
       <div className="sb-loading" aria-busy="true">
@@ -134,6 +192,7 @@ export function GamesStep({ library, entries, usage, chosen, view, onView, onTog
     const empty = results.length === 0;
     body = (
       <>
+        {detailsUpdated ? <LibraryUpdated /> : null}
         <div className="sb-toolbar">
           <form role="search" className="sb-toolbar__search" data-tour="search" onSubmit={(event) => event.preventDefault()}>
             <TextField
@@ -150,8 +209,9 @@ export function GamesStep({ library, entries, usage, chosen, view, onView, onTog
               end={<Icon name="magnifying-glass" size={20} />}
             />
           </form>
-          <div className="sb-toolbar__keys">
-            <Key size="sm" icon="sliders-horizontal" aria-haspopup="dialog" onClick={() => setSheetOpen(true)} data-tour="filters">
+          {/* the guide's «التصفية والترتيب» lights both keys */}
+          <div className="sb-toolbar__keys" data-tour="filters">
+            <Key ref={filtersKey} size="sm" icon="sliders-horizontal" aria-haspopup="dialog" onClick={() => setSheetOpen(true)}>
               {active > 0 ? t("games.filtersCount", { n: f.number(active) }) : t("games.filters")}
             </Key>
             {sorts.length > 1 ? (
@@ -160,7 +220,8 @@ export function GamesStep({ library, entries, usage, chosen, view, onView, onTog
                 title={t("games.sort.label")}
                 align="end"
                 trigger={(props) => (
-                  <Key {...props} size="sm" icon="sort-ascending" iconEnd="caret-down">
+                  // its name says the sort in use at every width: below sm the words on the key are only «الترتيب»
+                  <Key {...props} size="sm" icon="sort-ascending" iconEnd="caret-down" aria-label={sortName}>
                     <span className="sm:hidden">{t("games.sort.label")}</span>
                     <span className="max-sm:hidden">
                       <span className="font-normal text-ink-2">{t("games.sort.trigger")}</span> {t(`games.sort.${sort}`)}
@@ -177,13 +238,22 @@ export function GamesStep({ library, entries, usage, chosen, view, onView, onTog
                 }))}
               />
             ) : null}
+            {/* a skip link for the grid (two stops a card): out of sight until the keyboard reaches it */}
+            {!empty ? (
+              <Key size="sm" iconEnd="arrow-right" className="sb-skip" onClick={focusStepPrimary}>
+                {t("games.skip")}
+              </Key>
+            ) : null}
           </div>
         </div>
 
-        <ActiveFilters filters={view.filters} onChange={(filters) => set({ filters })} />
+        <ActiveFilters filters={view.filters} onChange={(filters) => set({ filters })} onEmpty={() => filtersKey.current?.focus()} />
 
-        <p className="sb-count" aria-live="polite">
-          <span className="nums">{t("games.found", { count: results.length, n: f.number(results.length) })}</span>
+        <p className="sb-count">
+          {/* only the number is live: the sentence beside it is said with the page, never again after each search */}
+          <span className="nums" aria-live="polite">
+            {t("games.found", { count: results.length, n: f.number(results.length) })}
+          </span>
           {!empty && results.some((entry) => entry.extras?.sizeBytes || entry.extras?.cartridgeBytes) ? <span className="sb-count__why"> · {t("games.sort.sizedFirst")}</span> : null}
         </p>
 
@@ -207,7 +277,7 @@ export function GamesStep({ library, entries, usage, chosen, view, onView, onTog
               title={t("games.noFilterMatch")}
               text={t("games.noFilterMatchText")}
               action={
-                <Key size="sm" onClick={() => set({ filters: NO_FILTERS })}>
+                <Key size="sm" onClick={clearFilters}>
                   {t("games.clearFilters")}
                 </Key>
               }
@@ -233,7 +303,7 @@ export function GamesStep({ library, entries, usage, chosen, view, onView, onTog
               shown={visible.length}
               total={results.length}
               step={GAMES_PAGE}
-              onMore={() => onView({ ...view, shown: view.shown + GAMES_PAGE })}
+              onMore={more}
               label={t("games.more", { count: Math.min(GAMES_PAGE, results.length - visible.length), n: f.number(Math.min(GAMES_PAGE, results.length - visible.length)) })}
             />
           </>
@@ -262,10 +332,28 @@ export function GamesStep({ library, entries, usage, chosen, view, onView, onTog
   );
 }
 
-/** The removable chips of the filters in use, in the sheet's order. */
-function ActiveFilters({ filters, onChange }: { filters: LibraryFilters; onChange: (filters: LibraryFilters) => void }) {
+/**
+ * The removable chips of the filters in use, in the sheet's order. A chip removed from the keyboard hands focus to the
+ * chip that takes its place (else the one before); the last chip, or «امسح الكل», to `onEmpty` («الفلاتر»).
+ */
+function ActiveFilters({ filters, onChange, onEmpty }: { filters: LibraryFilters; onChange: (filters: LibraryFilters) => void; onEmpty: () => void }) {
   const t = useBuilderT();
   const bandLabel = useBandLabel();
+  const box = useRef<HTMLDivElement>(null);
+  const removedAt = useRef<number | null>(null);
+  useLayoutEffect(() => {
+    const index = removedAt.current;
+    if (index === null) return;
+    removedAt.current = null;
+    const chips = box.current ? [...box.current.querySelectorAll<HTMLElement>(".key--chip")] : [];
+    if (chips.length > 0) chips[Math.min(index, chips.length - 1)].focus();
+    else onEmpty();
+  });
+  // only a removal made with focus in the chips moves focus (a pointer elsewhere is never pulled here)
+  const removing = (index: number, change: () => void) => () => {
+    if (box.current?.contains(document.activeElement)) removedAt.current = index;
+    change();
+  };
   const chips: Array<{ key: string; label: string; remove: () => void }> = [];
   for (const genre of filters.genres) chips.push({ key: `genre:${genre}`, label: t(`genre.${genre}`), remove: () => onChange({ ...filters, genres: filters.genres.filter((value) => value !== genre) }) });
   for (const mode of filters.modes) chips.push({ key: `mode:${mode}`, label: t(`mode.${mode}`), remove: () => onChange({ ...filters, modes: filters.modes.filter((value) => value !== mode) }) });
@@ -276,16 +364,16 @@ function ActiveFilters({ filters, onChange }: { filters: LibraryFilters; onChang
   if (filters.sized) chips.push({ key: "sized", label: t("filters.sized"), remove: () => onChange({ ...filters, sized: false }) });
   if (chips.length === 0) return null;
   return (
-    <div className="sb-active">
+    <div ref={box} className="sb-active">
       <div className="chips" role="group" aria-label={t("filters.active")}>
-        {chips.map((chip) => (
-          <Chip key={chip.key} onRemove={chip.remove}>
+        {chips.map((chip, index) => (
+          <Chip key={chip.key} onRemove={removing(index, chip.remove)}>
             {chip.label}
           </Chip>
         ))}
       </div>
       {chips.length > 1 ? (
-        <TextLink as="button" type="button" arrow={false} onClick={() => onChange(NO_FILTERS)}>
+        <TextLink as="button" type="button" arrow={false} onClick={removing(0, () => onChange(NO_FILTERS))}>
           {t("filters.clearAll")}
         </TextLink>
       ) : null}
@@ -320,7 +408,7 @@ export function Credits({ asOf }: { asOf: string | null }) {
           wikidata: source(link("https://www.wikidata.org/", t("credits.wikidata")), link("https://creativecommons.org/publicdomain/zero/1.0/", t("credits.cc0"))),
           wikipedia: source(link("https://www.wikipedia.org/", t("credits.wikipedia")), link("https://creativecommons.org/licenses/by-sa/4.0/", t("credits.ccbysa"))),
         })}
-        {Number.isFinite(date) ? <span className="nums"> {t("credits.asOf", { date: f.date(date) })}</span> : null}
+        {Number.isFinite(date) ? <span className="nums"> {t("credits.asOf", { date: f.date(date, "long") })}</span> : null}
       </p>
       <p>
         {t("credits.sizes")} {t("credits.eshop")}

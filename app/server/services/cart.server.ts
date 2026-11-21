@@ -36,7 +36,8 @@
  *     (`blocked`); `qty_reduced` and `price_changed` are notices.
  *   · Reads never write. The stored quantity is brought down to what can be sold on the next change.
  *   · A line holds at most 10 units (and never more than are available); a used unit is one line of
- *     qty 1 and must be `listed`; a cart holds at most 50 lines.
+ *     qty 1 and must be `listed`; a cart holds at most 50 lines — checked again inside each add's batch, so two
+ *     adds at the same moment cannot pass it together (cartLinesGuard).
  *   · The coupon code is stored on the cart and evaluated again on every read. When it no longer
  *     applies the view drops it (discount 0, `coupon: null`) and says why in `couponIssue`; the code
  *     stays stored, so it comes back if the cart qualifies again — unless the coupon is gone for good
@@ -69,14 +70,14 @@
  *
  * Every service here takes `db` first and never imports "cloudflare:workers".
  */
-import { and, asc, desc, eq, isNull, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, ne, sql, type SQL } from "drizzle-orm";
 import { z } from "zod";
 import type { CartLine, CartLineProblem, CartView, ImageRef, StockState } from "~/lib/dto";
 import { newId, randomToken, sha256Hex } from "~/lib/ids";
 import { DEFAULT_LOCALE, isLocale, pick, type L10n, type Locale } from "~/lib/locales";
 import type { BatchStatement, Db } from "~/server/db/drizzle.server";
 import { cartItems, carts, customers, files, media, products, usedUnits, variants, type Cart } from "~/server/db/schema";
-import { runBatch } from "~/server/db/tx.server";
+import { expectThat, isDbError, runBatch } from "~/server/db/tx.server";
 import { AppError, invalid, isAppError, notFound } from "~/server/errors";
 import type { RateLimitRule } from "~/server/ratelimit.server";
 import { COUPON_ERROR_KEYS, evaluateCoupon, normalizeCouponCode, type CouponLine, type CouponRejection } from "./coupons.server";
@@ -761,12 +762,50 @@ export type CartChangeResult = { cartToken: string | null; view: CartViewData };
 /** Runs a change, prices the cart afresh, and brings the stored cart in line with what can be sold. */
 async function finish(db: Db, target: ChangeTarget, statements: BatchStatement[], request: CartRequest, now: number): Promise<CartChangeResult> {
   await runBatch(db, statements);
+  return settle(db, target, request, now);
+}
+
+/** After a change's batch: the cart priced afresh, and the stored cart brought in line with what can be sold. */
+async function settle(db: Db, target: ChangeTarget, request: CartRequest, now: number): Promise<CartChangeResult> {
   const cart = await db.select({ id: carts.id, couponCode: carts.couponCode }).from(carts).where(eq(carts.id, target.cartId)).get();
   const priced = await priceCart(db, cart ?? null, priceOptionsOf(request), now);
   const cleanup = cart ? normalizeStatements(db, cart.id, priced) : [];
   // The view already shows the reduced quantities and the dropped coupon; this only stores them.
   if (cleanup.length > 0) await runBatch(db, cleanup);
   return { cartToken: target.token, view: priced.view };
+}
+
+/** The guard code of the line limit inside an add's batch (TT:CART_FULL:<cart id>). */
+const CART_FULL_GUARD = "CART_FULL";
+
+/**
+ * The line limit, checked INSIDE an add's batch after its writes (QA security 2026-11-21: the count read before the batch
+ * let two add_many at the same moment give one cart 81 lines). The whole batch is rolled back when the cart then holds
+ * more than MAX_CART_LINES lines and the batch inserted one of `newLineIds`; a cart already past the limit (from before
+ * this guard) may still change the lines it holds.
+ */
+function cartLinesGuard(db: Db, cartId: string, newLineIds: readonly string[]): BatchStatement {
+  return expectThat(
+    db,
+    sql`(SELECT count(*) FROM cart_items WHERE cart_id = ${cartId}) <= ${MAX_CART_LINES} OR NOT EXISTS (SELECT 1 FROM cart_items WHERE id IN (SELECT value FROM json_each(${JSON.stringify(newLineIds)})))`,
+    { code: CART_FULL_GUARD, detail: cartId },
+  );
+}
+
+/** The lines `where` selects, with their quantities: read on both sides of an add's writes, inside its batch. */
+const lineQtys = (db: Db, where: SQL | undefined) => db.select({ variantId: cartItems.variantId, qty: cartItems.qty }).from(cartItems).where(where);
+
+/**
+ * The units an add's batch really put in: per line, what it holds after the writes less what it held just before them
+ * (both read in the same transaction; never below 0). Less than asked only when another change filled a line between
+ * the check and the batch — the upsert's min(…, cap) then took what was still free.
+ */
+function unitsAdded(before: unknown, after: unknown): number {
+  const qtys = (rows: unknown) => new Map((Array.isArray(rows) ? (rows as Array<{ variantId: string; qty: number }>) : []).map((row) => [row.variantId, Number(row.qty) || 0] as const));
+  const held = qtys(before);
+  let added = 0;
+  for (const [variantId, qty] of qtys(after)) added += Math.max(0, qty - (held.get(variantId) ?? 0));
+  return added;
 }
 
 /**
@@ -805,11 +844,8 @@ export async function addToCart(db: Db, request: CartRequest, raw: unknown, now:
 
   // Adding always leaves this device holding the cart's token (a new cart, or a re-keyed one).
   const target = (await cartForChange(db, request, locale, now, { rekey: true, create: true })) as ChangeTarget & { token: string };
-  const existing = await db
-    .select({ id: cartItems.id, qty: cartItems.qty })
-    .from(cartItems)
-    .where(and(eq(cartItems.cartId, target.cartId), line.usedUnitId ? eq(cartItems.usedUnitId, line.usedUnitId) : and(eq(cartItems.variantId, line.variantId), isNull(cartItems.usedUnitId))))
-    .get();
+  const thisLine = () => and(eq(cartItems.cartId, target.cartId), line.usedUnitId ? eq(cartItems.usedUnitId, line.usedUnitId) : and(eq(cartItems.variantId, line.variantId), isNull(cartItems.usedUnitId)));
+  const existing = await db.select({ id: cartItems.id, qty: cartItems.qty }).from(cartItems).where(thisLine()).get();
   if (line.usedUnitId && existing) {
     // Already in the cart: nothing to add, nothing to fail.
     const result = await finish(db, target, target.statements, request, now);
@@ -824,12 +860,14 @@ export async function addToCart(db: Db, request: CartRequest, raw: unknown, now:
   }
   const addQty = Math.min(input.qty, line.cap - have);
 
-  const statements = [...target.statements];
+  // One batch: the line's quantity on both sides of the write (the units really added), and the line limit after it.
+  const lineId = newId("cit");
+  const statements = [...target.statements, lineQtys(db, thisLine())];
   if (line.usedUnitId) {
     statements.push(
       db
         .insert(cartItems)
-        .values({ id: newId("cit"), cartId: target.cartId, variantId: line.variantId, usedUnitId: line.usedUnitId, qty: 1, addedAt: now, priceSnapshotIqd: line.priceIqd })
+        .values({ id: lineId, cartId: target.cartId, variantId: line.variantId, usedUnitId: line.usedUnitId, qty: 1, addedAt: now, priceSnapshotIqd: line.priceIqd })
         // The only unique key a used-unit line can hit is (cart_id, used_unit_id): already in the cart.
         .onConflictDoNothing(),
     );
@@ -837,7 +875,7 @@ export async function addToCart(db: Db, request: CartRequest, raw: unknown, now:
     statements.push(
       db
         .insert(cartItems)
-        .values({ id: newId("cit"), cartId: target.cartId, variantId: line.variantId, usedUnitId: null, qty: addQty, addedAt: now, priceSnapshotIqd: line.priceIqd })
+        .values({ id: lineId, cartId: target.cartId, variantId: line.variantId, usedUnitId: null, qty: addQty, addedAt: now, priceSnapshotIqd: line.priceIqd })
         .onConflictDoUpdate({
           target: [cartItems.cartId, cartItems.variantId],
           targetWhere: sql`${cartItems.usedUnitId} IS NULL`,
@@ -846,8 +884,18 @@ export async function addToCart(db: Db, request: CartRequest, raw: unknown, now:
         }),
     );
   }
-  const result = await finish(db, target, statements, request, now);
-  return { cartToken: target.token, view: result.view, added: line.usedUnitId ? 1 : addQty };
+  const before = statements.length - 2;
+  statements.push(lineQtys(db, thisLine()), cartLinesGuard(db, target.cartId, [lineId]));
+  let results: unknown[];
+  try {
+    results = await runBatch(db, statements);
+  } catch (error) {
+    // another change filled the cart between the count above and this batch: nothing of this add was written
+    if (isDbError(error, CART_FULL_GUARD)) throw new AppError("cart_full", 409);
+    throw error;
+  }
+  const result = await settle(db, target, request, now);
+  return { cartToken: target.token, view: result.view, added: unitsAdded(results[before], results[before + 2]) };
 }
 
 // ───────────────────────────────────────────────────────────────── several variants at once
@@ -863,8 +911,12 @@ export const AddManyToCartInput = z.object({
 });
 export type AddManyToCartInput = z.input<typeof AddManyToCartInput>;
 
-/** Why one item of a refused bundle cannot go in (an error key, `errors.<code>`). */
-export const ADD_MANY_PROBLEM_CODES = ["not_found", "unavailable", "out_of_stock", "insufficient_stock", "max_qty_reached", "cart_full"] as const;
+/**
+ * Why one item of a refused bundle cannot go in (an error key, `errors.<code>`). There is no `not_found`: an id that does
+ * not exist answers `unavailable`, like a variant of a draft product or one switched off, so 50 ids a request cannot
+ * find which variants exist (QA security 2026-11-21).
+ */
+export const ADD_MANY_PROBLEM_CODES = ["unavailable", "out_of_stock", "insufficient_stock", "max_qty_reached", "cart_full"] as const;
 export type AddManyProblemCode = (typeof ADD_MANY_PROBLEM_CODES)[number];
 export type AddManyProblem = { variantId: string; code: AddManyProblemCode };
 
@@ -894,14 +946,16 @@ export function addManyProblemsOf(error: unknown): AddManyProblem[] | null {
  *      the cart already holds: the product sellable (published, or scheduled and live) and the variant active, units
  *      free, the cart's quantity plus the new one within MAX_LINE_QTY and within the free units, and the new lines
  *      within MAX_CART_LINES;
- *   3. any problem → AddManyRefusal with every problem (variantId + code: not_found · unavailable · out_of_stock ·
- *      max_qty_reached · insufficient_stock · cart_full) and NOTHING is written — no cart is created, no token re-keyed;
+ *   3. any problem → AddManyRefusal with every problem (variantId + code: unavailable — also for an id that does not
+ *      exist, so the answer never tells which ids exist · out_of_stock · max_qty_reached · insufficient_stock ·
+ *      cart_full) and NOTHING is written — no cart is created, no token re-keyed;
  *   4. otherwise ONE db.batch: the cart (created once for a guest without one, claimed, or re-keyed like addToCart) and
  *      every line, each upsert guarded like addToCart's (never above what was free when it was checked); lines keep the
  *      order of the items; each remembers the price it is sold at now (a running flash sale's), so it does not say
- *      "price changed";
- *   5. the cart is priced once (finish: prices, promotions, the stored coupon, delivery — all server-side) and returned
- *      with the token for `tt_cart` and `added`, the units that went in.
+ *      "price changed". The batch ends with the line limit (cartLinesGuard): when another change filled the cart
+ *      between the check and the batch, the whole batch is rolled back and the refusal says cart_full for the new lines;
+ *   5. the cart is priced once (settle: prices, promotions, the stored coupon, delivery — all server-side) and returned
+ *      with the token for `tt_cart` and `added`, the units that really went in (read inside the batch).
  * Errors: AddManyRefusal (409 bundle_refused) · invalid (400, malformed input: 1–50 items, qty 1–10).
  */
 export async function addManyToCart(db: Db, request: CartRequest, raw: unknown, now: number): Promise<{ cartToken: string; view: CartViewData; added: number }> {
@@ -939,11 +993,9 @@ export async function addManyToCart(db: Db, request: CartRequest, raw: unknown, 
   const accepted: Array<{ variantId: string; qty: number; cap: number; priceIqd: number; isNewLine: boolean }> = [];
   for (const [variantId, qty] of wanted) {
     const row = byId.get(variantId);
-    if (!row) {
-      problems.push({ variantId, code: "not_found" });
-      continue;
-    }
-    if (!row.isActive || !isSellableProduct(row.status, row.publishAt, now)) {
+    // An id that does not exist answers like a variant that cannot be bought (a draft product, a variant switched off):
+    // the answer must not tell which variant ids exist.
+    if (!row || !row.isActive || !isSellableProduct(row.status, row.publishAt, now)) {
       problems.push({ variantId, code: "unavailable" });
       continue;
     }
@@ -974,8 +1026,13 @@ export async function addManyToCart(db: Db, request: CartRequest, raw: unknown, 
   }
 
   // One batch. Line ids are time-sortable and the cart lists lines by (added_at, id): sorted ids keep the items' order.
+  // The lines' quantities are read on both sides of the writes (the units really added), and the line limit is checked
+  // after them — inside the batch, where no other change can come between.
   const lineIds = accepted.map(() => newId("cit")).sort();
-  const statements: BatchStatement[] = [...target.statements];
+  const acceptedIds = JSON.stringify(accepted.map((entry) => entry.variantId));
+  const theseLines = () => and(eq(cartItems.cartId, target.cartId), isNull(cartItems.usedUnitId), sql`${cartItems.variantId} IN (SELECT value FROM json_each(${acceptedIds}))`);
+  const statements: BatchStatement[] = [...target.statements, lineQtys(db, theseLines())];
+  const before = statements.length - 1;
   accepted.forEach((entry, index) => {
     statements.push(
       db
@@ -989,8 +1046,20 @@ export async function addManyToCart(db: Db, request: CartRequest, raw: unknown, 
         }),
     );
   });
-  const result = await finish(db, target, statements, request, now);
-  return { cartToken: target.token, view: result.view, added: accepted.reduce((sum, entry) => sum + entry.qty, 0) };
+  const after = statements.length;
+  statements.push(lineQtys(db, theseLines()), cartLinesGuard(db, target.cartId, lineIds));
+  let results: unknown[];
+  try {
+    results = await runBatch(db, statements);
+  } catch (error) {
+    if (!isDbError(error, CART_FULL_GUARD)) throw error;
+    // Another change filled the cart between the check above and this batch: nothing of this bundle was written. The
+    // new lines are the ones that do not fit (every item, should all of them have been lines the cart held then).
+    const fresh = accepted.filter((entry) => entry.isNewLine);
+    throw new AddManyRefusal((fresh.length > 0 ? fresh : accepted).map((entry) => ({ variantId: entry.variantId, code: "cart_full" as const })));
+  }
+  const result = await settle(db, target, request, now);
+  return { cartToken: target.token, view: result.view, added: unitsAdded(results[before], results[after]) };
 }
 
 /**

@@ -10,9 +10,13 @@
  *   const plan = await previewLibraryCsv(db, actor, file, now);                  // writes nothing
  *   await applyLibraryCsv(db, actor, file, { fingerprint: plan.fingerprint }, now);
  *   const { csv } = await exportLibraryCsv(db, actor, now);
+ *   const figures = await getCapacityFigures(db, actor);                         // the planner's storage figures
+ *   await saveCapacityFigures(db, actor, form, now);                              // through setSetting (expected, audit)
  *
  * PERMISSIONS: reading needs catalog.product.read; every change, import and export needs
- * catalog.switch_library.manage (app/server/permissions.ts; manager and content roles).
+ * catalog.switch_library.manage (app/server/permissions.ts; manager and content roles). The storage figures are the
+ * setting builder.switch.capacity: changing them needs THAT setting's own permission (settings.manage — the owner and
+ * the manager), checked first here and again by setSetting.
  *
  * WHAT STAFF ENTER (rules in ~/routes/admin/catalog/switch-library-input, shared with the edit page):
  *   · sizes in GB as the console shows them (binary, two decimals at most; MB for small games) → bytes. The digital
@@ -37,11 +41,23 @@
 import { asc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { sha256Hex } from "~/lib/ids";
+import { DEFAULT_CAPACITY, sanitizeCapacity } from "~/lib/switch-builder/storage";
+import {
+  CAPACITY_FIELDS,
+  CAPACITY_REASON_MAX,
+  CAPACITY_REASON_MIN,
+  CAPACITY_SETTING_KEY,
+  capacityDraftFromForm,
+  readCapacityDraft,
+  sameCapacity,
+  type CapacityFigures,
+} from "~/routes/admin/catalog/switch-library-capacity";
 import {
   LIBRARY_CSV_CLEAR,
   LIBRARY_CSV_COLUMNS,
   LIBRARY_CSV_MAX_BYTES,
   LIBRARY_CSV_MAX_CHANGES,
+  LIBRARY_CSV_MAX_COLUMNS,
   LIBRARY_CSV_MAX_ROWS,
   LIBRARY_CSV_READ_ONLY,
   LIBRARY_ID_MAX,
@@ -65,14 +81,15 @@ import {
   usdLabel,
   type LibraryCsvColumn,
 } from "~/routes/admin/catalog/switch-library-input";
-import { actorRef, assertCan, type Actor } from "~/server/actor";
+import { actorRef, assertCan, can, type Actor } from "~/server/actor";
 import { auditStatement } from "~/server/audit.server";
 import type { BatchStatement, Db } from "~/server/db/drizzle.server";
-import { employees, files, switchLibraryEntries, type SwitchLibraryDescription, type SwitchLibraryEntry } from "~/server/db/schema";
+import { employees, files, settings, switchLibraryEntries, type SwitchLibraryDescription, type SwitchLibraryEntry } from "~/server/db/schema";
 import { expectChanged, expectThat, runBatch } from "~/server/db/tx.server";
 import { AppError, invalid, notFound, toAppError, type FieldErrors } from "~/server/errors";
 import type { Permission } from "~/server/permissions";
-import { deleteFile, putFile, type BlobStore } from "~/server/storage.server";
+import { parseSettingValue, readSettingState, setSetting, SETTINGS, type SettingKey } from "~/server/settings.server";
+import { deleteFile, putFile, sanitizeFileName, type BlobStore } from "~/server/storage.server";
 import { cleanBlock } from "~/server/text.server";
 import { processImageUpload, type UploadSource } from "~/server/uploads.server";
 import { CsvError, parseCsv, toCsv, type ParsedCsv } from "./catalog/csv";
@@ -109,6 +126,7 @@ export const LIBRARY_ERROR_KEYS = [
   "entry_changed",
   "csv_game_id_column",
   "csv_rows_limit",
+  "csv_columns_limit",
   "csv_not_text",
   "csv_encoding",
   "description_script",
@@ -673,12 +691,17 @@ export type LibraryCsvPlan = {
 
 type PlannedWrite = { line: number; gameId: string; seen: SwitchLibraryEntry | null; values: EntryValues; fields: ValueKey[] };
 
-/** The uploaded file as text: CSV only (no binary), within the size limit. */
+/**
+ * The uploaded file as text: CSV only (no binary), within the size limit. "No file" and "too large" carry no field key:
+ * the shared sentences for those keys speak of a picture (errors.ts), so the import page words them with this
+ * namespace's own errors.<code>, which name the CSV file and its limit.
+ */
 async function readCsvText(source: unknown): Promise<string> {
   if (source && typeof source === "object" && "arrayBuffer" in source && typeof (source as Blob).arrayBuffer === "function") {
     const blob = source as Blob;
-    if (blob.size === 0) throw invalid({ file: "upload_missing" });
-    if (blob.size > LIBRARY_CSV_MAX_BYTES) throw new AppError("upload_too_large", 413, { fields: { file: "upload_too_large" } });
+    // A form sent without a chosen file carries an empty file part.
+    if (blob.size === 0) throw new AppError("upload_missing", 400);
+    if (blob.size > LIBRARY_CSV_MAX_BYTES) throw new AppError("upload_too_large", 413);
     const bytes = new Uint8Array(await blob.arrayBuffer());
     // A NUL byte means a binary file (a spreadsheet saved as .xlsx, a picture…).
     if (bytes.includes(0)) throw invalid({ file: "csv_not_text" });
@@ -691,10 +714,70 @@ async function readCsvText(source: unknown): Promise<string> {
     }
   }
   if (typeof source === "string" && source !== "") {
-    if (new TextEncoder().encode(source).length > LIBRARY_CSV_MAX_BYTES) throw new AppError("upload_too_large", 413, { fields: { file: "upload_too_large" } });
+    if (new TextEncoder().encode(source).length > LIBRARY_CSV_MAX_BYTES) throw new AppError("upload_too_large", 413);
     return source;
   }
-  throw invalid({ file: "upload_missing" });
+  throw new AppError("upload_missing", 400);
+}
+
+/**
+ * A CSV text's shape, in one cheap pass with the parser's own rules (./catalog/csv: a leading byte-order mark, the
+ * separator the first line uses, a quote that opens only at the start of a cell, "" inside quotes, CR LF / LF / CR line
+ * ends, blank lines skipped): the records it holds, the header included, and the cells of the header. parseCsv builds
+ * every row against the whole header, so its work is rows × header cells: a 300 KB file of 100,000 empty header cells
+ * over 100,000 one-letter rows took seconds of CPU before the row limit could refuse it (security review 2026-11-21).
+ * planCsv refuses such files from this count first. Counting stops past `maxRecords`. Exported for tests.
+ */
+export function libraryCsvShape(input: string, maxRecords: number): { records: number; headerCells: number } {
+  const text = input.charCodeAt(0) === 0xfeff ? input.slice(1) : input;
+  const firstLine = text.slice(0, Math.max(0, text.search(/\r?\n/)) || text.length);
+  const separator = !firstLine.includes(",") && firstLine.includes(";") ? ";" : ",";
+  let records = 0;
+  let headerCells = 0;
+  /** The current record's cells so far, and whether its current cell holds any text (quoted text included). */
+  let cells = 1;
+  let hasText = false;
+  /** Nothing read in the current cell yet: only there does a quote open a quoted cell. */
+  let atCellStart = true;
+  let quoted = false;
+  const endRecord = () => {
+    // A record of one empty cell is a blank line, which the parser skips.
+    if (cells > 1 || hasText) {
+      records++;
+      if (records === 1) headerCells = cells;
+    }
+    cells = 1;
+    hasText = false;
+    atCellStart = true;
+  };
+  for (let i = 0; i < text.length && records <= maxRecords; i++) {
+    const ch = text[i];
+    if (quoted) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') {
+          hasText = true;
+          i++;
+        } else quoted = false;
+      } else hasText = true;
+      continue;
+    }
+    if (ch === '"' && atCellStart) {
+      quoted = true;
+      atCellStart = false;
+    } else if (ch === separator) {
+      cells++;
+      hasText = false;
+      atCellStart = true;
+    } else if (ch === "\r" || ch === "\n") {
+      if (ch === "\r" && text[i + 1] === "\n") i++;
+      endRecord();
+    } else {
+      hasText = true;
+      atCellStart = false;
+    }
+  }
+  if (records <= maxRecords) endRecord();
+  return { records, headerCells };
 }
 
 /** A field's value as staff read it, for the preview. */
@@ -758,6 +841,11 @@ async function planCsv(db: Db, text: string, now: number): Promise<{ plan: Libra
     plan: { fingerprint: await sha256Hex(`${today}\n${text}`), fileErrors, unknownColumns, totals, rows: [], moreRows: 0, tooManyChanges: false },
     writes: [],
   });
+
+  // A file far past the limits is refused before the parser's rows × header cells work (libraryCsvShape).
+  const shape = libraryCsvShape(text, LIBRARY_CSV_MAX_ROWS + 1);
+  if (shape.headerCells > LIBRARY_CSV_MAX_COLUMNS) return empty([{ message: "csv_columns_limit" }]);
+  if (shape.records > LIBRARY_CSV_MAX_ROWS + 1) return empty([{ message: "csv_rows_limit" }]);
 
   let parsed: ParsedCsv;
   try {
@@ -850,7 +938,11 @@ export function libraryChunkGuard(db: Db, chunk: ReadonlyArray<{ gameId: string;
 
 export const ApplyCsvInput = z.object({
   fingerprint: z.string({ error: "import_stale" }).regex(/^[0-9a-f]{64}$/, "import_stale"),
-  fileName: z.preprocess(blankToUndefined, z.string().trim().max(120).optional()),
+  /**
+   * The uploaded file's own name, which staff read in the audit trail: cleaned like every file name shown to staff (no
+   * path, no control, bidi-override or invisible characters — storage.server sanitizeFileName), at most 120 characters.
+   */
+  fileName: z.preprocess((value) => (typeof value === "string" ? (sanitizeFileName(value) ?? undefined) : undefined), z.string().max(120).optional()),
 });
 
 export type ApplyCsvResult = {
@@ -877,6 +969,9 @@ export async function applyLibraryCsv(db: Db, actor: Actor, source: unknown, raw
   if (writes.length > LIBRARY_CSV_MAX_CHANGES) throw new AppError("import_too_many", 409, { detail: String(writes.length) });
 
   const by = actorRef(actor).actorId;
+  const fileName = input.fileName ?? "csv";
+  /** The import's own id in the audit trail: the start of the preview's fingerprint (the file's name is only text). */
+  const importId = `csv_${input.fingerprint.slice(0, 16)}`;
   const result: ApplyCsvResult = { created: 0, updated: 0, unchanged: plan.totals.unchanged, skipped: plan.totals.error, interrupted: false };
   for (let start = 0; start < writes.length; start += LIBRARY_CSV_CHUNK) {
     const chunk = writes.slice(start, start + LIBRARY_CSV_CHUNK);
@@ -895,7 +990,7 @@ export async function applyLibraryCsv(db: Db, actor: Actor, source: unknown, raw
           action: "catalog.switch_library.import",
           entityType: LIBRARY_ENTITY,
           entityId: write.gameId,
-          summary: `${input.fileName ?? "csv"} line ${write.line}: ${write.fields.join(", ")}`,
+          summary: `${fileName} line ${write.line}: ${write.fields.join(", ")}`,
           before: write.seen ? pick(valuesOf(write.seen), write.fields) : null,
           after: pick(write.values, write.fields),
           at: now,
@@ -910,9 +1005,9 @@ export async function applyLibraryCsv(db: Db, actor: Actor, source: unknown, raw
           actor,
           action: "catalog.switch_library.import_apply",
           entityType: "switch_library_import",
-          entityId: input.fileName ?? null,
-          summary: `${writes.length} games: ${result.created + created} new, ${result.updated + chunk.length - created} updated, ${plan.totals.unchanged} unchanged, ${plan.totals.error} rows with errors left out`,
-          after: { rows: plan.totals.rows, created: result.created + created, updated: result.updated + chunk.length - created, unchanged: plan.totals.unchanged, skipped: plan.totals.error },
+          entityId: importId,
+          summary: `${fileName}: ${writes.length} ${writes.length === 1 ? "game" : "games"}: ${result.created + created} new, ${result.updated + chunk.length - created} updated, ${plan.totals.unchanged} unchanged, ${plan.totals.error} rows with errors left out`,
+          after: { file: input.fileName ?? null, rows: plan.totals.rows, created: result.created + created, updated: result.updated + chunk.length - created, unchanged: plan.totals.unchanged, skipped: plan.totals.error },
           at: now,
         }),
       );
@@ -960,4 +1055,119 @@ export async function exportLibraryCsv(db: Db, actor: Actor, now: number): Promi
   }));
   await runBatch(db, [auditStatement(db, { actor, action: "catalog.switch_library.export", entityType: "switch_library_export", summary: `${records.length} games`, after: { rows: records.length }, at: now })]);
   return { csv: toCsv([...LIBRARY_CSV_COLUMNS, "picture", "updated_at"], records), rows: records.length };
+}
+
+// ───────────────────────────────────────────────────────────────── the planner's storage figures
+
+/**
+ * The setting builder.switch.capacity (docs/switch-builder.md §3): the usable console memory per model, what is kept
+ * free there, the usable share of a card and what is kept free on it — the figures the builder page plans with. They
+ * are edited at the foot of the library page (the settings page links here); every change goes through the settings
+ * service: its permission (settings.manage), its schema, the guard on the value the form showed (`expected`) and its
+ * audit event with the reason (settings.setting.update).
+ */
+const CAPACITY_KEY = CAPACITY_SETTING_KEY satisfies SettingKey;
+const CAPACITY_PERMISSION: Permission = SETTINGS[CAPACITY_KEY].permission;
+/** The longest `expected` (the value the form showed, as JSON) read; anything longer is stale. */
+const MAX_EXPECTED_TEXT = 4000;
+
+const NOT_JSON = Symbol("not json");
+
+/** The setting as stored and as the builder reads it. */
+async function capacityState(db: Db) {
+  // the raw text, not the JSON column's decoder: a stored value that is not even JSON is reported, never a crash
+  const row = await db
+    .select({ text: sql<string>`${settings.value}`, updatedAt: settings.updatedAt, editor: employees.name })
+    .from(settings)
+    .leftJoin(employees, eq(employees.id, settings.updatedBy))
+    .where(eq(settings.key, CAPACITY_KEY))
+    .get();
+  let stored: unknown = undefined;
+  if (row) {
+    try {
+      stored = JSON.parse(row.text) as unknown;
+    } catch {
+      stored = NOT_JSON;
+    }
+  }
+  const state = !row
+    ? await readSettingState(db, CAPACITY_KEY, null)
+    : stored === NOT_JSON
+      ? { value: null, isStored: true, broken: "invalid" }
+      : await readSettingState(db, CAPACITY_KEY, { value: stored });
+  return {
+    /** What the builder plans with — exactly how getLibraryExtras reads the setting. */
+    inUse: sanitizeCapacity(stored === NOT_JSON ? undefined : stored),
+    /** The value in force as the settings service sees it; null when the stored value no longer fits its schema. */
+    inForce: state.value,
+    broken: state.broken,
+    isStored: Boolean(row),
+    updatedAt: row?.updatedAt ?? null,
+    updatedByName: row?.editor ?? null,
+  };
+}
+
+/** The storage figures for the library page: in use, in force (the save's guard), last change, who may change them. */
+export async function getCapacityFigures(db: Db, actor: Actor): Promise<CapacityFigures> {
+  assertCan(actor, READ);
+  const state = await capacityState(db);
+  return {
+    inUse: state.inUse,
+    expected: state.inForce,
+    defaults: DEFAULT_CAPACITY,
+    isStored: state.isStored,
+    isDefault: sameCapacity(state.inUse, DEFAULT_CAPACITY),
+    broken: state.broken,
+    updatedAt: state.updatedAt,
+    updatedByName: state.updatedByName,
+    canEdit: can(actor, CAPACITY_PERMISSION),
+    canSeeHistory: can(actor, "settings.read"),
+  };
+}
+
+const CapacityInput = z.object({ reason: zFormText(CAPACITY_REASON_MAX) });
+
+export type SaveCapacityResult = { changed: boolean };
+
+/**
+ * Saves the storage figures from the form: each figure as typed (GB with one decimal, shares as percentages —
+ * switch-library-capacity.ts), the reason for the audit log, and `expected` = the value the form showed (JSON; "null"
+ * when it showed the stored value as broken). Field errors use the settings service's paths ("value.cardMargin":
+ * "too_small", "value.cardHeadroom.maxGiB": "below_paired", "reason": "reason_required"), all at once; the setting's
+ * own schema is asked too, so its bounds have the last word. A value changed since the form was opened answers
+ * `setting_changed` (409) and writes nothing; the same figures again write nothing ({ changed: false }).
+ */
+export async function saveCapacityFigures(db: Db, actor: Actor, raw: unknown, now: number): Promise<SaveCapacityResult> {
+  // the setting's own permission before anything the form carries: a role that may not change it gets 403, never field errors
+  assertCan(actor, CAPACITY_PERMISSION);
+  const form = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const { reason } = parseInput(CapacityInput, form);
+  const state = await capacityState(db);
+  const { value, errors } = readCapacityDraft(capacityDraftFromForm(form), state.inUse);
+  const fields: FieldErrors = {};
+  for (const field of CAPACITY_FIELDS) {
+    const error = errors[field.key];
+    if (error) fields[field.name] = error;
+  }
+  if (Object.keys(fields).length === 0 && state.inForce !== null && sameCapacity(value, state.inForce)) return { changed: false };
+  if (reason.trim().length < CAPACITY_REASON_MIN) fields.reason = "reason_required";
+  try {
+    parseSettingValue(CAPACITY_KEY, value);
+  } catch (error) {
+    const appError = toAppError(error);
+    if (!appError?.fields) throw error;
+    for (const [name, key] of Object.entries(appError.fields)) if (!(name in fields)) fields[name] = key;
+  }
+  if (Object.keys(fields).length > 0) throw invalid(fields);
+
+  const expectedText = typeof form.expected === "string" && form.expected.length <= MAX_EXPECTED_TEXT ? form.expected : "";
+  let expected: unknown;
+  try {
+    expected = JSON.parse(expectedText) as unknown;
+  } catch {
+    // no value the form showed: it cannot be told apart from a stale form
+    throw new AppError("setting_changed", 409, { detail: CAPACITY_KEY });
+  }
+  await setSetting(db, actor, CAPACITY_KEY, value, reason, now, { expected });
+  return { changed: true };
 }

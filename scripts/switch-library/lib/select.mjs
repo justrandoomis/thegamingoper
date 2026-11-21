@@ -9,8 +9,15 @@
  *   3. the item must be a video game or a compilation (P31 through P279); downloadable content and expansions,
  *      series, esports disciplines and software that is not a game are refused;
  *   4. the item needs a Latin title (an English or "mul" label);
- *   5. a slug held by several items: the item with the most sitelinks keeps it (then the lower item number), the
- *      others are logged.
+ *   5. the reviewed exclusions (catalog/switch-library/exclusions.json, which build.mjs passes in): an item listed
+ *      there loses every slug ("excluded-not-a-game": apps and services Wikidata types as video games;
+ *      "excluded-adult": tagged eroge, kept out of a family store by default), and a slug listed there is left out
+ *      for every item that holds it ("excluded-slug": a product no longer sold, so the item keeps its other slug);
+ *      an entry that matched nothing is logged as "exclusion-unused";
+ *   6. one card per item and one item per slug: the items take their slugs in order of sitelinks (then the lower
+ *      item number), each the one closest to its English title among those no item before it took: the base
+ *      product, not an edition of it. A slug an item leaves ("second-slug") stays free for the next item that holds
+ *      it; a slug an item before it took is logged as "slug-shared".
  */
 import {
   ADDON_TYPE_ROOTS,
@@ -206,24 +213,95 @@ function aliasesOf(entities, item, titles) {
 }
 
 /**
- * The library from a Wikidata snapshot.
+ * A title spelled the way the store slugs spell one: no accents and no trademark signs, "&" → "and", "+" → "plus",
+ * apostrophes dropped, every other run of characters that are not Latin letters or digits one hyphen
+ * ("Fate/Extella: The Umbral Star" → "fate-extella-the-umbral-star"). 92 % of the items with a single slug are spelled
+ * exactly so (snapshot of 2026-11-21; deleting the punctuation instead matches fewer).
+ */
+export function slugOfTitle(title) {
+  return String(title ?? "")
+    .replace(/[\u{2122}\u{AE}\u{A9}]/gu, "")
+    .normalize("NFKD")
+    .replace(/[\u{300}-\u{36F}]/gu, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/\+/g, " plus ")
+    .replace(/['`\u{2018}\u{2019}]/gu, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/**
+ * An item's store slugs, the one that best matches its title first: the title's own spelling (slugOfTitle) before
+ * any other, then the most similar spelling (bigram similarity), then the shorter slug (the base product rather than
+ * an edition such as "…-digital-deluxe-edition-switch"), then code point order.
+ */
+export function slugsByTitle(slugs, title) {
+  const target = slugOfTitle(title);
+  const score = new Map(slugs.map((slug) => {
+    const stem = slug.endsWith("-switch") ? slug.slice(0, -"-switch".length) : slug;
+    return [slug, stem === target ? 2 : similarity(stem, target)];
+  }));
+  return [...slugs].sort((a, b) => score.get(b) - score.get(a) || a.length - b.length || (a < b ? -1 : a > b ? 1 : 0));
+}
+
+export const EXCLUSION_KINDS = ["not-a-game", "adult"];
+const QID_PATTERN = /^Q[1-9]\d*$/;
+const isSlug = (value) => typeof value === "string" && SLUG_PATTERN.test(value);
+const isText = (value) => typeof value === "string" && value.trim().length > 0;
+
+/**
+ * The reviewed exclusions (the parsed catalog/switch-library/exclusions.json) as look-ups: `items` by Wikidata item,
+ * `slugs` by store slug. A malformed entry, or an item or slug listed twice, throws, so a typo never lets an item
+ * through unnoticed. No argument = no exclusions: fetch-wikipedia.mjs selects without them, so the pages of an
+ * excluded game stay in the snapshot and re-enabling it needs no new pull.
+ */
+export function exclusionsOf(file) {
+  const items = new Map();
+  const slugs = new Map();
+  if (file === undefined) return { items, slugs };
+  const fail = (message) => {
+    throw new Error(`exclusions.json: ${message}`);
+  };
+  if (!file || typeof file !== "object" || !Array.isArray(file.items) || !Array.isArray(file.slugs)) fail('expected { "items": [...], "slugs": [...] }');
+  for (const [index, entry] of file.items.entries()) {
+    if (!isSlug(entry?.id) || !QID_PATTERN.test(entry?.qid ?? "") || !EXCLUSION_KINDS.includes(entry?.kind) || !isText(entry?.reason)) fail(`items[${index}] needs an id (the store slug), a qid, a kind (${EXCLUSION_KINDS.join(" or ")}) and a reason`);
+    if (items.has(entry.qid)) fail(`items[${index}]: ${entry.qid} is listed twice`);
+    items.set(entry.qid, entry);
+  }
+  for (const [index, entry] of file.slugs.entries()) {
+    if (!isSlug(entry?.id) || !QID_PATTERN.test(entry?.qid ?? "") || !isText(entry?.reason)) fail(`slugs[${index}] needs an id (the store slug), a qid and a reason`);
+    if (slugs.has(entry.id)) fail(`slugs[${index}]: ${entry.id} is listed twice`);
+    slugs.set(entry.id, entry);
+  }
+  return { items, slugs };
+}
+
+/**
+ * The library from a Wikidata snapshot and the reviewed exclusions (the parsed exclusions.json; none when left out).
  * @returns {{ games: Array<object>, log: Array<{ slug?: string, qid: string, reason: string, detail?: string }>, unmapped: { genres: Record<string, number>, modes: Record<string, number> } }}
  */
-export function selectLibrary(snapshot) {
+export function selectLibrary(snapshot, { exclusions } = {}) {
   const { items, entities, classes } = snapshot;
+  const excluded = exclusionsOf(exclusions);
   const log = [];
   const unmapped = { genres: {}, modes: {} };
   const count = (bucket) => (id) => (bucket[id] = (bucket[id] ?? 0) + 1);
+  const typesOf = (item) => item.types.map((type) => `${type} ${classes[type]?.label ?? ""}`.trim()).join("; ");
 
-  // 1–4: candidates per slug
-  const bySlug = new Map();
+  // 1–5: each item's candidate slugs
+  const slugsOf = new Map();
+  const kinds = new Map();
+  const matched = new Set(); // the exclusion entries that left something out: "item <qid>", "slug <slug>"
   const kindCache = new Map();
   for (const [qid, item] of Object.entries(items)) {
     const kind = kindCache.get(item.types.join("|")) ?? classifyTypes(classes, item.types);
     kindCache.set(item.types.join("|"), kind);
+    const seen = new Set();
     for (const raw of item.slugs) {
       const slug = raw.trim().replace(/\/+$/, "");
-      if (!slug.endsWith("-switch")) continue;
+      if (!slug.endsWith("-switch") || seen.has(slug)) continue;
+      seen.add(slug);
       if (!SLUG_PATTERN.test(slug)) {
         log.push({ slug, qid, reason: "slug-format" });
         continue;
@@ -237,27 +315,59 @@ export function selectLibrary(snapshot) {
         continue;
       }
       if (kind !== "game" && kind !== "game+addon") {
-        log.push({ slug, qid, reason: kind === "other" ? "not-a-game" : kind, detail: item.types.map((type) => `${type} ${classes[type]?.label ?? ""}`.trim()).join("; ") });
+        log.push({ slug, qid, reason: kind === "other" ? "not-a-game" : kind, detail: typesOf(item) });
         continue;
       }
       if (!labelOf(item.labels)) {
         log.push({ slug, qid, reason: "no-latin-title" });
         continue;
       }
-      if (kind === "game+addon") log.push({ slug, qid, reason: "kept-also-addon", detail: item.types.map((type) => `${type} ${classes[type]?.label ?? ""}`.trim()).join("; ") });
-      const list = bySlug.get(slug) ?? [];
-      if (!list.includes(qid)) list.push(qid);
-      bySlug.set(slug, list);
+      const itemEntry = excluded.items.get(qid);
+      if (itemEntry) {
+        matched.add(`item ${qid}`);
+        log.push({ slug, qid, reason: `excluded-${itemEntry.kind}`, detail: itemEntry.reason });
+        continue;
+      }
+      const slugEntry = excluded.slugs.get(slug);
+      if (slugEntry) {
+        matched.add(`slug ${slug}`);
+        log.push({ slug, qid, reason: "excluded-slug", detail: slugEntry.reason });
+        continue;
+      }
+      kinds.set(qid, kind);
+      slugsOf.set(qid, [...(slugsOf.get(qid) ?? []), slug]);
+    }
+  }
+  // an entry that left nothing out is stale (the item is refused for another reason, or gone from Wikidata)
+  const unused = "nothing left to exclude in this snapshot: review the entry";
+  for (const [qid, entry] of excluded.items) if (!matched.has(`item ${qid}`)) log.push({ slug: entry.id, qid, reason: "exclusion-unused", detail: `items: ${unused}` });
+  for (const [slug, entry] of excluded.slugs) if (!matched.has(`slug ${slug}`)) log.push({ slug, qid: entry.qid, reason: "exclusion-unused", detail: `slugs: ${unused}` });
+
+  // 6: one card per item, one item per slug — the strongest item first, each takes its best slug still free
+  const order = [...slugsOf.keys()].sort((a, b) => items[b].sitelinks - items[a].sitelinks || Number(a.slice(1)) - Number(b.slice(1)));
+  const place = new Map(order.map((qid, index) => [qid, index]));
+  const owner = new Map(); // slug → the item it is listed for
+  const chosen = new Map(); // item → its slug
+  for (const qid of order) {
+    const slug = slugsByTitle(slugsOf.get(qid), labelOf(items[qid].labels)).find((candidate) => !owner.has(candidate));
+    if (!slug) continue;
+    owner.set(slug, qid);
+    chosen.set(qid, slug);
+  }
+  for (const qid of order) {
+    for (const slug of slugsOf.get(qid)) {
+      if (chosen.get(qid) === slug) continue;
+      const holder = owner.get(slug);
+      if (holder !== undefined && place.get(holder) < place.get(qid)) log.push({ slug, qid, reason: "slug-shared", detail: `kept ${holder} (${items[holder].sitelinks} sitelinks) over ${qid} (${items[qid].sitelinks})` });
+      else log.push({ slug, qid, reason: "second-slug", detail: `${qid} is listed as ${chosen.get(qid)}, its slug closest to its title${holder ? `; this slug went to ${holder}` : ""}` });
     }
   }
 
-  // 5: one item per slug
   const games = [];
-  for (const slug of [...bySlug.keys()].sort()) {
-    const holders = bySlug.get(slug).sort((a, b) => items[b].sitelinks - items[a].sitelinks || Number(a.slice(1)) - Number(b.slice(1)));
-    const [qid, ...others] = holders;
-    for (const other of others) log.push({ slug, qid: other, reason: "slug-shared", detail: `kept ${qid} (${items[qid].sitelinks} sitelinks) over ${other} (${items[other].sitelinks})` });
+  for (const slug of [...owner.keys()].sort()) {
+    const qid = owner.get(slug);
     const item = items[qid];
+    if (kinds.get(qid) === "game+addon") log.push({ slug, qid, reason: "kept-also-addon", detail: typesOf(item) });
     const title = labelOf(item.labels);
     const titleAr = arabicOnly(item.labels.ar);
     const titleCkb = arabicOnly(item.labels.ckb);

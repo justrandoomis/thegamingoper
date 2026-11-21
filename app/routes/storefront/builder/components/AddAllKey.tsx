@@ -3,10 +3,13 @@
  * orderable line of the quote goes into the cart in ONE request (cart-client addManyToCart: all of them, or — when any
  * one cannot — none, with each refused line's reason). The kit's add sequence for a bundle: the drawn moments' core is
  * fetched on press, one bead flies to the cart, the request leaves; on the server's yes the drawn moment plays round the
- * key, the live region says it, the key becomes «عرض السلة» (focus follows it), and the cart toast comes once the bead
- * has landed. On a refusal the bead flies back, nothing changes in the cart, and the page shows each line's reason.
+ * key, the key becomes «عرض السلة» (focus follows it), and the cart toast — whose live region says it — comes once the
+ * bead has landed. On a refusal the bead flies back, nothing changes in the cart, and the page shows each line's reason
+ * (its alert says it). One voice per event (QA 2026-11-21: the add and the refusal were each said twice).
  *
- * Offline the key goes flat with its reason beside it; nothing is queued that cannot be sent.
+ * Offline, or when nothing of the plan can be bought now, the key looks flat but stays focusable (`aria-disabled`) and
+ * names its reason (`aria-describedby`): the hidden offline line, or the review's «لا شيء من هذه الخطة يدخل السلة…»
+ * (NOTHING_ID). Nothing is queued that cannot be sent.
  */
 import { useId, useRef, useState } from "react";
 
@@ -14,7 +17,7 @@ import { Icon } from "~/art/Icon";
 import { LocaleLink, useFormat, useLocale, useT } from "~/i18n/react";
 import { flyToCart } from "~/motion";
 import type { QuoteLine } from "~/lib/switch-builder/types";
-import { addManyToCart, announce, cartErrorKey, type AddManyProblem } from "~/ui/cart-client";
+import { addManyToCart, cartErrorKey, type AddManyProblem } from "~/ui/cart-client";
 import { cx } from "~/ui/cx";
 import { useFocusHandoff } from "~/ui/focus-handoff";
 import { Key } from "~/ui/Key";
@@ -41,6 +44,9 @@ function landing(): { promise: Promise<void>; arrive: () => void } {
 }
 
 export type AddAllRefusal = { code: string; problems: AddManyProblem[] };
+
+/** The id of the review's sentence that says nothing of the plan goes in the cart (the disabled key's reason). */
+export const NOTHING_ID = "sb-review-nothing";
 
 export type AddAllKeyProps = {
   lines: readonly QuoteLine[];
@@ -78,6 +84,8 @@ export function AddAllKey({ lines, pending = false, compact = false, tour = fals
   const items = cartItemsOf(lines);
   const count = items.reduce((sum, item) => sum + item.qty, 0);
   const fit = compact ? "compact" : undefined;
+  // the aside's copy says the full words: a second line before an ellipsis (a primary key's words are never cut)
+  const wrap = !compact;
   const tourProps = tour ? { "data-tour": "add-all" } : {};
 
   const add = async () => {
@@ -96,15 +104,14 @@ export function AddAllKey({ lines, pending = false, compact = false, tour = fals
     if (!outcome.ok) {
       flight.revert();
       setAdding(false);
-      const reason = shop(cartErrorKey(outcome.code));
+      // said once: by the review's alert when lines are named, else by the error toast (its retry is the way on)
       onRefused({ code: outcome.code, problems: outcome.problems });
-      announce(outcome.problems.length > 0 ? t("review.refused") : t("review.refusedGeneric", { reason }));
-      if (outcome.problems.length === 0) toast.error(t("review.refusedGeneric", { reason }), { action: { label: t("review.retry"), onAction: () => void add() } });
+      if (outcome.problems.length === 0) toast.error(t("review.refusedGeneric", { reason: shop(cartErrorKey(outcome.code)) }), { action: { label: t("review.retry"), onAction: () => void add() } });
       return;
     }
     if (source?.isConnected) sakuga.added(source);
+    // said once, by the cart toast once the bead has landed
     const name = t("review.pieces", { count, n: f.number(count) });
-    announce(`${t("review.added")}: ${name}`);
     handoff.arm();
     setAdding(false);
     onAdded();
@@ -114,13 +121,16 @@ export function AddAllKey({ lines, pending = false, compact = false, tour = fals
   if (added) {
     return (
       <div ref={handoff.area} className={cx("sb-addall", className)}>
-        <Key as={LocaleLink} to="/cart" icon="shopping-cart-simple" fit={fit} className="min-w-0 flex-1" data-focus-target="" {...tourProps}>
+        <Key as={LocaleLink} to="/cart" icon="shopping-cart-simple" fit={fit} wrap={wrap} className="min-w-0 flex-1" data-focus-target="" {...tourProps}>
           {t("review.viewCart")}
         </Key>
       </div>
     );
   }
-  const disabled = !online || items.length === 0;
+  // flat but focusable, with its reason: offline (the hidden line below), or nothing to add (the review's sentence —
+  // not while the quote is still being worked out)
+  const nothing = !pending && items.length === 0;
+  const flat = !online || nothing;
   return (
     <div ref={handoff.area} className={cx("sb-addall", className)}>
       <Key
@@ -128,15 +138,18 @@ export function AddAllKey({ lines, pending = false, compact = false, tour = fals
         variant="primary"
         icon="bag-plus"
         loading={adding || pending}
-        disabled={disabled}
         fit={fit}
+        wrap={wrap}
         data-haptic="tap"
-        aria-describedby={online ? undefined : reasonId}
+        aria-disabled={flat || undefined}
+        aria-describedby={!online ? reasonId : nothing ? NOTHING_ID : undefined}
+        // the task bar's compact key says it short («أضف الكل»: the full words did not fit a 320 phone in Sorani); its
+        // name still says where the games go, and holds the words on screen (WCAG 2.5.3)
+        aria-label={compact ? t("review.addAllName") : undefined}
         className="min-w-0 flex-1"
         onClick={() => void add()}
         {...tourProps}
       >
-        {/* the task bar's compact key says it short («أضف الكل»): the full words did not fit a 320 phone in Sorani */}
         {compact ? t("review.addAllShort") : t("review.addAll")}
       </Key>
       {online ? null : (

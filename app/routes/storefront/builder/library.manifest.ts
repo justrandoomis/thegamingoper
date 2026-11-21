@@ -5,9 +5,9 @@
  * LIBRARY_CHUNK_PATH + list.chunks[game.chunk]. Never import the JSON through TypeScript or Vite.
  */
 /** URL path of the current list file (LibraryList); null until the first build. */
-export const LIBRARY_LIST_FILE: string | null = "/library/switch/list.ad6fca03.json";
+export const LIBRARY_LIST_FILE: string | null = "/library/switch/list.3ee69761.json";
 /** URL path that the chunk file names in LibraryList.chunks are relative to. */
 export const LIBRARY_CHUNK_PATH: string = "/library/switch/d/";
 /** ISO date of the Wikidata snapshot the list was built from. */
 export const LIBRARY_AS_OF: string | null = "2026-11-21";
-export const LIBRARY_GAME_COUNT: number = 4850;
+export const LIBRARY_GAME_COUNT: number = 4804;

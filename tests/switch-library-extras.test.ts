@@ -2,22 +2,30 @@
  * Switch bundle builder — TamTam's own per-game data (docs/switch-builder.md §4.2).
  *
  *   · getLibraryExtras maps switch_library_entries rows to LibraryExtras: bytes, cents, YYYY-MM-DD dates, the YouTube
- *     id, TamTam's descriptions, a licensed Metacritic score only with its review count and date, `hidden: true`
+ *     id, TamTam's descriptions, a licensed Metacritic score only with its review count and date
+ *   · a hidden game is `{ hidden: true }` and nothing else: no picture, trailer, text, price, size or score of it
+ *     leaves the server (qa-security 2026-11-21)
  *   · the picture is the PUBLIC file's storage key (+ width/height); a private or deleted file is never exposed
  *   · `rev` changes on every save, on a new row, on a removed row and on a capacity change
  *   · `capacity` = sanitizeCapacity(setting builder.switch.capacity): the default, a staff value, and a stored value
  *     that does not fit (or is not even JSON) falling back field by field instead of breaking the builder
- *   · GET /api/switch-library answers the payload as public JSON for a minute
+ *   · getLibraryPrices, the quote's read: the price and the hidden flag of the games asked for only, mapped as
+ *     getLibraryExtras maps them, so a quote from it equals a quote from the whole payload
+ *   · GET /api/switch-library answers the payload as public JSON for a minute; past 60 uncached reads a minute from
+ *     one address it answers 429 (no-store, Retry-After); a request without a client address is never counted
  */
 import { eq } from "drizzle-orm";
-import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { RouterContextProvider } from "react-router";
+import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 import { DEFAULT_CAPACITY, sanitizeCapacity } from "~/lib/switch-builder/storage";
-import type { LibraryExtrasPayload } from "~/lib/switch-builder/types";
+import type { BuilderPlan, LibraryExtrasPayload } from "~/lib/switch-builder/types";
 import { loader } from "~/routes/api/switch-library";
+import { quoteBuilderPlan } from "~/routes/storefront/builder/builder.server";
 import type { EmployeeActor } from "~/server/actor";
+import { requestContextMiddleware } from "~/server/context.server";
 import { files, settings, switchLibraryEntries, type NewSwitchLibraryEntry } from "~/server/db/schema";
 import { toAppError } from "~/server/errors";
-import { CAPACITY_SETTING, getLibraryExtras } from "~/server/services/switch-library.server";
+import { CAPACITY_SETTING, getLibraryExtras, getLibraryPrices } from "~/server/services/switch-library.server";
 import { SETTINGS, settingDefault, setSetting } from "~/server/settings.server";
 import { TEST_NOW, createTestDb, type TestDb } from "./helpers/db";
 
@@ -48,10 +56,11 @@ describe("getLibraryExtras", () => {
     expect(SETTINGS[CAPACITY_SETTING].public).toBe(false);
   });
 
-  test("rows become LibraryExtras; hidden games are flagged; only a public, kept picture is exposed", async () => {
+  test("rows become LibraryExtras; a hidden game is the flag alone; only a public, kept picture is exposed", async () => {
     await addFile("fil_sl_public", "pub_switchlibrarytest0001.webp", "public");
     await addFile("fil_sl_private", "prv_switchlibrarytest0002.webp", "private");
     await addFile("fil_sl_deleted", "pub_switchlibrarytest0003.webp", "public", { deletedAt: NOW });
+    await addFile("fil_sl_hidden", "pub_switchlibrarytest0004.webp", "public");
     await addEntry({
       gameId: "hades-switch",
       sizeBytes: Math.round(15.4 * GIB),
@@ -67,7 +76,22 @@ describe("getLibraryExtras", () => {
       metacriticAsOf: "2026-11-18",
       updatedAt: NOW + 10,
     });
-    await addEntry({ gameId: "delisted-game-switch", isHidden: true, imageFileId: "fil_sl_private" });
+    // hidden because its picture, trailer and text had to come down: everything set, a public picture included
+    await addEntry({
+      gameId: "delisted-game-switch",
+      isHidden: true,
+      sizeBytes: 4 * GIB,
+      cartridgeBytes: GIB,
+      sizeAsOf: "2026-11-20",
+      priceUsdCents: 1999,
+      priceAsOf: "2026-11-20",
+      trailerYoutubeId: "dQw4w9WgXcQ",
+      imageFileId: "fil_sl_hidden",
+      description: { ar: "وصف لعبة سُحبت من المتجر", en: "A game taken down from the store.", ckb: "وەسفی یارییەکی لابراو" },
+      metacriticScore: 70,
+      metacriticReviews: 12,
+      metacriticAsOf: "2026-11-18",
+    });
     await addEntry({ gameId: "private-picture-switch", sizeBytes: 2 * GIB, imageFileId: "fil_sl_private", trailerYoutubeId: "not a video id", description: { ar: " ", en: "" } });
     await addEntry({ gameId: "deleted-picture-switch", priceUsdCents: 0, priceAsOf: "2026-02-30", imageFileId: "fil_sl_deleted" });
     // a score without its review count and date is not shown (no invented figures); reviews without a score neither
@@ -90,8 +114,10 @@ describe("getLibraryExtras", () => {
       description: { ar: "لعبة أكشن من Supergiant Games", en: "An action game by Supergiant Games." },
       metacritic: { score: 93, reviews: 51, asOf: "2026-11-18" },
     });
-    // hidden: included, flagged — and its private picture is not
+    // hidden: included, flagged — and nothing else of it leaves the server
     expect(extras["delisted-game-switch"]).toEqual({ hidden: true });
+    const sent = JSON.stringify(await getLibraryExtras(t.db));
+    for (const piece of ["switchlibrarytest0004", "dQw4w9WgXcQ", "سُحبت", "taken down", "لابراو"]) expect(sent).not.toContain(piece);
     expect(extras["private-picture-switch"]).toEqual({ sizeBytes: 2 * GIB });
     // a deleted picture and an impossible date are left out; a price of 0 cents is a real price
     expect(extras["deleted-picture-switch"]).toEqual({ priceUsdCents: 0 });
@@ -167,13 +193,79 @@ describe("capacity: setting builder.switch.capacity", () => {
   });
 });
 
+describe("getLibraryPrices: the quote's read", () => {
+  test("the price and the hidden flag of the games asked for, mapped as the payload maps them", async () => {
+    const asked = ["hades-switch", "delisted-game-switch", "deleted-picture-switch", "private-picture-switch", "not-in-the-table-switch", "hades-switch", ""];
+    const prices = await getLibraryPrices(t.db, asked);
+    expect(prices).toEqual({
+      "hades-switch": { priceUsdCents: 2499, priceAsOf: "2026-11-19" },
+      "delisted-game-switch": { hidden: true },
+      "deleted-picture-switch": { priceUsdCents: 0 },
+    });
+    // the same figures as the whole payload, field by field
+    const { extras } = await getLibraryExtras(t.db);
+    for (const [id, entry] of Object.entries(prices)) {
+      const whole = extras[id];
+      expect(entry, id).toEqual(whole?.hidden ? { hidden: true } : { ...(whole?.priceUsdCents !== undefined ? { priceUsdCents: whole.priceUsdCents } : {}), ...(whole?.priceAsOf ? { priceAsOf: whole.priceAsOf } : {}) });
+    }
+    expect(await getLibraryPrices(t.db, [])).toEqual({});
+    // more ids than D1 binds in one statement: still one bound value
+    const many = Array.from({ length: 119 }, (_, index) => `filler-${index}-switch`).concat("hades-switch");
+    expect(await getLibraryPrices(t.db, many)).toEqual({ "hades-switch": { priceUsdCents: 2499, priceAsOf: "2026-11-19" } });
+  });
+
+  test("a quote from it equals a quote from the whole payload", async () => {
+    const plan: BuilderPlan = {
+      v: 1,
+      device: { model: "switch-oled", owned: true },
+      card: { sizeGB: 256, owned: true },
+      games: ["hades-switch", "delisted-game-switch", "deleted-picture-switch", "private-picture-switch", "not-in-the-table-switch"].map((id) => ({ id, format: "digital" as const })),
+    };
+    const narrow = await quoteBuilderPlan(t.db, "ar", plan, await getLibraryPrices(t.db, plan.games.map((game) => game.id)), NOW);
+    const whole = await quoteBuilderPlan(t.db, "ar", plan, (await getLibraryExtras(t.db)).extras, NOW);
+    expect(narrow).toEqual(whole);
+    expect(narrow.digital).toMatchObject({ pricedCents: 2499, pricedCount: 1 });
+    expect(narrow.digital.unpricedIds).toEqual(["delisted-game-switch", "deleted-picture-switch", "private-picture-switch", "not-in-the-table-switch"]);
+  });
+});
+
+/** GET /api/switch-library behind the real request middleware (client address, clock); `ip` null = no client address. */
+async function getLibrary(ip: string | null, path = "/api/switch-library") {
+  const request = new Request(`http://localhost:5173${path}`, { headers: ip ? { "CF-Connecting-IP": ip } : {} });
+  const context = new RouterContextProvider();
+  const url = new URL(request.url);
+  return (await requestContextMiddleware({ request, context, url, pattern: "/api/switch-library", params: {} } as never, async () => {
+    return (await loader({ request, context, params: {}, url, pattern: "/api/switch-library" } as never)) as Response;
+  })) as Response;
+}
+
 describe("GET /api/switch-library", () => {
   test("answers the payload as public JSON for a minute", async () => {
-    const request = new Request("http://localhost/api/switch-library");
-    const response = (await loader({ request, context: {}, params: {} } as never)) as Response;
+    const response = await getLibrary("192.0.2.10");
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("public, max-age=60");
     expect(response.headers.get("Content-Type")).toContain("application/json");
     expect(await response.json()).toEqual(JSON.parse(JSON.stringify(await getLibraryExtras(t.db))));
+  });
+
+  test("past 60 uncached reads a minute from one address: 429, never kept; other addresses and the cache's own refresh go on", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    // the middle of a one-minute window, so the 61 requests share it
+    vi.setSystemTime(Date.UTC(2026, 10, 21, 12, 0, 20));
+    try {
+      for (let index = 0; index < 60; index++) expect((await getLibrary("203.0.113.9", index % 2 === 0 ? "/api/switch-library?x=1" : "/api/switch-library")).status).toBe(200);
+      const refused = await getLibrary("203.0.113.9");
+      expect(refused.status).toBe(429);
+      expect(refused.headers.get("Cache-Control")).toBe("no-store");
+      expect(Number(refused.headers.get("Retry-After"))).toBe(40);
+      expect(await refused.json()).toEqual({ error: "rate_limited" });
+      expect((await getLibrary("203.0.113.10")).status).toBe(200);
+      // the edge cache refreshes a copy with a request of its own, which carries no client address
+      expect((await getLibrary(null)).status).toBe(200);
+      vi.setSystemTime(Date.UTC(2026, 10, 21, 12, 1, 0));
+      expect((await getLibrary("203.0.113.9")).status).toBe(200);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

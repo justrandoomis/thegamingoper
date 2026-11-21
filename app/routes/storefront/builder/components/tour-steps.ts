@@ -7,7 +7,9 @@
  * Rules
  *   · each step has its own short guide over the page's `data-tour` parts, in reading order; a part that is not on the
  *     page (not rendered, hidden, nothing to show yet) is skipped, and the counter counts only what is shown;
- *   · the guide starts by itself the first time each step is shown (once the step says it is ready);
+ *   · the guide starts by itself the first time each step is shown (once the step says it is ready) — unless the
+ *     shopper is already at work on it (a key or a press since the step was shown): then the step counts as offered
+ *     (seen) and only the «?» key shows its guide;
  *   · «تخطَّ» (and Escape / Android's back) turns the automatic start off for EVERY step;
  *   · finishing a step's guide only marks that step as seen; the other steps still start once;
  *   · the page's «?» key (data-tour="help") replays the current step's guide at any time, even after «تخطَّ»;
@@ -72,6 +74,17 @@ export const TOUR_TEXT_KEY: Readonly<Record<TourTarget, string>> = {
   "review-notes": "reviewNotes",
   "add-all": "addAll",
 };
+
+/**
+ * Parts that keep their END in view when they are taller than the room the note leaves (a phone): the review's lines
+ * end on the total their note talks about. Every other part keeps its start (a list's first options, under its title).
+ */
+export const TOUR_KEEP_END: readonly TourTarget[] = ["review-lines"];
+
+/** Which end of a tall part stays in view. Pure. */
+export function tourKeeps(target: TourTarget): "start" | "end" {
+  return TOUR_KEEP_END.includes(target) ? "end" : "start";
+}
 
 /** The CSS selector of a part. */
 export function tourSelector(target: TourTarget): string {

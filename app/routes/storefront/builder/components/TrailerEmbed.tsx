@@ -4,12 +4,14 @@
  *   <TrailerEmbed videoId={extras.trailerYouTubeId} title={game.title} />
  *
  * Before the tap NOTHING is fetched from YouTube: no iframe, no thumbnail, no preconnect. The poster is TamTam's own:
- * a 16:9 well on the product ground with a clay play disc and the words «شغّل الإعلان», and a line that says the video
- * loads from YouTube only when pressed (the privacy policy says the same). The tap swaps in the privacy-enhanced player
- * `https://www.youtube-nocookie.com/embed/<id>` (it plays at once: the tap is the shopper's gesture), titled for screen
- * readers, and moves the focus into it so the keyboard does not fall back to the page. Production's CSP allows exactly
- * that origin as `frame-src` (integration owner, app/server/security.server.ts). Offline, the play key rests with the
- * reason beside it. An id that is not a YouTube video id renders nothing.
+ * a 16:9 well on the product ground with a clay play disc and the words «شغّل العرض الدعائي», and a line that says the
+ * video loads from YouTube only when pressed (the privacy policy says the same). The tap swaps in the privacy-enhanced
+ * player `https://www.youtube-nocookie.com/embed/<id>` (it plays at once: the tap is the shopper's gesture), titled for
+ * screen readers, and moves the focus into it so the keyboard does not fall back to the page. Production's CSP allows
+ * exactly that origin as `frame-src` (integration owner, app/server/security.server.ts). The frame is sandboxed
+ * (TRAILER_SANDBOX): the player runs its scripts on its own origin and may open YouTube in a new tab, but it cannot
+ * navigate this page, submit forms, open dialogs or start downloads. Offline, the play key rests with the reason
+ * beside it. An id that is not a YouTube video id renders nothing.
  */
 import { useEffect, useId, useRef, useState } from "react";
 
@@ -31,6 +33,13 @@ export type TrailerEmbedProps = {
 export const YOUTUBE_VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
 
 export const TRAILER_ORIGIN = "https://www.youtube-nocookie.com";
+
+/**
+ * What the player frame may do: run its scripts on its own (cross-site) origin — `allow-same-origin` keeps YouTube's
+ * origin, never this page's —, go full screen / present, and open "Watch on YouTube" in a new tab that is not
+ * sandboxed itself. Nothing else: no navigating this page, no forms, no modal dialogs, no downloads.
+ */
+export const TRAILER_SANDBOX = "allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox";
 
 /** The player's address for a checked id (null for anything else). Pure. */
 export function trailerSrc(videoId: string): string | null {
@@ -66,6 +75,7 @@ export function TrailerEmbed({ videoId, title, className }: TrailerEmbedProps) {
             height={315}
             allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             allowFullScreen
+            sandbox={TRAILER_SANDBOX}
             // YouTube's player refuses to start without the embedding origin; only the origin is sent
             referrerPolicy="strict-origin-when-cross-origin"
           />

@@ -6,10 +6,13 @@
  *     and nothing is written — no cart created, no line touched, no token re-keyed;
  *   · items for the same variant are merged; what the cart already holds counts against the stock and the line limit;
  *   · a guest without a cart gets ONE cart (one cookie), lines in the order asked;
- *   · new lines must fit beside the cart's lines (cart_full);
+ *   · new lines must fit beside the cart's lines (cart_full) — checked again inside the batch, so a change landing
+ *     between the check and the batch (two bundles at once, another tab's add) never takes a cart past 50 lines; the
+ *     same holds for addToCart; `added` counts the units that really went in;
+ *   · an id that does not exist answers `unavailable`, like a draft (the answer never tells which ids exist);
  *   · prices come from the server only (a running flash sale's price is what each line remembers);
  *   · the route: a JSON `items` field (form or JSON body), one rate-limit tick, the cookie set once, `problems` in the
- *     409 answer, and 50 items fit the 8 KB body limit;
+ *     409 answer, and 50 items fit the 8 KB body limit — which also holds for a body sent without Content-Length;
  *   · the browser side (cart-client addManyToCart): one POST intent=add_many, the new cart published to onCartChange,
  *     the problems of a refusal read back, and it never throws.
  *
@@ -21,6 +24,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from "vite
 import { newId } from "~/lib/ids";
 import { action as cartAction } from "~/routes/api/cart";
 import { requestContextMiddleware, type RequestCtx } from "~/server/context.server";
+import type { Db } from "~/server/db/drizzle.server";
 import { cartItems, carts, flashSaleItems, flashSales, products, stockLevels, variants } from "~/server/db/schema";
 import { DEFAULT_LOCATION_ID } from "~/server/db/seed/reference";
 import { toAppError, type AppError } from "~/server/errors";
@@ -94,6 +98,34 @@ async function manyProducts(count: number, options: Parameters<Fixtures["product
   return out;
 }
 
+const oneEach = (list: readonly ProductFixture[]) => list.map((product) => ({ variantId: product.variantId, qty: 1 }));
+
+/** The statement inserts cart lines (an add's write batch — getAvailability's own batch only reads). */
+const writesCartLines = (statement: unknown): boolean => /^insert into "cart_items"/i.test((statement as { toSQL?: () => { sql: string } }).toSQL?.().sql ?? "");
+
+/**
+ * The database as one service call sees it, with `competitor` run just before that call's write batch — another
+ * request's change landing between what the service checked and what it writes.
+ */
+function competing(db: Db, competitor: () => Promise<unknown>): Db {
+  let fired = false;
+  return new Proxy(db, {
+    get(target, property, receiver) {
+      if (property === "batch") {
+        return async (statements: unknown[]) => {
+          if (!fired && statements.some(writesCartLines)) {
+            fired = true;
+            await competitor();
+          }
+          return (target.batch as unknown as (input: unknown) => Promise<unknown>).call(target, statements);
+        };
+      }
+      const value = Reflect.get(target, property, receiver);
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+  });
+}
+
 // ───────────────────────────────────────────────────────────────── the service
 
 describe("addManyToCart — all of the items or none", () => {
@@ -142,8 +174,10 @@ describe("addManyToCart — all of the items or none", () => {
     const soldOut = await make.product({ priceIqd: 30_000, stock: 0 });
     const archived = await make.product({ priceIqd: 30_000, stock: 4 });
     const switchedOff = await make.product({ priceIqd: 30_000, stock: 4 });
+    const draft = await make.product({ priceIqd: 30_000, stock: 4 });
     await t.db.update(products).set({ status: "archived" }).where(eq(products.id, archived.productId));
     await t.db.update(variants).set({ isActive: false }).where(eq(variants.id, switchedOff.variantId));
+    await t.db.update(products).set({ status: "draft" }).where(eq(products.id, draft.productId));
     const existing = await addToCart(t.db, guest(), { variantId: kept.variantId, qty: 1 }, NOW);
     const cartId = existing.view.id as string;
     const cartBefore = await t.db.select().from(carts).where(eq(carts.id, cartId)).get();
@@ -157,15 +191,19 @@ describe("addManyToCart — all of the items or none", () => {
       { variantId: kept.variantId, qty: 1 },
       { variantId: archived.variantId, qty: 1 },
       { variantId: switchedOff.variantId, qty: 2 },
+      { variantId: draft.variantId, qty: 1 },
     ];
     const refusal = await failureOf(addManyToCart(t.db, guest(existing.cartToken), { items }, NOW + MINUTE));
     expect(refusal).toBeInstanceOf(AddManyRefusal);
     expect(refusal).toMatchObject({ code: "bundle_refused", status: 409 });
+    // an id that does not exist answers like a draft, an archived product or a variant switched off: the answer never
+    // tells which variant ids exist (QA security 2026-11-21 — 50 ids a request would otherwise find the drafts)
     expect(addManyProblemsOf(refusal)).toEqual([
       { variantId: soldOut.variantId, code: "out_of_stock" },
-      { variantId: "var_does_not_exist", code: "not_found" },
+      { variantId: "var_does_not_exist", code: "unavailable" },
       { variantId: archived.variantId, code: "unavailable" },
       { variantId: switchedOff.variantId, code: "unavailable" },
+      { variantId: draft.variantId, code: "unavailable" },
     ]);
     // nothing changed: the cart row (not even updated_at), its lines, no new cart
     expect(await t.db.select().from(carts).where(eq(carts.id, cartId)).get()).toEqual(cartBefore);
@@ -268,6 +306,96 @@ describe("addManyToCart — all of the items or none", () => {
   });
 });
 
+// ───────────────────────────────────────────────────────────────── changes at the same moment
+
+describe("the 50-line limit holds inside the batch — two changes at the same moment (QA security 2026-11-21)", () => {
+  test("a change landing between the check and the batch: the bundle is refused (cart_full for its new lines) and nothing of it is written", async () => {
+    const filler = await manyProducts(MAX_CART_LINES - 2);
+    const start = await addManyToCart(t.db, guest(), { items: oneEach(filler) }, NOW);
+    const cartId = start.view.id as string;
+    const [n1, n2, other] = await manyProducts(3);
+    // the bundle checks 48 + 2 new = 50 (fits); another tab's add of a third product lands before its batch
+    const raced = competing(t.db, () => addToCart(t.db, guest(start.cartToken), { variantId: other.variantId, qty: 1 }, NOW));
+    const items = [{ variantId: filler[0].variantId, qty: 1 }, ...oneEach([n1, n2])];
+    const refusal = await failureOf(addManyToCart(raced, guest(start.cartToken), { items }, NOW + MINUTE));
+    expect(refusal).toBeInstanceOf(AddManyRefusal);
+    expect(addManyProblemsOf(refusal)).toEqual([
+      { variantId: n1.variantId, code: "cart_full" },
+      { variantId: n2.variantId, code: "cart_full" },
+    ]);
+    // the other tab's line went in; nothing of the bundle did — not its new lines, not the unit for a line already held,
+    // not the cart's updated_at
+    const lines = await linesOf(cartId);
+    expect(lines).toHaveLength(MAX_CART_LINES - 1);
+    expect(lines.find((line) => line.variantId === filler[0].variantId)?.qty).toBe(1);
+    expect(lines.filter((line) => line.variantId === n1.variantId || line.variantId === n2.variantId)).toEqual([]);
+    expect((await t.db.select({ updatedAt: carts.updatedAt }).from(carts).where(eq(carts.id, cartId)).get())?.updatedAt).toBe(NOW);
+  });
+
+  test("two bundles at the same moment: one goes in whole, the other is refused, and the cart never passes 50 lines", async () => {
+    const first = await make.product({ stock: 5 });
+    const start = await addToCart(t.db, guest(), { variantId: first.variantId, qty: 1 }, NOW);
+    const a = await manyProducts(30);
+    const b = await manyProducts(30);
+    // 1 + 30 fits, 1 + 30 + 30 does not
+    const outcomes = await Promise.allSettled([a, b].map((list) => addManyToCart(t.db, guest(start.cartToken), { items: oneEach(list) }, NOW)));
+    expect(outcomes.map((outcome) => outcome.status).sort()).toEqual(["fulfilled", "rejected"]);
+    const refused = outcomes.find((outcome): outcome is PromiseRejectedResult => outcome.status === "rejected");
+    const problems = addManyProblemsOf(refused?.reason) ?? [];
+    expect(problems).toHaveLength(30);
+    expect(new Set(problems.map((problem) => problem.code))).toEqual(new Set(["cart_full"]));
+    expect(await linesOf(start.view.id as string)).toHaveLength(31);
+  });
+
+  test("addToCart keeps the same limit inside its batch: an add another change overtook is refused (cart_full) and writes nothing", async () => {
+    const filler = await manyProducts(MAX_CART_LINES - 1);
+    const start = await addManyToCart(t.db, guest(), { items: oneEach(filler) }, NOW);
+    const [mine, other] = await manyProducts(2);
+    const raced = competing(t.db, () => addToCart(t.db, guest(start.cartToken), { variantId: other.variantId, qty: 1 }, NOW));
+    expect(await failureOf(addToCart(raced, guest(start.cartToken), { variantId: mine.variantId, qty: 1 }, NOW))).toMatchObject({ code: "cart_full", status: 409 });
+    const lines = await linesOf(start.view.id as string);
+    expect(lines).toHaveLength(MAX_CART_LINES);
+    expect(lines.filter((line) => line.variantId === mine.variantId)).toEqual([]);
+  });
+
+  test("a cart already past the limit (an earlier race) still takes more units of the lines it holds, but no new line", async () => {
+    const filler = await manyProducts(MAX_CART_LINES);
+    const start = await addManyToCart(t.db, guest(), { items: oneEach(filler) }, NOW);
+    const cartId = start.view.id as string;
+    const [extra1, extra2, fresh] = await manyProducts(3);
+    // two lines past the limit, as the race before this guard could leave a cart
+    await t.db.insert(cartItems).values([extra1, extra2].map((product) => ({ id: newId("cit"), cartId, variantId: product.variantId, usedUnitId: null, qty: 1, addedAt: NOW, priceSnapshotIqd: product.priceIqd })));
+    expect(await linesOf(cartId)).toHaveLength(MAX_CART_LINES + 2);
+
+    const more = await addManyToCart(t.db, guest(start.cartToken), { items: oneEach([filler[0], extra1]) }, NOW);
+    expect(more.added).toBe(2);
+    expect([qtyOf(more.view, filler[0].variantId), qtyOf(more.view, extra1.variantId)]).toEqual([2, 2]);
+    expect((await addToCart(t.db, guest(start.cartToken), { variantId: extra2.variantId, qty: 1 }, NOW)).added).toBe(1);
+
+    expect(addManyProblemsOf(await failureOf(addManyToCart(t.db, guest(start.cartToken), { items: oneEach([filler[1], fresh]) }, NOW)))).toEqual([{ variantId: fresh.variantId, code: "cart_full" }]);
+    expect(await failureOf(addToCart(t.db, guest(start.cartToken), { variantId: fresh.variantId, qty: 1 }, NOW))).toMatchObject({ code: "cart_full", status: 409 });
+    expect(await linesOf(cartId)).toHaveLength(MAX_CART_LINES + 2);
+  });
+
+  test("`added` counts the units that really went in when another change filled the line first", async () => {
+    const held = await make.product({ priceIqd: 5_000, stock: 5 });
+    const scarce = await make.product({ priceIqd: 70_000, stock: 2 });
+    const start = await addToCart(t.db, guest(), { variantId: held.variantId, qty: 1 }, NOW);
+    // checked: 0 held + 2 asked ≤ 2 free; another tab put 1 in before the batch, so only 1 more fits
+    const raced = competing(t.db, () => addToCart(t.db, guest(start.cartToken), { variantId: scarce.variantId, qty: 1 }, NOW));
+    const bundle = await addManyToCart(raced, guest(start.cartToken), { items: [{ variantId: scarce.variantId, qty: 2 }, { variantId: held.variantId, qty: 1 }] }, NOW);
+    expect(bundle.added).toBe(2);
+    expect([qtyOf(bundle.view, scarce.variantId), qtyOf(bundle.view, held.variantId)]).toEqual([2, 2]);
+
+    // the single add too: 3 free, 2 asked, another tab's 2 land first — 1 more fits
+    const three = await make.product({ priceIqd: 1_000, stock: 3 });
+    const racedAdd = competing(t.db, () => addToCart(t.db, guest(start.cartToken), { variantId: three.variantId, qty: 2 }, NOW));
+    const single = await addToCart(racedAdd, guest(start.cartToken), { variantId: three.variantId, qty: 2 }, NOW);
+    expect(single.added).toBe(1);
+    expect(qtyOf(single.view, three.variantId)).toBe(3);
+  });
+});
+
 // ───────────────────────────────────────────────────────────────── the route
 
 let ipCounter = 0;
@@ -291,16 +419,22 @@ function asResponse(value: unknown): { response: Response; body: unknown } {
 
 type Hit = { status: number; headers: Headers; body: Record<string, unknown> };
 
-/** One POST /api/cart through the request-context middleware: form fields (what cart-client sends) or a JSON body. */
-async function post(body: { form?: Record<string, string>; json?: unknown }, init: { cookies?: Record<string, string>; ip?: string } = {}): Promise<Hit> {
+/**
+ * One POST /api/cart through the request-context middleware: form fields (what cart-client sends), a JSON body, or a
+ * stream (sent without Content-Length, like a chunked upload).
+ */
+async function post(body: { form?: Record<string, string>; json?: unknown; stream?: { body: ReadableStream<Uint8Array>; type: string } }, init: { cookies?: Record<string, string>; ip?: string } = {}): Promise<Hit> {
   const headers = new Headers({ "CF-Connecting-IP": init.ip ?? freshIp(), Origin: SITE });
   if (init.cookies) headers.set("Cookie", Object.entries(init.cookies).map(([name, value]) => `${name}=${encodeURIComponent(value)}`).join("; "));
   let payload: BodyInit;
-  if (body.json !== undefined) {
+  if (body.stream) {
+    headers.set("Content-Type", body.stream.type);
+    payload = body.stream.body;
+  } else if (body.json !== undefined) {
     headers.set("Content-Type", "application/json");
     payload = JSON.stringify(body.json);
   } else payload = new URLSearchParams(body.form ?? {});
-  const request = new Request(`${SITE}/api/cart`, { method: "POST", headers, body: payload });
+  const request = new Request(`${SITE}/api/cart`, { method: "POST", headers, body: payload, ...(body.stream ? { duplex: "half" } : {}) } as RequestInit);
   const context = new RouterContextProvider();
   const url = new URL(request.url);
   let inner: unknown;
@@ -309,6 +443,34 @@ async function post(body: { form?: Record<string, string>; json?: unknown }, ini
     return asResponse(inner).response;
   })) as Response;
   return { status: response.status, headers: response.headers, body: asResponse(inner).body as Record<string, unknown> };
+}
+
+const CHUNK = 4 * 1024;
+
+/** `head`, then `size` bytes of padding in 4 KB chunks, as a stream that counts the bytes the reader pulled from it. */
+function streamedBody(head: string, size: number): { body: ReadableStream<Uint8Array>; pulled: () => number } {
+  const encoder = new TextEncoder();
+  const chunks: Uint8Array[] = [encoder.encode(head)];
+  const padding = encoder.encode("x".repeat(CHUNK));
+  let pulled = 0;
+  let left = size;
+  const body = new ReadableStream<Uint8Array>({
+    pull(controller) {
+      if (chunks.length === 0 && left > 0) {
+        const next = padding.subarray(0, Math.min(CHUNK, left));
+        left -= next.byteLength;
+        chunks.push(next);
+      }
+      const chunk = chunks.shift();
+      if (!chunk) {
+        controller.close();
+        return;
+      }
+      pulled += chunk.byteLength;
+      controller.enqueue(chunk);
+    },
+  });
+  return { body, pulled: () => pulled };
 }
 
 const cartCookieOf = (headers: Headers): string | null => {
@@ -367,6 +529,26 @@ describe("POST /api/cart intent=add_many", () => {
   test("a JSON body may carry the items as an array", async () => {
     const p = await make.product({ priceIqd: 9_000, stock: 4 });
     const answer = await post({ json: { intent: "add_many", items: [{ variantId: p.variantId, qty: 2 }] } });
+    expect(answer.status).toBe(200);
+    expect(answer.body).toMatchObject({ ok: true, added: 2, cart: { count: 2 } });
+  });
+
+  test("a body sent without Content-Length (chunked) is cut off at 8 KB, not read to its end: 400 invalid; a short one still goes in", async () => {
+    const TWO_MB = 2 * 1024 * 1024;
+    for (const [type, head] of [
+      ["application/json", '{"intent":"price","pad":"'],
+      ["application/x-www-form-urlencoded", "intent=price&pad="],
+    ] as const) {
+      const big = streamedBody(head, TWO_MB);
+      const answer = await post({ stream: { body: big.body, type } });
+      expect(answer.status, type).toBe(400);
+      expect(answer.body, type).toMatchObject({ ok: false, code: "invalid" });
+      expect(big.pulled(), `${type}: bytes read of the 2 MB`).toBeLessThanOrEqual(8 * 1024 + 3 * CHUNK);
+    }
+    // under the limit a chunked body reads as before
+    const p = await make.product({ priceIqd: 9_000, stock: 4 });
+    const small = streamedBody(new URLSearchParams({ intent: "add_many", items: JSON.stringify([{ variantId: p.variantId, qty: 2 }]) }).toString(), 0);
+    const answer = await post({ stream: { body: small.body, type: "application/x-www-form-urlencoded" } });
     expect(answer.status).toBe(200);
     expect(answer.body).toMatchObject({ ok: true, added: 2, cart: { count: 2 } });
   });

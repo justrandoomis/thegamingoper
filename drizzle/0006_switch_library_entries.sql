@@ -23,4 +23,5 @@ CREATE TABLE `switch_library_entries` (
 	CONSTRAINT "switch_library_entries_reviews_ck" CHECK("switch_library_entries"."metacritic_reviews" IS NULL OR "switch_library_entries"."metacritic_reviews" >= 0)
 );
 --> statement-breakpoint
-CREATE INDEX `switch_library_entries_updated_idx` ON `switch_library_entries` (`updated_at`);
+CREATE INDEX `switch_library_entries_updated_idx` ON `switch_library_entries` (`updated_at`);--> statement-breakpoint
+CREATE INDEX `switch_library_entries_image_idx` ON `switch_library_entries` (`image_file_id`);

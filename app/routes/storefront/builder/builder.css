@@ -110,8 +110,16 @@
     font: 600 var(--fs-read) / 1.5 var(--font-text);
     color: var(--ink);
   }
+  /* «ابدأ من جديد», or — just after it — «مسحنا ما اخترته.» and its «تراجع» in the same place */
   .sb-restart {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 var(--s-3);
     font: var(--type-sm);
+  }
+  .sb-restart__said {
+    color: var(--ink-2);
   }
 
   /* ───────────────────────────── 1. the console ───────────────────────────── */
@@ -123,8 +131,10 @@
     display: grid;
     gap: var(--s-3);
   }
-  /* a native radio in a picture card: the photo on the product ground, the name, its facts; chosen = an ink ring
-     (2px, 2px apart) and the ink check disc at the inline end; keyboard focus = the focus ring round the card */
+  /* a native radio in a picture card: the photo on the product ground, the name, its facts; chosen = a 2px ink border
+     inside the card (the kit's option rows) and the ink check disc at the inline end; keyboard focus = the focus ring
+     outside it, 2px apart — never the same drawing as "chosen" (QA 2026-11-21: focus moves with the check in a radio
+     group, so the ring of the chosen card used to change nothing on screen) */
   .sb-model {
     position: relative;
     display: grid;
@@ -143,13 +153,19 @@
     opacity: 0;
     pointer-events: none;
   }
-  .sb-model--checked {
-    outline: 2px solid var(--ink);
-    outline-offset: 2px;
+  /* the chosen border, drawn over the card's edge (no layout shift) — shared with the chosen game card */
+  :is(.sb-model--checked, .sb-game[data-chosen])::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border: 2px solid var(--ink);
+    border-radius: inherit;
+    pointer-events: none;
   }
   .sb-model:has(.sb-model__input:focus-visible) {
-    outline: 2px solid var(--focus);
-    outline-offset: 2px;
+    outline: var(--focus-w) solid var(--focus);
+    outline-offset: var(--focus-offset);
   }
   .sb-model__art {
     inline-size: 5.5rem;
@@ -236,9 +252,12 @@
     font: var(--type-sm-strong);
     color: var(--ink);
   }
+  /* the track has a boundary of its own (--line-strong, 3.8:1): its empty part — what is left — is otherwise --niche-2
+     on the page, about 1.2:1 (QA 2026-11-21, WCAG 1.4.11) */
   .sb-meter__bar {
     position: relative;
     block-size: 12px;
+    border: 1px solid var(--line-strong);
     border-radius: var(--r-full);
     background: var(--niche-2);
     overflow: hidden;
@@ -306,6 +325,15 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  /* the games' sizes are on their way (or did not load): no fill (its share is 0), the words in place of what is left
+     say so in the quiet ink; what is kept free stays drawn — it depends on the console and the card only */
+  .sb-meter[data-state] .sb-meter__left {
+    font: var(--type-sm);
+    color: var(--ink-2);
+  }
+  .sb-meter--compact[data-state] .sb-meter__left {
+    font: var(--type-xs);
+  }
 
   /* ───────────────────────────── 3. the games ───────────────────────────── */
   .sb-toolbar {
@@ -322,6 +350,16 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--s-2);
+  }
+  /* «تخطَّ قائمة الألعاب»: a skip link for the grid — out of sight (still in the tab order) until the keyboard reaches
+     it, then a key beside the sort */
+  .sb-skip:not(:focus-within) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .sb-active {
     display: flex;
@@ -351,8 +389,10 @@
     list-style: none;
   }
   /* a game: its picture at the start, the words beside it. The title's toggle stretches over the whole card (its
-     ::after); the info key sits above it at the inline end. A card below the first screen skips its rendering work
-     until it scrolls near (content-visibility). No callout or text selection under a held finger (long press). */
+     ::after); the info key sits above it at the inline end. Every card is rendered: content-visibility took the cards
+     off screen out of the accessibility tree (QA 2026-11-21), and at most 48 are added at a time. No callout or text
+     selection under a held finger (long press). Chosen: the 2px ink border inside (above, with the console cards);
+     keyboard focus: the focus ring outside it. */
   .sb-game {
     position: relative;
     display: grid;
@@ -363,22 +403,13 @@
     padding: var(--s-3);
     padding-inline-end: var(--s-10);
     border-radius: var(--r-lg);
-    content-visibility: auto;
-    contain-intrinsic-size: auto 7rem;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
   }
-  .sb-game[data-chosen] {
-    outline: 2px solid var(--ink);
-    outline-offset: 2px;
-  }
   .sb-game:has(.sb-game__toggle:focus-visible) {
-    outline: 2px solid var(--focus);
-    outline-offset: 2px;
-  }
-  .sb-game--placeholder {
-    content-visibility: visible;
+    outline: var(--focus-w) solid var(--focus);
+    outline-offset: var(--focus-offset);
   }
   .sb-game__art {
     position: relative;
@@ -407,21 +438,37 @@
     border-radius: var(--r-xs);
     box-shadow: var(--e-art);
   }
-  /* no picture: a typographic tile in the well's place — the title's two initials on the quiet ground */
+  /* no picture: a game case drawn from tokens, never a grey square that reads as a picture that did not load (QA
+     2026-11-21) — a cover of the product ground with a hairline edge, a band across its top (the shape of a Switch
+     case, in the page's neutral ink — never its brand red) and the title's initials set large in Kufam, in ink */
   .sb-tile {
+    position: relative;
     display: grid;
     place-items: center;
     inline-size: 100%;
     aspect-ratio: 3 / 4;
+    /* the band's height (18 % of the tile's height = 24 % of its width): the initials sit in the middle under it */
+    padding-block-start: 24%;
+    border: 1px solid var(--line-2);
     border-radius: var(--r-sm);
-    background: var(--niche-2);
+    background: var(--niche);
+    overflow: hidden;
   }
-  .sb-tile[data-state="out"] .sb-tile__mark {
-    opacity: 0.5;
+  .sb-tile::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    block-size: 18%;
+    background: var(--ink-2);
   }
   .sb-tile__mark {
-    font: 700 var(--fs-h3) / 1 var(--font-display);
-    color: var(--ink-2);
+    font: 700 var(--fs-h2) / 1 var(--font-display);
+    color: var(--ink);
+  }
+  .sb-tile[data-state="out"]::before,
+  .sb-tile[data-state="out"] .sb-tile__mark {
+    opacity: 0.5;
   }
   .sb-game__body {
     display: grid;
@@ -466,9 +513,22 @@
     -webkit-line-clamp: 2;
     overflow: hidden;
   }
+  /* the page-language title · the year, on one line: only the title shortens (at its own end, the kit's FactLine); the
+     year keeps its place whatever the title does (QA 2026-11-21: a wrapped title hid it) */
   .sb-game__meta {
+    display: flex;
+    align-items: baseline;
+    min-inline-size: 0;
+    margin: 0;
     font: var(--type-xs);
     color: var(--ink-2);
+  }
+  .sb-game__local {
+    flex: 0 1 auto;
+  }
+  .sb-game__year {
+    flex: none;
+    white-space: pre;
   }
   .sb-game__facts {
     display: flex;
@@ -681,9 +741,19 @@
       justify-items: start;
     }
   }
+  /* the over-full warning's two ways out («بطاقة أكبر», «غيّر الألعاب») side by side, wrapping */
+  .sb-review__ways {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s-5);
+  }
   .sb-review__cover {
     font: var(--type-xs);
     color: var(--ink-2);
+  }
+  /* the cards in stock cover only part of the eShop total: a quiet line with the warning icon, both amounts in ink */
+  .sb-review__cover-note {
+    padding-block-start: var(--s-1);
   }
   .sb-review__total {
     display: flex;
@@ -744,14 +814,21 @@
     flex: 1 1 auto;
     min-inline-size: 0;
   }
-  /* the 320px aside: the step's primary on its own line with its full name («تابع إلى المراجعة»), «رجوع» under it */
+  /* the 320px aside: the step's primary on its own line with its full name («تابع إلى المراجعة»), «رجوع» under it — side
+     by side, «تابع إلى الـ…» was cut at 1280; the keys also take a second line before they would cut (StepKeys `wrap`).
+     StepKeys renders the aside's primary first, so the Tab order is this order (no column-reverse) */
   .sb-aside .sb-keys__row {
-    flex-direction: column-reverse;
+    flex-direction: column;
     align-items: stretch;
   }
   .sb-taskbar {
     display: grid;
     gap: var(--s-2);
+  }
+  /* a sheet of the page is open over the task bar: its keys are not drawn — the sheet's frost showed the red primary
+     through its foot as a pink haze (QA 2026-11-21); they are inert under the sheet anyway. The bar keeps its place. */
+  .sb-taskbar--covered .sb-taskbar {
+    visibility: hidden;
   }
   .sb-taskbar__summary {
     display: flex;
@@ -791,6 +868,11 @@
     margin: 0;
     font: var(--type-xs);
   }
+  /* «غيّر» is one short word: its link is at least 44px wide (the house's target), its word in the middle */
+  .sb-plan__edit .link {
+    min-inline-size: 44px;
+    justify-content: center;
+  }
 
   /* ───────────────────────────── preferences ───────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
@@ -803,7 +885,7 @@
   }
   @media (prefers-contrast: more) {
     .sb-meter__bar {
-      outline: 1px solid var(--line-strong);
+      border-color: var(--ink);
     }
     .sb-chosen__row,
     .sb-line {
@@ -812,14 +894,13 @@
   }
   @media (forced-colors: active) {
     .sb-meter__bar {
-      outline: 1px solid CanvasText;
+      border-color: CanvasText;
     }
     .sb-meter__fill {
       background: Highlight;
     }
-    .sb-model--checked,
-    .sb-game[data-chosen] {
-      outline-color: Highlight;
+    :is(.sb-model--checked, .sb-game[data-chosen])::before {
+      border-color: Highlight;
     }
   }
 }

@@ -61,6 +61,7 @@ export default defineMessages({
       promotions_loyalty: "كسب النقاط وقيمتها وانتهاؤها، ومتى يقرر شخص ثانٍ تعديلاً يدوياً للنقاط في قسم العروض.",
       promotions_referral: "نقاط مكافأة الإحالة، وعدد مرات استخدام الرمز الافتراضي، ومدة إشارة «الجهاز نفسه».",
       promotions_gift_card: "أصغر بطاقة هدية وأكبرها، والبطاقة أو مجموع اليوم الذي يحتاج شخصاً ثانياً، وأبعد تاريخ انتهاء.",
+      builder_switch_capacity: "أرقام المساحة في صفحة تجهيز جهاز Switch: الذاكرة الداخلية المتاحة لكل جهاز، وما يبقى فارغاً للتحديثات، والمساحة الفعلية لبطاقات الذاكرة. تُعدَّل من مكتبة ألعاب Switch في قسم المنتجات.",
     },
     value: { empty: "فارغ", on: "مفعّل", off: "متوقف", range: "من {min} إلى {max} {unit}", percentRange: "نسبة من 0 إلى {max}٪، تقبل كسرين عشريين", new: "القيمة الجديدة", value: "القيمة" },
     unit: {
@@ -563,6 +564,7 @@ export default defineMessages({
       promotions_loyalty: "How points are earned, what they are worth, when they expire, and when a manual points change waits for a second person.",
       promotions_referral: "The referral reward in points, a code's default number of uses, and how far back the \"same device\" signal looks.",
       promotions_gift_card: "The smallest and largest gift card, the card or day's total that needs a second person, and the furthest expiry date.",
+      builder_switch_capacity: "The space figures of the Build your Switch page: each console's usable system memory, what stays free for updates, and the real space of memory cards. Edited on the Switch game library page in the catalogue.",
     },
     value: { empty: "Empty", on: "On", off: "Off", range: "{min} to {max} {unit}", percentRange: "A percentage from 0 to {max}%, two decimals at most", new: "New value", value: "Value" },
     unit: {
@@ -1065,6 +1067,7 @@ export default defineMessages({
       promotions_loyalty: "خاڵ چۆن بەدەست دێت، بەهاکەی، کەی بەسەردەچێت، و کەی گۆڕینی دەستیی خاڵ چاوەڕێی کەسێکی دووەم دەکات.",
       promotions_referral: "خاڵی پاداشتی ناساندن، ژمارەی بەکارهێنانی بنەڕەتیی کۆد، و ماوەی ئاماژەی «هەمان ئامێر».",
       promotions_gift_card: "بچووکترین و گەورەترین کارتی دیاری، ئەو کارتە یان کۆی ڕۆژەی کەسێکی دووەمی دەوێت، و دوورترین بەرواری بەسەرچوون.",
+      builder_switch_capacity: "ژمارەکانی شوێن لە پەڕەی ئامادەکردنی Switch: بیرگەی ناوخۆیی بەکارهاتوو بۆ هەر ئامێرێک، ئەوەی بۆ نوێکردنەوەکان بەتاڵ دەمێنێتەوە، و شوێنی ڕاستەقینەی کارتی بیرگە. لە کتێبخانەی یارییەکانی Switch لە بەشی بەرهەمەکان دەگۆڕدرێت.",
     },
     value: { empty: "بەتاڵ", on: "چالاک", off: "ناچالاک", range: "لە {min} تا {max} {unit}", percentRange: "ڕێژەیەک لە 0 تا {max}%، لانی زۆر دوو ژمارەی دەیی", new: "بەهای نوێ", value: "بەها" },
     unit: {

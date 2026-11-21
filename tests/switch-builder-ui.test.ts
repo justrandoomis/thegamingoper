@@ -36,19 +36,23 @@ import { bytesFromGiB, capacityOf, DEFAULT_CAPACITY, GIB } from "~/lib/switch-bu
 import type { BuilderCatalog, BuilderPlan, BuilderQuote, CatalogOption, LibraryExtras, LibraryGame } from "~/lib/switch-builder/types";
 import { PLAN_LIMITS } from "~/lib/switch-builder/types";
 import { normalizeSearchText as serverNormalize } from "~/server/db/search.server";
-import { AddAllKey, cartItemsOf } from "~/routes/storefront/builder/components/AddAllKey";
+import { readFileSync } from "node:fs";
+import { AddAllKey, cartItemsOf, NOTHING_ID } from "~/routes/storefront/builder/components/AddAllKey";
 import { BuilderPage } from "~/routes/storefront/builder/components/BuilderPage";
-import { keepDashes, soldModels } from "~/routes/storefront/builder/components/DeviceStep";
+import { ChosenList } from "~/routes/storefront/builder/components/ChosenList";
+import { DeviceStep, keepDashes, soldModels } from "~/routes/storefront/builder/components/DeviceStep";
 import { FILTER_MODES } from "~/routes/storefront/builder/components/FiltersSheet";
-import { initialsOf } from "~/routes/storefront/builder/components/GameCard";
+import { GameCard, initialsOf } from "~/routes/storefront/builder/components/GameCard";
+import { GamesStep, INITIAL_VIEW } from "~/routes/storefront/builder/components/GamesStep";
 import { shortfallText } from "~/routes/storefront/builder/lib/format";
 import { cardPlannableBytes } from "~/routes/storefront/builder/components/MemoryStep";
-import { eshopPricesAsOf, ReviewStep } from "~/routes/storefront/builder/components/ReviewStep";
-import { meterShares, meterTone } from "~/routes/storefront/builder/components/SpaceMeter";
+import { eshopPricesAsOf, ReviewStep, unpricedTitles, type ReviewStepProps } from "~/routes/storefront/builder/components/ReviewStep";
+import { meterShares, meterTone, SpaceMeter } from "~/routes/storefront/builder/components/SpaceMeter";
+import { StepKeys } from "~/routes/storefront/builder/components/StepKeys";
 import { LIBRARY_LIST_FILE } from "~/routes/storefront/builder/library.manifest";
 import { countsFor, mergeLibrary, NO_FILTERS, sortsFor, viewLibrary, type LibraryEntry, type LibraryView } from "~/routes/storefront/builder/lib/library";
-import { stepHref, stepOf, stepOrder } from "~/routes/storefront/builder/lib/steps";
-import { libraryListUrl, readLibrary } from "~/routes/storefront/builder/lib/use-library";
+import { stepHref, stepOf, stepOrder, stepTitle } from "~/routes/storefront/builder/lib/steps";
+import { isLibraryUpdated, LibraryHttpError, libraryListUrl, readLibrary, type LibraryState } from "~/routes/storefront/builder/lib/use-library";
 
 const GB = (value: number) => bytesFromGiB(value);
 
@@ -373,6 +377,21 @@ describe("the plan: fit rules on exact bytes", () => {
     expect(setGameFormat(cartridge.plan, "the-legend-of-zelda-breath-of-the-wild-switch", "digital", extras)).toMatchObject({ ok: false, reason: "no_room", needBytes: GB(16.5) });
   });
 
+  it("over its space, a chosen game may still move to its smaller cartridge — never to the bigger download (QA 2026-11-21)", () => {
+    // Found by QA: after a smaller card, Mario Tennis Aces could not go from its 2.4 GB download to its 0.3 GB cartridge
+    // («تحتاج 0.3 GB، والمتبقي 0.0 GB»), although the change frees space
+    const extras = { ...EXTRAS, "filler-switch": { sizeBytes: plannable + GB(20) } };
+    const over: BuilderPlan = { ...base, games: [{ id: "filler-switch", format: "digital" }, { id: "the-legend-of-zelda-breath-of-the-wild-switch", format: "digital" }] };
+    expect(planUsage(over, extras).usage.overBytes).toBeGreaterThan(0);
+    const smaller = setGameFormat(over, "the-legend-of-zelda-breath-of-the-wild-switch", "cartridge", extras);
+    expect(smaller).toMatchObject({ ok: true });
+    if (!smaller.ok) return;
+    expect(smaller.plan.games[1]).toEqual({ id: "the-legend-of-zelda-breath-of-the-wild-switch", format: "cartridge" });
+    expect(planUsage(smaller.plan, extras).usage.usedBytes).toBeLessThan(planUsage(over, extras).usage.usedBytes);
+    // back to the full download: it needs more than it takes now, and nothing is left
+    expect(setGameFormat(smaller.plan, "the-legend-of-zelda-breath-of-the-wild-switch", "digital", extras)).toMatchObject({ ok: false, reason: "no_room" });
+  });
+
   it("refuses a game beyond PLAN_LIMITS.maxGames", () => {
     const extras = Object.fromEntries(Array.from({ length: PLAN_LIMITS.maxGames + 1 }, (_, index) => [`tiny-${index}-switch`, { sizeBytes: 1000 }]));
     const full: BuilderPlan = { ...base, games: Array.from({ length: PLAN_LIMITS.maxGames }, (_, index) => ({ id: `tiny-${index}-switch`, format: "digital" as const })) };
@@ -414,6 +433,49 @@ describe("the page's small parts", () => {
     expect(stepHref("device")).toBe("/build/switch");
     expect(stepHref("review")).toBe("/build/switch?step=review");
     expect([stepOrder(""), stepOrder("?step=memory"), stepOrder("?step=games"), stepOrder("?step=review")]).toEqual([0, 10, 20, 30]);
+    // each step has its own document title (QA a11y 2026-11-21: the four said the same)
+    const titles = { memory: "Choose a memory card", games: "Choose your games", review: "Review your Switch" };
+    expect(stepTitle("Build your Switch", titles, "")).toBe("Build your Switch");
+    expect(stepTitle("Build your Switch", titles, "?step=games")).toBe("Choose your games · Build your Switch");
+    expect(stepTitle("Build your Switch", titles, "?step=nope")).toBe("Build your Switch");
+    expect(stepTitle(undefined, titles, "?step=review")).toBeUndefined();
+  });
+
+  it("the builder's stylesheet renders every card (no content-visibility) and keeps the aside's keys in DOM order (QA a11y)", () => {
+    // content-visibility:auto took the cards off screen out of the accessibility tree; column-reverse put «رجوع» first
+    // in the Tab order while it was drawn last
+    const css = readFileSync("app/routes/storefront/builder/builder.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(css).not.toMatch(/content-visibility|contain-intrinsic-size/);
+    expect(css).not.toMatch(/column-reverse/);
+    // "chosen" is a border inside the card, focus the ring outside it: never the same drawing
+    expect(css).toMatch(/:is\(\.sb-model--checked, \.sb-game\[data-chosen\]\)::before \{[^}]*border: 2px solid var\(--ink\)/);
+    expect(css).not.toMatch(/\.sb-game\[data-chosen\] \{[^}]*outline/);
+  });
+
+  it("Sorani never glues a suffix to a Latin word, a figure or a placeholder: it would be drawn on the wrong side (QA 2026-11-21)", () => {
+    // «ئامێری Switchم هەیە» showed «مSwitch»; «{need}ی پێویستە» showed «ی14.9 GB»
+    const texts: string[] = [];
+    const walk = (value: unknown) => {
+      if (typeof value === "string") texts.push(value);
+      else if (value && typeof value === "object") for (const child of Object.values(value)) walk(child);
+    };
+    walk(messagesFor("ckb", "switch-builder")["switch-builder"]);
+    const glued = texts.filter((text) => [...text.matchAll(/[A-Za-z0-9}](\p{Script=Arabic})/gu)].some((match) => /\p{L}/u.test(match[1])));
+    expect(glued).toEqual([]);
+    // the namespace's spelling of "these games" (QA copy F21)
+    expect(texts.filter((text) => text.includes("یاریانە"))).toEqual([]);
+  });
+
+  it("the review's lines are titled as the plan, and the saved plan lives in this browser — words that are true (QA copy F4, F7)", () => {
+    const words = (locale: Locale) => messagesFor(locale, "switch-builder")["switch-builder"] as unknown as { review: { linesTitle: string }; keys: { offline: string } };
+    // the lines include the shopper's own console and card and the eShop games: not "what goes in the cart"
+    expect(words("ar").review.linesTitle).not.toContain("السلة");
+    expect(words("en").review.linesTitle).not.toMatch(/cart/i);
+    expect(words("ckb").review.linesTitle).not.toContain("سەبەتە");
+    // «الجهاز» is the console on this page: the plan is saved in the browser
+    expect(words("ar").keys.offline).toContain("المتصفح");
+    expect(words("en").keys.offline).toContain("browser");
+    expect(words("ckb").keys.offline).toContain("وێبگەڕ");
   });
 
   it("the space bar's colour and shares: ink, --warn from 90 % used, --danger over", () => {
@@ -446,10 +508,26 @@ describe("the page's small parts", () => {
   it("a shortfall is rounded up and never reads 0.0 GB; the sparse «online» mode is not offered as a filter", () => {
     const f = { number: (value: number, options?: Intl.NumberFormatOptions) => new Intl.NumberFormat("en", options).format(value) };
     const plain = (text: string) => text.replace(/[⁦-⁩]/g, "").replace(/ /g, " ");
-    expect(plain(shortfallText(f, GB(4.01)))).toBe("4.1 GB");
-    expect(plain(shortfallText(f, GB(0.04)))).toBe("0.04 GB");
-    expect(plain(shortfallText(f, 1000))).toBe("0.01 GB");
+    expect(plain(shortfallText(f, GB(20), GB(15.99)))).toBe("4.1 GB");
+    expect(plain(shortfallText(f, GB(0.8), GB(0.76)))).toBe("0.04 GB");
+    expect(plain(shortfallText(f, GB(1) + 1000, GB(1)))).toBe("0.01 GB");
+    // the sheet would show these two as «0.80 GB» and «0.78 GB» (digitsToTell): two decimals here too, rounded up
+    expect(plain(shortfallText(f, 858_993_459, 832_199_680))).toBe("0.03 GB");
+    // one decimal makes 0.02 GB look like 0.1 GB even when the sizes look different at one decimal (16.5 vs 16.4)
+    expect(plain(shortfallText(f, GB(16.46), GB(16.44)))).toBe("0.02 GB");
+    expect(shortfallText(f, GB(1), GB(2))).toBe("");
     expect(FILTER_MODES).toEqual(["single", "multi", "coop"]);
+  });
+
+  it("a 404 on the list or a details file means a newer list was published (a reload), any other failure is an error", () => {
+    expect(isLibraryUpdated(new LibraryHttpError("/library/switch/list.deadbeef.json", 404))).toBe(true);
+    expect(isLibraryUpdated(new LibraryHttpError("/library/switch/d/7.0badc0de.json", 404))).toBe(true);
+    expect(isLibraryUpdated(new LibraryHttpError("/library/switch/d/7.0badc0de.json", 410))).toBe(true);
+    // TamTam's data is an API, not a build file: a 404 there is an ordinary failure; so is a 5xx, or no connection
+    expect(isLibraryUpdated(new LibraryHttpError("/api/switch-library", 404))).toBe(false);
+    expect(isLibraryUpdated(new LibraryHttpError("/library/switch/list.deadbeef.json", 500))).toBe(false);
+    expect(isLibraryUpdated(new TypeError("Failed to fetch"))).toBe(false);
+    expect(isLibraryUpdated(new Error("/library/switch/list.deadbeef.json: HTTP 404"))).toBe(false);
   });
 
   it("the cart gets the quote's orderable lines, one item per variant", () => {
@@ -611,10 +689,189 @@ describe("every step renders on the server, in every language, with the guide's 
       notSold: [],
     };
     // Zelda is bought as a cartridge (its older date is not behind the eShop total); Tetris has no price
-    expect(eshopPricesAsOf(plan, quote, byId)).toBe(Date.parse("2026-10-15T12:00:00Z"));
-    expect(eshopPricesAsOf(plan, quote, new Map())).toBeNull();
-    const html = render("en", "?step=review", CATALOG, () => createElement(ReviewStep, { plan, byId, quote: { status: "ready", quote, offline: false, retry: () => {} }, refusal: null }));
+    expect(eshopPricesAsOf(plan, quote, extras)).toBe(Date.parse("2026-10-15T12:00:00Z"));
+    expect(eshopPricesAsOf(plan, quote, {})).toBeNull();
+    const html = render("en", "?step=review", CATALOG, () => createElement(ReviewStep, { plan, byId, extras, quote: { status: "ready", quote, offline: false, retry: () => {} }, refusal: null }));
     expect(html).toContain("eShop prices as our team checked them, the oldest on");
+    // the date comes with TamTam's data alone (GET /api/switch-library), before the list file has named the games
+    const early = render("en", "?step=review", CATALOG, () => createElement(ReviewStep, { plan, byId: new Map(), extras, names: "loading", quote: { status: "ready", quote, offline: false, retry: () => {} }, refusal: null }));
+    expect(early).toContain("eShop prices as our team checked them, the oldest on");
+    // while that data is on its way the line says so; without it the prices are still said to be as checked
+    const waiting = render("en", "?step=review", CATALOG, () => createElement(ReviewStep, { plan, byId, extras: {}, dates: "loading", quote: { status: "ready", quote, offline: false, retry: () => {} }, refusal: null }));
+    expect(waiting).toContain("Loading the date of the eShop prices");
+    const without = render("en", "?step=review", CATALOG, () => createElement(ReviewStep, { plan, byId, extras: {}, dates: "unavailable", quote: { status: "ready", quote, offline: false, retry: () => {} }, refusal: null }));
+    // (QA copy F18: no dangling «on that date» — each game's details carry its own)
+    expect(without).toContain("as our team checked them; each game's details show the date".replaceAll("'", "&#x27;"));
+  });
+
+  /** A quote with eShop cards in stock that cover only part of the priced digital total. */
+  const partialQuote = (): { plan: BuilderPlan; quote: BuilderQuote; extras: Record<string, LibraryExtras> } => ({
+    plan: {
+      v: 1,
+      device: { model: "switch-oled", owned: true },
+      card: { sizeGB: 0, owned: false },
+      games: [
+        { id: "hades-switch", format: "digital" },
+        { id: "mario-kart-8-deluxe-switch", format: "digital" },
+        { id: "tetris-99-switch", format: "digital" },
+      ],
+    },
+    quote: {
+      lines: [{ kind: "eshop", variantId: "var_eshop-20", productSlug: "nintendo-eshop-us", qty: 2, name: "Nintendo eShop", variantTitle: "20 USD", unitPriceIqd: 30_000, orderable: true }],
+      totalIqd: 60_000,
+      digital: { pricedCents: 8498, pricedCount: 2, unpricedIds: ["tetris-99-switch"], cardsCents: 4000, cardsSold: true },
+      notSold: [],
+    },
+    extras: {
+      "hades-switch": { sizeBytes: GB(6.4), priceUsdCents: 2499, priceAsOf: "2026-11-02" },
+      "mario-kart-8-deluxe-switch": { sizeBytes: GB(7.2), priceUsdCents: 5999, priceAsOf: "2026-10-15" },
+      "tetris-99-switch": { sizeBytes: GB(0.4) },
+    },
+  });
+  const review = (locale: Locale, props: Partial<ReviewStepProps> & Pick<ReviewStepProps, "plan" | "quote" | "byId" | "extras">) =>
+    render(locale, "?step=review", CATALOG, () => createElement(ReviewStep, { refusal: null, ...props }));
+  const ready = (quote: BuilderQuote) => ({ status: "ready" as const, quote, offline: false, retry: () => {} });
+
+  it("when the eShop cards in stock cover only part of the digital total, the review says so plainly with both amounts and keeps the date", () => {
+    const { plan, quote, extras } = partialQuote();
+    const byId = new Map(mergeLibrary(GAMES, extras, CATALOG.cartridges).map((entry) => [entry.game.id, entry]));
+    const en = review("en", { plan, quote: ready(quote), byId, extras });
+    expect(en).toContain("The eShop cards we have in stock now cover only");
+    expect(en).toMatch(/\$40\.00[^<]*<\/b>[^]*?\$84\.98/);
+    expect(en).toContain("eShop prices as our team checked them, the oldest on");
+    expect(en).not.toContain("eShop cards that cover");
+    for (const locale of LOCALE_CODES) {
+      const html = review(locale, { plan, quote: ready(quote), byId, extras });
+      expect(html, locale).toContain("40.00");
+      expect(html, locale).toContain("84.98");
+      expect(html, locale).toContain("note--warning");
+    }
+    // cards that cover the whole total: the quiet line, no warning
+    const covered = { ...quote, digital: { ...quote.digital, cardsCents: 9000 } };
+    const all = review("en", { plan, quote: ready(covered), byId, extras });
+    expect(all).toContain("eShop cards that cover");
+    expect(all).not.toContain("cover only");
+  });
+
+  it("the games without a price are named once the list is here — counted while it loads or when it failed, never by their store slug", () => {
+    const { plan, quote, extras } = partialQuote();
+    const byId = new Map(mergeLibrary(GAMES, extras, CATALOG.cartridges).map((entry) => [entry.game.id, entry]));
+    expect(unpricedTitles(["tetris-99-switch", "hades-switch"], byId)).toEqual(["Tetris 99", "Hades"]);
+    expect(unpricedTitles(["tetris-99-switch"], new Map())).toBeNull();
+    // one game the list does not have (hidden since, or a list of another build): count them all instead
+    expect(unpricedTitles(["tetris-99-switch", "gone-game-switch"], byId)).toBeNull();
+    // a direct load of ?step=review: the quote answered before the list file
+    const loading = review("en", { plan, quote: ready(quote), byId: new Map(), extras, names: "loading" });
+    expect(loading).toContain("We have not added the price of 1 of your games yet");
+    expect(loading).toContain("Loading these games");
+    expect(loading).not.toContain("tetris-99-switch");
+    const failed = review("en", { plan, quote: ready(quote), byId: new Map(), extras, names: "unavailable" });
+    expect(failed).toContain("We have not added the price of 1 of your games yet");
+    expect(failed).not.toContain("Loading these games");
+    expect(failed).not.toContain("tetris-99-switch");
+    const named = review("en", { plan, quote: ready(quote), byId, extras });
+    expect(named).toContain("check it on eShop: ");
+    expect(named).not.toContain("tetris-99-switch");
+    for (const locale of LOCALE_CODES) expect(review(locale, { plan, quote: ready(quote), byId: new Map(), extras, names: "loading" }), locale).not.toContain("tetris-99-switch");
+  });
+
+  it("a restored plan's games before their sizes have loaded: the space bar draws no false 0 and says it is loading", () => {
+    const usage = planUsage({ ...defaultPlan(CATALOG), games: [{ id: "hades-switch", format: "digital" }] }, {}, DEFAULT_CAPACITY);
+    for (const locale of LOCALE_CODES) {
+      const s = strings(locale);
+      const loading = render(locale, "?step=games", CATALOG, () => createElement(SpaceMeter, { usage, figures: "loading" }));
+      expect(loading, locale).toContain(escape(s.meter.loading));
+      expect(loading).not.toMatch(/role="meter"/);
+      expect(loading).toContain('aria-busy="true"');
+      // what is kept free depends on the console and the card only: it stays
+      expect(loading).toContain(escape(s.meter.kept.split("{")[0].trim()));
+      const failed = render(locale, "?step=games", CATALOG, () => createElement(SpaceMeter, { usage, figures: "unknown" }));
+      expect(failed).toContain(escape(s.meter.unknown));
+      expect(failed).not.toMatch(/role="meter"/);
+      const known = render(locale, "?step=games", CATALOG, () => createElement(SpaceMeter, { usage }));
+      expect(known).toMatch(/role="meter"/);
+    }
+    const en = render("en", "?step=games", CATALOG, () => createElement(SpaceMeter, { usage, figures: "loading" }));
+    expect(en).not.toMatch(/Used [^<]*0\.0/);
+  });
+
+  it("below 1024 one meter is read: the task bar's copy is drawn for the eyes only (the games step's own meter has the figures)", () => {
+    const usage = planUsage(defaultPlan(CATALOG), {}, DEFAULT_CAPACITY);
+    const compact = render("en", "?step=games", CATALOG, () => createElement(SpaceMeter, { usage, compact: true, decorative: true }));
+    expect(compact).not.toMatch(/role="meter"/);
+    expect(compact).toMatch(/class="sb-meter sb-meter--compact[^"]*"[^>]*aria-hidden="true"/);
+    // the page: the games step's meter (below 1024) and the aside's (from 1024) — never both on screen — and the task
+    // bar's copy hidden from screen readers
+    const page = render("en", "?step=games");
+    expect(page.match(/role="meter"/g)).toHaveLength(2);
+    expect(page).toMatch(/class="sb-meter sb-meter--compact[^"]*"[^>]*aria-hidden="true"/);
+  });
+
+  it("the chosen games' list says it is loading while the list file names them, never «no games yet»", () => {
+    const s = strings("en");
+    const loading = render("en", "?step=games", CATALOG, () => createElement(ChosenList, { items: [], pending: "loading", onRemove: () => {} }));
+    expect(loading).toContain(escape(s.chosen.loading));
+    expect(loading).not.toContain(escape(s.chosen.empty));
+    const unnamed = render("en", "?step=games", CATALOG, () => createElement(ChosenList, { items: [], pending: "unnamed", onRemove: () => {} }));
+    expect(unnamed).toContain(escape(s.chosen.unnamed));
+    expect(render("en", "?step=games", CATALOG, () => createElement(ChosenList, { items: [], onRemove: () => {} }))).toContain(escape(s.chosen.empty));
+  });
+
+  it("a game card short by under 0.05 GB says it with two decimals, as the sheet does (never «0.0 GB short»)", () => {
+    const entry = mergeLibrary([game("among-us-switch", { title: "Among Us" })], { "among-us-switch": { sizeBytes: 858_993_459 } }, {})[0];
+    for (const locale of LOCALE_CODES) {
+      const html = render(locale, "?step=games", CATALOG, () => createElement(GameCard, { entry, chosen: null, remainingBytes: 832_199_680, onToggle: () => {}, onOpen: () => {} }));
+      const shown = html.replace(/[⁦-⁩]/g, "");
+      expect(shown, locale).toMatch(/0[.٫]03/);
+      expect(shown, locale).not.toMatch(/0[.٫]0(?!3)\d?\s*GB/);
+    }
+  });
+
+  it("the aside's step keys say their full names and take a second line before they would cut them; the task bar's stay short", () => {
+    for (const locale of LOCALE_CODES) {
+      const s = strings(locale);
+      const aside = render(locale, "?step=games", CATALOG, () => createElement(StepKeys, { step: "games" }));
+      expect(aside, locale).toContain(escape(s.keys.toReview));
+      expect(aside.match(/key--wrap/g)?.length ?? 0, locale).toBe(2);
+      const bar = render(locale, "?step=games", CATALOG, () => createElement(StepKeys, { step: "games", compact: true }));
+      expect(bar).toContain(escape(s.keys.continue));
+      expect(bar).not.toContain("key--wrap");
+    }
+  });
+
+  it("a newer game list published after the page was opened: the games step says so and offers a reload, not the generic error", () => {
+    const library: LibraryState = { status: "stale", data: null, payload: null, payloadFailed: false, offline: false, retry: () => {} };
+    const usage = planUsage(defaultPlan(CATALOG), {}, DEFAULT_CAPACITY);
+    const step = (state: LibraryState, extra: { detailsUpdated?: boolean; entries?: readonly LibraryEntry[] } = {}) =>
+      createElement(GamesStep, {
+        library: state,
+        entries: extra.entries ?? [],
+        usage,
+        chosen: new Map(),
+        view: INITIAL_VIEW,
+        onView: () => {},
+        onToggle: () => {},
+        onOpen: () => {},
+        meterTour: false,
+        detailsUpdated: extra.detailsUpdated,
+        asOf: "2026-11-21",
+      });
+    for (const locale of LOCALE_CODES) {
+      const s = strings(locale);
+      const html = render(locale, "?step=games", CATALOG, () => step(library));
+      expect(html, locale).toContain(escape(s.updated.title));
+      expect(html).toContain(escape(s.updated.reload));
+      expect(html).toContain('role="alert"');
+      expect(html).not.toContain(escape(s.games.errorTitle));
+    }
+    // other failures keep the error with its retry
+    const failed = render("en", "?step=games", CATALOG, () => step({ ...library, status: "error" }));
+    expect(failed).toContain(escape(strings("en").games.errorTitle));
+    expect(failed).not.toContain(escape(strings("en").updated.title));
+    // a details file gone under a list that still works: the list stays, the notice above it
+    const ready = render("en", "?step=games", CATALOG, () => step({ ...library, status: "ready" }, { detailsUpdated: true, entries: ENTRIES }));
+    expect(ready).toContain(escape(strings("en").updated.title));
+    expect(ready).toContain("Mario Kart 8 Deluxe");
   });
 
   it("«أضف الكل» / «عرض السلة» follow the page's answer, so the task bar's and the aside's copies always agree (review)", () => {
@@ -629,6 +886,180 @@ describe("every step renders on the server, in every language, with the guide's 
       expect(key(false, compact)).not.toContain(escape(s.review.viewCart));
       expect(key(true, compact)).toContain(escape(s.review.viewCart));
       expect(key(true, compact)).not.toContain(label);
+    }
+  });
+
+  // ─────────────────────────────────────────────── QA fix round (2026-11-21): visual, a11y, copy and functional findings
+
+  const longTitle = { ...game("the-legend-of-zelda-tears-of-the-kingdom-switch", { title: "The Legend of Zelda: Tears of the Kingdom", titleAr: "ذا ليجند أوف زيلدا: تيرز أوف ذا كينغدوم", year: 2023 }) };
+  const longEntry = mergeLibrary([longTitle], { [longTitle.id]: { sizeBytes: GB(18.2) } }, {})[0];
+
+  it("a game card keeps its year beside a long page-language title: only the title shortens (QA visual)", () => {
+    const html = render("ar", "?step=games", CATALOG, () => createElement(GameCard, { entry: longEntry, chosen: null, remainingBytes: GB(100), onToggle: () => {}, onOpen: () => {} }));
+    // the title in the kit's FactLine (it shortens at its own end); the year outside it, its own piece of the line
+    expect(html).toMatch(/<p class="sb-game__meta"><span class="factline sb-game__local">[^]*ذا ليجند[^]*<\/span><span class="sb-game__year nums">[^<]*<span class="sb-game__sep"> · <\/span>2023<\/span><\/p>/);
+    // the info key says it opens a dialog; the tile is drawn with the initials
+    expect(html).toMatch(/aria-haspopup="dialog"[^>]*class="[^"]*sb-game__info|class="[^"]*sb-game__info[^"]*"[^>]*aria-haspopup="dialog"/);
+    expect(html).toContain('class="sb-tile"');
+    expect(html).toContain(">LZ<");
+    // English has no local title: the year alone
+    const en = render("en", "?step=games", CATALOG, () => createElement(GameCard, { entry: longEntry, chosen: null, remainingBytes: GB(100), onToggle: () => {}, onOpen: () => {} }));
+    expect(en).toContain('<p class="sb-game__meta"><span class="sb-game__year nums">2023</span></p>');
+  });
+
+  it("over the space: the meter's sentence is plain content (said once by the page), the task bar's copy says it short (QA a11y, visual)", () => {
+    const over = planUsage({ v: 1, device: { model: "switch-oled", owned: true }, card: { sizeGB: 0, owned: false }, games: [{ id: "big-switch", format: "digital" }] }, { "big-switch": { sizeBytes: GB(115.6) } }, DEFAULT_CAPACITY);
+    expect(over.usage.overBytes).toBeGreaterThan(0);
+    for (const locale of LOCALE_CODES) {
+      const s = strings(locale);
+      const full = render(locale, "?step=games", CATALOG, () => createElement(SpaceMeter, { usage: over }));
+      expect(full, locale).toContain("sb-meter__over");
+      expect(full).not.toContain('role="status"');
+      const compact = render(locale, "?step=games", CATALOG, () => createElement(SpaceMeter, { usage: over, compact: true, decorative: true }));
+      const short = s.meter.overShort.replace("{over}", "").trim();
+      expect(compact, locale).toContain(escape(short));
+      expect(compact).not.toContain(escape(s.meter.over.split("{over}")[0].trim() || "∅"));
+    }
+  });
+
+  it("the aside's keys: the primary first in the DOM (the order on screen); the task bar's: «رجوع» first; both mark the primary for the skip key", () => {
+    for (const locale of LOCALE_CODES) {
+      const back = escape(strings(locale).keys.back);
+      const order = (html: string) => [html.indexOf(back), html.indexOf("data-step-next")];
+      const [backAt, nextAt] = order(render(locale, "?step=memory", CATALOG, () => createElement(StepKeys, { step: "memory" })));
+      expect(nextAt, locale).toBeGreaterThan(-1);
+      expect(nextAt).toBeLessThan(backAt);
+      const [barBack, barNext] = order(render(locale, "?step=memory", CATALOG, () => createElement(StepKeys, { step: "memory", compact: true })));
+      expect(barBack).toBeLessThan(barNext);
+    }
+  });
+
+  it("«أضف الكل» with nothing to add stays focusable and names its reason; the task bar's short key has the full name (QA a11y)", () => {
+    const s = strings("ar");
+    const flat = render("ar", "?step=review", CATALOG, () => createElement(AddAllKey, { lines: [], added: false, onAdded: () => {}, onRefused: () => {} }));
+    expect(flat).toContain('aria-disabled="true"');
+    expect(flat).toContain(`aria-describedby="${NOTHING_ID}"`);
+    expect(flat).not.toMatch(/<button[^>]* disabled=""/);
+    // while the quote is worked out there is no reason to give yet
+    expect(render("ar", "?step=review", CATALOG, () => createElement(AddAllKey, { lines: [], pending: true, added: false, onAdded: () => {}, onRefused: () => {} }))).not.toContain(NOTHING_ID);
+    const lines = [{ kind: "device" as const, variantId: "var_nsw-oled-neon", productSlug: "nintendo-switch-oled", qty: 1, name: "Nintendo Switch – OLED Model", unitPriceIqd: 550_000, orderable: true }];
+    const compact = render("ar", "?step=review", CATALOG, () => createElement(AddAllKey, { lines, compact: true, added: false, onAdded: () => {}, onRefused: () => {} }));
+    expect(compact).toContain(`aria-label="${escape(s.review.addAllName)}"`);
+    expect(s.review.addAllName).toContain(s.review.addAllShort);
+    expect(strings("ckb").review.addAllName).toContain(strings("ckb").review.addAllShort);
+    expect(strings("en").review.addAllName).toContain(strings("en").review.addAllShort);
+  });
+
+  it("the review says the plan no longer fits at every width, with both figures and the ways out; and the reminder after an earlier add (QA functional)", () => {
+    const { plan, quote, extras } = partialQuote();
+    const byId = new Map(mergeLibrary(GAMES, extras, CATALOG.cartridges).map((entry) => [entry.game.id, entry]));
+    const over = planUsage({ ...plan, games: [{ id: "big-switch", format: "digital" }] }, { "big-switch": { sizeBytes: GB(115.6) } }, DEFAULT_CAPACITY);
+    for (const locale of LOCALE_CODES) {
+      const s = strings(locale);
+      const html = review(locale, { plan, quote: ready(quote), byId, extras, usage: over, biggerCard: true });
+      const warning = html.indexOf("sb-review__warning");
+      expect(warning, locale).toBeGreaterThan(-1);
+      // above the lines
+      expect(warning).toBeLessThan(html.indexOf('data-tour="review-lines"'));
+      expect(html).toContain("115.6");
+      expect(html).toContain("step=memory");
+      expect(html).toContain("step=games");
+      expect(html).toContain(escape(s.review.overGames));
+      // a plan that fits: no warning
+      expect(review(locale, { plan, quote: ready(quote), byId, extras, usage: planUsage(plan, extras, DEFAULT_CAPACITY) })).not.toContain("sb-review__warning");
+    }
+    const again = review("en", { plan, quote: ready(quote), byId, extras, addedBefore: true });
+    expect(again).toContain(escape(strings("en").review.addedBefore));
+    expect(again).toContain('href="/en/cart"');
+  });
+
+  it("a refusal: an alert when lines are named, quiet when the error toast says it; the flat key's reason has its id; dates in words", () => {
+    const { plan, quote, extras } = partialQuote();
+    const byId = new Map(mergeLibrary(GAMES, extras, CATALOG.cartridges).map((entry) => [entry.game.id, entry]));
+    const named = review("ar", { plan, quote: ready(quote), byId, extras, refusal: { code: "bundle_refused", problems: [{ variantId: "var_eshop-20", code: "out_of_stock" }] } });
+    expect(named).toMatch(/<p class="sb-review__refused" role="alert">/);
+    const generic = review("ar", { plan, quote: ready(quote), byId, extras, refusal: { code: "network", problems: [] } });
+    expect(generic).toMatch(/<p class="sb-review__refused">/);
+    const nothing = { ...quote, lines: [], totalIqd: 0 };
+    expect(review("ar", { plan, quote: ready(nothing), byId, extras })).toContain(`id="${NOTHING_ID}"`);
+    // Arabic dates are written with the month's name, as elsewhere in the store (QA copy F27)
+    const ar = review("ar", { plan, quote: ready(quote), byId, extras });
+    expect(ar).toContain("أسعار eShop كما راجعها فريقنا");
+    expect(ar).not.toMatch(/\d{1,2}\/\d{1,2}\/\d{4}/);
+  });
+
+  it("the quote's error in the builder's own offline words (it is asked again by itself), not the kit's «retry when back»", () => {
+    const { plan, extras } = partialQuote();
+    for (const locale of LOCALE_CODES) {
+      const s = strings(locale);
+      const html = review(locale, { plan, quote: { status: "error", quote: null, offline: true, retry: () => {} }, byId: new Map(), extras });
+      expect(html, locale).toContain(escape(s.review.quoteOffline));
+    }
+    const library: LibraryState = { status: "error", data: null, payload: null, payloadFailed: false, offline: true, retry: () => {} };
+    const usage = planUsage(defaultPlan(CATALOG), {}, DEFAULT_CAPACITY);
+    const html = render("en", "?step=games", CATALOG, () => createElement(GamesStep, { library, entries: [], usage, chosen: new Map(), view: INITIAL_VIEW, onView: () => {}, onToggle: () => {}, onOpen: () => {}, meterTour: false, asOf: "2026-11-21" }));
+    expect(html).toContain(escape(strings("en").games.offlineText));
+  });
+
+  it("the games toolbar: the guide's filters part lights both keys, a skip key for the grid, the sort's name says the sort in use, only the number is live", () => {
+    const usage = planUsage(defaultPlan(CATALOG), {}, DEFAULT_CAPACITY);
+    const library: LibraryState = { status: "ready", data: null, payload: null, payloadFailed: false, offline: false, retry: () => {} };
+    for (const locale of LOCALE_CODES) {
+      const s = strings(locale);
+      const sort = (s.games as unknown as { sort: Record<string, string> }).sort;
+      const html = render(locale, "?step=games", CATALOG, () => createElement(GamesStep, { library, entries: ENTRIES, usage, chosen: new Map(), view: INITIAL_VIEW, onView: () => {}, onToggle: () => {}, onOpen: () => {}, meterTour: false, asOf: "2026-11-21" }));
+      expect(html, locale).toMatch(/<div class="sb-toolbar__keys" data-tour="filters">/);
+      expect(html).toContain("sb-skip");
+      expect(html).toContain(escape(s.games.skip));
+      expect(html).toContain(`aria-label="${escape(`${sort.trigger} ${sort.popular}`)}"`);
+      // the live count holds the number only; «… تأتي أولاً» is beside it
+      expect(html).toMatch(/<p class="sb-count"><span class="nums" aria-live="polite">[^<]*<\/span><span class="sb-count__why">/);
+      // every card is a real card (no placeholder geometry)
+      expect(html.match(/class="sb-game surface lift"/g)?.length).toBe(ENTRIES.length);
+    }
+  });
+
+  it("the chosen list: remove keys are bins (never the sheet's ×), the titles say they open a dialog (QA visual, a11y)", () => {
+    const items = ENTRIES.slice(0, 2).map((entry) => ({ entry, format: entry.format, need: GB(1) }));
+    const html = render("ar", "?step=games", CATALOG, () => createElement(ChosenList, { items, onRemove: () => {}, onOpen: () => {} }));
+    expect(html.match(/data-chosen-remove=""/g)).toHaveLength(2);
+    expect(html).toContain('data-icon="trash"');
+    expect(html).not.toContain('data-icon="x"');
+    expect(html.match(/class="sb-chosen__title" aria-haspopup="dialog"/g)).toHaveLength(2);
+    // its box takes focus when the last game is removed
+    expect(html).toContain('<div tabindex="-1" class="sb-chosen-box">');
+  });
+
+  it("the console step: the models are a named group, and a kept console TamTam no longer sells says so (QA a11y, functional)", () => {
+    const stale: BuilderPlan = { v: 1, device: { model: "switch-lite", owned: false }, card: { sizeGB: 0, owned: false }, games: [] };
+    for (const locale of LOCALE_CODES) {
+      const s = strings(locale);
+      const html = render(locale, "", CATALOG, () => createElement(DeviceStep, { catalog: CATALOG, plan: stale, capacity: DEFAULT_CAPACITY, onDevice: () => {} }));
+      expect(html, locale).toContain(escape(s.device.stale.split("{name}")[0]));
+      expect(html).toContain("Nintendo Switch Lite");
+      expect(html).toMatch(/role="group" aria-labelledby="[^"]+"/);
+      const none = render(locale, "", NO_CATALOG, () => createElement(DeviceStep, { catalog: NO_CATALOG, plan: stale, capacity: DEFAULT_CAPACITY, onDevice: () => {} }));
+      expect(none).toContain(escape(s.device.staleNone.split("{name}")[0]));
+    }
+    // a console TamTam sells: no note
+    const sold = render("ar", "", CATALOG, () => createElement(DeviceStep, { catalog: CATALOG, plan: defaultPlan(CATALOG), capacity: DEFAULT_CAPACITY, onDevice: () => {} }));
+    expect(sold).not.toContain("note--warning");
+  });
+
+  it("the page: the first step puts its title before the rail (as the trade-in), the task bar has its own name, the aside is a labelled section", () => {
+    for (const locale of LOCALE_CODES) {
+      const s = strings(locale);
+      const first = render(locale, "");
+      expect(first.indexOf("data-step-heading"), locale).toBeLessThan(first.indexOf('data-tour="steps"'));
+      const later = render(locale, "?step=memory");
+      expect(later.indexOf('data-tour="steps"')).toBeLessThan(later.indexOf("data-step-heading"));
+      // two landmarks never share a name: the rail's «خطوات…» and the task bar's «أزرار الخطوة»
+      expect(later).toContain(`aria-label="${escape(s.keys.label)}"`);
+      expect(s.keys.label).not.toBe(s.steps.label);
+      expect(later).not.toMatch(/<aside[^>]*class="sb-aside/);
+      expect(later).toMatch(/<section class="sb-aside" aria-labelledby="[^"]+"/);
+      // the memory step's task bar draws the space bar too (decorative: one meter is read)
+      expect(later).toMatch(/class="sb-taskbar__summary"><div class="sb-meter sb-meter--compact[^"]*"[^>]*aria-hidden="true"/);
     }
   });
 });

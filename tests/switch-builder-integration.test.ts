@@ -135,13 +135,17 @@ describe("edge cache — the builder's first step and its public JSON", () => {
     }
   });
 
-  it("renders fresh: a step's address, any query on the JSON, a locale prefix on the API, a store cookie, a POST", () => {
-    for (const path of ["/build/switch?step=memory", "/en/build/switch?step=review", "/api/switch-library?rev=2", "/en/api/switch-library", "/api/switch-library.data"]) {
+  it("renders fresh: a step's address, a locale prefix on the API, a store cookie on the page, a POST", () => {
+    for (const path of ["/build/switch?step=memory", "/en/build/switch?step=review", "/en/api/switch-library", "/api/switch-library.data"]) {
       expect(edgeCacheable(req(path)), path).toBe(false);
     }
     expect(edgeCacheable(req("/build/switch", { headers: { Cookie: "tt_cart=x" } }))).toBe(false);
-    expect(edgeCacheable(req("/api/switch-library", { headers: { Cookie: "tt_sid=x" } }))).toBe(false);
     expect(edgeCacheable(req("/build/switch", { method: "POST" }))).toBe(false);
+  });
+
+  it("serves the public JSON from its one cached copy whatever query or cookie comes with it (the route reads neither)", () => {
+    expect(edgeCacheable(req("/api/switch-library?rev=2"))).toBe(true);
+    expect(edgeCacheable(req("/api/switch-library", { headers: { Cookie: "tt_sid=x" } }))).toBe(true);
   });
 });
 

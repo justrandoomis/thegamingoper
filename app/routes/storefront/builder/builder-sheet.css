@@ -43,6 +43,10 @@
     vertical-align: -0.2em;
     margin-inline-start: var(--s-1);
   }
+  /* a name that is one piece (the licence «CC BY-SA 4.0» with its glyph) never breaks across lines */
+  .sbs-nowrap {
+    white-space: nowrap;
+  }
   /* the space the description takes while the details chunk loads (no skeleton) */
   .sbs-reserve {
     min-block-size: 160px;
@@ -65,7 +69,7 @@
     object-fit: contain;
   }
 
-  /* year · publisher · developer, then the genre and play-mode words */
+  /* year · publisher · developer (each « ·» kept with the fact before it), then the genre and play-mode words */
   .sbs-identity {
     display: grid;
     gap: var(--s-3);
@@ -73,6 +77,12 @@
   .sbs-meta {
     font: var(--type-sm);
     color: var(--ink-2);
+  }
+  /* a name and the « ·» after it are one piece: they move to the next line together */
+  .sbs-meta__fact {
+    display: inline-block;
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
   }
   .sbs-tags {
     display: flex;

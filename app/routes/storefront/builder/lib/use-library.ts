@@ -3,12 +3,16 @@
  *
  *   const library = useLibrary(step === "games" || step === "review" ? "now" : "idle");
  *   library.status   "unbuilt" (no list file yet — LIBRARY_LIST_FILE is null) · "idle" · "loading" · "ready" · "error"
- *   library.data     { list, payload } once both answered: public/library/switch/list.<hash>.json (immutable) and
- *                    GET /api/switch-library (sizes, prices, pictures…, the planner's constants)
+ *                    · "stale" (the list file this page was built with is gone: a newer list was published since —
+ *                    the page must be reloaded to read it; never retried, a retry would ask for the same old file)
+ *   library.payload  TamTam's data alone (GET /api/switch-library: sizes, prices and their dates, pictures…, the
+ *                    planner's constants) as soon as it answered — the space bar and the review's dates need only this
+ *   library.data     { list, payload } once both answered: public/library/switch/list.<hash>.json (immutable) too
  *   library.retry()  after an error (it also retries by itself when the connection comes back)
  *
  *   loadGameDetails(list, game)     the game's details chunk (public/library/switch/d/<n>.<hash>.json), each chunk
  *                                   fetched once per visit and kept
+ *   isLibraryUpdated(error)         a 404 on the list or on a chunk: the files of an older build, deleted by a deploy
  *
  * The earlier steps start the download when the browser is idle, so the games step usually opens with the list in
  * hand. Both answers are kept for the visit (module scope): moving between steps never fetches them again. Nothing
@@ -20,7 +24,7 @@ import { sanitizeCapacity } from "~/lib/switch-builder/storage";
 import type { GameDetails, LibraryChunk, LibraryExtras, LibraryExtrasPayload, LibraryGame, LibraryList } from "~/lib/switch-builder/types";
 import * as manifest from "../library.manifest";
 
-export type LibraryStatus = "unbuilt" | "idle" | "loading" | "ready" | "error";
+export type LibraryStatus = "unbuilt" | "idle" | "loading" | "ready" | "error" | "stale";
 export type LibraryData = { list: LibraryList; payload: LibraryExtrasPayload };
 
 /** Where the static files live (public/library/switch/ → /library/switch/). */
@@ -39,6 +43,30 @@ export function libraryListUrl(file: string | null = manifest.LIBRARY_LIST_FILE)
   return file.startsWith("/") ? file : `${LIBRARY_BASE}${file}`;
 }
 
+/** A file or the API answered with an HTTP error (the status says which). */
+export class LibraryHttpError extends Error {
+  readonly url: string;
+  readonly status: number;
+  constructor(url: string, status: number) {
+    super(`${url}: HTTP ${status}`);
+    this.name = "LibraryHttpError";
+    this.url = url;
+    this.status = status;
+  }
+}
+
+/**
+ * The list and the details chunks are content-hashed files that a deploy replaces and deletes: a 404 (or 410) on one
+ * of them means a newer library was published after this page was loaded — this page's copy of the manifest names
+ * files that no longer exist, and only a reload reads the new one. Any other failure (the API, a 5xx, no connection)
+ * is an ordinary error. Pure.
+ */
+export function isLibraryUpdated(error: unknown): boolean {
+  if (!(error instanceof LibraryHttpError) || (error.status !== 404 && error.status !== 410)) return false;
+  const path = error.url.split(/[?#]/)[0];
+  return path !== EXTRAS_URL && (path.startsWith(LIBRARY_BASE) || path.startsWith(chunkBase()));
+}
+
 /**
  * Every file here is public and the same for everyone: no cookie goes with the request ("omit"), so a shopper with a
  * cart or a preference cookie is served GET /api/switch-library from the edge cache like an anonymous visitor (the
@@ -46,7 +74,7 @@ export function libraryListUrl(file: string | null = manifest.LIBRARY_LIST_FILE)
  */
 async function getJson<T>(url: string): Promise<T> {
   const response = await fetch(url, { credentials: "omit", headers: { Accept: "application/json" } });
-  if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
+  if (!response.ok) throw new LibraryHttpError(url, response.status);
   return (await response.json()) as T;
 }
 
@@ -55,12 +83,11 @@ const strings = (value: unknown): string[] => (Array.isArray(value) ? value.filt
 const text = (value: unknown): string | undefined => (typeof value === "string" && value.trim() !== "" ? value : undefined);
 
 /**
- * The two answers, checked for their shape (a broken file is an error, never a half-drawn page; a game's malformed
- * field is left out — the search reads every title, alias and publisher as text while the page renders). Pure.
+ * The list file, checked for its shape (a broken file is an error, never a half-drawn page; a game's malformed field
+ * is left out — the search reads every title, alias and publisher as text while the page renders). Pure.
  */
-export function readLibrary(list: unknown, payload: unknown): LibraryData {
+export function readList(list: unknown): LibraryList {
   if (!isObject(list) || list.version !== 1 || !Array.isArray(list.games) || !Array.isArray(list.chunks)) throw new Error("the game list has an unknown shape");
-  if (!isObject(payload) || !isObject(payload.extras)) throw new Error("the library data has an unknown shape");
   const games = (list.games as unknown[]).filter((game): game is LibraryGame => isObject(game) && typeof game.id === "string" && typeof game.title === "string").map((game) => ({
     ...game,
     titleAr: text(game.titleAr),
@@ -71,33 +98,59 @@ export function readLibrary(list: unknown, payload: unknown): LibraryData {
     aliases: game.aliases === undefined ? undefined : strings(game.aliases),
     popularity: typeof game.popularity === "number" ? game.popularity : 0,
   }));
-  return {
-    list: { ...(list as unknown as LibraryList), games },
-    payload: { rev: typeof payload.rev === "string" ? payload.rev : "", extras: payload.extras as Record<string, LibraryExtras>, capacity: sanitizeCapacity(payload.capacity) },
-  };
+  return { ...(list as unknown as LibraryList), games };
 }
 
-let loaded: LibraryData | null = null;
-let pending: Promise<LibraryData> | null = null;
+/** GET /api/switch-library's answer, checked for its shape (the planner's constants sanitised). Pure. */
+export function readPayload(payload: unknown): LibraryExtrasPayload {
+  if (!isObject(payload) || !isObject(payload.extras)) throw new Error("the library data has an unknown shape");
+  return { rev: typeof payload.rev === "string" ? payload.rev : "", extras: payload.extras as Record<string, LibraryExtras>, capacity: sanitizeCapacity(payload.capacity) };
+}
 
-/** Both answers for this visit: fetched once (in parallel), kept; a failure is forgotten so a retry fetches again. */
-export function loadLibrary(): Promise<LibraryData> {
-  if (loaded) return Promise.resolve(loaded);
-  if (pending) return pending;
-  const url = libraryListUrl();
-  if (!url) return Promise.reject(new Error("the game list is not built yet"));
-  pending = Promise.all([getJson<unknown>(url), getJson<unknown>(EXTRAS_URL)]).then(
-    ([list, payload]) => {
-      loaded = readLibrary(list, payload);
-      pending = null;
-      return loaded;
+/** Both answers, checked (readList + readPayload). Pure. */
+export function readLibrary(list: unknown, payload: unknown): LibraryData {
+  return { list: readList(list), payload: readPayload(payload) };
+}
+
+/** One answer of the visit: fetched once, kept; a failure is forgotten so a retry fetches again. */
+type Kept<T> = { value: T | null; pending: Promise<T> | null };
+
+function keep<T>(slot: Kept<T>, fetchIt: () => Promise<T>): Promise<T> {
+  if (slot.value) return Promise.resolve(slot.value);
+  if (slot.pending) return slot.pending;
+  const pending = fetchIt().then(
+    (value) => {
+      slot.value = value;
+      slot.pending = null;
+      return value;
     },
     (error: unknown) => {
-      pending = null;
+      slot.pending = null;
       throw error;
     },
   );
+  slot.pending = pending;
   return pending;
+}
+
+const keptList: Kept<LibraryList> = { value: null, pending: null };
+const keptPayload: Kept<LibraryExtrasPayload> = { value: null, pending: null };
+
+/** TamTam's data for the visit (GET /api/switch-library). */
+export function loadLibraryPayload(): Promise<LibraryExtrasPayload> {
+  return keep(keptPayload, () => getJson<unknown>(EXTRAS_URL).then(readPayload));
+}
+
+/** The open list for the visit (the manifest's list file); refused while no list is built. */
+export function loadLibraryList(): Promise<LibraryList> {
+  const url = libraryListUrl();
+  if (!url) return Promise.reject(new Error("the game list is not built yet"));
+  return keep(keptList, () => getJson<unknown>(url).then(readList));
+}
+
+/** Both answers for this visit, fetched in parallel. */
+export function loadLibrary(): Promise<LibraryData> {
+  return Promise.all([loadLibraryList(), loadLibraryPayload()]).then(([list, payload]) => ({ list, payload }));
 }
 
 /** Runs `run` when the browser is idle (at the latest after 4 s); returns the cancel. */
@@ -111,13 +164,24 @@ function whenIdle(run: () => void): () => void {
   return () => window.clearTimeout(id);
 }
 
-export type LibraryState = { status: LibraryStatus; data: LibraryData | null; offline: boolean; retry: () => void };
+export type LibraryState = {
+  status: LibraryStatus;
+  data: LibraryData | null;
+  /** TamTam's data alone, as soon as it answered (it may come before the list, or without it). */
+  payload: LibraryExtrasPayload | null;
+  /** TamTam's data did not load this time (the space bar cannot draw the games' sizes; a retry asks again). */
+  payloadFailed: boolean;
+  offline: boolean;
+  retry: () => void;
+};
 
 /** `start`: "now" (the games and review steps), "idle" (the earlier steps: when the browser has nothing else to do). */
 export function useLibrary(start: "now" | "idle"): LibraryState {
   const url = libraryListUrl();
-  const [data, setData] = useState<LibraryData | null>(() => loaded);
-  const [status, setStatus] = useState<LibraryStatus>(() => (!url ? "unbuilt" : loaded ? "ready" : "idle"));
+  const [data, setData] = useState<LibraryData | null>(() => (keptList.value && keptPayload.value ? { list: keptList.value, payload: keptPayload.value } : null));
+  const [payload, setPayload] = useState<LibraryExtrasPayload | null>(() => keptPayload.value);
+  const [payloadFailed, setPayloadFailed] = useState(false);
+  const [status, setStatus] = useState<LibraryStatus>(() => (!url ? "unbuilt" : keptList.value && keptPayload.value ? "ready" : "idle"));
   const [offline, setOffline] = useState(false);
   const [attempt, setAttempt] = useState(0);
 
@@ -127,16 +191,29 @@ export function useLibrary(start: "now" | "idle"): LibraryState {
     const run = () => {
       if (cancelled) return;
       setStatus("loading");
-      loadLibrary().then(
-        (result) => {
+      setPayloadFailed(false);
+      // TamTam's data is published on its own as soon as it answers: the space bar and the review's dates need no list
+      const own = loadLibraryPayload().then(
+        (value) => {
+          if (!cancelled) setPayload(value);
+          return value;
+        },
+        (error: unknown) => {
+          if (!cancelled) setPayloadFailed(true);
+          throw error;
+        },
+      );
+      Promise.all([loadLibraryList(), own]).then(
+        ([list, value]) => {
           if (cancelled) return;
-          setData(result);
+          setData({ list, payload: value });
           setStatus("ready");
           setOffline(false);
         },
-        () => {
+        (error: unknown) => {
           if (cancelled) return;
-          setStatus("error");
+          // the list of an older build is gone (a deploy): only a reload helps — said so, never retried
+          setStatus(isLibraryUpdated(error) ? "stale" : "error");
           setOffline(navigator.onLine === false);
         },
       );
@@ -162,7 +239,7 @@ export function useLibrary(start: "now" | "idle"): LibraryState {
     return () => window.removeEventListener("online", again);
   }, [status]);
 
-  return { status, data, offline, retry: () => setAttempt((count) => count + 1) };
+  return { status, data, payload, payloadFailed, offline, retry: () => setAttempt((count) => count + 1) };
 }
 
 const chunks = new Map<number, Promise<LibraryChunk>>();
@@ -173,7 +250,10 @@ export function cachedGameDetails(gameId: string): GameDetails | null | undefine
   return known.get(gameId);
 }
 
-/** The game's details (developers, series, Wikipedia extracts); null when its chunk has none. */
+/**
+ * The game's details (developers, series, Wikipedia extracts); null when its chunk has none. A chunk that is gone
+ * (isLibraryUpdated) rejects like any failure — the page tells the two apart.
+ */
 export function loadGameDetails(list: LibraryList, game: LibraryGame): Promise<GameDetails | null> {
   if (known.has(game.id)) return Promise.resolve(known.get(game.id) ?? null);
   const name = list.chunks[game.chunk];

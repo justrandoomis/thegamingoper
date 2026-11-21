@@ -4,12 +4,15 @@ import { defineMessages } from "../translate";
  * "switch-builder-sheet" — the Switch bundle builder's game details sheet, its trailer and its spotlight guide
  * (app/routes/storefront/builder/components/{GameSheet,TrailerEmbed,BuilderTour,SpotlightTour}.tsx; contract
  * docs/switch-builder.md §6.5–6.7). Loaded by the builder's route loader with "switch-builder" (genre and play-mode
- * labels: `genre.<key>`, `mode.<key>` belong to that namespace).
+ * labels: `genre.<key>`, `mode.<key>` belong to that namespace; the guide quotes the page's own key names from there:
+ * `{have}` = device.have, `{none}` = memory.none).
  *
  * Copy voice: docs/DESIGN.md §11 — plain, specific, active; a key says what it does; no exclamation marks; Latin brand
  * names stay Latin. Sizes are «GB» as the console shows them. Games are bought as TamTam cartridges or on the Nintendo
- * eShop with eShop cards: nothing here may suggest that a game comes on a card or a console.
- * The Sorani column must be reviewed by a native reader before launch.
+ * eShop with eShop cards: nothing here may suggest that a game comes on a card or a console — a game is CHOSEN for the
+ * plan (the grid's own verb), never "added to" or "put on" the console. «الجهاز» / «ئامێر» is the console: the shopper's
+ * phone or computer is «هذا المتصفح» / «ئەم وێبگەڕە». The Sorani column must be reviewed by a native reader before
+ * launch; in it no suffix follows a Latin name or a figure (a right-to-left line draws it on the wrong side).
  */
 export default defineMessages({
   ar: {
@@ -23,9 +26,9 @@ export default defineMessages({
     size: {
       title: "المساحة على الجهاز",
       digital: "النسخة الرقمية",
-      digitalHint: "اللعبة مع آخر تحديث، بلا إضافات",
+      digitalHint: "اللعبة مع آخر تحديث، بلا محتوى إضافي",
       cartridge: "الشريط",
-      cartridgeHint: "ما ينزل على الجهاز للشريط: التحديثات والإضافات",
+      cartridgeHint: "ما تنزّله نسخة الشريط على الجهاز: آخر تحديث، بلا محتوى إضافي",
       cartridgeFull: "نحسبه بالحجم الكامل حتى نقيس الشريط",
       missing: "لم يُضف بعد",
       asOf: "قسنا الحجم على أجهزة طمطم بتاريخ {date}.",
@@ -35,8 +38,8 @@ export default defineMessages({
     },
     fit: {
       fits: "تتّسع: يبقى بعدها {left}.",
-      chosen: "في جهازك: تأخذ {need}.",
-      chosenLeft: "في جهازك: تأخذ {need}، ويبقى {left}.",
+      chosen: "مختارة: تأخذ {need}.",
+      chosenLeft: "مختارة: تأخذ {need}، ويبقى {left}.",
       full: "لا تتّسع: تحتاج {need}، والمتبقي {left}.",
       unsized: "لم يُضف حجمها بعد، فلا يمكن اختيارها.",
     },
@@ -67,14 +70,14 @@ export default defineMessages({
     about: {
       title: "عن اللعبة",
       wikipedia: "النص من مقالة {article} على Wikipedia، ومتاح بترخيص {licence}.",
-      english: "لا يوجد وصف بالعربية بعد، فهذا الوصف بالإنكليزية.",
+      english: "لا يوجد وصف بالعربية بعد، فهذا الوصف بالإنجليزية.",
     },
     trailer: {
-      title: "الإعلان",
-      play: "شغّل الإعلان",
-      frame: "إعلان {title} على YouTube",
+      title: "العرض الدعائي",
+      play: "شغّل العرض الدعائي",
+      frame: "العرض الدعائي للعبة {title} على YouTube",
       privacy: "يُحمَّل الفيديو من YouTube فقط عندما تضغط تشغيل.",
-      offline: "لا يوجد اتصال. شغّل الإعلان عند عودة الاتصال.",
+      offline: "لا يوجد اتصال. شغّل العرض الدعائي عند عودة الاتصال.",
     },
     links: {
       title: "روابط",
@@ -83,10 +86,10 @@ export default defineMessages({
       wikipedia: "مقالتها على Wikipedia",
     },
     foot: {
-      add: "أضف إلى جهازي",
-      remove: "أزلها من جهازي",
-      added: "أضفنا {title} إلى جهازك.",
-      removed: "أزلنا {title} من جهازك.",
+      add: "اختر هذه اللعبة",
+      remove: "أزلها من ألعابك",
+      added: "اخترت {title}.",
+      removed: "أزلت {title} من ألعابك.",
     },
     tour: {
       label: "دليل الصفحة",
@@ -103,7 +106,7 @@ export default defineMessages({
         },
         deviceMode: {
           title: "جهاز جديد أو جهازك",
-          text: "اشترِ جهازاً من طمطم ليدخل السلة، أو اختر أن عندك جهازاً لتخطط لمساحته فقط. ذاكرة الجهاز نفسها تدخل في الحساب في الحالتين.",
+          text: "اشترِ جهازاً من طمطم ليدخل السلة، أو اختر «{have}» لتحسب مساحته فقط. ذاكرة الجهاز نفسها تدخل في الحساب في الحالتين.",
         },
         deviceList: {
           title: "الطراز",
@@ -111,7 +114,7 @@ export default defineMessages({
         },
         continue: {
           title: "الخطوة التالية",
-          text: "اضغط هنا عندما تنتهي من الخطوة لتنتقل إلى التالية. اختياراتك محفوظة على هذا الجهاز.",
+          text: "اضغط هنا عندما تنتهي من الخطوة لتنتقل إلى التالية. اختياراتك محفوظة في هذا المتصفح.",
         },
         help: {
           title: "الدليل في أي وقت",
@@ -119,7 +122,7 @@ export default defineMessages({
         },
         cardList: {
           title: "بطاقة الذاكرة",
-          text: "الألعاب تُثبَّت على ذاكرة الجهاز وعلى بطاقة microSD. اختر الحجم الذي تريده، أو بدون بطاقة إذا كانت ذاكرة الجهاز تكفيك. الحجم الذي لا تبيعه طمطم الآن يبقى متاحاً للتخطيط.",
+          text: "تُحفظ الألعاب في ذاكرة الجهاز وعلى بطاقة microSD. اختر الحجم الذي تريده، أو «{none}» إذا كانت ذاكرة الجهاز تكفيك. يبقى الحجم الذي لا نبيعه الآن متاحاً للتخطيط.",
         },
         cardUsable: {
           title: "لماذا أقل من الرقم المكتوب",
@@ -135,15 +138,15 @@ export default defineMessages({
         },
         search: {
           title: "ابحث",
-          text: "اكتب اسم اللعبة بالعربية أو بالإنكليزية، أو اسم ناشرها.",
+          text: "اكتب اسم اللعبة بالعربية أو بالإنجليزية، أو اسم ناشرها.",
         },
         filters: {
-          title: "التصفية والترتيب",
-          text: "صفِّ الألعاب حسب النوع وعدد اللاعبين والحجم والسعر، أو اعرض فقط ما يتّسع في المساحة الباقية.",
+          title: "الفلاتر والترتيب",
+          text: "اعرض الألعاب حسب النوع وطريقة اللعب والحجم والسعر، أو اعرض فقط ما يتّسع في المساحة المتبقية.",
         },
         gameCard: {
           title: "اضغط لتختار، واضغط مطوّلاً للتفاصيل",
-          text: "اضغط اللعبة مرة لتضيفها إلى جهازك، ومرة ثانية لتزيلها. اضغطها مطوّلاً لتفتح تفاصيلها: الوصف والإعلان والحجم.",
+          text: "اضغط اللعبة مرة لتختارها، ومرة ثانية لتزيلها. اضغطها مطوّلاً لتفتح تفاصيلها: الوصف والعرض الدعائي والحجم.",
         },
         gameSize: {
           title: "الحجم الكامل",
@@ -158,12 +161,12 @@ export default defineMessages({
           text: "هنا الألعاب التي اخترتها وحجم كل واحدة، ومن هنا تزيل ما لا تريده.",
         },
         reviewLines: {
-          title: "ما يدخل السلة",
-          text: "كل سطر قطعة تبيعها طمطم: الجهاز والبطاقة والأشرطة وبطاقات eShop التي تغطي ألعابك الرقمية. الإجمالي يجمع ما يمكن طلبه الآن فقط.",
+          title: "ما في خطتك",
+          text: "كل سطر جزء من خطتك: ما نبيعه الآن يدخل السلة بسعره، ويظهر هنا أيضاً ما عندك من جهاز أو بطاقة، والألعاب الرقمية التي تشتريها من eShop. الإجمالي يجمع ما يمكن طلبه الآن فقط.",
         },
         reviewNotes: {
-          title: "قبل أن تطلب",
-          text: "هنا ما لا نبيعه الآن، والألعاب التي لم نضف سعرها بعد، وطريقة شراء الألعاب الرقمية: تستبدل بطاقة eShop على حساب Nintendo أمريكي، ثم تشتري اللعبة من eShop بنفسك.",
+          title: "قبل أن تضيف إلى السلة",
+          text: "هنا ما لا نبيعه الآن، والألعاب التي لم نُضف سعرها بعد، وطريقة شراء الألعاب الرقمية: تضيف قيمة بطاقة eShop إلى حساب Nintendo أمريكي، ثم تشتري اللعبة من eShop بنفسك.",
         },
         addAll: {
           title: "أضف الكل مرة واحدة",
@@ -185,7 +188,7 @@ export default defineMessages({
       digital: "Digital copy",
       digitalHint: "The game with its latest update, without DLC",
       cartridge: "Cartridge",
-      cartridgeHint: "What a cartridge downloads to the console: updates and DLC",
+      cartridgeHint: "What the cartridge copy downloads to the console: its latest update, without DLC",
       cartridgeFull: "Counted at the full size until we measure the cartridge",
       missing: "Not added yet",
       asOf: "We measured the size on TamTam consoles on {date}.",
@@ -195,8 +198,8 @@ export default defineMessages({
     },
     fit: {
       fits: "Fits: {left} left after it.",
-      chosen: "On your console: takes {need}.",
-      chosenLeft: "On your console: takes {need}, {left} left.",
+      chosen: "Chosen: takes {need}.",
+      chosenLeft: "Chosen: takes {need}, {left} left.",
       full: "Does not fit: it needs {need} and {left} is left.",
       unsized: "Its size is not added yet, so it cannot be chosen.",
     },
@@ -243,10 +246,10 @@ export default defineMessages({
       wikipedia: "Its Wikipedia article",
     },
     foot: {
-      add: "Add to my console",
-      remove: "Remove from my console",
-      added: "Added {title} to your console.",
-      removed: "Removed {title} from your console.",
+      add: "Choose this game",
+      remove: "Remove it from your games",
+      added: "{title} chosen.",
+      removed: "{title} removed from your games.",
     },
     tour: {
       label: "Page guide",
@@ -263,7 +266,7 @@ export default defineMessages({
         },
         deviceMode: {
           title: "A new console or yours",
-          text: "Buy a console from TamTam and it goes in your cart, or say you already have one to plan its space only. The console's own memory counts either way.",
+          text: "Buy a console from TamTam and it goes in your cart, or choose “{have}” to plan its space only. The console's own memory counts either way.",
         },
         deviceList: {
           title: "The model",
@@ -271,7 +274,7 @@ export default defineMessages({
         },
         continue: {
           title: "The next step",
-          text: "Press here when you are done with a step to go to the next one. Your choices are kept on this device.",
+          text: "Press here when you are done with a step to go to the next one. Your choices are kept in this browser.",
         },
         help: {
           title: "The guide, any time",
@@ -279,7 +282,7 @@ export default defineMessages({
         },
         cardList: {
           title: "The memory card",
-          text: "Games install on the console's memory and on a microSD card. Choose the size you want, or no card if the console's memory is enough. A size TamTam does not sell now can still be chosen for planning.",
+          text: "Games are stored in the console's memory and on a microSD card. Choose the size you want, or “{none}” if the console's memory is enough. A size we do not sell now can still be chosen for planning.",
         },
         cardUsable: {
           title: "Why less than the label",
@@ -298,12 +301,12 @@ export default defineMessages({
           text: "Type a game's name in Arabic or English, or its publisher.",
         },
         filters: {
-          title: "Filter and sort",
-          text: "Filter games by genre, players, size and price, or show only what fits in the space left.",
+          title: "Filters and sort",
+          text: "Filter games by genre, play mode, size and price, or show only what fits in the space left.",
         },
         gameCard: {
           title: "Tap to choose, hold for details",
-          text: "Tap a game once to add it to your console and again to remove it. Press and hold it to open its details: description, trailer and size.",
+          text: "Tap a game once to choose it and again to remove it. Press and hold it to open its details: description, trailer and size.",
         },
         gameSize: {
           title: "The full size",
@@ -318,11 +321,11 @@ export default defineMessages({
           text: "Here are the games you chose, with each one's size, and you can remove any of them here.",
         },
         reviewLines: {
-          title: "What goes in your cart",
-          text: "Each line is something TamTam sells: the console, the card, the cartridges and the eShop cards that cover your digital games. The total adds up only what can be ordered now.",
+          title: "In your plan",
+          text: "Each line is part of your plan: what TamTam sells now goes in the cart at its price; your own console or card and the digital games you buy on the eShop are listed too. The total adds up only what can be ordered now.",
         },
         reviewNotes: {
-          title: "Before you order",
+          title: "Before you add to the cart",
           text: "Here is what we do not sell right now, the games we have not priced yet, and how digital games are bought: you redeem the eShop card on a US Nintendo Account, then buy the game on the eShop yourself.",
         },
         addAll: {
@@ -335,37 +338,37 @@ export default defineMessages({
   ckb: {
     sheet: {
       picture: "وێنەی {title}",
-      tags: "جۆر و شێوازی یاری",
+      tags: "جۆر و شێوەی یاریکردن",
       loading: "وەسفی یارییەکە بار دەکەین",
       detailsError: "نەتوانرا وەسفی یارییەکە بار بکرێت.",
       detailsErrorText: "وردەکارییەکانی تر لێرەن. دووبارە هەوڵ بدەوە بۆ بارکردنی وەسفەکە.",
     },
     size: {
       title: "شوێن لەسەر ئامێرەکە",
-      digital: "کۆپی دیجیتاڵ",
-      digitalHint: "یارییەکە لەگەڵ دوایین نوێکاری، بەبێ زیادکراوەکان",
-      cartridge: "کارتی یاری",
-      cartridgeHint: "ئەوەی بۆ کارتی یارییەکە دادەبەزێتە سەر ئامێرەکە: نوێکاری و زیادکراوەکان",
-      cartridgeFull: "تا کارتی یارییەکە دەپێوین، بە قەبارەی تەواو حیسابی دەکەین",
+      digital: "کۆپیی دیجیتاڵ",
+      digitalHint: "یارییەکە لەگەڵ دوایین نوێکردنەوە، بەبێ ناوەڕۆکی زیادە",
+      cartridge: "کارتریج",
+      cartridgeHint: "ئەوەی کۆپیی کارتریج دایدەبەزێنێتە سەر ئامێرەکە: دوایین نوێکردنەوە، بەبێ ناوەڕۆکی زیادە",
+      cartridgeFull: "تا کارتریجەکە دەپێوین، بە قەبارەی تەواو حیسابی دەکەین",
       missing: "هێشتا زیاد نەکراوە",
       asOf: "قەبارەکەمان لەسەر ئامێرەکانی طمطم لە {date} پێوا.",
-      why: "ئەم ژمارەیە قەبارەی یارییەکەیە دوای دامەزراندنی دوایین نوێکاری، بۆیە لەوانەیە لە یەکەم داگرتن گەورەتر بێت.",
+      why: "ئەم ژمارەیە قەبارەی یارییەکەیە دوای دامەزراندنی دوایین نوێکردنەوە، بۆیە لەوانەیە لە یەکەم داگرتن گەورەتر بێت.",
       saves: "فایلەکانی پاشەکەوتکردن حیساب ناکرێن: Switch هەمیشە لە بیرگەی ئامێرەکەدا هەڵیاندەگرێت، نەک لەسەر کارتی بیرگە.",
       unsized: "هێشتا قەبارەی ئەم یارییەمان زیاد نەکردووە، بۆیە ناچێتە ناو حیسابی شوێنەکەوە.",
     },
     fit: {
-      fits: "جێی دەبێتەوە: {left} دەمێنێتەوە دوای ئەو.",
-      chosen: "لەسەر ئامێرەکەتە: {need} دەبات.",
-      chosenLeft: "لەسەر ئامێرەکەتە: {need} دەبات و {left} دەمێنێتەوە.",
+      fits: "جێی دەبێتەوە: دوای ئەو {left} دەمێنێتەوە.",
+      chosen: "هەڵبژێردراوە: {need} دەبات.",
+      chosenLeft: "هەڵبژێردراوە: {need} دەبات و {left} دەمێنێتەوە.",
       full: "جێی نابێتەوە: پێویستی بە {need} هەیە و {left} ماوە.",
       unsized: "هێشتا قەبارەکەی زیاد نەکراوە، بۆیە ناتوانرێت هەڵبژێردرێت.",
     },
     format: {
       legend: "چۆن دەیکڕیت",
-      cartridge: "کارتی یاری لە طمطم",
-      digital: "کۆپی دیجیتاڵ لە eShop",
+      cartridge: "کارتریج لە طمطم",
+      digital: "کۆپیی دیجیتاڵ لە eShop",
       takes: "{size} لەسەر ئامێرەکە دەبات",
-      cartridgeTakes: "{size} لەسەر ئامێرەکە دەبات بۆ نوێکارییەکان",
+      cartridgeTakes: "{size} لەسەر ئامێرەکە دەبات بۆ نوێکردنەوەکان",
       cartridgeFull: "تا دەیپێوین بە قەبارەی تەواو {size} حیساب دەکرێت",
       noSize: "هێشتا قەبارەکەی زیاد نەکراوە",
       noRoom: "جێی نابێتەوە: پێویستی بە {need} هەیە و {left} ماوە",
@@ -373,9 +376,9 @@ export default defineMessages({
       unavailable: "ئێستا لە طمطم بەردەست نییە",
     },
     price: {
-      eshop: "نرخی کۆپی دیجیتاڵ لە Nintendo eShopی ئەمریکی: {price}، لە {date}.",
-      eshopUndated: "نرخی کۆپی دیجیتاڵ لە Nintendo eShopی ئەمریکی: {price}.",
-      eshopMissing: "هێشتا نرخی کۆپی دیجیتاڵمان زیاد نەکردووە. لە پەڕەکەی لە Nintendo eShop دەیدۆزیتەوە.",
+      eshop: "نرخی کۆپیی دیجیتاڵ لە فرۆشگای ئەمریکیی Nintendo eShop: {price}، لە {date}.",
+      eshopUndated: "نرخی کۆپیی دیجیتاڵ لە فرۆشگای ئەمریکیی Nintendo eShop: {price}.",
+      eshopMissing: "هێشتا نرخی کۆپیی دیجیتاڵمان زیاد نەکردووە. لە پەڕەکەی لە Nintendo eShop دەیدۆزیتەوە.",
     },
     score: {
       title: "نمرەی Metacritic",
@@ -390,31 +393,31 @@ export default defineMessages({
       english: "هێشتا وەسفی کوردی نییە، بۆیە ئەم وەسفە بە ئینگلیزییە.",
     },
     trailer: {
-      title: "ترەیلەر",
-      play: "ترەیلەرەکە لێبدە",
-      frame: "ترەیلەری {title} لە YouTube",
+      title: "ڤیدیۆی ناساندن",
+      play: "ڤیدیۆی ناساندنەکە لێبدە",
+      frame: "ڤیدیۆی ناساندنی {title} لە YouTube",
       privacy: "ڤیدیۆکە تەنها کاتێک لە YouTube بار دەبێت کە دوگمەی لێدان دادەگریت.",
-      offline: "هێڵی ئینتەرنێت نییە. کاتێک هێڵ گەڕایەوە ترەیلەرەکە لێبدە.",
+      offline: "هێڵی ئینتەرنێت نییە. کاتێک هێڵ گەڕایەوە ڤیدیۆی ناساندنەکە لێبدە.",
     },
     links: {
       title: "بەستەرەکان",
-      eshop: "پەڕەکەی لە Nintendo eShopی ئەمریکی",
+      eshop: "پەڕەکەی لە فرۆشگای ئەمریکیی Nintendo eShop",
       metacritic: "پەڕەکەی لە Metacritic",
       wikipedia: "وتارەکەی لە Wikipedia",
     },
     foot: {
-      add: "بیخە سەر ئامێرەکەم",
-      remove: "لە ئامێرەکەم لای ببە",
-      added: "{title} خرایە سەر ئامێرەکەت.",
-      removed: "{title} لە ئامێرەکەت لابرا.",
+      add: "ئەم یارییە هەڵبژێرە",
+      remove: "لە یارییەکانت لای ببە",
+      added: "{title} هەڵبژێردرا.",
+      removed: "{title} لە یارییەکانت لابرا.",
     },
     tour: {
-      label: "ڕێبەری پەڕەکە",
+      label: "ڕێنمایی پەڕەکە",
       count: "{n} لە {total}",
       next: "دواتر",
       back: "پێشوو",
       skip: "تێپەڕە",
-      finish: "ڕێبەرەکە تەواو بکە",
+      finish: "ڕێنماییەکە تەواو بکە",
       highlighted: "بەشی ڕووناککراوەی پەڕەکە: {name}",
       part: {
         steps: {
@@ -423,27 +426,27 @@ export default defineMessages({
         },
         deviceMode: {
           title: "ئامێرێکی نوێ یان ئامێرەکەی خۆت",
-          text: "ئامێرێک لە طمطم بکڕە تا بچێتە ناو سەبەتەکە، یان بڵێ ئامێرت هەیە تا تەنها پلانی شوێنەکەی دابنێیت. بیرگەی خودی ئامێرەکە لە هەردوو حاڵەتدا حیساب دەکرێت.",
+          text: "ئامێرێک لە طمطم بکڕە تا بچێتە ناو سەبەتەکە، یان «{have}» هەڵبژێرە تا تەنها شوێنەکەی بژمێریت. بیرگەی خودی ئامێرەکە لە هەردوو حاڵەتدا حیساب دەکرێت.",
         },
         deviceList: {
           title: "مۆدێل",
-          text: "مۆدێلەکە بیرگەی ئامێرەکە دیاری دەکات: OLED شوێنی زیاترە لە دوو مۆدێلەکەی تر، و ئامێری Switch Lite تەنها بە دەست یاری دەکرێت، بەبێ تەلەفزیۆن. نرخ و ڕەنگ و بەردەستبوون وەک ئێستای طمطمن.",
+          text: "مۆدێلەکە بیرگەی ئامێرەکە دیاری دەکات: OLED شوێنی زیاتری هەیە لە دوو مۆدێلەکەی تر، و ئامێری Switch Lite تەنها بە دەست یاری دەکرێت، بەبێ تەلەفزیۆن. نرخ و ڕەنگ و بەردەستبوون وەک ئەوەی ئێستا لە طمطم هەن.",
         },
         continue: {
           title: "هەنگاوی دواتر",
-          text: "کاتێک هەنگاوێکت تەواو کرد لێرە دابگرە بۆ ئەوەی بچیتە هەنگاوی دواتر. هەڵبژاردنەکانت لەسەر ئەم ئامێرە دەمێننەوە.",
+          text: "کاتێک هەنگاوێکت تەواو کرد لێرە دابگرە بۆ ئەوەی بچیتە هەنگاوی دواتر. هەڵبژاردنەکانت لەم وێبگەڕەدا دەمێننەوە.",
         },
         help: {
-          title: "ڕێبەر لە هەر کاتێکدا",
-          text: "لە هەر هەنگاوێکدا ئەم دوگمەیە دابگرە بۆ ئەوەی ڕێبەری ئەو هەنگاوە دووبارە ببینیتەوە.",
+          title: "ڕێنمایی لە هەر کاتێکدا",
+          text: "لە هەر هەنگاوێکدا ئەم دوگمەیە دابگرە بۆ ئەوەی ڕێنمایی ئەو هەنگاوە دووبارە ببینیتەوە.",
         },
         cardList: {
           title: "کارتی بیرگە",
-          text: "یارییەکان لەسەر بیرگەی ئامێرەکە و کارتی microSD دادەمەزرێن. ئەو قەبارەیە هەڵبژێرە کە دەتەوێت، یان بەبێ کارت ئەگەر بیرگەی ئامێرەکە بەسە. ئەو قەبارەیەی کە ئێستا طمطم نایفرۆشێت هێشتا بۆ پلاندانان هەڵدەبژێردرێت.",
+          text: "یارییەکان لە بیرگەی ئامێرەکە و لەسەر کارتی microSD هەڵدەگیرێن. ئەو قەبارەیە هەڵبژێرە کە دەتەوێت، یان «{none}» ئەگەر بیرگەی ئامێرەکە بەسە. ئەو قەبارەیەی کە ئێستا نایفرۆشین هێشتا بۆ پلاندانان هەڵدەبژێردرێت.",
         },
         cardUsable: {
           title: "بۆچی کەمترە لە ژمارەی سەر کارتەکە",
-          text: "کارتەکان بە گیگابایتی دەیی دەفرۆشرێن، بەڵام ئامێرەکە هەر گیگابایتێک بە 1024 مێگابایت حیساب دەکات، بۆیە کارتێکی {label} نزیکەی {shown} نیشان دەدات، و فۆرماتکردنیش بەشێکی کەمی دەبات. هەروەها بەشێک لە کارتەکە بۆ نوێکارییەکانی داهاتووی یارییەکان بەتاڵ دەهێڵینەوە. بۆیە ئەو ژمارەیەی لە تەنیشت هەر قەبارەیەکە ئەوەیە کە بە ڕاستی بۆ یارییەکان دەمێنێتەوە.",
+          text: "کارتەکان بە گیگابایتی دەیی دەفرۆشرێن، بەڵام ئامێرەکە هەر گیگابایتێک بە 1024 مێگابایت حیساب دەکات، بۆیە کارتێکی {label} نزیکەی {shown} نیشان دەدات، و فۆرماتکردنیش بەشێکی کەمی دەبات. هەروەها بەشێک لە کارتەکە بۆ نوێکردنەوەکانی داهاتووی یارییەکان بەتاڵ دەهێڵینەوە. بۆیە ئەو ژمارەیەی لە تەنیشت هەر قەبارەیەکە ئەوەیە کە بە ڕاستی بۆ یارییەکان دەمێنێتەوە.",
         },
         cardOwned: {
           title: "کارتت هەیە",
@@ -451,7 +454,7 @@ export default defineMessages({
         },
         meter: {
           title: "شوێن",
-          text: "ئەم پێوەرە نیشانی دەدات یارییە هەڵبژێردراوەکانت چەند شوێن دەبەن، چەندێک بۆ نوێکارییەکان بەتاڵ دەهێڵینەوە، و چەند دەمێنێتەوە. ڕەنگەکەی دەگۆڕێت کاتێک لە پڕبوون نزیک دەبێتەوە، و یارییەک کە جێی نابێتەوە ناچێتە ناوەوە.",
+          text: "ئەم پێوەرە نیشانی دەدات یارییە هەڵبژێردراوەکانت چەند شوێن دەبەن، چەندێک بۆ نوێکردنەوەکان بەتاڵ دەهێڵینەوە، و چەند دەمێنێتەوە. ڕەنگەکەی دەگۆڕێت کاتێک لە پڕبوون نزیک دەبێتەوە، و یارییەک کە جێی نابێتەوە ناچێتە ناوەوە.",
         },
         search: {
           title: "گەڕان",
@@ -459,15 +462,15 @@ export default defineMessages({
         },
         filters: {
           title: "پاڵاوتن و ڕیزکردن",
-          text: "یارییەکان بەپێی جۆر و ژمارەی یاریزان و قەبارە و نرخ بپاڵێوە، یان تەنها ئەوانە پیشان بدە کە لە شوێنی ماوەدا جێیان دەبێتەوە.",
+          text: "یارییەکان بەپێی جۆر و شێوەی یاریکردن و قەبارە و نرخ بپاڵێوە، یان تەنها ئەوانە پیشان بدە کە لە شوێنی ماوەدا جێیان دەبێتەوە.",
         },
         gameCard: {
-          title: "دەستی لێ بدە بۆ هەڵبژاردن، ڕایگرە بۆ وردەکاری",
-          text: "جارێک دەست لە یارییەکە بدە بۆ ئەوەی بیخەیتە سەر ئامێرەکەت، و جارێکی تر بۆ لابردنی. پەنجەت لەسەری ڕابگرە بۆ کردنەوەی وردەکارییەکانی: وەسف و ترەیلەر و قەبارە.",
+          title: "دابگرە بۆ هەڵبژاردن، ڕایگرە بۆ وردەکاری",
+          text: "جارێک یارییەکە دابگرە بۆ هەڵبژاردنی، و جارێکی تر بۆ لابردنی. پەنجەت لەسەری ڕابگرە بۆ کردنەوەی وردەکارییەکانی: وەسف و ڤیدیۆی ناساندن و قەبارە.",
         },
         gameSize: {
           title: "قەبارەی تەواو",
-          text: "ئەمە قەبارەی یارییەکەیە دوای دامەزراندنی دوایین نوێکاری، وەک لەسەر ئامێرەکانی طمطم پێومانە، نەک تەنها یەکەم داگرتن. یارییەک کە هێشتا قەبارەکەیمان زیاد نەکردووە ناچێتە ناو حیسابەوە.",
+          text: "ئەمە قەبارەی یارییەکەیە دوای دامەزراندنی دوایین نوێکردنەوە، وەک لەسەر ئامێرەکانی طمطم پێومانە، نەک تەنها یەکەم داگرتن. یارییەک کە هێشتا قەبارەکەیمان زیاد نەکردووە ناچێتە ناو حیسابەوە.",
         },
         gameInfo: {
           title: "وردەکاری بەبێ ڕاگرتن",
@@ -478,12 +481,12 @@ export default defineMessages({
           text: "ئەو یارییانەی هەڵتبژاردوون لێرەن لەگەڵ قەبارەی هەر یەکێکیان، و لێرەوە هەر کامێکیان نەتەوێت لای دەبەیت.",
         },
         reviewLines: {
-          title: "ئەوەی دەچێتە ناو سەبەتە",
-          text: "هەر هێڵێک شتێکە کە طمطم دەیفرۆشێت: ئامێرەکە، کارتەکە، کارتەکانی یاری و ئەو کارتانەی eShop کە یارییە دیجیتاڵەکانت دادەپۆشن. کۆی گشتی تەنها ئەوە کۆ دەکاتەوە کە ئێستا داوا دەکرێت.",
+          title: "ئەوەی لە پلانەکەتدایە",
+          text: "هەر هێڵێک بەشێکە لە پلانەکەت: ئەوەی ئێستا دەیفرۆشین بە نرخەکەیەوە دەچێتە ناو سەبەتە، و ئامێر یان کارتی خۆت و ئەو یارییە دیجیتاڵانەی لە eShop دەیانکڕیت لێرەش دیارن. کۆی گشتی تەنها ئەوە کۆ دەکاتەوە کە ئێستا داوا دەکرێت.",
         },
         reviewNotes: {
-          title: "پێش ئەوەی داوا بکەیت",
-          text: "لێرەدا ئەوەی ئێستا نایفرۆشین، ئەو یارییانەی هێشتا نرخیانمان زیاد نەکردووە، و چۆنیەتی کڕینی یارییە دیجیتاڵەکان هەیە: کارتی eShop لەسەر هەژمارێکی ئەمریکیی Nintendo بەکاردەهێنیت، پاشان خۆت یارییەکە لە eShop دەکڕیت.",
+          title: "پێش ئەوەی بیخەیتە ناو سەبەتە",
+          text: "لێرەدا ئەوەی ئێستا نایفرۆشین، ئەو یارییانەی هێشتا نرخیانمان زیاد نەکردووە، و چۆنیەتی کڕینی یارییە دیجیتاڵەکان هەیە: بە کارتی eShop باڵانسی هەژمارێکی ئەمریکیی Nintendo پڕ دەکەیتەوە، پاشان خۆت یارییەکە لە eShop دەکڕیت.",
         },
         addAll: {
           title: "هەمووی بە یەکجار زیاد بکە",

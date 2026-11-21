@@ -437,6 +437,25 @@ export async function undoAdd(outcome: Extract<AddOutcome, { ok: true }>, item: 
   return answer;
 }
 
+/* ── several items at once (the Switch bundle builder) ── */
+
+export type AddManyItem = { variantId: string; qty: number };
+/** Why one item of a refused bundle could not go in: an error key (`errors.<code>`), e.g. out_of_stock. */
+export type AddManyProblem = { variantId: string; code: string };
+export type AddManyOutcome =
+  | { ok: true; cart: CartView; added: number }
+  | { ok: false; code: string; problems: AddManyProblem[]; status: number };
+
+/**
+ * Put several variants in the cart in ONE request (/api/cart intent=add_many): all of them go in, or — when any one
+ * cannot — none does and `problems` says which and why. The header count follows the answer.
+ * STUB written by the lead (docs/switch-builder.md §5); the commerce owner replaces the body, keeping this signature.
+ */
+export async function addManyToCart(request: { items: AddManyItem[]; locale?: Locale }): Promise<AddManyOutcome> {
+  void request;
+  return { ok: false, code: "unavailable", problems: [], status: 0 };
+}
+
 /* ── editing (the cart page) ── */
 
 export type CartEditorRow = {

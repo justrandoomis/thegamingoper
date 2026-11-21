@@ -6,6 +6,7 @@ import { checkoutRoutes } from "./checkout/routes";
 import { accountRoutes } from "./account/routes";
 import { devicesRoutes } from "./devices/routes";
 import { usedRoutes } from "./used/routes";
+import { builderRoutes } from "./builder/routes";
 import { supportRoutes } from "./support/routes";
 import { contentRoutes } from "./content/routes";
 
@@ -18,6 +19,7 @@ export const storefrontRoutes: RouteConfigEntry[] = [
   ...accountRoutes,
   ...devicesRoutes,
   ...usedRoutes,
+  ...builderRoutes,
   ...supportRoutes,
   ...contentRoutes, // contains the "*" not-found route — keep last
 ];

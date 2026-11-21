@@ -43,6 +43,13 @@
       "when": 1794904238927,
       "tag": "0005_cart_items_cart_idx",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1795261434905,
+      "tag": "0006_switch_library_entries",
+      "breakpoints": true
     }
   ]
 }
